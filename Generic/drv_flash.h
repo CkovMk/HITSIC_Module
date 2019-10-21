@@ -18,9 +18,8 @@
 #pragma once
 #ifndef DRV_FLASH_H
 #define DRV_FLASH_H
-#include "include.h" 
-#include "clock_config.h"
-#include "fsl_debug_console.h"
+#include "stdafx.h" 
+#include "hitsic_def.h"
 
 #if defined(FSL_FEATURE_HAS_L1CACHE) && FSL_FEATURE_HAS_L1CACHE
 #include "fsl_cache.h"

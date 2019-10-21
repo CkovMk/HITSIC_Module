@@ -18,10 +18,11 @@
 #ifndef RTE_SI2C_H
 #define RTE_SI2C_H
 
-#include "include.h" 
-#include "fsl_debug_console.h"
+#include "stdafx.h" 
+
 #include "clock_config.h"
 #include "pin_mux.h"
+
 typedef struct _si2c_master_t {
 	GPIO_Type* SDA;
 	uint32_t SDA_pin;

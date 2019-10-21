@@ -726,8 +726,8 @@ int OLED_Printf(uint16 Row, uint16 off, const char* Format, ...)
 	len = vsnprintf(buf, 128, Format, args);
 	if (len > sizeof(buf))
 	{
-		PRINTF("oled消息");
-		PRINTF("越界\r\n");
+		PRINTF("oled message");
+		PRINTF("Memory Leak\r\n");
 	}
 	//len = vsprintf_s(buf,sizeof(buf), Format, args);
 	OLED_PrintStr_F6x8(off * 6, Row, (uint8_t*)buf);

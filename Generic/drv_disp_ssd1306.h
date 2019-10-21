@@ -18,11 +18,9 @@ qq：512924543
 #pragma once
 #ifndef DRV_DISP_SSD1306_H
 #define DRV_DISP_SSD1306_H
-#include "include.h" 
-#include "fsl_debug_console.h"
-#include "board.h"
-#include "clock_config.h"
-#include "pin_mux.h"
+#include "stdafx.h" 
+#include "hitsic_def.h"
+
 #define OLED_HARD_SPI_MODE 0U//培训板接线接错了，用不了硬件spi模式
 #if defined(OLED_HARD_SPI_MODE)&&OLED_HARD_SPI_MODE==1u
 #include "spi.h"

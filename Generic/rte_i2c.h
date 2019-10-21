@@ -17,9 +17,9 @@
 #pragma once
 #ifndef RTE_I2C_H
 #define RTE_I2C_H
-#include "include.h" 
-#include "board.h"
-#include "fsl_debug_console.h"
+#include "stdafx.h" 
+#include "hitsic_def.h"
+
 
 
 #ifdef __cplusplus

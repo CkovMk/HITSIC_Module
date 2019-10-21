@@ -17,10 +17,7 @@
 #ifndef RTE_SPI_H
 #define RTE_SPI_H
 
-#include "include.h" 
-#include "fsl_debug_console.h"
-#include "board.h"
-#include "clock_config.h"
+#include "stdafx.h" 
 
 #ifdef __cplusplus
 extern "C" {

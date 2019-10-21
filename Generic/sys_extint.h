@@ -29,11 +29,9 @@
 
 #ifndef SYS_EXTINT_H
 #define SYS_EXTINT_H
-#include "include.h"
-#include "fsl_debug_console.h"
-#include "board.h"
-#include "pin_mux.h"
-#include "clock_config.h"
+#include "stdafx.h"
+#include "hitsic_hal.h"
+
 #include "lib_list.h"
 typedef struct _extint_irqNode_t
 {
@@ -87,15 +85,13 @@ status_t EXTINT_PortRemove(PORT_Type* PORTx, uint32_t pin);
 list_t* EXTINT_ListGet(PORT_Type* PORTx);
 
 /**
- * @brief	PORTA-E中断函数
- * @param  {void} undefined : 
+ * @brief	PORTX中断函数
+ * @param  {PORT_Type*} _port : port实例
+ * @param  {list_t*}    _list : port中断管理链表
  */
+void PORTX_IRQHandler(PORT_Type* _port, list_t* _list);
 
-	void PORTA_IRQHandler(void);
-	void PORTB_IRQHandler(void);
-	void PORTC_IRQHandler(void);
-	void PORTD_IRQHandler(void);
-	void PORTE_IRQHandler(void);
+
 #ifdef __cplusplus
 }
 #endif

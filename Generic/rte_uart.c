@@ -48,8 +48,8 @@ int UART_Printf(UART_Type* base, const char* Format, ...)
 	len = vsnprintf(buf, 128, Format, args);
 	if (len > sizeof(buf))
 	{
-		PRINTF("消息");
-		PRINTF("越界\r\n");
+		PRINTF("message");
+		PRINTF("meemory leak\r\n");
 	}
 	//len = vsprintf_s(buf,sizeof(buf), Format, args);
 	va_end(args);

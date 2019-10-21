@@ -21,11 +21,11 @@
 #pragma once
 #ifndef DRV_IMU_INV_H
 #define DRV_IMU_INV_H
-#include "include.h" 
-#include "rte_i2c.h"
-#include "rte_spi.h"
+#include "stdafx.h"
+#include "hitsic_hal.h"
 #include "rte_softi2c.h"
-#include "fsl_debug_console.h"
+
+#if defined(HITSIC_USE_DRV_IMU) && (HITSIC_USE_DRV_IMU > 0)
 
 
 /*
@@ -188,18 +188,18 @@ extern "C"
 #define DEG2RAD (0.0174532925199432957692369076848f)
 #define RAD2DEG (57.295779513082320876798154814105f)
 	typedef struct inv_icm20602_serif { //传输对象
-		uint8_t is_spi; //非0时启用spi，否则启用iic
+		//uint8_t is_spi; //非0时启用spi，否则启用iic
 
-		void* i2c_base; //i2c外设地址
+		//void* i2c_base; //i2c外设地址
 		uint8_t i2c_slave_addr;
-		int32_t(*i2c_read_reg)(void* i2c_base_, uint8_t slave_addr, uint8_t reg, uint8_t* buf, uint32_t len);
-		int32_t(*i2c_write_reg)(void* i2c_base_, uint8_t slave_addr, uint8_t reg, uint8_t* buf, uint32_t len);
+		int32_t (*i2c_rx)(uint8_t slave_addr, uint8_t reg, uint8_t* buf, uint32_t len);
+		int32_t (*i2c_tx)(uint8_t slave_addr, uint8_t reg, uint8_t* buf, uint32_t len);
 
-		void* spi_base; //spi外设地址
-		uint32_t spi_pcs;
-		int32_t(*SPI_FullDuplexXfer)(void* spi_base_, uint32_t spi_pcs_, uint8_t* rxbuf, uint8_t* txbuf, uint32_t len);
-		uint8_t spi_transferTxBuf[15];
-		uint8_t spi_transferRxBuf[15];
+		//void* spi_base; //spi外设地址
+		//uint32_t spi_pcs;
+		int32_t(*spi_xfer)(uint8_t* txbuf, uint8_t* rxbuf, uint32_t len);
+		//uint8_t spi_transferTxBuf[15];
+		//uint8_t spi_transferRxBuf[15];
 	} drvimu_inv_serif_t;
 
 	typedef struct AxisTransformation { //转换表的意思是 例如t2g,意味着新的t轴对应这原来坐标系的g轴，最终的是新坐标系，新在前，旧在后
@@ -267,7 +267,7 @@ extern "C"
 	 *
 	 * @param  {drvimu_inv_device_t*} s : icm对象句柄
 	 */
-	void DRVIMU_INV_SetDefaultConfig(drvimu_inv_device_t* s);
+	void DRVIMU_INV_GetDefaultConfig(drvimu_inv_device_t* s);
 
 	/**
 	 * @brief	设置传输结构体
@@ -311,7 +311,7 @@ extern "C"
 	 * @param  {char*} nickname    : 起个别名吧
 	 * @return {int}               : 错误代码
 	 */
-	int DRVIMU_INV_Init(drvimu_inv_device_t* s, const char* nickname);
+	int DRVIMU_INV_Init(drvimu_inv_device_t* s);
 
 	/**
 	 * @brief	polling方式读取传感器，读取完自动转换
@@ -398,4 +398,7 @@ extern "C"
 }
 #endif
 
+#endif // HITSIC_USE_DRV_IMU
+
 #endif // ! DRV_IMU_INV_H
+	

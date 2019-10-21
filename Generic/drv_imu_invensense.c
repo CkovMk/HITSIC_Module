@@ -1,12 +1,75 @@
 #include"drv_imu_invensense.h"
 
-
+#if defined(HITSIC_USE_DRV_IMU) && (HITSIC_USE_DRV_IMU > 0)
 
 #ifdef __cplusplus
 extern "C" {
 #endif
+    
+//这部分是平台相关的移植代码。 
+    
+#if defined(STM32F103xB) || defined(STM32F103xE)
+	#include "stm32f1xx_hal_i2c.h"
+	#include "stm32f1xx_hal_spi.h"
+	extern I2C_HandleTypeDef hi2c2;
+	#define DRVIMU_EXAMPLE_I2C_INST hi2c2
+	extern SPI_HandleTypeDef hspi1;
+	#define DRVIMU_EXAMPLE_SPI_INST hspi1
+	
+	int32_t DRVIMU_icm_example_i2c_rx(uint8_t slave_addr, uint8_t reg, uint8_t* buf, uint32_t len)
+	{
+		return HAL_I2C_Mem_Read(&DRVIMU_EXAMPLE_I2C_INST, slave_addr, reg, 1, buf, len, HAL_MAX_DELAY);
+	}
+	
+	int32_t DRVIMU_icm_example_i2c_tx(uint8_t slave_addr, uint8_t reg, uint8_t* buf, uint32_t len)
+	{
+		return HAL_I2C_Mem_Write(&DRVIMU_EXAMPLE_I2C_INST, slave_addr, reg, 1, buf, len, HAL_MAX_DELAY);
+	}
+	
+	int32_t DRVIMU_icm_example_spi_xfer(uint8_t* txbuf, uint8_t* rxbuf, uint32_t len)
+	{
+		return 0;
+	}
+		
+#elif defined(CPU_MK66FX1M0VLQ18)
+	status_t DRVIMU_icm_example_i2c_rx(uint8_t slave_addr, uint8_t reg, uint8_t* buf, uint32_t len)
+	{
+		return HAL_I2C_Mem_ReadBlocking(HITSIC_IMU_I2C_INST, slave_addr, reg, 1, buf, len);
+	}
+	
+	status_t DRVIMU_icm_example_i2c_tx(uint8_t slave_addr, uint8_t reg, uint8_t* buf, uint32_t len)
+	{
+		return HAL_I2C_Mem_WriteBlocking(HITSIC_IMU_I2C_INST, slave_addr, reg, 1, buf, len);
+	}
+	
+	status_t DRVIMU_icm_example_spi_xfer(uint8_t* txbuf, uint8_t* rxbuf, uint32_t len)
+	{
+		return 1;
+	}
+#endif
+    
+//移植代码结束
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
 
-	void DRVIMU_INV_SetDefaultConfig(drvimu_inv_device_t* s)
+
+	void DRVIMU_INV_GetDefaultConfig(drvimu_inv_device_t* s)
 	{
 		memset(s, 0, sizeof(drvimu_inv_device_t));
 		//默认滤波
@@ -23,6 +86,10 @@ extern "C" {
 		acc.y2y = 1; gyro.y2y = 1;
 		acc.z2z = 1; gyro.z2z = 1;
 		DRVIMU_INV_SetAxis(s, &acc, &gyro);
+        
+        s->serif.spi_xfer = NULL;
+		s->serif.i2c_rx = DRVIMU_icm_example_i2c_rx;
+		s->serif.i2c_tx = DRVIMU_icm_example_i2c_tx;
 	}
 
 	void DRVIMU_INV_SetSerif(drvimu_inv_device_t* s, drvimu_inv_serif_t* serif_)
@@ -77,12 +144,12 @@ extern "C" {
 			break;
 		}
 	}
-	int DRVIMU_INV_Init(drvimu_inv_device_t* s, const char* nickname)
+	int DRVIMU_INV_Init(drvimu_inv_device_t* s)
 	{
 		uint8_t whoami = 0xff;
 		int times = 100;
 		s->serif.i2c_slave_addr = IMU_MPU9250_I2C_ADDR;
-		s->name = nickname;
+		//s->name = nickname;
 		while (1)
 		{
 			DRVIMU_INV_ReadReg(s, ICM20602_WHO_AM_I, &whoami, 1);
@@ -274,20 +341,18 @@ extern "C" {
 	void DRVIMU_INV_ReadReg(drvimu_inv_device_t* s, uint8_t reg, uint8_t* data, uint32_t len)
 	{
 		int result = 1;
-		if (s->serif.is_spi == 1)
+		if (s->serif.spi_xfer != NULL)
 		{
-			if (len > sizeof(s->serif.spi_transferTxBuf) - 1)
-			{
-				return;
-			}
-			memset(s->serif.spi_transferTxBuf, 0, len + 1);
-			s->serif.spi_transferTxBuf[0] = reg | 0x80;
-			result = s->serif.SPI_FullDuplexXfer(s->serif.spi_base, s->serif.spi_pcs, s->serif.spi_transferRxBuf, s->serif.spi_transferTxBuf, len + 1);
-			memcpy(data, s->serif.spi_transferRxBuf + 1, len);
+			uint8_t *buf = (uint8_t*)malloc((len + 1) * sizeof(uint8_t));
+			if(buf == NULL){ result = -1; return; }
+			memset(buf, 0, len + 1);
+			buf[0] = reg | 0x80;
+			result = s->serif.spi_xfer(buf, buf, len + 1);
+			memcpy(data, buf + 1, len);
 		}
 		else
 		{
-			result = s->serif.i2c_read_reg(s->serif.i2c_base, s->serif.i2c_slave_addr, reg, data, len);
+			result = s->serif.i2c_rx(s->serif.i2c_slave_addr, reg, data, len);
 		}
 		if (result != 0)
 		{
@@ -298,19 +363,18 @@ extern "C" {
 	void DRVIMU_INV_WriteReg(drvimu_inv_device_t* s, uint8_t reg, uint8_t* data, uint32_t len)
 	{
 		int result = 1;
-		if (s->serif.is_spi == 1)
+		if (s->serif.spi_xfer != NULL)
 		{
-			if (len > sizeof(s->serif.spi_transferTxBuf) - 1)
-			{
-				return;
-			}
-			s->serif.spi_transferTxBuf[0] = reg;//只有读的时候要并上高位
-			memcpy(s->serif.spi_transferTxBuf + 1, data, len);
-			result = s->serif.SPI_FullDuplexXfer(s->serif.spi_base, s->serif.spi_pcs, s->serif.spi_transferRxBuf, s->serif.spi_transferTxBuf, len + 1);
+			uint8_t *buf = (uint8_t*)malloc((len + 1) * sizeof(uint8_t));
+			if(buf == NULL){ result = -1; return; }
+			buf[0] = reg | 0x80;
+			memcpy(buf + 1, data, len);
+			result = s->serif.spi_xfer(buf, buf, len + 1);
+			
 		}
 		else
 		{
-			result = s->serif.i2c_write_reg(s->serif.i2c_base, s->serif.i2c_slave_addr, reg, data, len);
+			result = s->serif.i2c_tx(s->serif.i2c_slave_addr, reg, data, len);
 		}
 		if (result != 0)
 		{
@@ -598,61 +662,38 @@ extern "C" {
 		va_end(args);
 	}
 
+	
+	
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
 
 	void DRVIMU_INV_Demo(void)
 	{
 		PRINTF("icm20602 deemo \r\n");
-		drvimu_inv_device_t icm0, icm1, icm2;
-		DRVIMU_INV_SetDefaultConfig(&icm0);//必须调用这个函数进行默认配置
-		DRVIMU_INV_SetDefaultConfig(&icm1);//必须调用这个函数进行默认配置
-		DRVIMU_INV_SetDefaultConfig(&icm2);//必须调用这个函数进行默认配置
+		drvimu_inv_device_t icm0;
+		DRVIMU_INV_GetDefaultConfig(&icm0);//必须调用这个函数进行默认配置
+        I2C_SimpleInit(I2C1, 400000);
 
 		//icm0初始化为硬件i2c驱动
-		i2c_init(I2C1, 400 * 1000);
-		icm0.serif.is_spi = 0;
-		icm0.serif.i2c_base = I2C1;
-		icm0.serif.i2c_read_reg = (int32_t(*)(void* i2c_base_, uint8_t slave_addr, uint8_t reg, uint8_t * buf, uint32_t len))
-			I2C_SimpleReadBlocking;
-		icm0.serif.i2c_write_reg = (int32_t(*)(void* i2c_base_, uint8_t slave_addr, uint8_t reg, uint8_t * buf, uint32_t len))
-			I2C_SimpleWriteBlocking;
+		icm0.serif.spi_xfer = NULL;
+		icm0.serif.i2c_rx = DRVIMU_icm_example_i2c_rx;
+		icm0.serif.i2c_tx = DRVIMU_icm_example_i2c_tx;
 		PRINTF("icm0 init \r\n");
-		DRVIMU_INV_Init(&icm0, "icm00");
-
-		//icm1初始化为软件i2c驱动
-		si2c_master_t i2cs0;
-		i2cs0.nDELAY = 20;
-		i2cs0.SCL = GPIOD;
-		i2cs0.SDA = GPIOD;
-		i2cs0.SDA_pin = 9;
-		i2cs0.SCL_pin = 8;
-		SI2C_Init(&i2cs0);
-		icm1.serif.is_spi = 0;
-		icm1.serif.i2c_base = &i2cs0;
-		icm1.serif.i2c_read_reg = (int32_t(*)(void* i2c_base_, uint8_t slave_addr, uint8_t reg, uint8_t * buf, uint32_t len))
-			SI2C_MasterReadBlocking;
-		icm1.serif.i2c_write_reg = (int32_t(*)(void* i2c_base_, uint8_t slave_addr, uint8_t reg, uint8_t * buf, uint32_t len))
-			SI2C_MasterWriteBlocking;
-		PRINTF("icm1 init \r\n");
-		DRVIMU_INV_Init(&icm1, "icm01");
-
-		//icm2初始化为硬件spi驱动
-		SPI_SimpleInit(SPI2, 0, 10 * 1000000);
-		icm2.serif.is_spi = 1;
-		icm2.serif.spi_base = SPI2;
-		icm2.serif.spi_pcs = 0;
-		icm2.serif.SPI_FullDuplexXfer = (int32_t(*)(void* spi_base_, uint32_t spi_pcs_, uint8_t * rxbuf, uint8_t * txbuf, uint32_t len))
-			SPI_FullDuplexXfer;
-		//初始化
-		PRINTF("icm20602 init \r\n");
-		DRVIMU_INV_Init(&icm2, "icm02");
+		DRVIMU_INV_Init(&icm0);
 
 		//视成功初始化与否校准陀螺仪
 		if (icm0.if_init) { PRINTF("%s init complete!\r\n", icm0.name); DRVIMU_INV_GyroOffset(&icm0); }
 		else { PRINTF("%s init fail!\r\n", icm0.name); }
-		if (icm1.if_init) { PRINTF("%s init complete!\r\n", icm1.name); DRVIMU_INV_GyroOffset(&icm1); }
-		else { PRINTF("%s init fail!\r\n", icm1.name); }
-		if (icm2.if_init) { PRINTF("%s init complete!\r\n", icm2.name); DRVIMU_INV_GyroOffset(&icm2); }
-		else { PRINTF("%s init fail!\r\n", icm2.name); }
 		while (1)
 		{
 			DRVIMU_INV_Delay_ms(5);
@@ -668,30 +709,7 @@ extern "C" {
 				PRINTF("T =%f\r\n", icm0.temp);
 				PRINTF("\r\n");
 			}
-			if (icm1.if_init) {
-				DRVIMU_INV_SensorReadBlocking(&icm1);
-				PRINTF("%s:\r\n", icm1.name);
-				PRINTF("ax=%f\r\n", icm1.acc.x);
-				PRINTF("ay=%f\r\n", icm1.acc.y);
-				PRINTF("az=%f\r\n", icm1.acc.z);
-				PRINTF("gx=%f\r\n", icm1.gyro.x);
-				PRINTF("gy=%f\r\n", icm1.gyro.y);
-				PRINTF("gz=%f\r\n", icm1.gyro.z);
-				PRINTF("T =%f\r\n", icm1.temp);
-				PRINTF("\r\n");
-			}
-			if (icm2.if_init) {
-				DRVIMU_INV_SensorReadBlocking(&icm2);
-				PRINTF("%s:\r\n", icm2.name);
-				PRINTF("ax=%f\r\n", icm2.acc.x);
-				PRINTF("ay=%f\r\n", icm2.acc.y);
-				PRINTF("az=%f\r\n", icm2.acc.z);
-				PRINTF("gx=%f\r\n", icm2.gyro.x);
-				PRINTF("gy=%f\r\n", icm2.gyro.y);
-				PRINTF("gz=%f\r\n", icm2.gyro.z);
-				PRINTF("T =%f\r\n", icm2.temp);
-				PRINTF("\r\n");
-			}
+			
 		}
 	}
 
@@ -699,3 +717,5 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
+
+#endif // HITSIC_USE_DRV_IMU

@@ -9,7 +9,7 @@ list_t PORTB_irq_list = { NULL,NULL,0,0 };
 list_t PORTC_irq_list = { NULL,NULL,0,0 };
 list_t PORTD_irq_list = { NULL,NULL,0,0 };
 list_t PORTE_irq_list = { NULL,NULL,0,0 };
-#define ErrorCheck(result,expression)  result = expression;if(0!= result)return result
+
 status_t EXTINT_Init()
 {
 	status_t result;
@@ -18,6 +18,20 @@ status_t EXTINT_Init()
 	List_Constructor(&PORTC_irq_list, sizeof(extint_irqNode_t));
 	List_Constructor(&PORTD_irq_list, sizeof(extint_irqNode_t));
 	List_Constructor(&PORTE_irq_list, sizeof(extint_irqNode_t));
+    
+#if defined(HITSIC_EXTMGR_INITLIZE) && (HITSIC_EXTMGR_INITLIZE > 0)
+    NVIC_SetPriority(PORTA_IRQn, 6);
+	NVIC_SetPriority(PORTB_IRQn, 6);
+	NVIC_SetPriority(PORTC_IRQn, 6);
+	NVIC_SetPriority(PORTD_IRQn, 6);
+	NVIC_SetPriority(PORTE_IRQn, 6);
+	EnableIRQ(PORTA_IRQn);
+	EnableIRQ(PORTB_IRQn);
+	EnableIRQ(PORTC_IRQn);
+	EnableIRQ(PORTD_IRQn);
+	EnableIRQ(PORTE_IRQn);
+#endif // ! HITSIC_EXTMGR_INITLIZE
+    
 	return result;
 }
 
@@ -117,13 +131,13 @@ void PORTX_IRQHandler(PORT_Type* _port, list_t* _list)
 		}
 	}
 }
-
+#if defined(HTISIC_EXTMGR_USE_IRQHANDLER) && (HTISIC_EXTMGR_USE_IRQHANDLER > 0)
 void PORTA_IRQHandler(void){PORTX_IRQHandler(PORTA, &PORTA_irq_list);}
 void PORTB_IRQHandler(void){PORTX_IRQHandler(PORTB, &PORTB_irq_list);}
 void PORTC_IRQHandler(void){PORTX_IRQHandler(PORTC, &PORTC_irq_list);}
 void PORTD_IRQHandler(void){PORTX_IRQHandler(PORTD, &PORTD_irq_list);}
 void PORTE_IRQHandler(void){PORTX_IRQHandler(PORTE, &PORTE_irq_list);}
-
+#endif // ! HTISIC_EXTMGR_USE_IRQHANDLER
 #ifdef __cplusplus
 }
 #endif

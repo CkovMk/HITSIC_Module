@@ -19,7 +19,9 @@
 #pragma once
 #ifndef LIB_LIST_H
 #define LIB_LIST_H
-#include "include.h"
+#include "stdafx.h"
+#include "hitsic_def.h"
+//TODO: remove stdafx.h
 
 
 #ifdef __cplusplus

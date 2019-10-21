@@ -29,8 +29,12 @@
 #ifndef SYS_PITMGR_H
 #define SYS_PITMGR_H
 
-#include "include.h"
+#include "stdafx.h"
+#include "hitsic_def.h"
+
 #include "lib_list.h"
+
+#if defined(HITSIC_USE_SYS_PITMGR) && (HITSIC_USE_SYS_PITMGR > 0)
 
 #define RTE_PIT_CLKFREQ CLOCK_GetFreq(kCLOCK_BusClk)
 
@@ -170,5 +174,9 @@ void PITMGR_Isr(void);
 #ifdef __cplusplus
 }
 #endif
+
+
+#endif // HITSIC_USE_SYS_PITMGR
+
 
 #endif // ! SYS_PITMGR_H

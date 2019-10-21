@@ -17,10 +17,8 @@
 
 #ifndef RTE_USRT_H
 #define RTE_USRT_H
-#include "include.h" 
-#include "board.h"
-#include "clock_config.h"
-#include "fsl_debug_console.h"
+#include "stdafx.h" 
+
 
 #ifdef __cplusplus
 extern "C" {

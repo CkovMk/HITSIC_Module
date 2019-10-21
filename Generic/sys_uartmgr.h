@@ -24,7 +24,8 @@
 #ifndef SYS_UARTMGR_H
 #define SYS_UARTMGR_H
 
-#include "include.h"
+#include "stdafx.h"
+#include "hitsic_def.h"
 
 #define	LPUART_Type UART_Type
 #define lpuart_handle_t uart_handle_t

@@ -1,5 +1,6 @@
 #include "sys_pitmgr.h"
 
+#if defined(HITSIC_USE_SYS_PITMGR) && (HITSIC_USE_SYS_PITMGR > 0)
 
 
 #ifdef __cplusplus
@@ -13,7 +14,7 @@ status_t PITMGR_Init(void)
 {
 	List_Constructor(&pitmgr_isrSet, sizeof(pitmgr_handle_t));
 	pitmgr_timer_ms = 0;
-	
+#if defined(HITSIC_PITMGR_INITLIZE) && (HITSIC_PITMGR_INITLIZE > 0)
 	pit_config_t cfg;
 	{
 		cfg.enableRunInDebug = true;
@@ -29,6 +30,7 @@ status_t PITMGR_Init(void)
 	PIT_StartTimer(PIT, kPIT_Chnl_0);
 	PIT_StartTimer(PIT, kPIT_Chnl_1);
 	PIT_StartTimer(PIT, kPIT_Chnl_2);
+#endif // HITSIC_PITMGR_INITLIZE
 	return kStatus_Success;
 }
 
@@ -129,6 +131,7 @@ void PITMGR_Isr(void)
 	++pitmgr_timer_ms;
 }
 
+#if defined(HTISIC_PITMGR_USE_IRQHANDLER) && (HTISIC_PITMGR_USE_IRQHANDLER > 0)
 
 void PIT2_IRQHandler(void)
 {
@@ -136,9 +139,13 @@ void PIT2_IRQHandler(void)
 	PITMGR_Isr();
 }
 
-
+#endif // ! HTISIC_PITMGR_USE_IRQHANDLER
 
 
 #ifdef __cplusplus
 }
 #endif
+    
+    
+#endif // HITSIC_USE_SYS_PITMGR
+
