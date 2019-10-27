@@ -1,3 +1,30 @@
+/**
+ * Copyright 2018 - 2019 HITSIC
+ * All rights reserved.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+/**
+ * @file 	:	app_menu.c
+ * @author  :	Chekhov Mark(qq:905497173)
+ * @version :	v0.1.0-beta.1
+ * @date 	:	v0.1.0-beta.1 2019.10.28
+ * 
+ * @note 	:	预发布版本，代码不完整，仅供学习。
+ */
+
+
+
 #include "app_menu.h"
 
 
@@ -483,7 +510,7 @@ extern "C" {
 	  */
 	uint8_t menu_dataValid_flag = 0x55;
 	uint32_t menu_dataValid_mask = 24u;
-	
+
 
 	//menu_t menuInst;
 
@@ -570,8 +597,6 @@ extern "C" {
 
 	void MENU_Data_NvmCopy(int32_t _srcRegion, int32_t _dstRegion)
 	{
-		//FLASH_GetPhysicalAddress
-			//FLASH_SectorWrite
 		if (_srcRegion == _dstRegion) { return; }
 		for (int i = 0; i < menu_nvm_rgSectCnt; ++i)
 		{
