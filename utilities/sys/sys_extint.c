@@ -35,7 +35,7 @@ status_t EXTINT_Init()
 	return result;
 }
 
-status_t EXTINT_PortSetup(PORT_Type* PORTx, uint32_t pin, port_interrupt_t config, uint32_t priority_, void(*gpio_interrupt_callback)(void))
+status_t EXTINT_PortSetup(PORT_Type* PORTx, uint32_t pin, uint32_t priority_, void(*gpio_interrupt_callback)(void))
 {
 	assert(PORTx);
 	uint32_t pin_mask_b = 1 << pin;
@@ -69,8 +69,6 @@ status_t EXTINT_PortSetup(PORT_Type* PORTx, uint32_t pin, port_interrupt_t confi
 		}
 	}
 	List_Insert(ItList, ij, &buf);
-	//配置中断
-	PORT_SetPinInterruptConfig(PORTx, pin, config);
 	return result;
 }
 

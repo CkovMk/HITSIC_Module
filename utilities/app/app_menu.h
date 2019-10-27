@@ -2,6 +2,10 @@
 #ifndef _APP_MENU_H_
 #define _APP_MENU_H_
 #include "stdafx.h"
+#include "hitsic_common.h"
+#include "drv_ftfx_flash.h"
+#include "drv_button.h"
+#include "lib_list.h"
 
 
 /**
@@ -13,11 +17,32 @@
 #define HITSIC_APP_MENU_VERSION		(HITSIC_MAKE_VERSION(0, 1, 0))
 
 
+#define HITSIC_MENU_ROOT_SIZE 	35		//maxium size of Root Menu
 
 
-#define HITSIC_MENU_ROOT_SIZE	16u
+#define HITSIC_MENU_BUTTON_5DIR_BSP_INIT		\
+	{									\
+		{								\
+			GPIOA, 15, 0, 0, 0,			\
+		},								\
+		{								\
+			GPIOA, 15, 0, 0, 0,			\
+		},								\
+		{								\
+			GPIOA, 15, 0, 0, 0,			\
+		},								\
+		{								\
+			GPIOA, 15, 0, 0, 0,			\
+		},								\
+		{								\
+			GPIOA, 15, 0, 0, 0,			\
+		},								\
+	}									
 
 
+#define HITSIC_MENU_SERVICE_IRQHandler			Reserved71_IRQHandler
+#define HITSIC_MENU_SERVICE_IRQn				Reserved71_IRQn
+#define HITSIC_MENU_SERVICE_IRQPrio				10u
 
 /**
  * @brief : 函数调用宏定义。
@@ -31,6 +56,28 @@
 #else
 #define MENU_DEBUG_PRINTF(...)
 #endif // ! DEBUG
+
+
+/**
+ * 按键处理部分 函数调用宏定义
+ * 
+ */
+
+
+
+
+#define MENU_BUTTON_MAKE_EXT_ISR(instNum)		(MENU_ButtonExtIsr##instNum##)
+#define MENU_BUTTON_CALL_EXT_ISR(instNum)		(BUTTON_PitIsr(&menu_button[instNum]);)
+#define MENU_BUTTON_DEF_EXT_ISR(instNum)		(void MENU_BUTTON_MAKE_EXT_ISR(instNum)(void){MENU_BUTTON_CALL_EXT_ISR(instNum)})
+#define MENU_BUTTON_MAKEE_PIT_ISR(instNum)		(MENU_ButtonPitIsr##instNum##)
+#define MENU_BUTTON_CALL_PIT_ISR(instNum)		(BUTTON_PitIsr(&menu_button[instNum]);)
+
+//test macro
+//MENU_BUTTON_DEF_EXT_ISR(1)
+
+/**
+ * @brief : 菜单项部分 函数调用宏定义
+ */
 
 
 #define MENU_ITEM_MAKE_FUNCTION(funcName,type)					(##funcName##_##type##)
@@ -68,7 +115,7 @@
  //test marco :
  //MENU_ITEM_MAKE_FUNCTION(item, nullType, KeyOp);
  //MENU_ITEM_CALL_FUNCTION(MENU_ItemConstruct, item, variType, &data);
-MENU_ITEM_SWITCH_CASE(MENU_ItemKeyOp, item, &op);
+//MENU_ITEM_SWITCH_CASE(MENU_ItemKeyOp, item, &op);
 
 
 
@@ -80,17 +127,52 @@ extern "C" {
 
 
 	/**
+	 * ********** 按键操作定义 **********
+	 */
+	/**
 	 * @brief : 按键操作宏定义。
-	 * TODO:以后应定义在按键驱动内，这里只留一个typedef。
 	 *
 	 */
-	enum menu_keyOp_t
+	enum menu_keyOpCode_t
 	{
-		key_up,
-		key_dn,
-		key_lf,
-		key_rt,
-	};
+		menuOpCode_null = 0,
+		menuOpCode_ok = 1,
+		menuOpCode_up,
+		menuOpCode_dn,
+		menuOpCode_lf,
+		menuOpCode_rt,
+	} 
+	enum menu_keyOpType_t
+	{
+		menuOpType_shrt = 1 << 8,
+		menuOpType_long = 2 << 8,
+		menuOpType_lrpt = 3 << 8,
+	}
+
+	#define MENU_BUTTON_COUNT 5
+
+	typedef uint32_t  menu_keyOp_t;
+
+	extern menu_keyOp_t menu_keyOpBuff;
+	
+	extern pitmgr_handle_t* menu_butonPitMgrHandle;
+
+	/**
+	 * ********** 按键操作接口 **********
+	 */
+
+	void MENU_ButtonSetup(void);
+
+
+	void MENU_ButtonPitIsr(void);
+
+
+	void MENU_ButtonCallback(button_t* _inst);
+
+
+
+
+	
 
 	/**
 	 * @brief : 函数类型菜单项的响应句柄。
@@ -101,7 +183,7 @@ extern "C" {
 	/**
 	 * @brief : 菜单项和菜单列表名称的最大长度为16个字符。用于定义缓存区大小。
 	 */
-	uint32_t menu_nameStrSize = 16;
+	extern uint32_t menu_nameStrSize;
 
 	/**
 	 * @brief : 菜单项和菜单列表的计数器。
@@ -269,6 +351,7 @@ extern "C" {
 		char nameStr[menu_nameStrSize];				/// 此菜单项的名称字符串。最大长度为 menu_nameStrSize - 1 字节。
 		union menu_itemIfce_handle_t				/// 菜单项操作句柄的共用体。使用时根据此菜单项的类型调取对应项访问。
 		{
+			void* p_void;
 			menu_item_nullHandle_t* p_nullType;
 			menu_item_variHandle_t* p_variType;
 			menu_item_varfHandle_t* p_varfType;
@@ -391,12 +474,12 @@ extern "C" {
 	  * @brief : 菜单列表的构造函数。
 	  *
 	  * @param  {const char*} _nameStr :
-	  * @param  {uint32_t} _listSize   :
+	  * @param  {uint32_t}    _size	   :
 	  * @param  {menu_list_t*} _prev   :
 	  *
 	  * @return {menu_list_t *}        : 返回构造的菜单列表结构体指针。
 	  */
-	menu_list_t* MENU_ListConstruct(const char* _nameStr, uint32_t _listSize, menu_list_t* _prev);
+	menu_list_t* MENU_ListConstruct(const char* _nameStr, uint32_t _size, menu_list_t* _prev);
 
 	/**
 	 * @brief : 菜单列表的析构函数。
@@ -431,60 +514,6 @@ extern "C" {
 
 
 	/**
-	 * menu_nvm
-	 */
-
-	 //gl = global
-	 //rg = region
-	 //addr = address
-	 //sect = sector
-	 /**
-	  * @brief : 每个扇区包含的字节数
-	  */
-	uint32_t menu_nvm_sectorSize = 4096u;
-	/**
-	 * @brief : 全局存储 Global Storage
-	 */
-	uint32_t menu_nvm_glSectCnt = 2u;					/// 全局存储区占用的扇区数
-	uint32_t menu_nvm_glSectOffset = 2u; 				/// 全局存储区扇区偏移
-	uint32_t menu_nvm_glAddrOffset = menu_nvm_glSectOffset * menu_nvm_sectorSize;	/// 全局存储区地址偏移
-	/**
-	 * @brief : 局部存储 Region Storage
-	 */
-	uint32_t menu_nvm_rgCnt = 3u						/// 局部存储区的数量
-		uint32_t menu_nvm_rgSectCnt = 4u;					/// 每个局部存储区占用的扇区数
-	uint32_t menu_nvm_rgSectOffset[menu_nvm_rgCnt] = 	/// 三个局部存储区的扇区偏移
-	{
-		menu_nvm_glSectOffset + menu_nvm_glSectCnt + 0u * menu_nvm_rgSectCnt,
-		menu_nvm_glSectOffset + menu_nvm_glSectCnt + 1u * menu_nvm_rgSectCnt,
-		menu_nvm_glSectOffset + menu_nvm_glSectCnt + 2u * menu_nvm_rgSectCnt,
-	};
-	uint32_t menu_nvm_rgAddrOffset[menu_nvm_rgCnt] = 	/// 三个局部存储区的地址偏移
-	{
-		menu_nvm_rgSectOffset[0] * menu_nvm_sectorSize,
-		menu_nvm_rgSectOffset[1] * menu_nvm_sectorSize,
-		menu_nvm_rgSectOffset[2] * menu_nvm_sectorSize,
-	};
-	/**
-	 * @brief : 菜单存储占用的总扇区数
-	 */
-	uint32_t menu_nvm_totalSectCnt = menu_nvm_globalSectorCnt + menu_nvm_regionCnt * menu_nvm_regionSectorCnt;
-	/**
-	 * @brief : 每个菜单项保存时占用的字节数
-	 */
-	uint32_t menu_nvm_dataSize = 32u;
-
-	/**
-	 * @brief : 菜单项写入缓存。
-	 * 当改写第N个扇区时，menu_nvm_cachedSector = N, menu_nvm_cache分配4KB缓存
-	 * 并读入第N扇区的所有内容。此时能且仅能修改第N扇区的内容。对第N扇区内容的修改
-	 * 将缓存至上述内存。
-	 */
-	uint8_t* menu_nvm_cache;
-	uint32_t menu_nvm_cachedSector;
-
-
-	/**
 	 * ********** NVM存储操作接口 **********
 	 */
 
@@ -510,9 +539,14 @@ extern "C" {
 	 */
 	bool MENU_NvmCacheable(uint32_t _addr);	//check if addr is ready to write.
 
+
+
+
+	status_t MENU_NvmCacheSector(uint32_t _sect);
+
 	/**
 	 * @brief : 将数据写入缓存。
-	 * 该函数会检查输入地址及数据大小是否在可缓存范围内。
+	 * 该函数不会检查输入地址及数据大小是否在可缓存范围内。
 	 * 如果当前未缓存任何扇区，将创建缓存。
 	 * @param  {uint32_t} _addr    :
 	 * @param  {void*} _buf        :
@@ -534,8 +568,7 @@ extern "C" {
 
 
 
-
-
+	
 	/**
 	 * 菜单定义
 	 */
@@ -548,8 +581,8 @@ extern "C" {
 	  * 程序中初始化的数据。
 	  * 标志失效时，手动保存数据将会在所有存储区写入当前数据，并重设该标志。
 	  */
-	uint8_t menu_dataValid_flag = 0x55;
-	uint32_t menu_dataValid_mask = 24u;
+	extern uint8_t menu_dataValid_flag;
+	extern uint32_t menu_dataValid_mask;
 
 	/**
 	 * @brief 菜单状态标志位枚举变量。
@@ -577,21 +610,22 @@ extern "C" {
 	 */
 	//struct menu_t
 	//{
-	//	menu_list_t* currList;
-	//	menu_itemIfce_t* currItem;
-	//	menu_list_t* menuRoot;
-	//	int32_t currRegionNum;
-	//	int32_t statusFlag;
+	//	menu_list_t* menu_currList;
+	//	menu_itemIfce_t* menu_currItem;
+	//	menu_list_t* menu_menuRoot;
+	//	int32_t menu_currRegionNum;
+	//	int32_t menu_statusFlag;
 	//};
 
 	//menu_t menuInst;
 
 
-	menu_list_t* currList;
-	menu_itemIfce_t* currItem;
-	menu_list_t* menuRoot;
-	int32_t currRegionNum;
-	int32_t statusFlag;
+	extern menu_list_t* menu_currList;
+	extern menu_itemIfce_t* menu_currItem;
+	extern menu_list_t* menu_menuRoot;
+	extern int32_t menu_currRegionNum;
+	extern int32_t menu_statusFlag;
+	extern const uint32_t menu_nvm_statusFlagAddr;
 
 
 	/**

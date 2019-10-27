@@ -63,7 +63,7 @@ status_t EXTINT_Init();
  * @SampleUsage 
  * 		EXTINT_PortSetup(GPIOE, 6, kPORT_InterruptFallingEdge, 0, gpio_callback);
  */
-status_t EXTINT_PortSetup(PORT_Type* PORTx, uint32_t pin, port_interrupt_t config, uint32_t priority_,void (*gpio_interrupt_callback)(void));
+status_t EXTINT_PortSetup(PORT_Type* PORTx, uint32_t pin, uint32_t priority_,void (*gpio_interrupt_callback)(void));
 
 /**
  * @brief	取消io口中断
