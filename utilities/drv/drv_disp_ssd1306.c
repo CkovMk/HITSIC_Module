@@ -653,6 +653,18 @@ void OLED_PrintNum_F6x8(uint8 x, uint8 y, int16 num)
 	}
 }
 
+
+void OLED_ImgGetHalfResolution(uint8_t *src, uint8_t *dst, const uint16_t row, const uint16_t col)
+{
+	for (uint16_t rowt = 0; rowt < row; rowt+=2)
+	{
+		for (uint16_t colt = 0; colt < col; colt+=2)
+		{
+			*(dst + (rowt / 2) * (col / 2) + colt / 2) = *(src + rowt * col + colt);
+		}
+	}
+}
+
 //-------------------------------------------------------------------------------------------------------------------
 //  @brief      OLED显示图像
 //  @param      high  		图像高度
@@ -695,27 +707,6 @@ void OLED_DispBmp(uint16 high, uint16 width, uint8* p, uint8 value)
 	}
 }
 
-void image_size_half_forOLED(uint8* src, uint8* dst, const int row, const int col)
-{
-
-	int half_rowt, half_colt, half_col;
-	half_col = col / 2;
-
-	for (int rowt = 0; rowt < row; rowt++)
-	{
-		half_rowt = rowt / 2;
-		for (int colt = 0; colt < col; colt++)
-		{
-			half_colt = colt / 2;
-			if (rowt % 2 == 0 && colt % 2 == 0)
-			{
-				*(dst + (half_rowt) * (half_col)+half_colt) = *(src + rowt * col + colt);
-			}
-		}
-
-	}
-
-}
 
 int OLED_Printf(uint16 Row, uint16 off, const char* Format, ...)
 {
@@ -735,3 +726,14 @@ int OLED_Printf(uint16 Row, uint16 off, const char* Format, ...)
 	return len;
 }
 
+
+
+
+
+
+void OLED_PrintHalfImg(camera_img_t* image, uint8_t mono_th)
+{
+	static uint8_t halfImg[CAM_IMG_R>>1][CAM_IMG_C>>1];
+	img_getHalfResolution((uint8_t*)image->img,(uint8_t*)halfImg,CAM_IMG_R,CAM_IMG_C);
+	oled_printImg(CAM_IMG_R>>1,CAM_IMG_C>>1,(uint8_t*)halfImg,mono_th);
+}

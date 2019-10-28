@@ -1,3 +1,20 @@
+/**
+ * Copyright 2018 - 2019 HITSIC
+ * All rights reserved.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 #include "sys_uartmgr.h"
 
 #ifdef __cplusplus
@@ -142,7 +159,7 @@ status_t UARTMGR_TpModeSetup(uartmgr_t* _mgr, uint8_t* dataBuf, uartmgr_tpDataHa
 	_mgr->tpHandler = handler;
 
 	_mgr->pptFlag |= tp_rxHead;
-	rxIntr(dataBuf, 2, UARTMGR_Tp_DefaultCallback, NULL);
+	UARTMGR_RxIntr(_mgr, dataBuf, 2, UARTMGR_Tp_DefaultCallback, NULL);
         return kStatus_Success;
 }
 
@@ -212,7 +229,7 @@ void UARTMGR_Tp_TxIntr(uartmgr_t* _mgr, uint8_t* data, uint32_t size)
 	dataBuf[0] = UART_TPCTRL_HEADER;
 	dataBuf[1] = size;
 	memcpy(dataBuf + 2, data, size);
-	txIntr(dataBuf, size + 2, UARTMGR_DefaultCallback, NULL);
+	UARTMGR_TxIntr(_mgr, dataBuf, size + 2, UARTMGR_DefaultCallback, NULL);
 	
 
 }

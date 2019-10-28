@@ -43,7 +43,7 @@ extern "C"
 
     button_t *BUTTON_Construct(GPIO_Type *_gpio, uint32_t _pin)
     {
-        button_t *inst = malloc(sizeof(button_t));
+        button_t *inst = (button_t*)malloc(sizeof(button_t));
         if (inst == NULL)
         {
             return inst;

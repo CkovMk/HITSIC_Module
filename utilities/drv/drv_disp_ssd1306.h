@@ -20,6 +20,8 @@ qq：512924543
 #define DRV_DISP_SSD1306_H
 #include "stdafx.h" 
 #include "hitsic_common.h"
+     
+
 
 #define OLED_HARD_SPI_MODE 0U//培训板接线接错了，用不了硬件spi模式
 #if defined(OLED_HARD_SPI_MODE)&&OLED_HARD_SPI_MODE==1u
@@ -60,8 +62,24 @@ void OLED_HEXACSII(uint16 hex, uint8* Print);
 void OLED_PrintNum_F8x16(uint8 x, uint8 y, uint16 num);
 void OLED_PrintNum_F6x8(uint8 x, uint8 y, int16 num);
 void OLED_DispBmp(uint16 high, uint16 width, uint8* p, uint8 value);
-void image_size_half_forOLED(uint8* src, uint8* dst, const int row, const int col);
+void OLED_ImgGetHalfResolution(uint8_t *src, uint8_t *dst, const uint16_t row, const uint16_t col);
+
+
+/**
+ * @example :
+ *              OLED_Printf(1,6,"hello, %d + %d  = %d", 1, 2, 1+2);
+ */
 int OLED_Printf(uint16 Row, uint16 off, const char* Format, ...);
+
+/**
+ * @brief 打印图像
+ * 
+ * @param {camera_img_t*} image : 图像采集结构体
+ * @param {uint8_t} mono_th     : 二值化阈值 
+ */
+void OLED_PrintHalfImg(camera_img_t* image, uint8_t mono_th);
+
+
 
 
 /********************************************************************/

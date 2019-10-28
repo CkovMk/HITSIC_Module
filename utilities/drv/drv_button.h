@@ -1,3 +1,30 @@
+/**
+ * Copyright 2018 - 2019 HITSIC
+ * All rights reserved.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+/**
+ * @file 	:	drv_button.h、drv_button.c
+ * @author  :	Chekhov Mark/马奇科(qq:905497173)
+ * @version :	v0.1.1
+ * @date 	:	v0.1.0-beta.1   2019.10.28
+ * @date    :   v0.1.1          2019.10.29
+ * 
+ * @note    :   依赖库：sys_extint.h、sys_pitmgr.h
+                依赖库必须先初始化。
+ */
+
 #ifndef _DRV_BUTTON_H_
 #define _DRV_BUTTON_H_
 #include "stdafx.h"
@@ -5,10 +32,12 @@
 #include "sys_extint.h"
 #include "sys_pitmgr.h"
 
+
 #ifdef __cplusplus
 extern "C"{
 #endif
 
+#define DRV_BUTTON_VERSION (HITSIC_MAKE_VERSION(0u, 1u, 1u))
 
 #define BUTTON_TIME_SHRT 10u     //short press
 #define BUTTON_SHRT_TOUT 200u	//short timeout

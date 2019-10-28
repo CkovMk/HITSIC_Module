@@ -20,6 +20,8 @@
  * @version :	v0.1.0-beta.1
  * @date 	:	v0.1.0-beta.1 2019.10.28
  * 
+ * @note    :   依赖库：drv_ftfx_flash、drv_button、drv_disp_ssd1306
+                依赖库必须先初始化。
  * @note 	:	预发布版本，代码不完整，仅供学习。
  */
 
@@ -34,94 +36,7 @@
 #include "drv_ftfx_flash.h"
 #include "lib_list.h"
 
-//TODO: 带有HITSIC_前缀的宏定义移动到"hitsic_def.h"去
 
-/**
- * @brief : 菜单调试输出开关
- * 编译选项为release时无效。
- */
-#define HITSIC_MENU_DEBUG_ENABLE 1u
-
-/**
- * @brief : 菜单调试输出语句定义。
- * 编译选项为release时始终为空。
- */
-#if defined(DEBUG) && defined(MENU_DEBUG_ENABLE)
-#define HITSIC_MENU_DEBUG_PRINTF(...) (printf(__VA_ARGS__))
-#else
-#define HITSIC_MENU_DEBUG_PRINTF(...)
-#endif // ! DEBUG
-
-/**
- * @brief : 软件版本产生方式定义
- */
-#define HITSIC_MAKE_VERSION(major, minor, patch) (((major) << 16) | ((minor) << 8) | (patch))
-
-/** @brief : 根菜单最大容量 */
-#define HITSIC_MENU_ROOT_SIZE 35 //maxium size of Root Menu
-
-/** @brief : 菜单使用的五向按键初始化。每组数据前两个是GPIO和Pin，其余数据为0。 */
-#define HITSIC_MENU_BUTTON_5DIR_BSP_INIT \
-	{                                    \
-		{                                \
-			GPIOA,                       \
-			15,                          \
-			0,                           \
-			0,                           \
-			0,                           \
-		},                               \
-			{                            \
-				GPIOA,                   \
-				15,                      \
-				0,                       \
-				0,                       \
-				0,                       \
-			},                           \
-			{                            \
-				GPIOA,                   \
-				15,                      \
-				0,                       \
-				0,                       \
-				0,                       \
-			},                           \
-			{                            \
-				GPIOA,                   \
-				15,                      \
-				0,                       \
-				0,                       \
-				0,                       \
-			},                           \
-			{                            \
-				GPIOA,                   \
-				15,                      \
-				0,                       \
-				0,                       \
-				0,                       \
-			},                           \
-	}
-/**
- * @brief : 菜单消息调用所使用的中断信息。
- * 可以使用任何当前工程中未使用的中断。注意中断号和中断服务函数
- * 必须对应。优先级不可过高。
- */
-#define HITSIC_MENU_SERVICE_IRQHandler (Reserved71_IRQHandler)
-#define HITSIC_MENU_SERVICE_IRQn (Reserved71_IRQn)
-#define HITSIC_MENU_SERVICE_IRQPrio (10u)
-
-/**
- * @brief 屏幕打印接口
- */
-#define HITSIC_MENU_DISPLAY_PRINT(row, col, str) (OLED_PrintStr_F6x8(row, col, (uint8_t *)str))
-#define HITSIC_MENU_DISPLAY_PRINTF(row, col, fmt, ...) (OLED_Printf(row, col, fmt, __VA_ARGS__))
-// #define HITSIC_MENU_DISPLAY_PRINTF(row,col,fmt,...)		\
-// 	{													\
-// 		char* buf = malloc(24*sizeof(char));			\
-// 		vsnprintf(buf,24,fmt,__VA_ARGS__);				\
-// 		HITSIC_MENU_DISPLAY_PRINT(row,col,buf);			\
-// 		free(buf);										\
-// 	}
-
-//TODO.end
 
 /*! @addtogroup app_menu */
 /*! @{ */
