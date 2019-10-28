@@ -35,10 +35,10 @@ extern "C"
         _inst->gpio = _gpio;
         _inst->pin = _pin;
         _inst->handler = NULL;
-        while (BUTTON_ReadPin(inst) == BUTTON_PRESSDN_LOGIC)
+        while (BUTTON_ReadPin(_inst) == BUTTON_PRESSDN_LOGIC)
         {
         }
-        BUTTON_SetInterrupt(inst, BUTTON_PRESSDN_EXTINT);
+        BUTTON_SetInterrupt(_inst, BUTTON_PRESSDN_EXTINT);
     }
 
     button_t *BUTTON_Construct(GPIO_Type *_gpio, uint32_t _pin)
@@ -46,7 +46,7 @@ extern "C"
         button_t *inst = malloc(sizeof(button_t));
         if (inst == NULL)
         {
-            return;
+            return inst;
         }
         BUTTON_Setup(inst, _gpio, _pin);
         return inst;
@@ -65,14 +65,14 @@ extern "C"
     void BUTTON_SetInterrupt(button_t *_inst, port_interrupt_t _int)
     {
         assert(_inst);
-        inst->intCfg = _int;
-        PORT_SetPinInterruptConfig(BUTTON_GetPortInst(_inst->gpio), inst->pin, inst->intCfg);
+        _inst->intCfg = _int;
+        PORT_SetPinInterruptConfig(BUTTON_GetPortInst(_inst->gpio), _inst->pin, _inst->intCfg);
     }
 
     uint32_t BUTTON_ReadPin(button_t *_inst)
     {
         assert(_inst);
-        return GPIO_PinRead(_inst->gpio, inst->pin);
+        return GPIO_PinRead(_inst->gpio, _inst->pin);
     }
 
     void BUTTON_ExtIsr(button_t *_inst)
@@ -80,7 +80,7 @@ extern "C"
         if (_inst->intCfg == BUTTON_RELEASE_EXTINT)
         { //should be a HIGH IRQ
             BUTTON_SetInterrupt(_inst, BUTTON_PRESSDN_EXTINT);
-            unsigned long long t = BUTTON_TIMER_MS - ms_cnt;
+            unsigned long long t = BUTTON_TIMER_MS - _inst->msCnt;
             _inst->msCnt = BUTTON_TIMER_MS;
             if (BUTTON_TIME_SHRT <= t && t < BUTTON_SHRT_TOUT && _inst->status == BUTTON_STAT_NONE)
             { //short press
@@ -97,7 +97,7 @@ extern "C"
         }
         else if (_inst->intCfg == BUTTON_PRESSDN_EXTINT)
         { //should be a LOW IRQ
-            uint64_t t = BUTTON_TIMER_MS - msCnt;
+            uint64_t t = BUTTON_TIMER_MS - _inst->msCnt;
             if (t < BUTTON_TIME_INTV)
             {
                 return;
@@ -118,7 +118,7 @@ extern "C"
 		uint64_t t = BUTTON_TIMER_MS - _inst->msCnt;
 		if (_inst->intCfg == BUTTON_RELEASE_EXTINT)
 		{
-			if (BT_TIME_LONG <= t && t < BUTTON_REPT_TOUT)
+			if (BUTTON_TIME_LONG <= t && t < BUTTON_REPT_TOUT)
 			{ //long press
 				_inst->status = BUTTON_LONG_PRES;
 				_inst->msCnt = BUTTON_TIMER_MS;
@@ -129,7 +129,7 @@ extern "C"
                 }
 			}
 		}
-		else if (_inst->status == bt_sta_t::LONG_CLER || _inst->status == bt_sta_t::LRPT_CLER)
+		else if (_inst->status == BUTTON_LONG_CLER || _inst->status == BUTTON_LRPT_CLER)
 		{
 			if (t >= BUTTON_REPT_TOUT)
 			{

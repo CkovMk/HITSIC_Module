@@ -1,5 +1,5 @@
 #ifndef _DRV_BUTTON_H_
-#define _DRV_BUTTON_H
+#define _DRV_BUTTON_H_
 #include "stdafx.h"
 #include "hitsic_common.h"
 #include "sys_extint.h"
@@ -10,18 +10,15 @@ extern "C"{
 #endif
 
 
-#define KEY_SW_PRES_LOGIC 0
-#define KEY_SW_RLSE_LOGIC 1
+#define BUTTON_TIME_SHRT 10u     //short press
+#define BUTTON_SHRT_TOUT 200u	//short timeout
+#define BUTTON_TIME_LONG 250u   //long press
+#define BUTTON_TIME_LRPT 100u   //long press repeat, time calculated from key press. the actual time for repeat will be REPT-LONG
+#define BUTTON_REPT_TOUT 300u   //repeat timeout
+#define BUTTON_TIME_INTV 50u
 
-#define BUTTON_TIME_SHRT 0     //short press
-#define BUTTON_SHRT_TOUT 200	//short timeout
-#define BUTTON_TIME_LONG 250   //long press
-#define BUTTON_TIME_LRPT 100   //long press repeat, time calculated from key press. the actual time for repeat will be REPT-LONG
-#define BUTTON_REPT_TOUT 300   //repeat timeout
-#define BUTTON_TIME_INTV 50
-
-#define BUTTON_PRESSDN_LOGIC 0
-#define BUTTON_RELEASE_LOGIC 1
+#define BUTTON_PRESSDN_LOGIC 0u
+#define BUTTON_RELEASE_LOGIC 1u
 #define BUTTON_PRESSDN_EXTINT kPORT_InterruptFallingEdge //define which edge indicates button pressed.
 #define BUTTON_RELEASE_EXTINT kPORT_InterruptRisingEdge  //define which edge indicates button release.
 
@@ -29,7 +26,7 @@ extern "C"{
 
 #define BUTTON_TIMER_MS     (PITMGR_GetLTC_ms()) 
 
-    enum button_status_t
+    typedef enum 
     {
         BUTTON_STAT_NONE = 0, //button no operation
         BUTTON_SHRT_PRES = 1, //button short press
@@ -38,13 +35,13 @@ extern "C"{
         BUTTON_LONG_CLER = 4, //service responded long press
         BUTTON_LRPT_PRES = 5, //button long_repeat press
         BUTTON_LRPT_CLER = 6, //service responded long_repeat press
-    };
+    }button_status_t;
 
-    struct button_t;
+    //typedef struct button_t;
 
-    typedef void(*button_handler_t)(button_t* _inst);
+    typedef void(*button_handler_t)(void* _inst);       //TODO: fix this void*
 
-    struct button_t
+    typedef struct 
     {
         GPIO_Type *gpio;
         //PORT_Type* port;
@@ -53,9 +50,10 @@ extern "C"{
         uint64_t msCnt;
         button_status_t status;
         button_handler_t handler;
-    };
+    }button_t;
 
-
+    
+    
     //#ifdef CPU_MK66FX1M0VLQ18
     PORT_Type *BUTTON_GetPortInst(GPIO_Type *gpio);
 
@@ -85,4 +83,4 @@ extern "C"{
 #endif
 
 
-#endif // ! _DRV_BUTTON_H
+#endif // ! _DRV_BUTTON_H_
