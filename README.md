@@ -1,4 +1,4 @@
-# HITSIC_Modules 模块库
+# HITSIC_Modules 组件库
  
 ## 1. 简介
 
