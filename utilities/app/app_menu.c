@@ -16,10 +16,14 @@
  */
 /**
  * @file 	:	app_menu.c
- * @author  :	Chekhov Mark(qq:905497173)
- * @version :	v0.1.0-beta.1
- * @date 	:	v0.1.0-beta.1 2019.10.28
+ * @author  :	Chekhov Mark/马奇科(qq:905497173)
+ * @version :	v0.1.1
  * 
+ * @date 	:	v0.1-beta.0 2019.10.28
+ * @date 		v0.1.1		2019.11.02
+ * 
+ * @note    :   依赖库：drv_ftfx_flash、drv_button、drv_disp_ssd1306
+                依赖库必须先初始化。
  * @note 	:	预发布版本，代码不完整，仅供学习。
  */
 
