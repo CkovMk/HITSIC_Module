@@ -15,25 +15,23 @@
  * limitations under the License.
  */
 
-/******************************************************************************************************************************
- * COPYRIGHT NOTICE
- * Copyright (c) 2018,哈工大智能车创新俱乐部
- * All rights reserved.
+/**
  *
- * @file       		Icm20602.h icm20602、mpu9250以及mpu6050驱动
+ * @file       		drv_imu_invensense.h
+ * @brief     		icm20602、mpu9250以及mpu6050驱动
  * @company	        哈工大智能车创新俱乐部
  * @author     		肖日涛 qq1761690868
  * @version    		v1.2
  * @Software 		IAR 7.7+ MCUXpressoIDE
  * @Target core		K66
  * @date       		ver1.0 2019年6月5日 已测试 兼容9250,6050,spi及iic
- * @date       		ver1.1 2019年6月7日 兼容jcm的iic驱动
+ * @date       		ver1.1 2019年6月7日 兼容icm的iic驱动
  * @date       		ver1.2 2019年9月24日 添加Icm20602Message.h"
  *
  * @note：icm20602、mpu9250以及mpu6050驱动，使用spi或者i2c或者i2c_soft都能用
  * @note：哈尔滨工业大学智能车创新俱乐部专用，请勿泄露
  * @SampleUsage	见void DRVIMU_INV_Demo();
-***************************************************************************************************************************/
+ */
 
 #pragma once
 #ifndef DRV_IMU_INV_H

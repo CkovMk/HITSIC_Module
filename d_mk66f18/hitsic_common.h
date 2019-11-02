@@ -24,6 +24,14 @@
 
 
 
+/**
+ * @brief : 软件版本产生方式定义
+ */
+#define HITSIC_MAKE_VERSION(major, minor, patch) (((major) << 16) | ((minor) << 8) | (patch))
+
+
+
+
 #ifdef __cplusplus
 extern "C"{
 #endif

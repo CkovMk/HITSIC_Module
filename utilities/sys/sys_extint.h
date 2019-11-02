@@ -1,20 +1,3 @@
-/**
- * Copyright 2018 - 2019 HITSIC
- * All rights reserved.
- * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 /******************************************************************************************************************************
  * COPYRIGHT NOTICE
  * Copyright (c) 2018,哈工大智能车创新俱乐部
@@ -73,7 +56,6 @@ status_t EXTINT_Init();
  * 
  * @param  {PORT_Type*} PORTx                      : PORT口，PORTA,PORTB等等
  * @param  {uint32_t} pin                          : io口编号，0-32等
- * @param  {port_interrupt_t} config               : 配置上升沿中断还是下降沿中断，详见port_interrupt_t定义
  * @param  {uint32_t} priority_                    : 优先级，相对于PORT中断里头的GPIO口中断的优先级，0为最高
  * @param  {void(*)(void)} gpio_interrupt_callback : 引脚对应的中断服务函数
  * @return {status_t}                              : 错误代码

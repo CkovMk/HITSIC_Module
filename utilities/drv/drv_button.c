@@ -26,7 +26,7 @@ extern "C"
     PORT_Type *BUTTON_GetPortInst(GPIO_Type *gpio)
     {
         static PORT_Type *lut[5] = PORT_BASE_PTRS;
-        return lut[((uint32_t)gpio - PORTA_BASE) / (PORTB_BASE - PORTA_BASE)];
+        return lut[((uint32_t)gpio - GPIOA_BASE) / (GPIOB_BASE - GPIOA_BASE)];
     }
     //#endif // ! CPU_MK66FX1M0VLQ18
 
@@ -129,7 +129,7 @@ extern "C"
                 }
 			}
 		}
-		else if (_inst->status == BUTTON_LONG_CLER || _inst->status == BUTTON_LRPT_CLER)
+		else if (_inst->status == BUTTON_LONG_PRES || _inst->status == BUTTON_LRPT_PRES)
 		{
 			if (t >= BUTTON_REPT_TOUT)
 			{

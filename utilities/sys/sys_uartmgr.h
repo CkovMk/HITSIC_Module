@@ -17,23 +17,21 @@
 
 /***************************************************************
  * COPYRIGHT NOTICE
- * Copyright (c) 2018, HITSIC/¹ş¹¤´óÖÇÄÜ³µ´´ĞÂ¾ãÀÖ²¿
+ * Copyright (c) 2018, HITSIC/å“ˆå·¥å¤§æ™ºèƒ½è½¦åˆ›æ–°ä¿±ä¹éƒ¨
  * All rights reserved.
  *
- * @brief           PITÖĞ¶Ï¹ÜÀíÆ÷ CÓïÑÔ°æ±¾
+ * @brief           PITä¸­æ–­ç®¡ç†å™¨ Cè¯­è¨€ç‰ˆæœ¬
  * @file       		sys_pitmgr.h
- * @company	        HITSIC/¹ş¹¤´óÖÇÄÜ³µ´´ĞÂ¾ãÀÖ²¿
+ * @company	        HITSIC/å“ˆå·¥å¤§æ™ºèƒ½è½¦åˆ›æ–°ä¿±ä¹éƒ¨
  * @author     		C.M. (QQ:905497173)
  * @version    		v3.2
- * @Software
- * @Target_core		NXP MK66F18 or other K Series MCU
  * @date            ver1.0 2018.11.25 by C.M.
  * @date            ver1.5 2019.02.07 by C.M.
  * @date            ver2.1 2019.04.12 by C.M.
  * @date            ver3.1 2019.09.28 by C.M.
  * @date            ver3.2 2019.09.29 by C.M.
  *
- * @note£º
+ * @note
 ****************************************************************/
 
 #pragma once
