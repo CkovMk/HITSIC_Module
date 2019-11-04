@@ -30,11 +30,13 @@
 #include <stdarg.h>
 
 #include "drv_ftfx_flash.h"
+     
+int status = (0x50 << 24);
 
 /* default environment variables set for user */
 static const ef_env default_env_set[] = {
 	{"board_name", "hitsic_mk66f18", 0},
-	{"ef_status", (0x50 << 24), sizeof(int32_t)},
+	{"ef_status", &status, sizeof(int32_t)},
 };
 
 /**
@@ -72,7 +74,7 @@ EfErrCode ef_port_read(uint32_t addr, uint32_t *buf, size_t size)
 	EF_ASSERT(size % 4 == 0);
 
 	/* You can add your code under here. */
-	if (kStatus_FTFx_Success != FLASH_AddressRead(addr, (uint8_t *)buf, size * 4u))
+	if (kStatus_FTFx_Success != FLASH_AddressRead(addr, (uint8_t *)buf, size))
 	{
 		result = EF_READ_ERR;
 	}
@@ -128,7 +130,7 @@ EfErrCode ef_port_write(uint32_t addr, const uint32_t *buf, size_t size)
 	EF_ASSERT(size % 4 == 0);
 
 	/* You can add your code under here. */
-	if (kStatus_FTFx_Success != FLASH_AddressProgram(addr, (uint8_t *)buf, size * 4u))
+	if (kStatus_FTFx_Success != FLASH_AddressProgram(addr, (uint8_t *)buf, size))
 	{
 		result = EF_WRITE_ERR;
 	}

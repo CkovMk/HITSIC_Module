@@ -142,7 +142,8 @@ extern "C" {
 
 	status_t FLASH_AddressProgram(uint32_t _addr, void* _buf, uint32_t _byteCnt)
 	{
-		assert(_addr);
+		assert(_buf);
+        assert(_byteCnt);
 		uint32_t destAdrss = FLASH_GetPhysicalAddress(_addr);
 		status_t result;
 		uint32_t failAddr, failDat;
