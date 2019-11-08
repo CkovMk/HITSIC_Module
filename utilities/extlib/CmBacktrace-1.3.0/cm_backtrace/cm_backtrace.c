@@ -27,7 +27,9 @@
  */
 
 #include <cm_backtrace.h>
-
+#include <stdbool.h>
+#include <string.h>
+#include <stdio.h>
 
 #if __STDC_VERSION__ < 199901L
     #error "must be C99 or higher. try to add '-std=c99' to compile parameters"
@@ -207,9 +209,9 @@ static bool on_thread_before_fault = false;
  * library initialize
  */
 void cm_backtrace_init(const char *firmware_name, const char *hardware_ver, const char *software_ver) {
-    strcpy(fw_name, firmware_name);
-    strcpy(hw_ver, hardware_ver);
-    strcpy(sw_ver, software_ver);
+    strncpy(fw_name, firmware_name, CMB_NAME_MAX);
+    strncpy(hw_ver, hardware_ver, CMB_NAME_MAX);
+    strncpy(sw_ver, software_ver, CMB_NAME_MAX);
 
 #if defined(__CC_ARM)
     main_stack_start_addr = (uint32_t)&CSTACK_BLOCK_START(CMB_CSTACK_BLOCK_NAME);
@@ -433,7 +435,7 @@ void cm_backtrace_assert(uint32_t sp) {
     uint32_t cur_stack_pointer = cmb_get_sp();
 #endif
 
-	cmb_println("\r\n");
+    cmb_println("");
     cm_backtrace_firmware_info();
 
 #ifdef CMB_USING_OS_PLATFORM
@@ -612,7 +614,7 @@ void cm_backtrace_fault(uint32_t fault_handler_lr, uint32_t fault_handler_sp) {
 
     on_fault = true;
 
-    cmb_println("\r\n");
+    cmb_println("");
     cm_backtrace_firmware_info();
 
 #ifdef CMB_USING_OS_PLATFORM
