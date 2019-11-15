@@ -20,6 +20,7 @@ qq：512924543
 #define DRV_DISP_SSD1306_H
 #include "stdafx.h" 
 #include "hitsic_common.h"
+#include "drv_cam_def.h"
      
 
 

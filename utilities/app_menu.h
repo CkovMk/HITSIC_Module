@@ -30,7 +30,6 @@
 #pragma once
 #ifndef _APP_MENU_H_
 #define _APP_MENU_H_
-#include "stdafx.h"
 
 #include "app_menu_def.h"
 #include "app_menu_button.h"

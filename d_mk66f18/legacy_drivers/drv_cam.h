@@ -12,6 +12,7 @@
 #include "stdafx.h"
 #include "sys_pitmgr.h"
 #include "sys_extint.h"
+#include "drv_cam_def.h"
 
 #define systick_delay_ms    PITMGR_Delay_ms
 

@@ -8,6 +8,8 @@
 #include "drv_ftfx_flash.h"
 #include "lib_list.h"
 
+#include "app_menu_port.h"
+
 #ifdef __cplusplus
 extern "C"
 {

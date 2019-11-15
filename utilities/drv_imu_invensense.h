@@ -39,6 +39,7 @@
 #include "stdafx.h"
 #include "hitsic_common.h"
 #include "rte_softi2c.h"
+#include "drv_imu_port.h"
 
 #if defined(HITSIC_USE_DRV_IMU) && (HITSIC_USE_DRV_IMU > 0)
 

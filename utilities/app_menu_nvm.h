@@ -1,14 +1,6 @@
 #ifndef _APP_MENU_NVM_H_
 #define _APP_MENU_NVM_H_
 
-#include "stdafx.h"
-#include "hitsic_common.h"
-
-#include "drv_button.h"
-#include "drv_disp_ssd1306.h"
-#include "drv_ftfx_flash.h"
-#include "lib_list.h"
-
 #include "app_menu_def.h"
 
 #ifdef __cplusplus
