@@ -27,7 +27,8 @@
 
 #ifndef _DRV_BUTTON_H_
 #define _DRV_BUTTON_H_
-#include "stdafx.h"
+#include "inc_stdlib.h"
+#include "inc_fsl_mk66f18.h"
 #include "hitsic_common.h"
 #include "sys_extint.h"
 #include "sys_pitmgr.h"

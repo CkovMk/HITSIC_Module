@@ -17,7 +17,8 @@
 
 #ifndef RTE_USRT_H
 #define RTE_USRT_H
-#include "stdafx.h" 
+#include "inc_stdlib.h"
+#include "inc_fsl_mk66f18.h"
 #include "hitsic_common.h"
 
 #ifdef __cplusplus

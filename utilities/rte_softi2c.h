@@ -18,7 +18,8 @@
 #ifndef RTE_SI2C_H
 #define RTE_SI2C_H
 
-#include "stdafx.h" 
+#include "inc_stdlib.h"
+#include "inc_fsl_mk66f18.h"
 #include "hitsic_common.h"
 #include "clock_config.h"
 #include "pin_mux.h"

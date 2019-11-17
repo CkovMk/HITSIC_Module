@@ -29,7 +29,8 @@
 
 #ifndef SYS_EXTINT_H
 #define SYS_EXTINT_H
-#include "stdafx.h"
+#include "inc_stdlib.h"
+#include "inc_fsl_mk66f18.h"
 #include "hitsic_common.h"
 
 #include "lib_list.h"

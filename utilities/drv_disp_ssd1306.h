@@ -18,7 +18,8 @@ qq：512924543
 #pragma once
 #ifndef DRV_DISP_SSD1306_H
 #define DRV_DISP_SSD1306_H
-#include "stdafx.h" 
+#include "inc_stdlib.h"
+#include "inc_fsl_mk66f18.h"
 #include "hitsic_common.h"
 #include "drv_cam_def.h"
      

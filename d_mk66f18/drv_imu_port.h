@@ -1,7 +1,8 @@
 #ifndef _DRV_IMU_PORT_H_
 #define _DRV_IMU_PORT_H_
 
-#include "stdafx.h"
+#include "inc_stdlib.h"
+#include "inc_fsl_mk66f18.h"
 #include "hitsic_common.h"
 
 #ifdef __cplusplus

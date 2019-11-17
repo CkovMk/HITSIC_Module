@@ -9,7 +9,8 @@
 #pragma once
 #ifndef _DRVCAM_H_
 #define _DRVCAM_H_
-#include "stdafx.h"
+#include "inc_stdlib.h"
+#include "inc_fsl_mk66f18.h"
 #include "sys_pitmgr.h"
 #include "sys_extint.h"
 #include "drv_cam_def.h"
