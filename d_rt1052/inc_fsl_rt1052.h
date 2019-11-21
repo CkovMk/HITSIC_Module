@@ -22,12 +22,13 @@
 #error CPU incorrect !
 #endif // ! CPU_MIMXRT1052DVL6B
 
-#include "arm_math.h"
-#include "arm_nnfunctions.h"
 
 //include fsl sdk for IMXRT1052 HERE!
 //fsl device
 #include "MIMXRT1052.h"
+
+#include "arm_math.h"
+#include "arm_nnfunctions.h"
 
 //fsl sdk
 #include "fsl_adc_etc.h"
