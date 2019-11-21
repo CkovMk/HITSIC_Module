@@ -18,7 +18,7 @@ extern "C"{
 	/**
 	  * @brief : 每个扇区包含的字节数
 	  */
-#define menu_nvm_sectorSize flash_sectorSize;
+#define menu_nvm_sectorSize flash_sectorSize
 	/**
 	 * @brief : 全局存储 Global Storage
 	 */
@@ -58,6 +58,7 @@ extern "C"{
 
 	status_t MENU_NvmRead(uint32_t _addr, void *_buf, uint32_t _byteCnt)
 	{
+		HITSIC_MENU_PRINTF("Verbose: MENU: Nvm Rx Addr = 0x%8.8x, Size = %4.4d\n", _addr, _byteCnt);
 		return FLASH_AddressRead(_addr, _buf, _byteCnt);
 	}
 
@@ -79,17 +80,21 @@ extern "C"{
 		{
 			return kStatus_Fail;
 		}
-		menu_nvm_cache = malloc(flash_sectorSize);
+		menu_nvm_cache = (uint8_t*)malloc(flash_sectorSize);
 		if (menu_nvm_cache == NULL)
 		{
+			HITSIC_MENU_PRINTF("Warning: MENU: Nvm Cached Sector %2.2d\n Failed! [-MemMalloc]", menu_nvm_cachedSector);
 			return kStatus_Fail;
 		}
 		if (kStatus_FTFx_Success != FLASH_SectorRead(menu_nvm_cachedSector, (void *)menu_nvm_cache))
 		{
 			free(menu_nvm_cache);
 			menu_nvm_cache = NULL;
+			HITSIC_MENU_PRINTF("Warning: MENU: Nvm Cached Sector %2.2d\n Failed! [-FlashRead]", menu_nvm_cachedSector);
 			return kStatus_Fail;
 		}
+		menu_nvm_cachedSector = _sect;
+		HITSIC_MENU_PRINTF("Verbose: MENU: Nvm Cached Sector %2.2d\n", menu_nvm_cachedSector);
 		return kStatus_Success;
 	}
 
@@ -97,10 +102,13 @@ extern "C"{
 	{
 		if (menu_nvm_cache == NULL)
 		{
-			menu_nvm_cachedSector = _addr / flash_sectorSize;
-			MENU_NvmCacheSector(menu_nvm_cachedSector);
+			if(kStatus_Success != MENU_NvmCacheSector(_addr / menu_nvm_sectorSize))
+			{
+				return kStatus_Fail;
+			}
 		}
-		memcpy(_buf, menu_nvm_cache + _addr % flash_sectorSize, _byteCnt);
+		memcpy(menu_nvm_cache + _addr % flash_sectorSize, _buf, _byteCnt);
+		HITSIC_MENU_PRINTF("Verbose: MENU: Nvm Tx Addr = 0x%8.8x, Size = %4.4d\n", _addr, _byteCnt);
 		return kStatus_Success;
 	}
 
@@ -110,6 +118,18 @@ extern "C"{
 		{
 			return kStatus_Fail;
 		}
+		//void* readBuf = malloc(flash_sectorSize);
+		//FLASH_SectorRead(menu_nvm_cachedSector, readBuf);
+		HITSIC_MENU_PRINTF("Verbose: MENU: Nvm Update Cached Sector %2.2d\n", menu_nvm_cachedSector);
+//		if(memcmp(readBuf, menu_nvm_cache, flash_sectorSize) != 0)
+//		{
+//			HITSIC_MENU_PRINTF("Warning: MENU: Nvm Update Cache Fail.\n");
+//		}
+//		free(readBuf);
+//		readBuf = NULL;
+
+
+
 		free(menu_nvm_cache);
 		menu_nvm_cache = NULL;
 		return kStatus_Success;

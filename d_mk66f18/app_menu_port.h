@@ -17,16 +17,18 @@ extern "C"{
     * @brief : 菜单调试输出开关
     * 编译选项为release时无效。
     */
-#define HITSIC_MENU_DEBUG_ENABLE 1u
+#define HITSIC_MENU_PRINT_ENABLE (1u)
+#define HITSIC_MENU_PRINT_VERBOSE_ENABLE (1u)
+#define HITSIC_MENU_PRINT_WARNING_ENABLE (1u)
 
 /**
     * @brief : 菜单调试输出语句定义。
     * 编译选项为release时始终为空。
     */
-#if defined(DEBUG) && defined(HITSIC_MENU_DEBUG_ENABLE)
-#define HITSIC_MENU_DEBUG_PRINTF(...) (printf(__VA_ARGS__))
+#if defined(DEBUG) && defined(HITSIC_MENU_PRINT_ENABLE) && (HITSIC_MENU_PRINT_ENABLE != 0u)
+#define HITSIC_MENU_PRINTF(...) (printf(__VA_ARGS__))
 #else
-#define HITSIC_MENU_DEBUG_PRINTF(...)
+#define HITSIC_MENU_PRINTF(...)
 #endif // ! DEBUG
 
 /** @brief : 根菜单最大容量 */

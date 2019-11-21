@@ -734,6 +734,6 @@ int OLED_Printf(uint16 Row, uint16 off, const char* Format, ...)
 void OLED_PrintHalfImg(camera_img_t* image, uint8_t mono_th)
 {
 	static uint8_t halfImg[CAM_IMG_R>>1][CAM_IMG_C>>1];
-	img_getHalfResolution((uint8_t*)image->img,(uint8_t*)halfImg,CAM_IMG_R,CAM_IMG_C);
-	oled_printImg(CAM_IMG_R>>1,CAM_IMG_C>>1,(uint8_t*)halfImg,mono_th);
+	//img_getHalfResolution((uint8_t*)image->img,(uint8_t*)halfImg,CAM_IMG_R,CAM_IMG_C);
+	//oled_printImg(CAM_IMG_R>>1,CAM_IMG_C>>1,(uint8_t*)halfImg,mono_th);
 }

@@ -96,9 +96,16 @@ extern "C"
 	/**
 	 * @brief : 保存整个菜单到NVM。
 	 *
-	 * @param  {int32_t} _region :
+	 * @param  {int32_t} _region :  所选择的局部存储区。
 	 */
 	void MENU_Data_NvmSave(int32_t _region);
+
+	/**
+	 * @brief : 保存整个菜单到NVM。
+	 * 该函数将使用全局变量 menu_currRegionNum 中保存的局部存储区号。
+	 * 
+	 */
+	void MENU_Data_NvmSave_Boxed(void);
 
 	/**
 	 * @brief : 从NVM读取整个菜单。
@@ -108,13 +115,44 @@ extern "C"
 	void MENU_Data_NvmRead(int32_t _region);
 
 	/**
+	 * @brief : 从NVM读取整个菜单。
+	 * 该函数将使用全局变量 menu_currRegionNum 中保存的局部存储区号。
+	 * 
+	 */
+	void MENU_Data_NvmRead_Boxed(void);
+
+	/**
+	 * @brief : 保存当前局部存储区号到NVM。
+	 * 该数值设置为不自动保存。
+	 * 
+	 */
+	void MENU_Data_NvmSaveRegionConfig(void);
+
+	/**
+	 * @brief : 从NVM中读取当前局部存储区号。
+	 * 该数值设置为不自动保存。
+	 * 
+	 */
+	void MENU_Data_NvmReadRegionConfig(void);
+
+
+	/**
 	 * @brief : 将一个局部存储区的数据拷贝到另一个局部存储区。
 	 *
 	 * @param  {int32_t} _srcRegion : 源存储序号。
 	 * @param  {int32_t} _dstRegion : 目的存储区序号。
 	 */
 	void MENU_Data_NvmCopy(int32_t _srcRegion, int32_t _dstRegion);
-	void MENU_Data_NvmCopy_boxed(void);
+	
+	/**
+	 * @brief : 将一个局部存储区的数据拷贝到另一个局部存储区。
+	 * 该函数将使用全局变量 menu_nvmCopySrc 和 menu_nvmCopyDst 中存储的值。
+	 * 
+	 */
+	void MENU_Data_NvmCopy_Boxed(void);
+
+
+
 
 	/**
 	 * @brief : 读取NVM状态标志。

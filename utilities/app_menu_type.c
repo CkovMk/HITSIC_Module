@@ -18,7 +18,7 @@ extern "C"
 	 */
 	void MENU_ItemConstruct_nullType(menu_itemIfce_t *_item, void *_data)
 	{
-		_item->handle.p_nullType = malloc(sizeof(menu_item_nullHandle_t));
+		_item->handle.p_nullType = (menu_item_nullHandle_t*)malloc(sizeof(menu_item_nullHandle_t));
 		_item->handle.p_nullType->data = _data;
 	}
 	void MENU_ItemGetData_nullType(menu_itemIfce_t *_item, void *_data)
@@ -96,8 +96,8 @@ extern "C"
 
 	void MENU_ItemConstruct_variType(menu_itemIfce_t *_item, void *_data)
 	{
-		_item->handle.p_variType = malloc(sizeof(menu_item_variHandle_t));
-		_item->handle.p_variType->data = _data;
+		_item->handle.p_variType = (menu_item_variHandle_t*)malloc(sizeof(menu_item_variHandle_t));
+		_item->handle.p_variType->data = (int32_t*)_data;
 		_item->handle.p_variType->cur = 0;
 		MENU_ItemGetContent_variType(&_item->handle.p_variType->v, &_item->handle.p_variType->e, *_item->handle.p_variType->data);
 	}
@@ -110,6 +110,7 @@ extern "C"
 		if (!(_item->pptFlag & menuItem_data_ROFlag))
 		{
 			*(_item->handle.p_variType->data) = *(int32_t *)_data;
+			HITSIC_MENU_PRINTF("Verbose: MENU: variType Data Updated %d\n", *(_item->handle.p_variType->data));
 		}
 	}
 	//used when in menuList
@@ -365,8 +366,8 @@ extern "C"
 
 	void MENU_ItemConstruct_varfType(menu_itemIfce_t *_item, void *_data)
 	{
-		_item->handle.p_varfType = malloc(sizeof(menu_item_varfHandle_t));
-		_item->handle.p_varfType->data = _data;
+		_item->handle.p_varfType = (menu_item_varfHandle_t*)malloc(sizeof(menu_item_varfHandle_t));
+		_item->handle.p_varfType->data = (float*)_data;
 		_item->handle.p_varfType->cur = 0;
 		MENU_ItemGetContent_varfType(&_item->handle.p_varfType->v, &_item->handle.p_varfType->e, *_item->handle.p_varfType->data);
 	}
@@ -378,7 +379,8 @@ extern "C"
 	{
 		if (!(_item->pptFlag & menuItem_data_ROFlag))
 		{
-			*(_item->handle.p_variType->data) = *(float *)_data;
+			*(_item->handle.p_varfType->data) = *(float *)_data;
+			HITSIC_MENU_PRINTF("Verbose: MENU: varfType Data Updated %f\n", *(_item->handle.p_varfType->data));
 		}
 	}
 	//used when in menuList
@@ -576,8 +578,8 @@ extern "C"
 	 */
 	void MENU_ItemConstruct_boolType(menu_itemIfce_t *_item, void *_data)
 	{
-		_item->handle.p_boolType = malloc(sizeof(menu_item_boolHandle_t));
-		_item->handle.p_boolType->data = _data;
+		_item->handle.p_boolType = (menu_item_boolHandle_t*)malloc(sizeof(menu_item_boolHandle_t));
+		_item->handle.p_boolType->data = (bool*)_data;
 	}
 	void MENU_ItemGetData_boolType(menu_itemIfce_t *_item, void *_data)
 	{
@@ -608,7 +610,7 @@ extern "C"
 	 */
 	void MENU_ItemConstruct_procType(menu_itemIfce_t *_item, void *_data)
 	{
-		_item->handle.p_procType = malloc(sizeof(menu_item_procHandle_t));
+		_item->handle.p_procType = (menu_item_procHandle_t*)malloc(sizeof(menu_item_procHandle_t));
 		_item->handle.p_procType->data = (void (*)(void))_data;
 	}
 	void MENU_ItemGetData_procType(menu_itemIfce_t *_item, void *_data)
@@ -653,8 +655,8 @@ extern "C"
 	 */
 	void MENU_ItemConstruct_menuType(menu_itemIfce_t *_item, void *_data)
 	{
-		_item->handle.p_menuType = malloc(sizeof(menu_item_menuHandle_t));
-		_item->handle.p_menuType->data = _data;
+		_item->handle.p_menuType = (menu_item_menuHandle_t*)malloc(sizeof(menu_item_menuHandle_t));
+		_item->handle.p_menuType->data = (menu_list_t*)_data;
 	}
 	void MENU_ItemGetData_menuType(menu_itemIfce_t *_item, void *_data)
 	{
@@ -698,7 +700,7 @@ extern "C"
 	{
 
 		menu_itemIfce_t *item;
-		item = calloc(1, sizeof(menu_itemIfce_t));
+		item = (menu_itemIfce_t*)calloc(1, sizeof(menu_itemIfce_t));
 		assert(item);
 		item->type = _type;
 		item->pptFlag = _pptFlag;
@@ -728,7 +730,7 @@ extern "C"
 
 	void MENU_ItemSetData(menu_itemIfce_t *_item, menu_nvmData_t *_data)
 	{
-		if (strncmp(_data->nameStr, _item->nameStr, menu_nameStrSize) && _data->type == _item->type)
+		if (0 == strncmp(_data->nameStr, _item->nameStr, menu_nameStrSize) && _data->type == (uint32_t)_item->type)
 		{
 			MENU_ITEM_SWITCH_CASE(MENU_ItemSetData, _item, &_data->data);
 		}
@@ -736,7 +738,7 @@ extern "C"
 
 	void MENU_ItemPrintSlot(menu_itemIfce_t *_item, uint32_t _slotNum)
 	{
-		HITSIC_MENU_DEBUG_PRINTF("-Verbose MENU: printing slot menu %s, type=%d, slot=%d.\n", _item->nameStr, _item->type, _slotNum);
+		//HITSIC_MENU_PRINTF("-Verbose MENU: printing slot menu %s, type=%d, slot=%d.\n", _item->nameStr, _item->type, _slotNum);
 		MENU_ITEM_SWITCH_CASE(MENU_ItemPrintSlot, _item, _slotNum);
 	}
 
@@ -763,11 +765,11 @@ extern "C"
 	{
 		assert(_prev);
 		menu_list_t *list;
-		list = calloc(1, sizeof(menu_list_t));
+		list = (menu_list_t*)calloc(1, sizeof(menu_list_t));
 		assert(list);
 		list->listSize = _size;
 		list->listNum = 0;
-		list->menu = calloc(_size, sizeof(menu_itemIfce_t *));
+		list->menu = (menu_itemIfce_t**)calloc(_size, sizeof(menu_itemIfce_t *));
 		assert(list->menu);
 		strncpy(list->nameStr, _nameStr, menu_nameStrSize);
 		MENU_ListInsert(list, MENU_ItemConstruct(menuType, (void *)_prev, "Back", 0, 0));

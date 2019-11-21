@@ -618,19 +618,7 @@ extern "C" {
 		va_end(args);
 	}
 
-	
-	
 
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 
 
 	void DRVIMU_INV_Demo(void)

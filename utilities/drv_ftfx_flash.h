@@ -35,23 +35,22 @@
 #pragma once
 #ifndef _DRV_FTFX_FLASH_H_
 #define _DRV_FTFX_FLASH_H_
-#include "inc_stdlib.h"
 #include "inc_fsl_mk66f18.h"
+#include "inc_stdlib.h"
 #include "hitsic_common.h"
 
 #if defined(FSL_FEATURE_HAS_L1CACHE) && FSL_FEATURE_HAS_L1CACHE
 #include "fsl_cache.h"
 #endif
 
-
-#ifdef __cplusplus
+#if defined(__cplusplus)
 extern "C" {
 #endif
 
+	extern flash_config_t flash_config;
 	extern uint32_t flash_blockBaseAddr;
 	extern uint32_t flash_totalSize;
 	extern uint32_t flash_sectorSize;
-
 
 
 	/**

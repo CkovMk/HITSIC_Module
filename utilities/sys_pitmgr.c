@@ -97,7 +97,7 @@ void PITMGR_HandleSetup(pitmgr_handle_t* _h, uint32_t _ms, uint32_t _mso, pitmgr
 
 pitmgr_handle_t* PITMGR_HandleInsert(uint32_t _ms, uint32_t _mso, pitmgr_handler_t _handler, uint32_t _ppt)
 {
-	pitmgr_handle_t* ret = List_Create(&pitmgr_isrSet, List_ItEnd(&pitmgr_isrSet)) -> data;
+	pitmgr_handle_t* ret = (pitmgr_handle_t*)(List_Create(&pitmgr_isrSet, List_ItEnd(&pitmgr_isrSet)) -> data);
 	PITMGR_HandleSetup(ret, _ms, _mso, _handler, _ppt);
 	return ret;
 }

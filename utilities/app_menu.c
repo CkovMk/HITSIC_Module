@@ -106,14 +106,16 @@ extern "C"
 		MENU_ListInsert(menu_menuRoot, MENU_ItemConstruct(menuType, menu_manageList, "MenuManager", 0, 0));
 		{
 			MENU_ListInsert(menu_manageList, MENU_ItemConstruct(nullType, NULL, "", 0, 0));
-			MENU_ListInsert(menu_manageList, MENU_ItemConstruct(variType, &menu_currRegionNum, "RegnSel(0-2)", 0, menuItem_data_global));
-			MENU_ListInsert(menu_manageList, MENU_ItemConstruct(procType, (void *)MENU_Data_NvmSave, "Save Data", 0, 0));
-			MENU_ListInsert(menu_manageList, MENU_ItemConstruct(procType, (void *)MENU_Data_NvmRead, "Load Data", 0, 0));
+			MENU_ListInsert(menu_manageList, MENU_ItemConstruct(variType, &menu_currRegionNum, "RegnSel(0-2)", 0, menuItem_data_global | menuItem_data_NoSave));
+			MENU_ListInsert(menu_manageList, MENU_ItemConstruct(procType, (void *)MENU_Data_NvmSave_Boxed, "Save Data", 0, 0));
+			MENU_ListInsert(menu_manageList, MENU_ItemConstruct(procType, (void *)MENU_Data_NvmRead_Boxed, "Load Data", 0, 0));
+			MENU_ListInsert(menu_manageList, MENU_ItemConstruct(procType, (void *)MENU_Data_NvmSaveRegionConfig, "RegnSave", 0, 0));
 			MENU_ListInsert(menu_manageList, MENU_ItemConstruct(nullType, NULL, "", 0, 0));
-			MENU_ListInsert(menu_manageList, MENU_ItemConstruct(variType, &menu_nvmCopySrc, "CopySrc(0-2)", 0, 0));
-			MENU_ListInsert(menu_manageList, MENU_ItemConstruct(variType, &menu_nvmCopyDst, "CopyDst(0-2)", 0, 0));
-			MENU_ListInsert(menu_manageList, MENU_ItemConstruct(procType, (void *)MENU_Data_NvmCopy_boxed, "CopyData(S>D)", 0, 0));
+			MENU_ListInsert(menu_manageList, MENU_ItemConstruct(variType, &menu_nvmCopySrc, "CopySrc(0-2)", 1, menuItem_data_global | menuItem_data_NoSave));
+			MENU_ListInsert(menu_manageList, MENU_ItemConstruct(variType, &menu_nvmCopyDst, "CopyDst(0-2)", 2, menuItem_data_global | menuItem_data_NoSave));
+			MENU_ListInsert(menu_manageList, MENU_ItemConstruct(procType, (void *)MENU_Data_NvmCopy_Boxed, "CopyData(S>D)", 0, 0));
 			MENU_ListInsert(menu_manageList, MENU_ItemConstruct(nullType, NULL, "", 0, 0));
+
 		}
 
 		MENU_DataSetUp();
@@ -126,7 +128,7 @@ extern "C"
 		NVIC_EnableIRQ(HITSIC_MENU_SERVICE_IRQn);
 	}
 
-	void MENU_DataSetUp(void)
+	__WEAK void MENU_DataSetUp(void)
 	{
 		MENU_ListInsert(menu_menuRoot, MENU_ItemConstruct(nullType, NULL, "", 0, 0));
 
@@ -174,22 +176,22 @@ extern "C"
 		}
 		if (*_op != 0)
 		{
-			HITSIC_MENU_DEBUG_PRINTF("-Warning MENU: KeyOp remained unclear. OP = %d\n", *_op);
+			HITSIC_MENU_PRINTF("Warning: MENU: KeyOp remained unclear. OP = %d\n", *_op);
 		}
 	}
 
 	void MENU_Data_NvmSave(int32_t _region)
 	{
-		HITSIC_MENU_DEBUG_PRINTF("-Verbose MENU: Nvm Save Begin.\n");
-		menu_list_t **listQue = calloc(menu_listCnt, sizeof(menu_list_t *));
+		HITSIC_MENU_PRINTF("\nVerbose: MENU: Nvm Save Begin.\n");
+		menu_list_t **listQue = (menu_list_t**)calloc(menu_listCnt, sizeof(menu_list_t *));
 		listQue[0] = menu_manageList;
 		listQue[1] = menu_menuRoot;
-		HITSIC_MENU_DEBUG_PRINTF("-Verbose MENU: Nvm Global Data.\n");
-		HITSIC_MENU_DEBUG_PRINTF("-Verbose MENU: Nvm Add list [%s].\n", menu_manageList->nameStr);
-		HITSIC_MENU_DEBUG_PRINTF("-Verbose MENU: Nvm Add list [%s].\n", menu_menuRoot->nameStr);
+		HITSIC_MENU_PRINTF("Verbose: MENU: Nvm Global Data.\n");
+		HITSIC_MENU_PRINTF("Verbose: MENU: Nvm Add list [%s].\n", menu_manageList->nameStr);
+		HITSIC_MENU_PRINTF("Verbose: MENU: Nvm Add list [%s].\n", menu_menuRoot->nameStr);
 		for (int listNum = 0; listNum < menu_listCnt; ++listNum)
 		{
-			HITSIC_MENU_DEBUG_PRINTF("-Verbose MENU: Nvm In List [%s].\n", listQue[listNum]->nameStr);
+			HITSIC_MENU_PRINTF("Verbose: MENU: Nvm In List [%s]:\n", listQue[listNum]->nameStr);
 			assert(listQue[listNum]);
 			static_assert(sizeof(menu_nvmData_t) == 32, "sizeof menu_nvmData_t error !");
 			for (int i = 0; i < listQue[listNum]->listNum; ++i)
@@ -207,17 +209,17 @@ extern "C"
 						else if (listQue[j] == NULL)
 						{
 							listQue[j] = thisItem->handle.p_menuType->data;
-							HITSIC_MENU_DEBUG_PRINTF("-Verbose MENU: Nvm Add list [%s].\n", listQue[j]->nameStr);
+							HITSIC_MENU_PRINTF("Verbose: MENU: Nvm Add list [%s].\n", listQue[j]->nameStr);
 							break;
 						}
 					}
 					continue;
 				}
 
-				if (thisItem->pptFlag & menuItem_data_global && !(thisItem->pptFlag & menuItem_data_ROFlag))
+				if (thisItem->pptFlag & menuItem_data_global && !(thisItem->pptFlag & menuItem_data_NoSave) && !(thisItem->pptFlag & menuItem_data_ROFlag))
 				{
 					MENU_ItemGetData(thisItem, &dataBuf);
-					HITSIC_MENU_DEBUG_PRINTF("-Verbose MENU: Nvm Get Data.  menu: %-16.16s addr: %4.4d data: %8.8x .\n", dataBuf.nameStr, thisItem->saveAddr, dataBuf.data);
+					HITSIC_MENU_PRINTF("Verbose: MENU: Nvm Get Data.  menu: %-16.16s addr: %4.4d data: %8.8x .\n", dataBuf.nameStr, thisItem->saveAddr, dataBuf.data);
 					uint32_t realAddr = menu_nvm_glAddrOffset + thisItem->saveAddr * sizeof(menu_nvmData_t);
 					if (!MENU_NvmCacheable(realAddr))
 					{
@@ -228,24 +230,24 @@ extern "C"
 				}
 			}
 		}
-		HITSIC_MENU_DEBUG_PRINTF("-Verbose MENU: Nvm Global Data End.\n");
+		HITSIC_MENU_PRINTF("Verbose: MENU: Nvm Global Data End.\n");
 		if (menu_currRegionNum < 0 || menu_currRegionNum > 2)
 		{
 			return;
 		}
-		HITSIC_MENU_DEBUG_PRINTF("-Verbose MENU: Nvm Region%d Data.\n", menu_currRegionNum);
+		HITSIC_MENU_PRINTF("Verbose: MENU: Nvm Region%d Data.\n", menu_currRegionNum);
 		for (int listNum = 0; listNum < menu_listCnt; ++listNum)
 		{
-			HITSIC_MENU_DEBUG_PRINTF("-Verbose MENU: Nvm In List [%s].\n", listQue[listNum]->nameStr);
+			HITSIC_MENU_PRINTF("Verbose: MENU: Nvm In List [%s].\n", listQue[listNum]->nameStr);
 			for (int i = 0; i < listQue[listNum]->listNum; ++i)
 			{
 				menu_nvmData_t dataBuf;
 				menu_itemIfce_t *thisItem = listQue[listNum]->menu[i];
-				if (thisItem->pptFlag & menuItem_data_region && !(thisItem->pptFlag & menuItem_data_ROFlag))
+				if (thisItem->pptFlag & menuItem_data_region && !(thisItem->pptFlag & menuItem_data_NoSave) && !(thisItem->pptFlag & menuItem_data_ROFlag))
 				{
 					MENU_ItemGetData(thisItem, &dataBuf);
-					HITSIC_MENU_DEBUG_PRINTF("-Verbose MENU: Nvm Get Data.  menu: %-16.16s addr: %4.4d data: %8.8x .\n", dataBuf.nameStr, thisItem->saveAddr, dataBuf.data);
-					uint32_t realAddr = menu_nvm_rgAddrOffset[menu_currRegionNum] + thisItem->saveAddr * sizeof(menu_nvmData_t);
+					HITSIC_MENU_PRINTF("Verbose: MENU: Nvm Get Data.  menu: %-16.16s addr: %4.4d data: 0x%8.8x .\n", dataBuf.nameStr, thisItem->saveAddr, dataBuf.data);
+					uint32_t realAddr = menu_nvm_rgAddrOffset[_region] + thisItem->saveAddr * sizeof(menu_nvmData_t);
 					if (!MENU_NvmCacheable(realAddr))
 					{
 						MENU_NvmUpdateCache();
@@ -255,23 +257,28 @@ extern "C"
 				}
 			}
 		}
-		HITSIC_MENU_DEBUG_PRINTF("-Verbose MENU: Nvm Region%d Data End.\n", menu_currRegionNum);
+		HITSIC_MENU_PRINTF("Verbose: MENU: Nvm Region%d Data End.\n", menu_currRegionNum);
 		MENU_NvmUpdateCache();
-		HITSIC_MENU_DEBUG_PRINTF("-Verbose MENU: Nvm Save Complete.\n");
+		HITSIC_MENU_PRINTF("Verbose: MENU: Nvm Save Complete.\n\n");
+	}
+
+	void MENU_Data_NvmSave_Boxed(void)
+	{
+		MENU_Data_NvmSave(menu_currRegionNum);
 	}
 
 	void MENU_Data_NvmRead(int32_t _region)
 	{
-		HITSIC_MENU_DEBUG_PRINTF("-Verbose MENU: Nvm Read Begin.\n");
-		menu_list_t **listQue = calloc(menu_listCnt, sizeof(menu_list_t *));
+		HITSIC_MENU_PRINTF("\nVerbose: MENU: Nvm Read Begin.\n");
+		menu_list_t **listQue = (menu_list_t**)calloc(menu_listCnt, sizeof(menu_list_t *));
 		listQue[0] = menu_manageList;
 		listQue[1] = menu_menuRoot;
-		HITSIC_MENU_DEBUG_PRINTF("-Verbose MENU: Nvm Global Data.\n");
-		HITSIC_MENU_DEBUG_PRINTF("-Verbose MENU: Nvm Add list [%s].\n", menu_manageList->nameStr);
-		HITSIC_MENU_DEBUG_PRINTF("-Verbose MENU: Nvm Add list [%s].\n", menu_menuRoot->nameStr);
+		HITSIC_MENU_PRINTF("Verbose: MENU: Nvm Global Data.\n");
+		HITSIC_MENU_PRINTF("Verbose: MENU: Nvm Add list [%s].\n", menu_manageList->nameStr);
+		HITSIC_MENU_PRINTF("Verbose: MENU: Nvm Add list [%s].\n", menu_menuRoot->nameStr);
 		for (int listNum = 0; listNum < menu_listCnt; ++listNum)
 		{
-			HITSIC_MENU_DEBUG_PRINTF("-Verbose MENU: Nvm In List [%s].\n", listQue[listNum]->nameStr);
+			HITSIC_MENU_PRINTF("Verbose: MENU: Nvm In List [%s].\n", listQue[listNum]->nameStr);
 			assert(listQue[listNum]);
 			static_assert(sizeof(menu_nvmData_t) == 32, "sizeof menu_nvmData_t error !");
 			for (int i = 0; i < listQue[listNum]->listNum; ++i)
@@ -289,20 +296,20 @@ extern "C"
 						else if (listQue[j] == NULL)
 						{
 							listQue[j] = thisItem->handle.p_menuType->data;
-							HITSIC_MENU_DEBUG_PRINTF("-Verbose MENU: Nvm Add list [%s].\n", listQue[j]->nameStr);
+							HITSIC_MENU_PRINTF("Verbose: MENU: Nvm Add list [%s].\n", listQue[j]->nameStr);
 							break;
 						}
 					}
 					continue;
 				}
 
-				if (thisItem->pptFlag & menuItem_data_global && !(thisItem->pptFlag & menuItem_data_ROFlag))
+				if (thisItem->pptFlag & menuItem_data_global && !(thisItem->pptFlag & menuItem_data_NoSave) && !(thisItem->pptFlag & menuItem_data_ROFlag))
 				{
 					uint32_t realAddr = menu_nvm_glAddrOffset + thisItem->saveAddr * sizeof(menu_nvmData_t);
 					MENU_NvmRead(realAddr, &dataBuf, sizeof(menu_nvmData_t));
-					HITSIC_MENU_DEBUG_PRINTF("-Verbose MENU: Nvm Get Flash. menu: %-16.16s addr: %4.4d data: %8.8x .\n", dataBuf.nameStr, thisItem->saveAddr, dataBuf.data);
+					HITSIC_MENU_PRINTF("Verbose: MENU: Nvm Get Flash. menu: %-16.16s addr: %4.4d data: %8.8x .\n", dataBuf.nameStr, thisItem->saveAddr, dataBuf.data);
 					MENU_ItemSetData(thisItem, &dataBuf);
-					HITSIC_MENU_DEBUG_PRINTF("-Verbose MENU: Nvm Set Data.  menu: %-16.16s addr: %4.4d .\n", thisItem->nameStr, thisItem->saveAddr);
+					HITSIC_MENU_PRINTF("Verbose: MENU: Nvm Set Data.  menu: %-16.16s addr: %4.4d .\n", thisItem->nameStr, thisItem->saveAddr);
 				}
 			}
 		}
@@ -310,23 +317,54 @@ extern "C"
 		{
 			return;
 		}
-		HITSIC_MENU_DEBUG_PRINTF("-Verbose MENU: Nvm Region%d Data.\n", menu_currRegionNum);
+		HITSIC_MENU_PRINTF("Verbose: MENU: Nvm Region%d Data.\n", menu_currRegionNum);
 		for (int listNum = 0; listNum < menu_listCnt; ++listNum)
 		{
 			for (int i = 0; i < listQue[listNum]->listNum; ++i)
 			{
 				menu_nvmData_t dataBuf;
 				menu_itemIfce_t *thisItem = listQue[listNum]->menu[i];
-				if (thisItem->pptFlag & menuItem_data_region && !(thisItem->pptFlag & menuItem_data_ROFlag))
+				if (thisItem->pptFlag & menuItem_data_region && !(thisItem->pptFlag & menuItem_data_NoSave) && !(thisItem->pptFlag & menuItem_data_ROFlag))
 				{
-					uint32_t realAddr = menu_nvm_rgAddrOffset[menu_currRegionNum] + thisItem->saveAddr * sizeof(menu_nvmData_t);
+					uint32_t realAddr = menu_nvm_rgAddrOffset[_region] + thisItem->saveAddr * sizeof(menu_nvmData_t);
 					MENU_NvmRead(realAddr, &dataBuf, sizeof(menu_nvmData_t));
-					HITSIC_MENU_DEBUG_PRINTF("-Verbose MENU: Nvm Get Flash. menu: %-16.16s addr: %4.4d data: %8.8x .\n", dataBuf.nameStr, thisItem->saveAddr, dataBuf.data);
+					HITSIC_MENU_PRINTF("Verbose: MENU: Nvm Get Flash. menu: %-16.16s addr: %4.4d data: 0x%8.8x .\n", dataBuf.nameStr, thisItem->saveAddr, dataBuf.data);
 					MENU_ItemSetData(thisItem, &dataBuf);
-					HITSIC_MENU_DEBUG_PRINTF("-Verbose MENU: Nvm Set Data.  menu: %-16.16s addr: %4.4d .\n", thisItem->nameStr, thisItem->saveAddr);
+					HITSIC_MENU_PRINTF("Verbose: MENU: Nvm Set Data.  menu: %-16.16s addr: %4.4d .\n", thisItem->nameStr, thisItem->saveAddr);
 				}
 			}
 		}
+		HITSIC_MENU_PRINTF("Verbose: MENU: Nvm Region%d Data End.\n", menu_currRegionNum);
+		HITSIC_MENU_PRINTF("Verbose: MENU: Nvm Read Complete.\n\n");
+	}
+
+	void MENU_Data_NvmRead_Boxed(void)
+	{
+		MENU_Data_NvmRead(menu_currRegionNum);
+	}
+
+	void MENU_Data_NvmSaveRegionConfig(void)
+	{
+		menu_nvmData_t dataBuf;
+		menu_itemIfce_t *thisItem = menu_manageList->menu[2];
+		MENU_ItemGetData(thisItem, &dataBuf);
+		uint32_t realAddr = menu_nvm_glAddrOffset + thisItem->saveAddr * sizeof(menu_nvmData_t);
+		if (!MENU_NvmCacheable(realAddr))
+		{
+			MENU_NvmUpdateCache();
+			assert(MENU_NvmCacheable(realAddr));
+		}
+		MENU_NvmWriteCache(realAddr, (void *)&dataBuf, sizeof(menu_nvmData_t));
+		MENU_NvmUpdateCache();
+	}
+
+	void MENU_Data_NvmReadRegionConfig(void)
+	{
+		menu_nvmData_t dataBuf;
+		menu_itemIfce_t *thisItem = menu_manageList->menu[2];
+		uint32_t realAddr = menu_nvm_glAddrOffset + thisItem->saveAddr * sizeof(menu_nvmData_t);
+		MENU_NvmRead(realAddr, &dataBuf, sizeof(menu_nvmData_t));
+		MENU_ItemSetData(thisItem, &dataBuf);
 	}
 
 	void MENU_Data_NvmCopy(int32_t _srcRegion, int32_t _dstRegion)
@@ -341,7 +379,7 @@ extern "C"
 		}
 	}
 
-	void MENU_Data_NvmCopy_boxed(void)
+	void MENU_Data_NvmCopy_Boxed(void)
 	{
 		MENU_Data_NvmCopy(menu_nvmCopySrc, menu_nvmCopyDst);
 	}
@@ -366,7 +404,7 @@ extern "C"
 		NVIC_ClearPendingIRQ(HITSIC_MENU_SERVICE_IRQn);
 		if (menu_statusFlag & menu_message_buttonOp)
 		{
-			HITSIC_MENU_DEBUG_PRINTF("-Verbose MENU: Key %d pressed.\n", menu_keyOpBuff);
+			//HITSIC_MENU_PRINTF("Verbose: MENU: Key %d pressed.\n", menu_keyOpBuff);
 			MENU_KeyOp(&menu_keyOpBuff);
 			MENU_PrintDisp();
 			menu_statusFlag &= ~menu_message_buttonOp;

@@ -39,6 +39,7 @@
 #include "inc_stdlib.h"
 #include "inc_fsl_mk66f18.h"
 #include "hitsic_common.h"
+#include "rte_i2c.h"
 #include "rte_softi2c.h"
 #include "drv_imu_port.h"
 

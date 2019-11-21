@@ -6,11 +6,11 @@
 /**
  * @brief 按键处理部分 函数调用宏定义
  */
-#define MENU_BUTTON_MAKE_EXT_ISR(instNum) (MENU_ButtonExtIsr##instNum##)
+#define MENU_BUTTON_MAKE_EXT_ISR(instNum) (MENU_ButtonExtIsr##instNum)
 #define MENU_BUTTON_CALL_EXT_ISR(instNum) BUTTON_ExtIsr(&menu_button[instNum])
 #define MENU_BUTTON_DEF_EXT_ISR(instNum) \
     void MENU_BUTTON_MAKE_EXT_ISR(instNum)(void) { MENU_BUTTON_CALL_EXT_ISR(instNum); }
-#define MENU_BUTTON_MAKEE_PIT_ISR(instNum) (MENU_ButtonPitIsr##instNum##)
+#define MENU_BUTTON_MAKEE_PIT_ISR(instNum) (MENU_ButtonPitIsr##instNum)
 #define MENU_BUTTON_CALL_PIT_ISR(instNum) BUTTON_PitIsr(&menu_button[instNum]);
 
 //test macro
@@ -34,7 +34,7 @@ extern "C"
 /**
  * @brief : 按键操作生成宏
  */
-#define MENU_BUTTON_MAKE_OP(code, type) (menuOpCode_##code## | menuOpType_##type##)
+#define MENU_BUTTON_MAKE_OP(code, type) (menuOpCode_##code|menuOpType_##type)
 
     //test marco
     //MENU_BUTTON_MAKE_OP(ok,shrt)

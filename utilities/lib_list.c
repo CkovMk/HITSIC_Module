@@ -31,7 +31,7 @@ void List_Constructor(list_t *p, unsigned int SizeOfData) {
     p->SizeOfData = SizeOfData;
     p->size = 0;
     //生成head和tail
-	p->head = LIST_MALLOC(sizeof(list_node_t));
+	p->head = (list_node_t*)LIST_MALLOC(sizeof(list_node_t));
 	assert(p->head);
     p->tail = p->head;
     //互联
@@ -62,7 +62,7 @@ list_node_t* List_Create(list_t* p, list_node_t* pos)
 	assert(pos);
 	//assert(src);
 	list_node_t* newl;
-	newl = LIST_MALLOC(sizeof(list_node_t));
+	newl = (list_node_t*)LIST_MALLOC(sizeof(list_node_t));
 	assert(newl);
 	newl->data = LIST_MALLOC(p->SizeOfData);
 	assert(newl->data);
@@ -141,10 +141,6 @@ list_node_t* List_ItBegin(list_t *p) { return p->head; }
 
 list_node_t* List_ItEnd(list_t *p) { return p->tail; }
 
-#ifdef __cplusplus
-}
-#endif
-
 //示例代码
 #ifdef WIN32
 #include <stdio.h>
@@ -186,6 +182,6 @@ int main() {
 #endif
 
 
-#ifdef __cplusplus
+#if defined (__cplusplus)
 }
 #endif

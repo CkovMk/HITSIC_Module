@@ -60,6 +60,23 @@ Flash读写驱动（FTFX_FLASH），用于保存和读取菜单；
 
 属性Flag提供更多选项，并在运行过程中指示该变量是否已修改。
 
+
+
+### v0.1.2
+
+by：Chekhov Mark @hitsic 2019.11.22
+
+主要功能初步完善。
+
+更新内容：
+
+- 菜单存储功能已可以正常使用。菜单内含1个全局存储区和3个局部存储区，全局存储区用于存储公共参数，而三个局部存储区可存储三组不同参数。当前所使用的参数组可以在菜单内选择。单片机上电后可以自动读取保存的数据。**注意：存储区间的数据拷贝功能还不完善，可能造成数据丢失。**
+- 调整及新增了一些属性Flag。现在，`menuItem_data_ROFlag` 标志仅表示该变量不能从菜单修改，但仍会被保存到对应的Nvm存储区。如要禁止保存该变量，使用新增的`menuItem_data_NoSave` 标志。**注意：此标志仅代表在保存菜单时不会保存该变量，用户仍可以对具有此标志的菜单项分配存储空间，并手动保存改变量到分配的地址。**
+
+
+
+
+
 ### v0.1.1
 
 by：Chekhov Mark @hitsic 2019.11.02
@@ -145,18 +162,25 @@ by：Chekhov Mark @hitsic 2019.11.02
   void MENU_KeyOp(menu_keyOp_t * const _op);
   ```
 
-- 保存数据（不可用）
+- 保存数据
 
   ```C
   /**
    * @brief : 保存整个菜单到NVM。
    *
-   * @param  {int32_t} _region :
+   * @param  {int32_t} _region :  所选择的局部存储区。
    */
   void MENU_Data_NvmSave(int32_t _region);
+  
+  /**
+   * @brief : 保存整个菜单到NVM。
+   * 该函数将使用全局变量 menu_currRegionNum 中保存的局部存储区号。
+   * 
+   */
+  void MENU_Data_NvmSave_Boxed(void);
   ```
 
-- 读取数据（不可用）
+- 读取数据
 
   ```C
   /**
@@ -165,6 +189,31 @@ by：Chekhov Mark @hitsic 2019.11.02
    * @param  {int32_t} _region : 所选择的局部存储区。
    */
   void MENU_Data_NvmRead(int32_t _region);
+  
+  /**
+   * @brief : 从NVM读取整个菜单。
+   * 该函数将使用全局变量 menu_currRegionNum 中保存的局部存储区号。
+   * 
+   */
+  void MENU_Data_NvmRead_Boxed(void);
+  ```
+
+- 读写局部存储区设置
+
+  ```c
+  /**
+   * @brief : 保存当前局部存储区号到NVM。
+   * 该数值设置为不自动保存。
+   * 
+   */
+  void MENU_Data_NvmSaveRegionConfig(void);
+  
+  /**
+   * @brief : 从NVM中读取当前局部存储区号。
+   * 该数值设置为不自动保存。
+   * 
+   */
+  void MENU_Data_NvmReadRegionConfig(void);
   ```
 
 - 在数据区之间拷贝数据（不可用）
@@ -177,7 +226,13 @@ by：Chekhov Mark @hitsic 2019.11.02
    * @param  {int32_t} _dstRegion : 目的存储区序号。
    */
   void MENU_Data_NvmCopy(int32_t _srcRegion, int32_t _dstRegion);
-  void MENU_Data_NvmCopy_boxed(void);
+  
+  /**
+   * @brief : 将一个局部存储区的数据拷贝到另一个局部存储区。
+   * 该函数将使用全局变量 menu_nvmCopySrc 和 menu_nvmCopyDst 中存储的值。
+   * 
+   */
+  void MENU_Data_NvmCopy_Boxed(void);
   ```
 
 - 读取NVM状态标志（不可用）
@@ -496,6 +551,8 @@ For hello_world_v2.x
 
 by：Chekhov Mark @hitsic 2019.11.02
 
+内容已更新以适配v0.1.2版本。
+
 #### 移植须知
 
 **注意事项**
@@ -560,12 +617,20 @@ by：Chekhov Mark @hitsic 2019.11.02
 
 - 此时应该可以编译通过并运行了。屏幕上将显示和Demo文件一样的界面。不能编译通过的再找找问题。
 
-- 接下来添加自己的菜单项。找到`app_menu.c`内的`void MENU_DataSetUp(void)`函数，将其注释掉（仅注释源文件中的函数实现，保留头文件中的函数声明），然后在main()函数后创建此函数新的实现。**注意：禁止在`app_menu.c`中直接修改代码！**该函数会被`MENU_Init(void);`函数调用，禁止手动调用。
 
-  > 代码清单2
+
+
+
+### 创建自己的菜单
+
+内容已更新以适配v0.1.2版本。
+
+- 添加自己的菜单项。~~找到`app_menu.c`内的`void MENU_DataSetUp(void)`函数，将其注释掉（仅注释源文件中的函数实现，保留头文件中的函数声明），然后在main()函数后~~创建`void MENU_DataSetUp(void)`新的实现。原函数已声明为`__WEAK`，新定义将自动覆盖旧定义。**注意：禁止在`app_menu.c`中直接修改代码！**该函数会被`MENU_Init(void);`函数调用，禁止手动调用。
+
+  > 代码清单1
   >
   > ```c
-  > /** 在主函数之后创建的MENU_DataSetup函数 */
+  > /** 在其他位置创建的MENU_DataSetup函数 */
   >
   > /** 创建子菜单指针 */
   > menu_list_t* myList_1;
@@ -621,4 +686,3 @@ by：Chekhov Mark @hitsic 2019.11.02
 
 - 设置好自己的菜单后，编译下载，就可以看到自己定义的菜单了。
 
-### 创建自己的菜单

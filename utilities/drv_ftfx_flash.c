@@ -25,7 +25,7 @@
 
 #include "drv_ftfx_flash.h"
 
-#ifdef __cplusplus
+#if defined(__cplusplus)
 extern "C" {
 #endif
 
@@ -111,7 +111,7 @@ extern "C" {
 		{
 			return flash_securityStatus;
 		}
-		if ((_addr + _byteCnt) / flash_sectorSize != _addr / flash_sectorSize)
+		if ((_addr + _byteCnt - 1) / flash_sectorSize != _addr / flash_sectorSize)
 		{
 			return kStatus_FTFx_SizeError;
 		}
@@ -151,7 +151,7 @@ extern "C" {
 		{
 			return flash_securityStatus;
 		}
-		if ((_addr + _byteCnt) / flash_sectorSize != _addr / flash_sectorSize)
+		if ((_addr + _byteCnt - 1) / flash_sectorSize != _addr / flash_sectorSize)
 		{
 			return kStatus_FTFx_SizeError;
 		}

@@ -4,12 +4,13 @@
 #include "inc_fsl_mk66f18.h"
 #include "hitsic_common.h"
 
+#include "app_menu_port.h"
 #include "drv_button.h"
 #include "drv_disp_ssd1306.h"
 #include "drv_ftfx_flash.h"
 #include "lib_list.h"
 
-#include "app_menu_port.h"
+
 
 #ifdef __cplusplus
 extern "C"
@@ -43,8 +44,8 @@ typedef enum
     menuItem_data_global = 1 << 0, ///< 该菜单项存储在全局数据区。
     menuItem_data_region = 1 << 1, ///< 该菜单项存储在局部数据区。
     menuItem_data_getPos = menuItem_data_global | menuItem_data_region,
-    menuItem_data_ROFlag = 1 << 2, ///< 该菜单项为只读。只读菜单项不允许在菜单内修改，也不能保存到存储区或从存储区读取。
-    //menuItem_data_prioRW = 1 << 3, ///< 该菜单项需要先于其他菜单项读取。
+    menuItem_data_ROFlag = 1 << 2, ///< 该菜单项为只读。只读菜单项不允许在菜单内修改。
+    menuItem_data_NoSave = 1 << 3, ///< 该菜单项默认不保存到NVM。
     menuItem_data_getCfg = menuItem_data_global | menuItem_data_region | menuItem_data_ROFlag/* | menuItem_data_prioRW*/,
 
     /** display config */
@@ -229,6 +230,7 @@ extern menu_list_t *menu_menuRoot;
 extern int32_t menu_currRegionNum;
 extern int32_t menu_statusFlag;
 extern uint32_t menu_nvm_statusFlagAddr;
+extern int32_t menu_nvmCopySrc, menu_nvmCopyDst;
 
 extern char menu_dispStrBuf[MENU_DISP_STRBUF_ROW][MENU_DISP_STRBUF_COL];
 

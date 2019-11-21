@@ -53,7 +53,7 @@
 
 /* the flash write granularity, unit: bit
  * only support 1(nor flash)/ 8(stm32f4)/ 32(stm32f1)/ 64(stm32l4) */
-#define EF_WRITE_GRAN             32/* @note you must define it for a value */
+#define EF_WRITE_GRAN             64/* @note you must define it for a value */
 
 /*
  *

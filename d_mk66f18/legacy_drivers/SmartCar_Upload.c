@@ -123,14 +123,15 @@ void Img_Upload(void) //向上位机发送图像
 
   }
 }
-#define CMD_WARE     3
+#define CMD_WARE     ((uint8_t)3u)
+#define NCMD_WARE     ((uint8_t)(~3u))
 
 void Img_Upload_wxj(uint8_t* upload_img) //向上位机发送图像
 {
 	uint8_t image_Buffer[120][188];//用于缓存数据，防止传输过程被更改
 	memcpy(image_Buffer, upload_img, 22560);//缓存数组防止传输途中被更改
-	uint8_t cmdf[2] = { CMD_WARE, ~CMD_WARE };    //串口调试 使用的前命令
-	uint8_t cmdr[2] = { ~CMD_WARE, CMD_WARE };    //串口调试 使用的后命令
+	uint8_t cmdf[2] = { CMD_WARE, NCMD_WARE };    //串口调试 使用的前命令
+	uint8_t cmdr[2] = { NCMD_WARE, CMD_WARE };    //串口调试 使用的后命令
 	UART_WriteBlocking(UP_UART, cmdf, sizeof(cmdf)); //先发送前命令
 	UART_WriteBlocking(UP_UART, &image_Buffer[0][0], 22560);    //发送数据
 	UART_WriteBlocking(UP_UART, cmdr, sizeof(cmdr));    //发送后命令

@@ -730,8 +730,8 @@ static void env_iterator(env_meta_data_t env, void *arg1, void *arg2,
 
 static bool find_env_cb(env_meta_data_t env, void *arg1, void *arg2)
 {
-    const char *key = arg1;
-    bool *find_ok = arg2;
+    const char *key = (char*)arg1;
+    bool *find_ok = (bool*)arg2;
     uint8_t max_len = strlen(key);
 
     if (max_len < env->name_len) {
@@ -963,7 +963,7 @@ static void sector_iterator(sector_meta_data_t sector, sector_store_status_t sta
 
 static bool sector_statistics_cb(sector_meta_data_t sector, void *arg1, void *arg2)
 {
-    size_t *empty_sector = arg1, *using_sector = arg2;
+    size_t *empty_sector = (size_t*)arg1, *using_sector = (size_t*)arg2;
 
     if (sector->check_ok && sector->status.store == SECTOR_STORE_EMPTY) {
         (*empty_sector)++;
@@ -976,8 +976,8 @@ static bool sector_statistics_cb(sector_meta_data_t sector, void *arg1, void *ar
 
 static bool alloc_env_cb(sector_meta_data_t sector, void *arg1, void *arg2)
 {
-    size_t *env_size = arg1;
-    uint32_t *empty_env = arg2;
+    size_t *env_size = (size_t*)arg1;
+    uint32_t *empty_env = (uint32_t*)arg2;
 
     /* 1. sector has space
      * 2. the NO dirty sector
@@ -1157,7 +1157,7 @@ static uint32_t new_env_by_kv(sector_meta_data_t sector, size_t key_len, size_t 
 
 static bool gc_check_cb(sector_meta_data_t sector, void *arg1, void *arg2)
 {
-    size_t *empty_sec = arg1;
+    size_t *empty_sec = (size_t*)arg1;
 
     if (sector->check_ok) {
         *empty_sec = *empty_sec + 1;
@@ -1302,7 +1302,7 @@ static EfErrCode create_env_blob(sector_meta_data_t sector, const char *key, con
         }
         /* write value */
         if (result == EF_NO_ERR) {
-            result = align_write(env_addr + ENV_HDR_DATA_SIZE + EF_WG_ALIGN(env_hdr.name_len), value,
+            result = align_write(env_addr + ENV_HDR_DATA_SIZE + EF_WG_ALIGN(env_hdr.name_len), (uint32_t*)value,
                     env_hdr.value_len);
         }
         /* change the ENV status to ENV_WRITE */
@@ -1499,7 +1499,7 @@ EfErrCode ef_env_set_default(void)
         /* It seems to be a string when value length is 0.
          * This mechanism is for compatibility with older versions (less then V4.0). */
         if (default_env_set[i].value_len == 0) {
-            value_len = strlen(default_env_set[i].value);
+            value_len = strlen((char*)default_env_set[i].value);
         } else {
             value_len = default_env_set[i].value_len;
         }
@@ -1520,7 +1520,7 @@ __exit:
 static bool print_env_cb(env_meta_data_t env, void *arg1, void *arg2)
 {
     bool value_is_str = true, print_value = false;
-    size_t *using_size = arg1;
+    size_t *using_size = (size_t*)arg1;
 
     if (env->crc_is_ok) {
         /* calculate the total using flash size */
@@ -1633,7 +1633,7 @@ static void env_auto_update(void)
 static bool check_sec_hdr_cb(sector_meta_data_t sector, void *arg1, void *arg2)
 {
     if (!sector->check_ok) {
-        size_t *failed_count = arg1;
+        size_t *failed_count = (size_t*)arg1;
 
         EF_INFO("Warning: Sector header check failed. Format this sector (0x%08x).\n", sector->addr);
         (*failed_count) ++;
