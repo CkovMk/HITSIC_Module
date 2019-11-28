@@ -72,7 +72,7 @@ EfErrCode ef_port_read(uint32_t addr, uint32_t *buf, size_t size)
 {
 	EfErrCode result = EF_NO_ERR;
 
-	EF_ASSERT(size % (EF_WRITE_GRAN/8) == 0);
+	EF_ASSERT(size % (4) == 0);
 
 	/* You can add your code under here. */
 	EF_INFO("Verbose: Read Addr 0x%8.8x, Size %4.4d bytes\n", addr, size);
