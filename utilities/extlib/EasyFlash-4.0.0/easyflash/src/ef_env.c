@@ -165,6 +165,7 @@ enum env_status {
 };
 typedef enum env_status env_status_t;
 
+__attribute__((aligned(EF_WRITE_GRAN/8)))
 struct sector_hdr_data {
     struct {
         uint8_t store[STORE_STATUS_TABLE_SIZE];  /**< sector store status @see sector_store_status_t */
