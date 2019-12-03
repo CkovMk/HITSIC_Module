@@ -257,6 +257,14 @@ by：Chekhov Mark @hitsic 2019.11.02
   void MENU_SetNvmStatus(int32_t _status);
   ```
 
+### 其他API
+
+- 其他API的说明参见代码注释。
+
+
+
+
+
 ## 设计文档
 
 ### 术语与概述
@@ -271,49 +279,11 @@ by：Chekhov Mark @hitsic 2019.11.02
 
 ### 核心逻辑
 
-#### 菜单项
+#### 菜单项与菜单表
 
 - 菜单项结构体
-  - 菜单项类型定义
-    ```c
-    /**
-     * @brief : 菜单项所支持的内容类型
-     */
-    typedef enum
-    {
-      nullType,
-        variType, //watch or set integer varibles
-        varfType, //watch or set float-point varibles
-        boolType,
-        procType, //run certain process
-        menuType, //jump to another menu
-    } menu_itemType_t;
-    ```
-  - 菜单项属性标志定义
-    ```c
-    /**
-     * @brief : 菜单项属性枚举类型。
-     * 标志位枚举。
-     */
-    typedef enum
-    {
-        /** data config */
-        menuItem_data_global = 1 << 0, ///< 该菜单项存储在全局数据区。
-        menuItem_data_region = 1 << 1, ///< 该菜单项存储在局部数据区。
-        menuItem_data_getPos = menuItem_data_global | menuItem_data_region,
-        menuItem_data_ROFlag = 1 << 2, ///< 该菜单项为只读。只读菜单项不允许在菜单内修改，也不能保存到存储区或从存储区读取。
-        //menuItem_data_prioRW = 1 << 3, ///< 该菜单项需要先于其他菜单项读取。
-        menuItem_data_getCfg = menuItem_data_global | menuItem_data_region | menuItem_data_ROFlag/* | menuItem_data_prioRW*/,
-    
-        /** display config */
-        menuItem_disp_forceSci = 1 << 8,  ///< 该菜单项强制使用科学计数法，适用于variType和varfType。
-      //menuItem_disp_bitFlag = 1 << 9,   ///< 该菜单项为按位标志位，仅适用于variType。此时数据指针将被视为uint32_t*。
-        menuItem_disp_noPreview = 1 << 10 ///< 该菜单项不会在菜单列表中显示数据。数据区将显示占位字符。注意此选项对标记为按位标志位的variType无效，因为这类菜单项从不在菜单列表显示数据。
-    
-        /** error mask */
-    } menu_itemPropety_t;
-    ```
-  - 菜单项结构体定义
+  
+  定义如下结构体用于存放一个菜单项所包含的全部信息：
   
   ```c
   /** @brief : 菜单项接口结构体。 */
@@ -339,7 +309,9 @@ by：Chekhov Mark @hitsic 2019.11.02
   } menu_itemIfce_t;
   ```
   
+  `pptFlag` ：一个标志位枚举的实例，用于设置该菜单项的属性。参考枚举类型 `menu_itemPropety_t` 。
   
+  `handle`：这是一个共用体，其内容根据菜单类型变化。例如，`variType` 的菜单项，`handle` 中有效的指针为 `p_variType` ，依此类推。而 `p_variType` 的类型 `menu_item_variHandle_t` 是 `variType` 的适配器类型，包含该类型所需的目标指针和所有辅助数据。`handle` 中的指针所指向的内存在构造时分配，析构时释放。
   
 - 菜单项适配器
 
@@ -356,7 +328,7 @@ by：Chekhov Mark @hitsic 2019.11.02
   } menu_item_variHandle_t;
   ```
 
-  
+  该结构体包含了指向被操作变量的指针 `int32_t *data;`、被操作变量的副本 `int32_t bData;`、科学计数法使用的变量 `int32_t v,e;`、调参指针 `int32_t cur;`。这些变量被对应菜单项类型的操作接口访问和使用。
 
 - 菜单项操作接口
 
@@ -374,10 +346,12 @@ by：Chekhov Mark @hitsic 2019.11.02
   void MENU_ItemPrintDisp_variType(menu_itemIfce_t *_item);
   void MENU_ItemKeyOp_variType(menu_itemIfce_t *_item, menu_keyOp_t * const _op);
   ```
-
-#### 菜单表
-
+  
+  
+  
 - 菜单表结构体
+
+  引入如下菜单表结构体来管理菜单表：
 
   ```c
   typedef struct _menu_list_t
@@ -390,7 +364,7 @@ by：Chekhov Mark @hitsic 2019.11.02
   } menu_list_t;
   ```
 
-  
+  `menu_itemIfce_t **menu;` ：一个元素类型为 `menu*` 的数组。该数组的大小由构造函数指定，并在构造时分配，一旦分配不再更改，直到析构时释放内存。
 
 - 菜单表操作接口
 
@@ -472,6 +446,8 @@ by：Chekhov Mark @hitsic 2019.11.02
 
 - 按键消息处理
 
+  根据上述枚举定义，每条按键消息都由两部分组成：位于低八位的按键码和位于高八位的操作码。一旦有按键消息从按键处理模块产生，该按键消息将被写入缓存区 `menu_keyOpBuff`，然后置位菜单中断标志位中的按键消息位，最后置位NVIC中对应的中断有效标志。
+
 #### NVM存储
 
 - NVM变量
@@ -505,6 +481,8 @@ by：Chekhov Mark @hitsic 2019.11.02
     
 
 - NVM存储接口
+
+  每个保存的菜单项都占用32个字节的Flash空间。在保存菜单数据时，为了节约NVM（一般是Flash存储器）的寿命，采用惰性缓存的方法：则开辟一块与扇区大小相同的内存作为缓存，并开辟一个整型变量用于存储所缓存的扇区号。如要将数据写入地址 `Addr`，分三种情况：1. 如果 `Addr` 所在扇区已被缓存，则直接修改缓存区中对应位置的值。 2. 若 `Addr` 所在扇区未被缓存，且当前未缓存任何扇区，则缓存 `Addr` 所在扇区，执行情况1。 3. 若 `Addr` 所在扇区未被缓存，且当前已缓存其他扇区，则擦除已缓存扇区后将缓存写回该扇区，执行情况2。**注意：最后一次写NVM操作结束后，需要手动将已缓存扇区写回NVM。**
 
 ### 附录1：符号说明
 

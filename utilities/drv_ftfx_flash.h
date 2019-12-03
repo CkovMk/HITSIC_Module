@@ -65,7 +65,12 @@ extern "C" {
 
 
 
-
+	/**
+	 * @brief 将给定的逻辑地址转换为物理地址
+	 * 
+	 * @param _addr  待转换的逻辑地址
+	 * @return uint32_t 转换后的物理地址
+	 */
 	uint32_t FLASH_GetPhysicalAddress(uint32_t _addr);
 
 
@@ -74,6 +79,8 @@ extern "C" {
 
 	/**
 	 * @brief   flash地址读取
+	 * 
+	 * 注意：K66的Flash仅支持8字节对齐操作。
 	 *
 	 * @param  {uint8_t*} dst     : 读出数据的目标地址
 	 * @param  {uint32_t} sectors : 扇区号，0是k66倒数一块扇区，1是倒数第2块扇区，以此类推
@@ -91,6 +98,8 @@ extern "C" {
 
 	/**
 	 * @brief   flash地址写入
+	 * 
+	 * 注意：K66的Flash仅支持8字节对齐操作。
 	 *
 	 * @param  {uint8_t*} dst     : 读出数据的目标地址
 	 * @param  {uint32_t} sectors : 扇区号，0是k66倒数一块扇区，1是倒数第2块扇区，以此类推
