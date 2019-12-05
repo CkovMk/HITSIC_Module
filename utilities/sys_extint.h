@@ -27,13 +27,22 @@
 ***************************************************************************************************************************/
 #pragma once
 
-#ifndef SYS_EXTINT_H
-#define SYS_EXTINT_H
+#ifndef UTILITIES_SYS_EXTINT_H_
+#define UTILITIES_SYS_EXTINT_H_
 #include "inc_stdlib.h"
 #include "inc_fsl_mk66f18.h"
 #include "hitsic_common.h"
+#include "sys_extint_port.hpp"
 
 #include "lib_list.h"
+
+#if defined(D_MK66F18_SYS_EXTINT_PORT_HPP_) //CPU Selection
+
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef struct _extint_irqNode_t
 {
  	uint32_t pin_mask;
@@ -41,9 +50,11 @@ typedef struct _extint_irqNode_t
 	void (*callback)(void);
 }extint_irqNode_t;
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+extern list_t PORTA_irq_list;
+extern list_t PORTB_irq_list;
+extern list_t PORTC_irq_list;
+extern list_t PORTD_irq_list;
+extern list_t PORTE_irq_list;
 
 /**
  * @brief	外部中断管理器初始化，使用之前一定要初始化
@@ -95,5 +106,13 @@ void PORTX_IRQHandler(PORT_Type* _port, list_t* _list);
 #ifdef __cplusplus
 }
 #endif
-#endif // ! SYS_EXTINT_H
+
+
+#else	// CPU Selection
+#error "C API does NOT support this CPU!"
+#endif 	// CPU Selection
+
+
+#endif // ! UTILITIES_SYS_EXTINT_H_
+
 

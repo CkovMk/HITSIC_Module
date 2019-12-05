@@ -43,18 +43,17 @@
 
 #pragma once
 
-#ifndef SYS_PITMGR_H
-#define SYS_PITMGR_H
+#ifndef UTILITIES_SYS_PITMGR_H_
+#define UTILITIES_SYS_PITMGR_H_
 
 #include "inc_stdlib.h"
 #include "inc_fsl_mk66f18.h"
 #include "hitsic_common.h"
+#include "sys_pitmgr_port.hpp"
 
 #include "lib_list.h"
 
-#if defined(HITSIC_USE_SYS_PITMGR) && (HITSIC_USE_SYS_PITMGR > 0)
-
-#define RTE_PIT_CLKFREQ CLOCK_GetFreq(kCLOCK_BusClk)
+#if defined(D_MK66F18_SYS_PITMGR_PORT_HPP_) //CPU Selection
 
 #ifdef __cplusplus
 extern "C" {
@@ -193,8 +192,10 @@ void PITMGR_Isr(void);
 }
 #endif
 
+#else	// CPU Selection
+#error "C API does NOT support this CPU!"
+#endif 	// CPU Selection
 
-#endif // HITSIC_USE_SYS_PITMGR
 
 
-#endif // ! SYS_PITMGR_H
+#endif // ! UTILITIES_SYS_PITMGR_H_

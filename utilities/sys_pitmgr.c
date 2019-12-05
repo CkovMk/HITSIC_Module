@@ -17,8 +17,7 @@
 
 #include "sys_pitmgr.h"
 
-#if defined(HITSIC_USE_SYS_PITMGR) && (HITSIC_USE_SYS_PITMGR > 0)
-
+#if defined(D_MK66F18_SYS_PITMGR_PORT_HPP_) //CPU Selection
 
 #ifdef __cplusplus
 extern "C" {
@@ -148,7 +147,7 @@ void PITMGR_Isr(void)
 	++pitmgr_timer_ms;
 }
 
-#if defined(HTISIC_PITMGR_USE_IRQHANDLER) && (HTISIC_PITMGR_USE_IRQHANDLER > 0)
+#if defined(HITSIC_PITMGR_DEFAULT_IRQ) && (HITSIC_PITMGR_DEFAULT_IRQ > 0)
 
 void PIT2_IRQHandler(void)
 {
@@ -156,7 +155,7 @@ void PIT2_IRQHandler(void)
 	PITMGR_Isr();
 }
 
-#endif // ! HTISIC_PITMGR_USE_IRQHANDLER
+#endif //CPU Selection
 
 
 #ifdef __cplusplus
