@@ -5,7 +5,7 @@
  *      Author: CkovMk
  */
 
-#include "sys_extint.h"
+#include "sys_extint.hpp"
 
 PORT_Type *EXTINT_GetPortInst(GPIO_Type *gpio)
 {

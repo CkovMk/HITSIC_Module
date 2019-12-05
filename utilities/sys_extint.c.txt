@@ -37,7 +37,18 @@ status_t EXTINT_Init()
 	List_Constructor(&PORTC_irq_list, sizeof(extint_irqNode_t));
 	List_Constructor(&PORTD_irq_list, sizeof(extint_irqNode_t));
 	List_Constructor(&PORTE_irq_list, sizeof(extint_irqNode_t));
-    
+#if defined(HITSIC_EXTMGR_INITLIZE) && (HITSIC_EXTMGR_INITLIZE > 0)
+    NVIC_SetPriority(PORTA_IRQn, 6);
+	NVIC_SetPriority(PORTB_IRQn, 6);
+	NVIC_SetPriority(PORTC_IRQn, 6);
+	NVIC_SetPriority(PORTD_IRQn, 6);
+	NVIC_SetPriority(PORTE_IRQn, 6);
+	EnableIRQ(PORTA_IRQn);
+	EnableIRQ(PORTB_IRQn);
+	EnableIRQ(PORTC_IRQn);
+	EnableIRQ(PORTD_IRQn);
+	EnableIRQ(PORTE_IRQn);
+#endif // ! HITSIC_EXTMGR_INITLIZE
 	return result;
 }
 

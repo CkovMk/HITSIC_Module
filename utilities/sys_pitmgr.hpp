@@ -1,12 +1,13 @@
 #pragma once
 #ifndef UTILITIES_SYS_PITMGR_HPP_
 #define UTILITIES_SYS_PITMGR_HPP_
-
 #include "inc_stdlib.h"
 #include "inc_gnc.h"
+#include "hitsic_common.h"
 #include "sys_pitmgr_port.hpp"
 
-#if defined(D_RT1052_SYS_PITMGR_PORT_HPP_) //CPU Selection
+//CPU Selection
+#if defined(D_RT1052_SYS_PITMGR_PORT_HPP_) || defined (D_MK66F18_SYS_PITMGR_PORT_HPP_)
 
 class pitMgr_t
 {
@@ -50,22 +51,14 @@ public:
 		runOnce = 1 << 1,
 		//msgWake = 1 << 2,
 	};
+
+
 	static std::list<pitMgr_t> isrSet;
 	static uint32_t timer_ms;
 
-	static pitMgr_t& insert(uint32_t _ms, uint32_t _mso, handler_t _handler, uint32_t _ppt);
-	static status_t remove(pitMgr_t& _handle)
-	{
-		for (auto it = isrSet.begin(); it != isrSet.end(); ++it)
-		{
-			if(&(*it) == &_handle)
-			{
-				isrSet.erase(it);
-				return kStatus_Success;
-			}
-		}
-		return kStatus_Fail;
-	}
+	static status_t init(void);
+	static pitMgr_t* insert(uint32_t _ms, uint32_t _mso, handler_t _handler, uint32_t _ppt);
+	static status_t remove(pitMgr_t& _handle);
 	static void isr(void);
 
 	//isr service content
@@ -98,6 +91,30 @@ private:
 	}
 
 };
+
+
+
+
+// C wrapper
+#define PITMGR_Init()			pitMgr_t::init()
+#define PITMGR_GetLTC()			pitMgr_t::getLTC()
+#define PITMGR_GetLTC_us()		pitMgr_t::getLTC_us()
+#define PITMGR_GetLTC_ms()		pitMgr_t::getLTC_ms()
+#define PITMGR_Delay(_t)		pitMgr_t::delay(_t)
+#define PITMGR_Delay_us(_t)		pitMgr_t::delay_us(_t)
+#define PITMGR_Delay_ms(_t)		pitMgr_t::delay_ms(_t)
+
+#define pitmgr_handle_t pitMgr_t
+#define pitmgr_pptEnable		pitMgr_t::enable
+#define pitmgr_pptRunOnce		pitMgr_t::runOnce
+
+#define PITMGR_HandleSetup(_h, _ms, _mso, _handler, _ppt)	_h->setup(_ms, _mso, _handler, _ppt)
+#define PITMGR_HandleInsert(_ms, _mso, _handler, _ppt) 		pitMgr_t::insert(_ms, _mso, _handler, _ppt)
+#define PITMGR_HandleSetEnable(_h, b)		_h->setEnable(b)
+#define PITMGR_HandleRemove(_h)				pitMgr_t::remove(_h)
+#define PITMGR_Isr()						pitMgr_t::isr()
+
+
 
 #else	//CPU Selection
 

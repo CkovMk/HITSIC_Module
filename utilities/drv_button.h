@@ -30,8 +30,8 @@
 #include "inc_stdlib.h"
 #include "inc_fsl_mk66f18.h"
 #include "hitsic_common.h"
-#include "sys_extint.h"
-#include "sys_pitmgr.h"
+#include "sys_extint.hpp"
+#include "sys_pitmgr.hpp"
 
 
 #ifdef __cplusplus
