@@ -18,9 +18,9 @@
 #ifndef _HITSIC_HAL_H_
 #define _HITSIC_HAL_H_
 
-#ifndef CPU_MK66FX1M0VLQ18
+#ifndef CPU_MIMXRT1052DVL6B
 #error CPU incorrect !
-#endif // ! CPU_MK66FX1M0VLQ18
+#endif // ! CPU_MIMXRT1052
 
 #include "inc_fsl_rt1052.h"
 #include <stdint.h>
