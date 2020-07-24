@@ -18,7 +18,6 @@
 #define RTE_SPI_H
 
 #include "inc_stdlib.h"
-#include "inc_fsl_mk66f18.h"
 #include "hitsic_common.h"
 
 #ifdef __cplusplus

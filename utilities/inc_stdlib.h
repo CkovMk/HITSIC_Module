@@ -31,7 +31,7 @@
 #ifdef __cplusplus
 
 //C++ Other
-#include "iostream"
+//#include "iostream"	//too large and seems useless in mcu.
 #include "algorithm"
 #include "stdexcept"
 #include "string"

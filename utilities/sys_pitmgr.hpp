@@ -16,7 +16,11 @@ public:
 	//LifeTimeCounter
 	static uint64_t getLTC(void)
 	{
+#if defined(HITSIC_PITMGR_HAS_LTC) && (HITSIC_PITMGR_HAS_LTC == 1U)
 		return ULLONG_MAX - PIT_GetLifetimeTimerCount(PIT);
+#else
+		return 0;
+#endif // ! HITSIC_PITMGR_HAS_LTC
 	}
 	static uint64_t getLTC_us(void)
 	{
@@ -42,6 +46,7 @@ public:
 		uint64_t cnt = getLTC() + MSEC_TO_COUNT(_t, RTE_PIT_CLKFREQ);
 		while(getLTC() < cnt);
 	}
+
 
 	//isr service manager
 	typedef void (*handler_t)(void);

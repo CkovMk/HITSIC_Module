@@ -37,7 +37,6 @@
 #ifndef DRV_IMU_INV_H
 #define DRV_IMU_INV_H
 #include "inc_stdlib.h"
-#include "inc_fsl_mk66f18.h"
 #include "hitsic_common.h"
 #include "rte_i2c.h"
 #include "rte_softi2c.h"

@@ -1,7 +1,6 @@
 #ifndef _APP_MENU_DEF_H_
 #define _APP_MENU_DEF_H_
 #include "inc_stdlib.h"
-#include "inc_fsl_mk66f18.h"
 #include "hitsic_common.h"
 
 #include "app_menu_port.h"

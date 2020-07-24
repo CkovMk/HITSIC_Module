@@ -17,7 +17,7 @@
 
 #define HITSIC_PITMGR_DEFAULT_IRQ 	(1U)
 
-
+#define HITSIC_PITMGR_HAS_LTC (1U)
 
 
 #endif /* D_MK66F18_SYS_PITMGR_PORT_HPP_ */

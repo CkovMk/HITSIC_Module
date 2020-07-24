@@ -35,7 +35,6 @@
 #pragma once
 #ifndef _DRV_FTFX_FLASH_H_
 #define _DRV_FTFX_FLASH_H_
-#include "inc_fsl_mk66f18.h"
 #include "inc_stdlib.h"
 #include "hitsic_common.h"
 

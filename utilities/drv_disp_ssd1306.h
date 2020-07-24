@@ -19,9 +19,8 @@ qq：512924543
 #ifndef DRV_DISP_SSD1306_H
 #define DRV_DISP_SSD1306_H
 #include "inc_stdlib.h"
-#include "inc_fsl_mk66f18.h"
 #include "hitsic_common.h"
-#include "drv_cam_def.h"
+#include "inc_gnc.h"
      
 
 
@@ -79,7 +78,7 @@ int OLED_Printf(uint16 Row, uint16 off, const char* Format, ...);
  * @param {camera_img_t*} image : 图像采集结构体
  * @param {uint8_t} mono_th     : 二值化阈值 
  */
-void OLED_PrintHalfImg(camera_img_t* image, uint8_t mono_th);
+//void OLED_PrintHalfImg(camera_img_t* image, uint8_t mono_th);
 
 
 

@@ -37,7 +37,6 @@
 #ifndef LIB_LIST_H
 #define LIB_LIST_H
 #include "inc_stdlib.h"
-#include "inc_fsl_mk66f18.h"
 #include "hitsic_common.h"
 //TODO: remove stdafx.h
 
