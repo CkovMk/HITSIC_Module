@@ -12,7 +12,9 @@
 
 //config marco
 #define HTISIC_EXTINT_DEFAULT_IRQ 	(1U)
-#define HITSIC_EXTMGR_INITLIZE 		(1U)
+
+
+
 
 
 //HAL marco
@@ -30,8 +32,24 @@
 
 */
 
+#define HITSIC_EXTMGR_INITLIZE 		(1U)
+#if defined(HITSIC_EXTMGR_INITLIZE) && (HITSIC_EXTMGR_INITLIZE > 0)
+inline void EXTINT_PlatformInit(void)
+{
+	NVIC_SetPriority(PORTA_IRQn, 6);
+	NVIC_SetPriority(PORTB_IRQn, 6);
+	NVIC_SetPriority(PORTC_IRQn, 6);
+	NVIC_SetPriority(PORTD_IRQn, 6);
+	NVIC_SetPriority(PORTE_IRQn, 6);
+	EnableIRQ(PORTA_IRQn);
+	EnableIRQ(PORTB_IRQn);
+	EnableIRQ(PORTC_IRQn);
+	EnableIRQ(PORTD_IRQn);
+	EnableIRQ(PORTE_IRQn);
+}
+#endif // ! HITSIC_EXTMGR_INITLIZE
 
-PORT_Type *EXTINT_GetPortInst(GPIO_Type *gpio);
+INTC_Type *EXTINT_GetPortInst(GPIO_Type *gpio);
 
 
 

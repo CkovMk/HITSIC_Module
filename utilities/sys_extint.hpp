@@ -8,7 +8,7 @@
 
 
 //CPU Selection
-#if defined(D_RT1052_SYS_EXTINT_PORT_HPP_) || defined(D_MK66F18_SYS_EXTINT_PORT_HPP_)
+#if defined(D_RT1052_SYS_EXTINT_PORT_HPP_) || defined (D_MK66F18_SYS_EXTINT_PORT_HPP_) || defined (D_KV10Z7_SYS_EXTINT_PORT_HPP_)
 
 class extInt_t
 {

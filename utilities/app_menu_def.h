@@ -5,8 +5,7 @@
 
 #include "app_menu_port.h"
 #include "drv_button.h"
-#include "drv_disp_ssd1306.h"
-#include "drv_ftfx_flash.h"
+#include "drv_disp_ssd1306.hpp"
 #include "lib_list.h"
 
 
@@ -258,6 +257,11 @@ typedef enum _menu_keyOpType_t
 } menu_keyOpType_t;
 
 typedef uint32_t menu_keyOp_t;
+
+/**
+ * @brief : 按键操作生成宏
+ */
+#define MENU_BUTTON_MAKE_OP(code, type) (menuOpCode_##code|menuOpType_##type)
 
 extern menu_keyOp_t menu_keyOpBuff;
 

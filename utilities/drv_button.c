@@ -22,14 +22,6 @@ extern "C"
 {
 #endif
 
-    //#ifdef CPU_MK66FX1M0VLQ18
-    PORT_Type *BUTTON_GetPortInst(GPIO_Type *gpio)
-    {
-        static PORT_Type *lut[5] = PORT_BASE_PTRS;
-        return lut[((uint32_t)gpio - GPIOA_BASE) / (GPIOB_BASE - GPIOA_BASE)];
-    }
-    //#endif // ! CPU_MK66FX1M0VLQ18
-
     void BUTTON_Setup(button_t *_inst, GPIO_Type *_gpio, uint32_t _pin)
     {
         _inst->gpio = _gpio;
@@ -66,7 +58,7 @@ extern "C"
     {
         assert(_inst);
         _inst->intCfg = _int;
-        PORT_SetPinInterruptConfig(BUTTON_GetPortInst(_inst->gpio), _inst->pin, _inst->intCfg);
+        PORT_SetPinInterruptConfig(EXTINT_GetPortInst(_inst->gpio), _inst->pin, _inst->intCfg);
     }
 
     uint32_t BUTTON_ReadPin(button_t *_inst)

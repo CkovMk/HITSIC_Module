@@ -5,10 +5,10 @@
  *      Author: CkovMk
  */
 
-#ifndef D_MK66F18_SYS_UARTMGR_PORT_HPP_
-#define D_MK66F18_SYS_UARTMGR_PORT_HPP_
+#ifndef D_KV10Z7_SYS_UARTMGR_PORT_HPP_
+#define D_KV10Z7_SYS_UARTMGR_PORT_HPP_
 
-#include "inc_fsl_mk66f18.h"
+#include "hitsic_common.h"
 
 #define HITSIC_USE_UARTMGR (1U)
 
@@ -35,14 +35,14 @@
 
 
 #define UARTMGR_INST_DEFINITION	\
-	static uartMgr_t uart0(UART0);\
-	static uartMgr_t uart1(UART1);
+	static uartMgr_t uart0(UART0);
+	//static uartMgr_t uart1(UART1);
 
 #define UARTMGR_INST_SWITCHCASE \
-	case UART0_BASE: return uart0; break;\
-	case UART1_BASE: return uart1; break;
+	case UART0_BASE: return uart0; break;
+	//case UART1_BASE: return uart1; break;
+
 
 #endif // ! HITSIC_USE_UARTMGR
-
 
 #endif /* D_MK66F18_SYS_UARTMGR_PORT_HPP_ */

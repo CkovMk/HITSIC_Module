@@ -3,6 +3,8 @@
 
 #include "app_menu_def.h"
 
+#if defined(HITSIC_MENU_USE_BUTTON) && (HITSIC_MENU_USE_BUTTON > 0)
+
 /**
  * @brief 按键处理部分 函数调用宏定义
  */
@@ -31,13 +33,11 @@ extern "C"
  */
 #define MENU_BUTTON_COUNT 5
 
-/**
- * @brief : 按键操作生成宏
- */
-#define MENU_BUTTON_MAKE_OP(code, type) (menuOpCode_##code|menuOpType_##type)
+
 
     //test marco
     //MENU_BUTTON_MAKE_OP(ok,shrt)
+
 
 
 
@@ -62,8 +62,13 @@ extern "C"
 	 */
     void MENU_ButtonCallback(button_t *_inst);
 
+
+
+
 #ifdef __cplusplus
 }
 #endif
+
+#endif // ! HITSIC_MENU_USE_BUTTON
 
 #endif // ! _APP_MENU_BUTTON_H_

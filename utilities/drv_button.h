@@ -53,7 +53,7 @@ extern "C"{
 
 #define BUTTON_PITMGR_TIME_MS 10
 
-#define BUTTON_TIMER_MS     (PITMGR_GetLTC_ms()) 
+#define BUTTON_TIMER_MS     (PITMGR_GetTimer_ms())
 
     typedef enum 
     {
@@ -80,13 +80,6 @@ extern "C"{
         button_status_t status;
         button_handler_t handler;
     }button_t;
-
-    
-    
-    //#ifdef CPU_MK66FX1M0VLQ18
-    PORT_Type *BUTTON_GetPortInst(GPIO_Type *gpio);
-
-    //#endif // ! CPU_MK66FX1M0VLQ18
 
     void BUTTON_Setup(button_t* _inst, GPIO_Type *_gpio, uint32_t _pin);
 

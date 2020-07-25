@@ -7,6 +7,9 @@
 
 #include "sys_pitmgr.hpp"
 
+
+#if defined(HITSIC_USE_PITMGR) && (HITSIC_USE_PITMGR > 0)
+
 #ifdef __cplusplus
 extern "C"{
 #endif
@@ -25,3 +28,5 @@ void LPTMR0_IRQHandler(void)
 
 
 
+
+#endif // ! HITSIC_USE_PITMGR

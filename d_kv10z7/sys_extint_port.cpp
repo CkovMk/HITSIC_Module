@@ -7,11 +7,6 @@
 
 #include "sys_extint.hpp"
 
-PORT_Type *EXTINT_GetPortInst(GPIO_Type *gpio)
-{
-	static PORT_Type *lut[5] = PORT_BASE_PTRS;
-	return lut[((uint32_t)gpio - GPIOA_BASE) / (GPIOB_BASE - GPIOA_BASE)];
-}
 
 
 #ifdef __cplusplus
@@ -19,9 +14,10 @@ extern "C"{
 #endif
 
 #if defined(HTISIC_EXTINT_DEFAULT_IRQ) && (HTISIC_EXTINT_DEFAULT_IRQ > 0)
-void PORTB_IRQHandler(void){PORTX_IRQHandler(PORTB, &PORTB_irq_list);}
+void PORTA_IRQHandler(void){PORTX_IRQHandler(PORTA, &PORTA_irq_list);}
 void PORTB_PORTC_PORTD_PORTE_IRQHandler(void)
 {
+	PORTX_IRQHandler(PORTB, &PORTB_irq_list);
 	PORTX_IRQHandler(PORTC, &PORTC_irq_list);
 	PORTX_IRQHandler(PORTD, &PORTD_irq_list);
 	PORTX_IRQHandler(PORTE, &PORTE_irq_list);
