@@ -5,7 +5,10 @@
 #include "inc_stdlib.h"
 #include "inc_gnc.h"
 
+#if defined(HITSIC_USE_UARTMGR) && (HITSIC_USE_UARTMGR > 0)
 
+//CPU Selection
+#if defined(D_RT1052_SYS_UARTMGR_PORT_HPP_) || defined (D_MK66F18_SYS_UARTMGR_PORT_HPP_) || defined (D_KV10Z7_SYS_UARTMGR_PORT_HPP_)
 
 class uartMgr_t
 {
@@ -87,5 +90,8 @@ private:
 	}
 };
 
+#endif // ! CPU Selection
+
+#endif // ! HITSIC_USE_UARTMGR
 
 #endif // ! _UARTMGR_HPP_

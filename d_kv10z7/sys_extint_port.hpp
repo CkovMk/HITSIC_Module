@@ -5,15 +5,13 @@
  *      Author: CkovMk
  */
 
-#ifndef D_MK66F18_SYS_EXTINT_PORT_HPP_
-#define D_MK66F18_SYS_EXTINT_PORT_HPP_
+#ifndef D_KV10Z7_SYS_EXTINT_PORT_HPP_
+#define D_KV10Z7_SYS_EXTINT_PORT_HPP_
 
 #include "hitsic_common.h"
 
 //config marco
-#define HITSIC_EXTMGR_INITLIZE 		(0U)
 
-#define HTISIC_EXTINT_DEFAULT_IRQ 	(1U)
 
 
 //HAL marco
@@ -32,7 +30,27 @@
 */
 
 
-PORT_Type *EXTINT_GetPortInst(GPIO_Type *gpio);
+#define HITSIC_EXTMGR_INITLIZE 		(1U)
+
+#if defined(HITSIC_EXTMGR_INITLIZE) && (HITSIC_EXTMGR_INITLIZE > 0)
+inline void EXTINT_PlatformInit(void)
+{
+	NVIC_SetPriority(PORTA_IRQn, 6);
+	NVIC_SetPriority(PORTB_PORTC_PORTD_PORTE_IRQn, 6);
+	EnableIRQ(PORTA_IRQn);
+	EnableIRQ(PORTB_PORTC_PORTD_PORTE_IRQn);
+}
+#endif // ! HITSIC_EXTMGR_INITLIZE
+
+
+#define HTISIC_EXTINT_DEFAULT_IRQ 	(1U)
+
+
+inline INTC_Type *EXTINT_GetPortInst(GPIO_Type *gpio)
+{
+	static PORT_Type *lut[5] = PORT_BASE_PTRS;
+	return lut[((uint32_t)gpio - GPIOA_BASE) / (GPIOB_BASE - GPIOA_BASE)];
+}
 
 
 

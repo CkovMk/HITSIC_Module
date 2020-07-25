@@ -1,7 +1,7 @@
 #include <sys_extint.hpp>
 
 //CPU Selection
-#if defined(D_RT1052_SYS_EXTINT_PORT_HPP_) || defined(D_MK66F18_SYS_EXTINT_PORT_HPP_)
+#if defined(D_RT1052_SYS_EXTINT_PORT_HPP_) || defined (D_MK66F18_SYS_EXTINT_PORT_HPP_) || defined (D_KV10Z7_SYS_EXTINT_PORT_HPP_)
 
 std::map<INTC_Type*, std::map<uint32_t, extInt_t>> extInt_t::isrSet;
 
@@ -10,16 +10,7 @@ status_t extInt_t::init(void)
 	status_t result = kStatus_Success;
 	isrSet.clear();
 #if defined(HITSIC_EXTMGR_INITLIZE) && (HITSIC_EXTMGR_INITLIZE > 0)
-    NVIC_SetPriority(PORTA_IRQn, 6);
-	NVIC_SetPriority(PORTB_IRQn, 6);
-	NVIC_SetPriority(PORTC_IRQn, 6);
-	NVIC_SetPriority(PORTD_IRQn, 6);
-	NVIC_SetPriority(PORTE_IRQn, 6);
-	EnableIRQ(PORTA_IRQn);
-	EnableIRQ(PORTB_IRQn);
-	EnableIRQ(PORTC_IRQn);
-	EnableIRQ(PORTD_IRQn);
-	EnableIRQ(PORTE_IRQn);
+	EXTINT_PlatformInit();
 #endif // ! HITSIC_EXTMGR_INITLIZE
 	return result;
 }

@@ -1,7 +1,7 @@
 #include "app_menu_nvm.h"
 
 
-
+#if defined(HITSIC_MENU_USE_NVM) && (HITSIC_MENU_USE_NVM > 0)
 
 #ifdef __cplusplus
 extern "C"{
@@ -22,14 +22,14 @@ extern "C"{
 	/**
 	 * @brief : 全局存储 Global Storage
 	 */
-	uint32_t menu_nvm_glSectCnt = 2u;	/// 全局存储区占用的扇区数
-	uint32_t menu_nvm_glSectOffset = 2u; /// 全局存储区扇区偏移
+	uint32_t menu_nvm_glSectCnt = HITSIC_MENU_NVM_GLOBAL_SECT_CNT;	/// 全局存储区占用的扇区数
+	uint32_t menu_nvm_glSectOffset = HITSIC_MENU_NVM_GLOBAL_SECT_OFFSET; /// 全局存储区扇区偏移
 	uint32_t menu_nvm_glAddrOffset;		 /// 全局存储区地址偏移
 	/**
 	 * @brief : 局部存储 Region Storage
 	 */
 
-	uint32_t menu_nvm_rgSectCnt = 4u;				/// 每个局部存储区占用的扇区数
+	uint32_t menu_nvm_rgSectCnt = HITSIC_MENU_NVM_REGION_SECT_CNT;				/// 每个局部存储区占用的扇区数
 	uint32_t menu_nvm_rgSectOffset[menu_nvm_rgCnt]; /// 三个局部存储区的扇区偏移
 
 	uint32_t menu_nvm_rgAddrOffset[menu_nvm_rgCnt]; /// 三个局部存储区的地址偏移
@@ -59,7 +59,14 @@ extern "C"{
 	status_t MENU_NvmRead(uint32_t _addr, void *_buf, uint32_t _byteCnt)
 	{
 		HITSIC_MENU_PRINTF("Verbose: MENU: Nvm Rx Addr = 0x%8.8x, Size = %4.4d\n", _addr, _byteCnt);
-		return FLASH_AddressRead(_addr, _buf, _byteCnt);
+		if(HITSIC_MENU_NVM_RETVAL_SUCCESS == HITSIC_MENU_NVM_AddressRead(_addr, _buf, _byteCnt))
+		{
+			return kStatus_Success;
+		}
+		else
+		{
+			return kStatus_Fail;
+		}
 	}
 
 	bool MENU_NvmCacheable(uint32_t _addr)
@@ -86,7 +93,7 @@ extern "C"{
 			HITSIC_MENU_PRINTF("Warning: MENU: Nvm Cached Sector %2.2d\n Failed! [-MemMalloc]", menu_nvm_cachedSector);
 			return kStatus_Fail;
 		}
-		if (kStatus_FTFx_Success != FLASH_SectorRead(menu_nvm_cachedSector, (void *)menu_nvm_cache))
+		if (HITSIC_MENU_NVM_RETVAL_SUCCESS != HITSIC_MENU_NVM_SectorRead(menu_nvm_cachedSector, (void *)menu_nvm_cache))
 		{
 			free(menu_nvm_cache);
 			menu_nvm_cache = NULL;
@@ -102,7 +109,7 @@ extern "C"{
 	{
 		if (menu_nvm_cache == NULL)
 		{
-			if(kStatus_Success != MENU_NvmCacheSector(_addr / menu_nvm_sectorSize))
+			if(HITSIC_MENU_NVM_RETVAL_SUCCESS != MENU_NvmCacheSector(_addr / menu_nvm_sectorSize))
 			{
 				return kStatus_Fail;
 			}
@@ -114,7 +121,7 @@ extern "C"{
 
 	status_t MENU_NvmUpdateCache(void)
 	{
-		if (kStatus_FTFx_Success != FLASH_SectorWrite(menu_nvm_cachedSector, menu_nvm_cache))
+		if (HITSIC_MENU_NVM_RETVAL_SUCCESS != HITSIC_MENU_NVM_SectorWrite(menu_nvm_cachedSector, menu_nvm_cache))
 		{
 			return kStatus_Fail;
 		}
@@ -137,6 +144,23 @@ extern "C"{
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 #ifdef __cplusplus
 }
 #endif 
+
+#endif // ! HITSIC_MENU_USE_NVM
+

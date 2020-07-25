@@ -1,6 +1,6 @@
 #include "app_menu_button.h"
 
-
+#if defined(HITSIC_MENU_USE_BUTTON) && (HITSIC_MENU_USE_BUTTON > 0)
 
 #ifdef __cplusplus
 extern "C"{
@@ -10,7 +10,7 @@ extern "C"{
 	 * ********** 按键操作定义 **********
 	 */
 
-	menu_keyOp_t menu_keyOpBuff;
+
 
 	button_t menu_button[MENU_BUTTON_COUNT] = HITSIC_MENU_BUTTON_5DIR_BSP_INIT;
 
@@ -36,11 +36,11 @@ extern "C"{
 			BUTTON_Setup(&menu_button[i], menu_button[i].gpio, menu_button[i].pin);
 			BUTTON_InstallHandler(&menu_button[i], (void(*)(void*))MENU_ButtonCallback);
 		}
-		EXTINT_PortSetup(BUTTON_GetPortInst(menu_button[0].gpio), menu_button[0].pin, 0, MENU_BUTTON_MAKE_EXT_ISR(0));
-		EXTINT_PortSetup(BUTTON_GetPortInst(menu_button[1].gpio), menu_button[1].pin, 0, MENU_BUTTON_MAKE_EXT_ISR(1));
-		EXTINT_PortSetup(BUTTON_GetPortInst(menu_button[2].gpio), menu_button[2].pin, 0, MENU_BUTTON_MAKE_EXT_ISR(2));
-		EXTINT_PortSetup(BUTTON_GetPortInst(menu_button[3].gpio), menu_button[3].pin, 0, MENU_BUTTON_MAKE_EXT_ISR(3));
-		EXTINT_PortSetup(BUTTON_GetPortInst(menu_button[4].gpio), menu_button[4].pin, 0, MENU_BUTTON_MAKE_EXT_ISR(4));
+		EXTINT_PortSetup(EXTINT_GetPortInst(menu_button[0].gpio), menu_button[0].pin, 0, MENU_BUTTON_MAKE_EXT_ISR(0));
+		EXTINT_PortSetup(EXTINT_GetPortInst(menu_button[1].gpio), menu_button[1].pin, 0, MENU_BUTTON_MAKE_EXT_ISR(1));
+		EXTINT_PortSetup(EXTINT_GetPortInst(menu_button[2].gpio), menu_button[2].pin, 0, MENU_BUTTON_MAKE_EXT_ISR(2));
+		EXTINT_PortSetup(EXTINT_GetPortInst(menu_button[3].gpio), menu_button[3].pin, 0, MENU_BUTTON_MAKE_EXT_ISR(3));
+		EXTINT_PortSetup(EXTINT_GetPortInst(menu_button[4].gpio), menu_button[4].pin, 0, MENU_BUTTON_MAKE_EXT_ISR(4));
 
 		menu_butonPitMgrHandle = PITMGR_HandleInsert(BUTTON_PITMGR_TIME_MS, 0, MENU_ButtonPitIsr, pitmgr_pptEnable);
 	}
@@ -87,3 +87,7 @@ extern "C"{
 #ifdef __cplusplus
 }
 #endif 
+
+#endif // ! HITSIC_MENU_USE_BUTTON
+
+

@@ -23,7 +23,7 @@
  * @date 		v0.1.1		2019.11.02
  * 
  * @note    :   依赖库：drv_ftfx_flash、drv_button、drv_disp_ssd1306
-                依赖库必须先初始化。
+ 依赖库必须先初始化。
  * @note 	:	预发布版本，代码不完整，仅供学习。
  */
 
@@ -39,7 +39,6 @@ extern "C"
 	 */
 
 	//menu_t menuInst;
-
 	menu_list_t *menu_currList;
 	menu_itemIfce_t *menu_currItem;
 	menu_list_t *menu_menuRoot;
@@ -52,25 +51,26 @@ extern "C"
 
 	char menu_dispStrBuf[MENU_DISP_STRBUF_ROW][MENU_DISP_STRBUF_COL];
 
+	menu_keyOp_t menu_keyOpBuff;
+
 	/**
 	 * ********** 菜单顶层操作接口 **********
 	 */
 
 	void MENU_Init(void)
 	{
-
+#if defined(HITSIC_MENU_USE_NVM) && (HITSIC_MENU_USE_NVM > 0)
 		/**
-	 * @brief : 全局存储 Global Storage
-	 */
-		menu_nvm_glSectCnt = 2u;											 /// 全局存储区占用的扇区数
-		menu_nvm_glSectOffset = 2u;											 /// 全局存储区扇区偏移
-		menu_nvm_glAddrOffset = menu_nvm_glSectOffset * menu_nvm_sectorSize; /// 全局存储区地址偏移
+		 * @brief : 全局存储 Global Storage
+		 */
+		menu_nvm_glSectCnt = HITSIC_MENU_NVM_GLOBAL_SECT_CNT;	/// 全局存储区占用的扇区数
+		menu_nvm_glSectOffset = HITSIC_MENU_NVM_GLOBAL_SECT_OFFSET;/// 全局存储区扇区偏移
+		menu_nvm_glAddrOffset = menu_nvm_glSectOffset * menu_nvm_sectorSize;/// 全局存储区地址偏移
 		/**
-	 * @brief : 局部存储 Region Storage
-	 */
-		//menu_nvm_rgCnt = 3u;	 /// 局部存储区的数量
-		menu_nvm_rgSectCnt = 4u; /// 每个局部存储区占用的扇区数
-								 /// 三个局部存储区的扇区偏移
+		 * @brief : 局部存储 Region Storage
+		 */
+		menu_nvm_rgSectCnt = HITSIC_MENU_NVM_REGION_SECT_CNT; /// 每个局部存储区占用的扇区数
+		/// 三个局部存储区的扇区偏移
 		{
 			menu_nvm_rgSectOffset[0] = menu_nvm_glSectOffset + menu_nvm_glSectCnt + 0u * menu_nvm_rgSectCnt;
 			menu_nvm_rgSectOffset[1] = menu_nvm_glSectOffset + menu_nvm_glSectCnt + 1u * menu_nvm_rgSectCnt;
@@ -83,15 +83,17 @@ extern "C"
 			menu_nvm_rgAddrOffset[2] = menu_nvm_rgSectOffset[2] * menu_nvm_sectorSize;
 		}
 		/**
-	 * @brief : 菜单存储占用的总扇区数
-	 */
+		 * @brief : 菜单存储占用的总扇区数
+		 */
 		menu_nvm_totalSectCnt = menu_nvm_glSectCnt + menu_nvm_rgCnt * menu_nvm_rgSectCnt;
 		/**
-	 * @brief : 每个菜单项保存时占用的字节数
-	 */
+		 * @brief : 每个菜单项保存时占用的字节数
+		 */
 		menu_nvm_dataSize = 32u;
 
 		menu_nvm_statusFlagAddr = menu_nvm_glAddrOffset + 0u;
+
+#endif // ! HITSIC_MENU_USE_NVM
 
 		menu_menuRoot = MENU_ListConstruct("MenuRoot", HITSIC_MENU_ROOT_SIZE, (menu_list_t *)1);
 		assert(menu_menuRoot);
@@ -101,6 +103,7 @@ extern "C"
 		menu_currRegionNum = 0;
 		menu_statusFlag = 0;
 
+#if defined(HITSIC_MENU_USE_NVM) && (HITSIC_MENU_USE_NVM > 0)
 		menu_manageList = MENU_ListConstruct("Manager", 21, menu_menuRoot);
 		assert(menu_manageList);
 		MENU_ListInsert(menu_menuRoot, MENU_ItemConstruct(menuType, menu_manageList, "MenuManager", 0, 0));
@@ -115,14 +118,15 @@ extern "C"
 			MENU_ListInsert(menu_manageList, MENU_ItemConstruct(variType, &menu_nvmCopyDst, "CopyDst(0-2)", 2, menuItem_data_global | menuItem_data_NoSave));
 			MENU_ListInsert(menu_manageList, MENU_ItemConstruct(procType, (void *)MENU_Data_NvmCopy_Boxed, "CopyData(S>D)", 0, 0));
 			MENU_ListInsert(menu_manageList, MENU_ItemConstruct(nullType, NULL, "", 0, 0));
-
 		}
-
+#endif // ! HITSIC_MENU_USE_NVM
 		MENU_DataSetUp();
 
 		//read...
 
+#if defined(HITSIC_MENU_USE_BUTTON) && (HITSIC_MENU_USE_BUTTON > 0)
 		MENU_ButtonSetup();
+#endif // ! HITSIC_MENU_USE_BUTTON
 
 		NVIC_SetPriority(HITSIC_MENU_SERVICE_IRQn, HITSIC_MENU_SERVICE_IRQPrio);
 		NVIC_EnableIRQ(HITSIC_MENU_SERVICE_IRQn);
@@ -179,6 +183,8 @@ extern "C"
 			HITSIC_MENU_PRINTF("Warning: MENU: KeyOp remained unclear. OP = %d\n", *_op);
 		}
 	}
+
+#if defined(HITSIC_MENU_USE_NVM) && (HITSIC_MENU_USE_NVM > 0)
 
 	void MENU_Data_NvmSave(int32_t _region)
 	{
@@ -398,6 +404,8 @@ extern "C"
 		}
 		MENU_NvmWriteCache(menu_nvm_statusFlagAddr, (void *)&menu_statusFlag, sizeof(int32_t));
 	}
+
+#endif // ! HITSIC_MENU_USE_NVM
 
 	void HITSIC_MENU_SERVICE_IRQHandler(void)
 	{

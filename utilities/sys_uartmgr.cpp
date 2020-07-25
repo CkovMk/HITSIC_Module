@@ -1,4 +1,9 @@
-#include <sys_uartmgr.hpp>
+#include "sys_uartmgr.hpp"
+
+#if defined(HITSIC_USE_UARTMGR) && (HITSIC_USE_UARTMGR > 0)
+
+//CPU Selection
+#if defined(D_RT1052_SYS_UARTMGR_PORT_HPP_) || defined (D_MK66F18_SYS_UARTMGR_PORT_HPP_) || defined (D_KV10Z7_SYS_UARTMGR_PORT_HPP_)
 
 status_t uartMgr_t::txPoll(uint8_t* data, uint32_t size)
 {
@@ -161,3 +166,6 @@ void uartMgr_t::tp_txIntr(uint8_t* data, uint32_t size)
 	}
 
 }
+
+#endif // ! CPU Selection
+#endif // ! HITSIC_USE_UARTMGR

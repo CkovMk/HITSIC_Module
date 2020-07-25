@@ -3,6 +3,8 @@
 
 #include "app_menu_def.h"
 
+#if defined(HITSIC_MENU_USE_NVM) && (HITSIC_MENU_USE_NVM > 0)
+
 #ifdef __cplusplus
 extern "C"{
 #endif 
@@ -11,9 +13,9 @@ extern "C"{
  ************ NVM存储常量定义 **********
  **************************************/
 
-#define menu_nvm_rgCnt (3u) /// 局部存储区的数量
+#define menu_nvm_rgCnt HITSIC_MENU_NVM_REGION_CNT /// 局部存储区的数量
 
-#define menu_nvm_sectorSize flash_sectorSize;
+#define menu_nvm_sectorSize HITSIC_MENU_NVM_SECTOR_SIZE;
 	/**
 	 * @brief : 全局存储 Global Storage
 	 */
@@ -96,9 +98,23 @@ extern "C"{
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
 #ifdef __cplusplus
 }
 #endif 
 
+#endif // ! HITSIC_MENU_USE_NVM
 
 #endif // ! _APP_MENU_NVM_H_
