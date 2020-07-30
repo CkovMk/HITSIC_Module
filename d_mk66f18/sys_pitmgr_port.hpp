@@ -10,6 +10,9 @@
 
 #include "inc_fsl_mk66f18.h"
 
+
+#define PITMGR_USE_STD_LIST (1U)
+
 //TODO: fix this.
 #define HITSIC_PITMGR_CNTFREQ 60000000
 

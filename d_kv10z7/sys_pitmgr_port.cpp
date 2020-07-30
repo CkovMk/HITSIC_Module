@@ -20,7 +20,7 @@ void LPTMR0_IRQHandler(void)
 	LPTMR_ClearStatusFlags(LPTMR0, kLPTMR_TimerCompareFlag);
 	pitMgr_t::isr();
 }
-#endif // ! HTISIC_EXTMGR_USE_IRQHANDLER
+#endif // ! HTISIC_PITMGR_USE_IRQHANDLER
 
 #ifdef __cplusplus
 }

@@ -44,10 +44,7 @@
 /** @brief : 软件版本 */
 #define APP_MENU_VERSION (HITSIC_MAKE_VERSION(0u, 1u, 1u))
 
-/**
- * @brief : 函数调用宏定义。
- * 这些定义主要是为了简化代码。
- */
+#if defined(HITSIC_USE_APP_MENU) && (HITSIC_USE_APP_MENU > 0)
 
 #ifdef __cplusplus
 extern "C"
@@ -169,6 +166,8 @@ void MENU_SetNvmStatus(int32_t _status);
 #ifdef __cplusplus
 }
 #endif
+
+#endif // ! HITSIC_USE_APP_MENU
 
 /*! @} */
 

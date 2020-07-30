@@ -4,6 +4,8 @@
 #include "app_menu_def.h"
 #include "app_menu_button.h"
 
+#if defined(HITSIC_USE_APP_MENU) && (HITSIC_USE_APP_MENU > 0)
+
 /**
  * @brief : 菜单项类别函数命名宏定义
  */
@@ -261,5 +263,7 @@ extern "C"
 #ifdef __cplusplus
 }
 #endif
+
+#endif // ! HITSIC_USE_APP_MENU
 
 #endif // ! _APP_MENU_TYPE_H_

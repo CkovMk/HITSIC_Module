@@ -8,7 +8,7 @@
 #include "drv_disp_ssd1306.hpp"
 #include "lib_list.h"
 
-
+#if defined(HITSIC_USE_APP_MENU) && (HITSIC_USE_APP_MENU > 0)
 
 #ifdef __cplusplus
 extern "C"
@@ -283,7 +283,7 @@ typedef struct _menu_nvmData_t
 }
 #endif
 
-
+#endif // ! HITSIC_USE_APP_MENU
 
 #endif // ! _APP_MENU_DEF_H_
 

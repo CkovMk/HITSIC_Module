@@ -1,3 +1,31 @@
+/**
+ * Copyright 2018 - 2019 HITSIC
+ * All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+/**
+ * @file 	:	sys_pitmgr.hpp
+ * @author  :	Chekhov Mark/马奇科(qq:905497173)
+ * @version :	v1.0.0
+ *
+ * @date 	:	v0.1-beta.0 2019.10.28
+ * @date 	:	v0.1.1		2019.11.02
+ * @date	:	v1.0.0		2020.07.25
+ *
+ * @brief    :   定时中断管理器
+ */
+
 #pragma once
 #ifndef UTILITIES_SYS_PITMGR_HPP_
 #define UTILITIES_SYS_PITMGR_HPP_
@@ -10,6 +38,9 @@
 
 //CPU Selection
 #if defined(D_RT1052_SYS_PITMGR_PORT_HPP_) || defined (D_MK66F18_SYS_PITMGR_PORT_HPP_) || defined (D_KV10Z7_SYS_PITMGR_PORT_HPP_)
+
+
+#include "list"
 
 class pitMgr_t
 {
@@ -24,13 +55,16 @@ public:
 	};
 
 	static std::list<pitMgr_t> isrSet;
+
+
+
 	static uint32_t timer_ms;
 
-	static uint64_t getTimer_ms(void)
+	static uint32_t getTimer_ms(void)
 	{
 		return timer_ms;
 	}
-	static void delay_ms(uint64_t _t)
+	static void delay_ms(uint32_t _t)
 	{
 		uint32_t cnt = timer_ms + _t;
 		while(timer_ms < cnt);

@@ -1,5 +1,7 @@
 #include "app_menu_type.h"
 
+#if defined(HITSIC_USE_APP_MENU) && (HITSIC_USE_APP_MENU > 0)
+
 #ifdef __cplusplus
 extern "C"
 {
@@ -860,3 +862,5 @@ extern "C"
 #ifdef __cplusplus
 }
 #endif
+
+#endif // ! HITSIC_USE_APP_MENU
