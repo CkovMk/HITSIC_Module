@@ -1,0 +1,27 @@
+{
+    "files.associations": {
+        "codecvt": "cpp",
+        "complex": "cpp",
+        "cstddef": "cpp",
+        "deque": "cpp",
+        "filesystem": "cpp",
+        "fstream": "cpp",
+        "functional": "cpp",
+        "future": "cpp",
+        "limits": "cpp",
+        "memory": "cpp",
+        "mutex": "cpp",
+        "regex": "cpp",
+        "sstream": "cpp",
+        "system_error": "cpp",
+        "vector": "cpp",
+        "xhash": "cpp",
+        "xiosbase": "cpp",
+        "xlocale": "cpp",
+        "xlocbuf": "cpp",
+        "xlocmon": "cpp",
+        "xloctime": "cpp",
+        "xtree": "cpp",
+        "xutility": "cpp"
+    }
+}

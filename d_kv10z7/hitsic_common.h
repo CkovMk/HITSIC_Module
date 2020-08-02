@@ -1,5 +1,5 @@
 /**
- * Copyright 2018 - 2019 HITSIC
+ * Copyright 2018 - 2020 HITSIC
  * All rights reserved.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,39 +15,42 @@
  * limitations under the License.
  */
 
-#ifndef _HITSIC_COMMON_H_
-#define _HITSIC_COMMON_H_
+#ifndef D_KV10Z7_HITSIC_COMMON_H_
+#define D_KV10Z7_HITSIC_COMMON_H_
 
 #include "inc_fsl_kv10z7.h"
 #include "stdint.h"
-
-#ifndef CPU_MKV10Z128VLC7
-#error CPU incorrect !
-#endif // ! CPU_MKV10Z128VLC7
 
 /**
  * @brief : 软件版本产生方式定义
  */
 #define HITSIC_MAKE_VERSION(major, minor, patch) (((major) << 16) | ((minor) << 8) | (patch))
 
-
-
-
 typedef I2C_Type HAL_I2C_Type;
 typedef SPI_Type HAL_SPI_Type;
 typedef UART_Type HAL_UART_Type;
-
-
-
 
 #ifdef __cplusplus
 extern "C"{
 #endif
 
+extern uint32_t hal_criticalCnt;
 
-void HAL_EnterCritical(void);
+inline void HAL_EnterCritical(void)
+{
+	if(0u == hal_criticalCnt++)
+	{
+		__disable_irq();
+	}
+}
 
-void HAL_ExitCritical(void);
+inline void HAL_ExitCritical(void)
+{
+	if(--hal_criticalCnt == 0u)
+	{
+		__enable_irq();
+	}
+}
 
 
 
@@ -56,24 +59,9 @@ void HAL_ExitCritical(void);
 status_t HAL_I2C_Mem_ReadBlocking(HAL_I2C_Type *_i2c, uint8_t _addr, uint32_t _reg, uint8_t _regSize, uint8_t* _data, uint32_t _dataSize);
 status_t HAL_I2C_Mem_WriteBlocking(HAL_I2C_Type *_i2c, uint8_t _addr, uint32_t _reg, uint8_t _regSize, uint8_t* _data, uint32_t _dataSize);
 
-
+    
 #ifdef __cplusplus
 }
 #endif
 
-
-
-
-
-
-
-
-
-
-
-
-
-    
-
-
-#endif // ! _HITSIC_COMMON_H_
+#endif // ! D_KV10Z7_HITSIC_COMMON_H_

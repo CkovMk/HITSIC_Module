@@ -10,7 +10,7 @@
 
 #include "hitsic_common.h"
 
-#define HITSIC_USE_UARTMGR (1U)
+#define HITSIC_USE_UARTMGR (0U)
 
 #if defined(HITSIC_USE_UARTMGR) && (HITSIC_USE_UARTMGR > 0)
 
@@ -30,7 +30,7 @@
 #define UART_TransferAbortReceive 		LPUART_TransferAbortReceive
 */
 
-//TODO rename this!
+
 #define UART_TPCTRL_HEADER 0xae
 
 
@@ -42,7 +42,6 @@
 	case UART0_BASE: return uart0; break;
 	//case UART1_BASE: return uart1; break;
 
-
 #endif // ! HITSIC_USE_UARTMGR
 
-#endif /* D_MK66F18_SYS_UARTMGR_PORT_HPP_ */
+#endif // ! D_MK66F18_SYS_UARTMGR_PORT_HPP_

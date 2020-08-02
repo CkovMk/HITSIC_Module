@@ -38,6 +38,10 @@
 #include "inc_stdlib.h"
 #include "hitsic_common.h"
 
+#ifndef HITSIC_USE_FTFX_FLASH
+#define HITSIC_USE_FTFX_FLASH (0U)
+#endif // ! HITSIC_USE_FTFX_FLASH
+
 #if defined(FSL_FEATURE_HAS_L1CACHE) && FSL_FEATURE_HAS_L1CACHE
 #include "fsl_cache.h"
 #endif

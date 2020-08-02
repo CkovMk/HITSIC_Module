@@ -43,7 +43,7 @@ extern "C"{
 #define BUTTON_SHRT_TOUT 200u	//short timeout
 #define BUTTON_TIME_LONG 250u   //long press
 #define BUTTON_TIME_LRPT 100u   //long press repeat, time calculated from key press. the actual time for repeat will be REPT-LONG
-#define BUTTON_REPT_TOUT 300u   //repeat timeout
+#define BUTTON_REPT_TOUT 50u   //repeat timeout
 #define BUTTON_TIME_INTV 50u
 
 #define BUTTON_PRESSDN_LOGIC 0u
@@ -57,18 +57,14 @@ extern "C"{
 
     typedef enum 
     {
-        BUTTON_STAT_NONE = 0, //button no operation
-        BUTTON_SHRT_PRES = 1, //button short press
-        BUTTON_SHRT_CLER = 2, //service responded short press
-        BUTTON_LONG_PRES = 3, //button long press
-        BUTTON_LONG_CLER = 4, //service responded long press
-        BUTTON_LRPT_PRES = 5, //button long_repeat press
-        BUTTON_LRPT_CLER = 6, //service responded long_repeat press
+        BUTTON_STAT_NONE = 0, ///< button no operation
+        BUTTON_SHRT_PRES = 1, ///< button short press
+        BUTTON_SHRT_CLER = 2, ///< service responded short press
+        BUTTON_LONG_PRES = 3, ///< button long press
+        BUTTON_LONG_CLER = 4, ///< service responded long press
+        BUTTON_LRPT_PRES = 5, ///< button long_repeat press
+        BUTTON_LRPT_CLER = 6, ///< service responded long_repeat press
     }button_status_t;
-
-    //typedef struct button_t;
-
-    typedef void(*button_handler_t)(void* _inst);       //TODO: fix this void*
 
     typedef struct 
     {
@@ -81,13 +77,15 @@ extern "C"{
         button_handler_t handler;
     }button_t;
 
-    void BUTTON_Setup(button_t* _inst, GPIO_Type *_gpio, uint32_t _pin);
+    typedef void(*button_handler_t)(button_t *_inst);
+
+    void BUTTON_Setup(button_t *_inst, GPIO_Type *_gpio, uint32_t _pin);
 
     button_t *BUTTON_Construct(GPIO_Type *_gpio, uint32_t _pin);
 
-    void BUTTON_InstallHandler(button_t* _inst, button_handler_t _handler);
+    void BUTTON_InstallHandler(button_t *_inst, button_handler_t _handler);
 
-    void BUTTON_UninstallHandler(button_t* _inst);
+    void BUTTON_UninstallHandler(button_t *_inst);
 
     void BUTTON_SetInterrupt(button_t *_inst, port_interrupt_t _int);
 

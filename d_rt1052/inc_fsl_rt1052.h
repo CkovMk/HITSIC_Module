@@ -23,8 +23,6 @@
 #endif // ! CPU_MIMXRT1052DVL6B
 
 
-//include fsl sdk for IMXRT1052 HERE!
-//fsl device
 #include "MIMXRT1052.h"
 
 #include "arm_math.h"
@@ -98,38 +96,6 @@
 //#include "fsl_debug_console.h"
 
 
-
-
-
-//RTOS
-//#include "FreeRTOSConfig.h"
-//#include <FreeRTOS.h>
-//#include <event_groups.h>
-//#include <semphr.h>
-//#include "FreeRTOS.h"
-//#include "deprecated_definitions.h"
-//#include "event_groups.h"
-//#include "freertos_tasks_c_additions.h"
-//
-//#include "list.h"
-//#include "portable.h"
-//#include "projdefs.h"
-//#include "queue.h"
-//#include "semphr.h"
-//#include "stack_macros.h"
-//#include "stream_buffer.h"
-//#include "task.h"
-//#include "threading_alt.h"
-//#include "timers.h"
-
-//fsl_rtos
-//#include "fsl_lpi2c_freertos.h"
-//#include "fsl_lpspi_freertos.h"
-//#include "fsl_lpuart_freertos.h"
-
-
-
-
 //BSP RTE
 
 #include "board.h"
@@ -138,12 +104,8 @@
 #include "peripherals.h"
 
 
-
-#define EnableInterrupt                __enable_irq()
-#define DisableInterrupt               __disable_irq()
-
-
-/******* Pad Config (copied from fire) *******/
+//CMB
+//#include "cm_backtrace.h"
 
 /* SRE 压摆率选择 */
 #define SRE_0_SLOW_SLEW_RATE                IOMUXC_SW_PAD_CTL_PAD_SRE(0)

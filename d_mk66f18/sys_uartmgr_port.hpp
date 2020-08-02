@@ -8,9 +8,9 @@
 #ifndef D_MK66F18_SYS_UARTMGR_PORT_HPP_
 #define D_MK66F18_SYS_UARTMGR_PORT_HPP_
 
-#include "inc_fsl_mk66f18.h"
+#include "hitsic_common.h"
 
-#define HITSIC_USE_UARTMGR (1U)
+#define HITSIC_USE_UARTMGR (0U)
 
 #if defined(HITSIC_USE_UARTMGR) && (HITSIC_USE_UARTMGR > 0)
 
@@ -30,19 +30,18 @@
 #define UART_TransferAbortReceive 		LPUART_TransferAbortReceive
 */
 
-//TODO rename this!
+
 #define UART_TPCTRL_HEADER 0xae
 
 
 #define UARTMGR_INST_DEFINITION	\
-	static uartMgr_t uart0(UART0);\
-	static uartMgr_t uart1(UART1);
+	static uartMgr_t uart0(UART0);
+	//static uartMgr_t uart1(UART1);
 
 #define UARTMGR_INST_SWITCHCASE \
-	case UART0_BASE: return uart0; break;\
-	case UART1_BASE: return uart1; break;
+	case UART0_BASE: return uart0; break;
+	//case UART1_BASE: return uart1; break;
 
 #endif // ! HITSIC_USE_UARTMGR
-
 
 #endif /* D_MK66F18_SYS_UARTMGR_PORT_HPP_ */

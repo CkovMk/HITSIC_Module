@@ -18,9 +18,10 @@
 #ifndef _INC_FSL_KV10Z7_H_
 #define _INC_FSL_KV10Z7_H_
 
-#ifndef CPU_MKV10Z128VLC7
+#if (!defined(CPU_MKV10Z128VLC7))
 #error CPU incorrect !
-#endif // ! CPU_MK66FX1M0VLQ18
+#endif // ! CPU_MKV10Z128VLC7
+
 
 #include "MKV10Z1287.h"
 

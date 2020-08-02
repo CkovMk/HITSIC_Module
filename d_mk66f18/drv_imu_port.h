@@ -1,15 +1,33 @@
-#ifndef _DRV_IMU_PORT_H_
-#define _DRV_IMU_PORT_H_
+/**
+ * Copyright 2018 - 2020 HITSIC
+ * All rights reserved.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+#ifndef D_KV10Z7_DRV_IMU_PORT_H_
+#define D_KV10Z7_DRV_IMU_PORT_H_
 
 #include "inc_stdlib.h"
-#include "inc_fsl_mk66f18.h"
 #include "hitsic_common.h"
+
+#define HITSIC_USE_DRV_IMU (0U)
 
 #ifdef __cplusplus
 extern "C"{
 #endif
 
-#define HITSIC_USE_DRV_IMU (1U)
+
 
 #if defined(HITSIC_USE_DRV_IMU) && (HITSIC_USE_DRV_IMU > 0)
 
@@ -23,10 +41,6 @@ extern "C"{
 
 #define HITSIC_IMU_I2C_INST (I2C1)
 
-#endif // HITSIC_USE_DRV_IMU
-
-
-#if defined(HITSIC_USE_DRV_IMU) && (HITSIC_USE_DRV_IMU > 0)
 
     
 #if defined(HITSIC_IMU_SPI) && (HITSIC_IMU_SPI > 0)
@@ -35,14 +49,13 @@ extern "C"{
     status_t DRVIMU_icm_example_i2c_rx(uint8_t slave_addr, uint8_t reg, uint8_t* buf, uint32_t len);
 	status_t DRVIMU_icm_example_i2c_tx(uint8_t slave_addr, uint8_t reg, uint8_t* buf, uint32_t len);
 	
-#endif
-
-#endif // HITSIC_USE_DRV_IMU
-
+#endif // ! HITSIC_IMU_SPI & HITSIC_IMU_I2C
 
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif // ! _DRV_IMU_PORT_H_
+#endif // HITSIC_USE_DRV_IMU
+
+#endif // ! D_MK66F18_DRV_IMU_PORT_H_

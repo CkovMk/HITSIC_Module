@@ -1,8 +1,18 @@
-/*
- * sys_extint_port.hpp
+/**
+ * Copyright 2018 - 2020 HITSIC
+ * All rights reserved.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *  Created on: 2019年12月5日
- *      Author: CkovMk
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 #ifndef D_KV10Z7_SYS_EXTINT_PORT_HPP_
@@ -20,14 +30,6 @@
 #define EXTINT_SetInterruptConfig(_intc, _pin, _cfg) 	PORT_SetPinInterruptConfig(_intc, _pin, _cfg)
 #define EXTINT_GetInterruptFlags(_intc) 				PORT_GetPinsInterruptFlags(_intc)
 #define EXTINT_ClearInterruptFlags(_intc, _mask) 				PORT_ClearPinsInterruptFlags(_intc, _mask)
-
-
-/* reserved for RT1052:
-#define EXTINT_SetInterruptConfig(_intc, _pin, _cfg) 	GPIO_PinSetInterruptConfig(_intc, _pin, _cfg)
-#define EXTINT_GetInterruptFlags(_intc)  				GPIO_PortGetInterruptFlags(_intc)
-#define EXTINT_ClearInterruptFlags(_intc) 				GPIO_PortClearInterruptFlags(_intc)
-
-*/
 
 
 #define HITSIC_EXTMGR_INITLIZE 		(1U)
@@ -48,10 +50,10 @@ inline void EXTINT_PlatformInit(void)
 
 inline INTC_Type *EXTINT_GetPortInst(GPIO_Type *gpio)
 {
-	static PORT_Type *lut[5] = PORT_BASE_PTRS;
+	static PORT_Type *lut[] = PORT_BASE_PTRS;
 	return lut[((uint32_t)gpio - GPIOA_BASE) / (GPIOB_BASE - GPIOA_BASE)];
 }
 
 
 
-#endif /* D_MK66F18_SYS_EXTINT_PORT_HPP_ */
+#endif // ! D_KV10Z7_SYS_EXTINT_PORT_HPP_
