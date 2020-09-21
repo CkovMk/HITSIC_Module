@@ -26,7 +26,11 @@ HITSIC_Module是哈工大智能车创新俱乐部各MCU平台共用的程序模�
 | [BUTTON](doc/drv_button.md)         | 按钮事件识别组件                                          |
 | DISP_FONT                           | 显示字体组件                                              |
 | DISP_SSD1306                        | OLED屏幕SSD1306驱动组件                                   |
-| IMU_INVENSENSE                      | Invensense公司IMU惯导模块统一驱动组件                     |
+| WIP:：IMU_INVENSENSE                | Invensense公司IMU惯导模块统一驱动组件                     |
+| WIP：TCS34725                       | I2C颜色传感器                                             |
+| WIP：TFMINI                         |                                                           |
+| WIP：TOF_VL53L0x                    |                                                           |
+| WIP：TOF_VL53L1x                    |                                                           |
 | **LIB / 工具**                      |                                                           |
 | LIST                                | 轻量级链表组件                                            |
 | PIDCTRL                             | PID控制组件                                               |

@@ -41,11 +41,11 @@ extern "C"{
 
 #define DRV_BUTTON_VERSION (HITSIC_MAKE_VERSION(0u, 1u, 1u))
 
-#define BUTTON_TIME_SHRT 10u     //short press
+#define BUTTON_TIME_SHRT 50u     //short press
 #define BUTTON_SHRT_TOUT 200u	//short timeout
 #define BUTTON_TIME_LONG 250u   //long press
 #define BUTTON_TIME_LRPT 100u   //long press repeat, time calculated from key press. the actual time for repeat will be REPT-LONG
-#define BUTTON_REPT_TOUT 50u   //repeat timeout
+#define BUTTON_REPT_TOUT 300u   //repeat timeout
 #define BUTTON_TIME_INTV 50u
 
 #define BUTTON_PRESSDN_LOGIC 0u

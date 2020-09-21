@@ -39,6 +39,15 @@
 
 #if defined(HITSIC_USE_FTFX_FLASH) && (HITSIC_USE_FTFX_FLASH > 0)
 
+<<<<<<< HEAD
+=======
+//Supported MCU
+#if !(defined(CPU_MK66FX1M0VLQ18) || defined(CPU_MKV58F1M0VLQ24))
+#error FTFX_FLASH does not support this MCU !
+#else // ! Supported MCU
+
+
+>>>>>>> cb9748e555f513958b87b80c16d1ff034bfc3d8f
 #if defined(FSL_FEATURE_HAS_L1CACHE) && FSL_FEATURE_HAS_L1CACHE
 #include "fsl_cache.h"
 #endif
@@ -72,7 +81,6 @@ extern "C" {
 	 * @return uint32_t 转换后的物理地址
 	 */
 	uint32_t FLASH_GetPhysicalAddress(uint32_t _addr);
-
 
 
 
@@ -210,6 +218,11 @@ extern "C" {
 }
 #endif
 
+<<<<<<< HEAD
+=======
+#endif // ! Supported MCU
+
+>>>>>>> cb9748e555f513958b87b80c16d1ff034bfc3d8f
 #endif // ! HITSIC_USE_FTFX_FLASH
 
 #endif // ! _DRV_FTFX_FLASH_H_
