@@ -1,4 +1,6 @@
-#include <sys_extint.hpp>
+#include "sys_extint.hpp"
+
+#if defined(HITSIC_USE_EXTINT) && (HITSIC_USE_EXTINT > 0)
 
 //CPU Selection
 #if defined(D_RT1052_SYS_EXTINT_PORT_HPP_) || defined (D_MK66F18_SYS_EXTINT_PORT_HPP_) || defined (D_KV10Z7_SYS_EXTINT_PORT_HPP_)
@@ -77,4 +79,6 @@ void extInt_t::setup(INTC_Type* _gpio, uint32_t _pin, handler_t _handler)
 	HAL_ExitCritical();
 }
 
-#endif // ! D_RT1052_SYS_PITMGR_PORT_HPP_
+#endif // ! CPU Selection
+
+#endif // ! HITSIC_USE_EXTINT

@@ -31,32 +31,29 @@
 
 #if defined(HITSIC_USE_PITMGR) && (HITSIC_USE_PITMGR > 0)
 
-#define HITSIC_PITMGR_CNTFREQ	 	(4000000U)
+#define HITSIC_PITMGR_CNTFREQ	 	(75000000U)
 
-#define HITSIC_PITMGR_INITLIZE		(0U)
+#define HITSIC_PITMGR_INITLIZE		(1U)
 
 #if defined(HITSIC_PITMGR_INITLIZE) && (HITSIC_PITMGR_INITLIZE > 0)
 inline void PITMGR_PlatformInit(void)
 {
-	const lptmr_config_t LPTMR0_config = {
-	  .timerMode = kLPTMR_TimerModeTimeCounter,
-	  .pinSelect = kLPTMR_PinSelectInput_0,
-	  .pinPolarity = kLPTMR_PinPolarityActiveHigh,
-	  .enableFreeRunning = false,
-	  .bypassPrescaler = true,
-	  .prescalerClockSource = kLPTMR_PrescalerClock_0,
-	  .value = kLPTMR_Prescale_Glitch_0
-	};
-	/* Initialize the LPTMR */
-	LPTMR_Init(LPTMR0, &LPTMR0_config);
-	/* Set LPTMR period */
-	LPTMR_SetTimerPeriod(LPTMR0, 4000);
-	/* Configure timer interrupt */
-	LPTMR_EnableInterrupts(LPTMR0, kLPTMR_TimerInterruptEnable);
-	/* Interrupt vector LPTMR0_IRQn priority settings in the NVIC */
-	NVIC_SetPriority(LPTMR0_IRQn, 4);
-	/* Enable interrupt LPTMR0_IRQn request in the NVIC */
-	EnableIRQ(LPTMR0_IRQn);
+    status_t rStatus = kStatus_Success;
+
+    pit_config_t pit_cfg =
+    { .enableRunInDebug = true, };
+    PIT_Init(PIT, &pit_cfg);
+
+    NVIC_SetPriority(PIT_IRQn, 4);
+    EnableIRQ(PIT_IRQn);
+
+    //kPIT_Chnl2 used for generating interrupts
+    PIT_SetTimerPeriod(PIT, kPIT_Chnl_2,
+            MSEC_TO_COUNT(1, HITSIC_PITMGR_CNTFREQ));
+    PIT_EnableInterrupts(PIT, kPIT_Chnl_2, kPIT_TimerInterruptEnable);
+    PIT_StartTimer(PIT, kPIT_Chnl_2);
+
+    return rStatus;
 }
 #endif // ! HITSIC_PITMGR_INITLIZE
 

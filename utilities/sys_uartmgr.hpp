@@ -1,11 +1,37 @@
+/**
+ * Copyright 2018 - 2019 HITSIC
+ * All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+/**
+ * @file 	:	sys_rmcall.hpp
+ * @author  :	Chekhov Mark/马奇科(qq:905497173)
+ * @version :	v0.1-beta.0
+ *
+ * @date 	:	v0.1-beta.0 2020.08.08
+ *
+ * @brief   :   远程调用组件
+ */
+
 #ifndef _UARTMGR_HPP_
 #define _UARTMGR_HPP_
 
-#include "sys_uartmgr_port.hpp"
 #include "inc_stdlib.h"
-#include "inc_gnc.h"
+#include "hitsic_common.h"
 
 #if defined(HITSIC_USE_UARTMGR) && (HITSIC_USE_UARTMGR > 0)
+#include "sys_uartmgr_port.hpp"
 
 //CPU Selection
 #if defined(D_RT1052_SYS_UARTMGR_PORT_HPP_) || defined (D_MK66F18_SYS_UARTMGR_PORT_HPP_) || defined (D_KV10Z7_SYS_UARTMGR_PORT_HPP_)

@@ -38,11 +38,10 @@
 #define DRV_IMU_INV_H
 #include "inc_stdlib.h"
 #include "hitsic_common.h"
-#include "rte_i2c.h"
-#include "rte_softi2c.h"
-#include "drv_imu_port.h"
 
 #if defined(HITSIC_USE_DRV_IMU) && (HITSIC_USE_DRV_IMU > 0)
+#include "drv_imu_port.h"
+
 
 
 /*

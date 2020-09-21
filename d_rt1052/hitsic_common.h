@@ -28,6 +28,22 @@
 
 
 
+
+#ifndef HITSIC_USE_EXTINT
+#define HITSIC_USE_EXTINT       (1U)
+#endif // ! HITSIC_USE_EXTINT
+
+#ifndef HITSIC_USE_PITMGR
+#define HITSIC_USE_PITMGR       (1U)
+#endif // ! HITSIC_USE_PITMGR
+
+#ifndef HITSIC_USE_UARTMGR
+#define HITSIC_USE_UARTMGR      (0U)
+#endif // ! HITSIC_USE_UARTMGR
+
+
+
+
 #ifndef HITSIC_USE_FTFX_FLASH
 #define HITSIC_USE_FTFX_FLASH (0U)
 #endif // ! HITSIC_USE_FTFX_FLASH
@@ -40,47 +56,38 @@
 #define HITSIC_USE_DISP_SSD1306 (0U)
 #endif // ! HITSIC_USE_DISP_SSD1306
 
-
-
-
-#ifndef HITSIC_USE_PITMGR
-#define HITSIC_USE_PITMGR 		(0U)
-#endif // ! HITSIC_USE_PITMGR
-
-#ifndef HITSIC_USE_EXTMGR
-#define HITSIC_USE_EXTMGR 		(0U)
-#endif // ! HITSIC_USE_EXTMGR
-
-#ifndef HITSIC_USE_UARTMGR
-#define HITSIC_USE_UARTMGR 		(0U)
-#endif // ! HITSIC_USE_UARTMGR
+#ifndef HITSIC_USE_DRV_BUTTON
+#define HITSIC_USE_DRV_BUTTON (0U)
+#endif // ! HITSIC_USE_DRV_BUTTON
 
 
 
 
 #ifndef HITSIC_USE_APP_MENU
-#define HITSIC_USE_APP_MENU (1U)
+#define HITSIC_USE_APP_MENU     (0U)
 #endif // ! HITSIC_USE_APP_MENU
 
 
 
 
 
-typedef I2C_Type HAL_I2C_Type;
-typedef SPI_Type HAL_SPI_Type;
-typedef UART_Type HAL_UART_Type;
+typedef LPI2C_Type HAL_I2C_Type;
+typedef LPSPI_Type HAL_SPI_Type;
+typedef LPUART_Type HAL_UART_Type;
 
 #ifdef __cplusplus
 extern "C"{
 #endif
 
 extern uint32_t hal_criticalCnt;
+extern uint32_t hal_regPrimask;
+
 
 inline void HAL_EnterCritical(void)
 {
 	if(0u == hal_criticalCnt++)
 	{
-		__disable_irq();
+	    hal_regPrimask = DisableGlobalIRQ();
 	}
 }
 
@@ -88,7 +95,7 @@ inline void HAL_ExitCritical(void)
 {
 	if(--hal_criticalCnt == 0u)
 	{
-		__enable_irq();
+	    EnableGlobalIRQ(hal_regPrimask);
 	}
 }
 

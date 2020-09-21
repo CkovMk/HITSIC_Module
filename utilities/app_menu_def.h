@@ -3,12 +3,13 @@
 #include "inc_stdlib.h"
 #include "hitsic_common.h"
 
+#if defined(HITSIC_USE_APP_MENU) && (HITSIC_USE_APP_MENU > 0)
+
 #include "app_menu_port.h"
 #include "drv_button.h"
 #include "drv_disp_ssd1306.hpp"
 #include "lib_list.h"
 
-#if defined(HITSIC_USE_APP_MENU) && (HITSIC_USE_APP_MENU > 0)
 
 #ifdef __cplusplus
 extern "C"

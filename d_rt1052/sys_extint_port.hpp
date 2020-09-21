@@ -22,41 +22,40 @@
 
 //config marco
 
-
-
 //HAL marco
 #define INTC_Type 			GPIO_Type
-#define interrupt_mode_t 		gpio_interrupt_t
+#define interrupt_mode_t 		gpio_interrupt_mode_t
 
-#define EXTINT_SetInterruptConfig(_intc, _pin, _cfg) 	GPIO_PinSetInterruptConfig(_intc, _pin, _cfg)
-#define EXTINT_GetInterruptFlags(_intc)  				GPIO_PortGetInterruptFlags(_intc)
-#define EXTINT_ClearInterruptFlags(_intc) 				GPIO_PortClearInterruptFlags(_intc)
-
-
-
+#define EXTINT_SetInterruptConfig(_base, _pin, _cfg) 	GPIO_PinSetInterruptConfig(_base, _pin, _cfg)
+#define EXTINT_GetInterruptFlags(_base)  				GPIO_PortGetInterruptFlags(_base)
+#define EXTINT_ClearInterruptFlags(_base, _mask) 				GPIO_PortClearInterruptFlags(_base, _mask)
 
 #define HITSIC_EXTMGR_INITLIZE 		(1U)
 
 #if defined(HITSIC_EXTMGR_INITLIZE) && (HITSIC_EXTMGR_INITLIZE > 0)
 inline void EXTINT_PlatformInit(void)
 {
-	NVIC_SetPriority(PORTA_IRQn, 6);
-	NVIC_SetPriority(PORTB_PORTC_PORTD_PORTE_IRQn, 6);
-	EnableIRQ(PORTA_IRQn);
-	EnableIRQ(PORTB_PORTC_PORTD_PORTE_IRQn);
+    NVIC_SetPriority(GPIO1_Combined_0_15_IRQn, 6);
+    NVIC_SetPriority(GPIO1_Combined_16_31_IRQn, 6);
+    NVIC_SetPriority(GPIO2_Combined_0_15_IRQn, 6);
+    NVIC_SetPriority(GPIO2_Combined_16_31_IRQn, 6);
+    NVIC_SetPriority(GPIO3_Combined_0_15_IRQn, 6);
+    NVIC_SetPriority(GPIO3_Combined_16_31_IRQn, 6);
+
+    EnableIRQ(GPIO1_Combined_0_15_IRQn);
+    EnableIRQ(GPIO1_Combined_16_31_IRQn);
+    EnableIRQ(GPIO2_Combined_0_15_IRQn);
+    EnableIRQ(GPIO2_Combined_16_31_IRQn);
+    EnableIRQ(GPIO3_Combined_0_15_IRQn);
+    EnableIRQ(GPIO3_Combined_16_31_IRQn);
 }
 #endif // ! HITSIC_EXTMGR_INITLIZE
 
-
 #define HTISIC_EXTINT_DEFAULT_IRQ 	(1U)
 
-
-inline INTC_Type *EXTINT_GetPortInst(GPIO_Type *gpio)
+inline INTC_Type* EXTINT_GetPortInst(GPIO_Type *gpio)
 {
-	static PORT_Type *lut[] = PORT_BASE_PTRS;
-	return lut[((uint32_t)gpio - GPIOA_BASE) / (GPIOB_BASE - GPIOA_BASE)];
+    return gpio;
 }
-
-
 
 #endif // ! D_RT1052_SYS_EXTINT_PORT_HPP_

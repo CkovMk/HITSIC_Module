@@ -30,8 +30,9 @@
 #ifndef UTILITIES_SYS_EXTINT_HPP_
 #define UTILITIES_SYS_EXTINT_HPP_
 #include "inc_stdlib.h"
-#include "inc_gnc.h"
 #include "hitsic_common.h"
+
+#if defined(HITSIC_USE_EXTINT) && (HITSIC_USE_EXTINT > 0)
 #include "sys_extint_port.hpp"
 
 
@@ -82,6 +83,8 @@ private:
 #error "C++ API does NOT support this CPU!"
 
 #endif // CPU Selection
+
+#endif // ! HITSIC_USE_EXTINT
 
 #endif // ! UTILITIES_SYS_EXTINT_HPP_
 

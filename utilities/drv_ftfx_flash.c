@@ -25,6 +25,8 @@
 
 #include "drv_ftfx_flash.h"
 
+#if defined(HITSIC_USE_FTFX_FLASH) && (HITSIC_USE_FTFX_FLASH > 0)
+
 #if defined(__cplusplus)
 extern "C" {
 #endif
@@ -327,3 +329,5 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
+
+#endif // ! HITSIC_USE_FTFX_FLASH

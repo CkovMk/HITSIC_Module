@@ -1,9 +1,9 @@
-#include <lib_pidctrl.h>
+#include "lib_pidctrl.h"
 
 
-//#ifdef __cplusplus
-//extern "C"{
-//#endif
+#ifdef __cplusplus
+extern "C"{
+#endif
 
 	/**
 	 * @brief 设置PID结构体参数
@@ -217,9 +217,9 @@
 		return PIDCTRL_UpdateAndCalcPID(&_pid->inner, PIDCTRL_UpdateByDiffAndCalcPID(&_pid->outer, _diff));
 	}
 
-//#ifdef __cplusplus
-//}
-//#endif
+#ifdef __cplusplus
+}
+#endif
 
 
 

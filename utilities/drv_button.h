@@ -15,9 +15,9 @@
  * limitations under the License.
  */
 /**
- * @file 	:	drv_button.h、drv_button.c
- * @author  :	Chekhov Mark/马奇科(qq:905497173)
- * @version :	v0.1.1
+ * @file 	:	"drv_button.h"; "drv_button.c"
+ * @author  :	CkovMk/马奇科(qq:905497173)
+ * @version :	v0.1.1          2020.08.02
  * @date 	:	v0.1.0-beta.1   2019.10.28
  * @date    :   v0.1.1          2019.10.29
  * 
@@ -29,6 +29,8 @@
 #define _DRV_BUTTON_H_
 #include "inc_stdlib.h"
 #include "hitsic_common.h"
+
+#if defined(HITSIC_USE_DRV_BUTTON) && (HITSIC_USE_DRV_BUTTON > 0)
 #include "sys_extint.hpp"
 #include "sys_pitmgr.hpp"
 
@@ -66,18 +68,19 @@ extern "C"{
         BUTTON_LRPT_CLER = 6, ///< service responded long_repeat press
     }button_status_t;
 
+    typedef void(*button_handler_t)(void *_inst);   // (button_t *inst)
+
     typedef struct 
     {
         GPIO_Type *gpio;
         //PORT_Type* port;
         uint32_t pin;
-        port_interrupt_t intCfg;
+        interrupt_mode_t intCfg;
         uint64_t msCnt;
         button_status_t status;
         button_handler_t handler;
     }button_t;
 
-    typedef void(*button_handler_t)(button_t *_inst);
 
     void BUTTON_Setup(button_t *_inst, GPIO_Type *_gpio, uint32_t _pin);
 
@@ -102,5 +105,6 @@ extern "C"{
 }
 #endif
 
+#endif // ! HITSIC_USE_DRV_BUTTON
 
 #endif // ! _DRV_BUTTON_H_

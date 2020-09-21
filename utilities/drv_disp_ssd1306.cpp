@@ -7,6 +7,7 @@
  */
 #include "drv_disp_ssd1306.hpp"
 
+#if defined(HITSIC_USE_DISP_SSD1306) && (HITSIC_USE_DISP_SSD1306 > 0)
 
 #include "drv_disp_font.cpp"
 
@@ -24,6 +25,10 @@
 
 //extern const uint8_t DISP_font_6x8[][6];
 //extern const uint8_t DISP_font_8x16[][16];
+
+#ifdef __cplusplus
+extern "C"{
+#endif
 
 void DISP_SSD1306_WriteDat(uint8_t data)
 {
@@ -257,5 +262,10 @@ void DISP_SSD1306_Printf_F8x16(uint8_t x,uint8_t y,const char* fmt, ...)
 	DISP_SSD1306_Print_F8x16(x, y, buf);
 }
 
+#ifdef __cplusplus
+}
+#endif
 
+
+#endif // ! HITSIC_USE_DISP_SSD1306
 

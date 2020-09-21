@@ -14,24 +14,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-/**************************************************************************************************
- * COPYRIGHT NOTICE
- * Copyright (c) 2018,哈工大智能车创新俱乐部
- * All rights reserved.
+/**
+ * @file 	:	drv_ftfx_flash.h
+ * @author  :	beforelight/肖日涛(qq:1761690868)
+ * @author  :   CkovMk/马奇科(qq:905497173)
+ * @version :	v0.2.0
  *
- * @file       		flash_driver.h
- * @company	      哈工大智能车创新俱乐部
- * @author     		肖日涛 qq1761690868
- * @version    		v1.1
- * @Software 		  IAR 7.7+
- * @Target core		K66
- * @date       		ver1.0 2019年7月25日
- * @date       		ver1.1 2019年9月22日
- * @note：按字节读写flash和按扇区读写二选一，
- *        按字节读写的函数是基于按扇区读写的二次封装。
- * @note：哈尔滨工业大学智能车创新俱乐部专用，请勿泄露
-**************************************************************************************************/
+ * @date 	:	v0.1-beta.0 2019.07.25 肖日涛
+ * @date 	:	v0.1.1		2019.09.22 肖日涛
+ * @date 	:	v0.2.0		2019.10.08 马奇科
+ *
+ * @brief   :   Kinetis FTFX Flash驱动组件
+ */
+
 #pragma once
 #ifndef _DRV_FTFX_FLASH_H_
 #define _DRV_FTFX_FLASH_H_
@@ -41,6 +36,8 @@
 #ifndef HITSIC_USE_FTFX_FLASH
 #define HITSIC_USE_FTFX_FLASH (0U)
 #endif // ! HITSIC_USE_FTFX_FLASH
+
+#if defined(HITSIC_USE_FTFX_FLASH) && (HITSIC_USE_FTFX_FLASH > 0)
 
 #if defined(FSL_FEATURE_HAS_L1CACHE) && FSL_FEATURE_HAS_L1CACHE
 #include "fsl_cache.h"
@@ -212,5 +209,7 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
+
+#endif // ! HITSIC_USE_FTFX_FLASH
 
 #endif // ! _DRV_FTFX_FLASH_H_

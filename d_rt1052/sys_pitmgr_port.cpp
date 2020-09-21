@@ -15,12 +15,17 @@ extern "C"{
 #endif
 
 #if defined(HITSIC_PITMGR_DEFAULT_IRQ) && (HITSIC_PITMGR_DEFAULT_IRQ > 0)
-void LPTMR0_IRQHandler(void)
+void PIT_IRQHandler(void)
 {
-	LPTMR_ClearStatusFlags(LPTMR0, kLPTMR_TimerCompareFlag);
-	pitMgr_t::isr();
+    /* Clear interrupt flag.*/
+    if (PIT_GetStatusFlags(PIT, kPIT_Chnl_2))
+    {
+        PIT_ClearStatusFlags(PIT, kPIT_Chnl_2, kPIT_TimerFlag);
+        //extern pitmgr_t::isr();
+        pitMgr_t::isr();
+    }
 }
-#endif // ! HTISIC_PITMGR_USE_IRQHANDLER
+#endif // ! HITSIC_PITMGR_DEFAULT_IRQ
 
 #ifdef __cplusplus
 }

@@ -23,18 +23,17 @@
  * @date 	:	v0.1.1		2019.11.02
  * @date	:	v1.0.0		2020.07.25
  *
- * @brief    :   定时中断管理器
+ * @brief   :   定时中断管理器
  */
 
 #pragma once
 #ifndef UTILITIES_SYS_PITMGR_HPP_
 #define UTILITIES_SYS_PITMGR_HPP_
 #include "inc_stdlib.h"
-#include "inc_gnc.h"
 #include "hitsic_common.h"
-#include "sys_pitmgr_port.hpp"
 
 #if defined(HITSIC_USE_PITMGR) && (HITSIC_USE_PITMGR > 0)
+#include "sys_pitmgr_port.hpp"
 
 //CPU Selection
 #if defined(D_RT1052_SYS_PITMGR_PORT_HPP_) || defined (D_MK66F18_SYS_PITMGR_PORT_HPP_) || defined (D_KV10Z7_SYS_PITMGR_PORT_HPP_)

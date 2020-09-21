@@ -17,6 +17,8 @@
 
 #include "drv_button.h"
 
+#if defined(HITSIC_USE_DRV_BUTTON) && (HITSIC_USE_DRV_BUTTON > 0)
+
 #ifdef __cplusplus
 extern "C"
 {
@@ -143,3 +145,5 @@ extern "C"
 #ifdef __cplusplus
 }
 #endif
+
+#endif // ! HITSIC_USE_DRV_BUTTON
