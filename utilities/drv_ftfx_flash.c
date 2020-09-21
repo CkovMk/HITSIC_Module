@@ -25,6 +25,13 @@
 
 #include "drv_ftfx_flash.h"
 
+#if defined(HITSIC_USE_FTFX_FLASH) && (HITSIC_USE_FTFX_FLASH > 0)
+
+//Supported MCU
+#if !(defined(CPU_MK66FX1M0VLQ18) || defined(CPU_MKV58F1M0VLQ24))
+#error FTFX_FLASH does not support this MCU !
+#else // ! Supported MCU
+
 #if defined(__cplusplus)
 extern "C" {
 #endif
@@ -327,3 +334,7 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
+
+#endif // ! Supported MCU
+
+#endif // ! HITSIC_USE_FTFX_FLASH
