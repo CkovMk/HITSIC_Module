@@ -27,7 +27,7 @@
 
 
 #include "arm_math.h"
-#include "arm_nnfunctions.h"
+
 
 //NXP fsl Library
 

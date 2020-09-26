@@ -28,19 +28,20 @@
 
 #ifndef _CMB_CFG_H_
 #define _CMB_CFG_H_
+#include "fsl_debug_console.h"
 
 /* print line, must config by user */
-#define cmb_println(...)               /* e.g., printf(__VA_ARGS__);printf("\r\n") */
+#define cmb_println(...)               PRINTF(__VA_ARGS__);PRINTF("\r\n")
 /* enable bare metal(no OS) platform */
-/* #define CMB_USING_BARE_METAL_PLATFORM */
+#define CMB_USING_BARE_METAL_PLATFORM
 /* enable OS platform */
 /* #define CMB_USING_OS_PLATFORM */
 /* OS platform type, must config when CMB_USING_OS_PLATFORM is enable */
 /* #define CMB_OS_PLATFORM_TYPE           CMB_OS_PLATFORM_RTT or CMB_OS_PLATFORM_UCOSII or CMB_OS_PLATFORM_UCOSIII or CMB_OS_PLATFORM_FREERTOS */
 /* cpu platform type, must config by user */
-#define CMB_CPU_PLATFORM_TYPE          /* CMB_CPU_ARM_CORTEX_M0 or CMB_CPU_ARM_CORTEX_M3 or CMB_CPU_ARM_CORTEX_M4 or CMB_CPU_ARM_CORTEX_M7 */
+#define CMB_CPU_PLATFORM_TYPE          CMB_CPU_ARM_CORTEX_M4/* CMB_CPU_ARM_CORTEX_M0 or CMB_CPU_ARM_CORTEX_M3 or CMB_CPU_ARM_CORTEX_M4 or CMB_CPU_ARM_CORTEX_M7 */
 /* enable dump stack information */
-/* #define CMB_USING_DUMP_STACK_INFO */
+#define CMB_USING_DUMP_STACK_INFO
 /* language of print information */
-/* #define CMB_PRINT_LANGUAGE             CMB_PRINT_LANGUAGE_ENGLISH(default) or CMB_PRINT_LANGUAGE_CHINESE */
+#define CMB_PRINT_LANGUAGE             CMB_PRINT_LANGUAGE_ENGLISH/*(default) or CMB_PRINT_LANGUAGE_CHINESE */
 #endif /* _CMB_CFG_H_ */

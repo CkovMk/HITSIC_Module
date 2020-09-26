@@ -111,8 +111,8 @@ extern "C"
  * 可以使用任何当前工程中未使用的中断。注意中断号和中断服务函数
  * 必须对应。优先级不可过高。
  */
-#define HITSIC_MENU_SERVICE_IRQHandler (Reserved25_IRQHandler)
-#define HITSIC_MENU_SERVICE_IRQn (Reserved25_IRQn)
+#define HITSIC_MENU_SERVICE_IRQHandler (Reserved85_IRQHandler)
+#define HITSIC_MENU_SERVICE_IRQn (Reserved85_IRQn)
 #define HITSIC_MENU_SERVICE_IRQPrio (10u)
 
 /**

@@ -29,7 +29,7 @@
 #include <easyflash.h>
 #include <stdarg.h>
 
-#include "hitsic_hal.h"
+#include "hitsic_common.h"
 #include "drv_ftfx_flash.h"
      
 int status = (0x50 << 24);

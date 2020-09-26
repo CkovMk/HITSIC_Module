@@ -17,7 +17,7 @@ extern "C"{
 #if defined(HITSIC_PITMGR_DEFAULT_IRQ) && (HITSIC_PITMGR_DEFAULT_IRQ > 0)
 void LPTMR0_IRQHandler(void)
 {
-	PIT_ClearStatusFlags(PIT, kPIT_Chnl_2, kPIT_TimerFlag);
+	LPTMR_ClearStatusFlags(LPTMR0, kLPTMR_TimerCompareFlag);
 	pitMgr_t::isr();
 }
 #endif // ! HTISIC_PITMGR_USE_IRQHANDLER

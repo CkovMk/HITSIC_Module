@@ -1,5 +1,7 @@
 #include "drv_disp_st7789.hpp"
 
+#if defined(HITSIC_USE_DISP_ST7789) && (HITSIC_USE_DISP_ST7789 > 0)
+
 void st7789_t::edmaCallBack(LPSPI_Type* base, lpspi_master_edma_handle_t* handle, status_t status, void* userData)
 {
 	st7789_t& i = getInst();
@@ -259,3 +261,5 @@ void st7789_t::setBKL(uint8_t b)
 {
 	GPIO_PinWrite(RTEPIN_ALLPIN_DISP_BKL_GPIO, RTEPIN_ALLPIN_DISP_BKL_GPIO_PIN, 1);
 }
+
+#endif // ! HITSIC_USE_DISP_ST7789

@@ -27,9 +27,10 @@
 #define D_MK66F18_DRVOLED_H_
 #include "inc_stdlib.h"
 #include "hitsic_common.h"
+#include "pin_mux.h"
 
-#define OLED_SPI_BASE			SPI0
-#define OLED_SPI_CLKFREQ 		CLOCK_GetFreq(DSPI0_CLK_SRC)
+#define OLED_SPI_BASE			SPI2
+#define OLED_SPI_CLKFREQ 		CLOCK_GetFreq(DSPI2_CLK_SRC)
 #define OLED_SPI_Pcsn		    kDSPI_Pcs0
 #define OLED_SPI_MasterPcsn		kDSPI_MasterPcs0
 #define OLED_SPI_Ctarn			kDSPI_Ctar0

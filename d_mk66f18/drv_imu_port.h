@@ -23,9 +23,7 @@
 
 #define HITSIC_USE_DRV_IMU (0U)
 
-#ifdef __cplusplus
-extern "C"{
-#endif
+
 
 
 
@@ -40,6 +38,10 @@ extern "C"{
 #define HITSIC_IMU_I2C (1U)
 
 #define HITSIC_IMU_I2C_INST (I2C1)
+
+#ifdef __cplusplus
+extern "C"{
+#endif
 
 
     

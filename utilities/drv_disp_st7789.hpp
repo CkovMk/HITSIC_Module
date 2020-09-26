@@ -2,11 +2,11 @@
 #ifndef _DRV_ST7789_HPP_
 #define _DRV_ST7789_HPP_
 
-#include "inc_stdlib.h"
 #include "hitsic_common.h"
-
-
 #include "sys_pitmgr.hpp"
+
+#if defined(HITSIC_USE_DISP_ST7789) && (HITSIC_USE_DISP_ST7789 > 0)
+
 
 
 
@@ -53,6 +53,6 @@ private:
 
 };
 
-
+#endif // ! HITSIC_USE_DISP_ST7789
 
 #endif // ! _DRV_ST7789_HPP_

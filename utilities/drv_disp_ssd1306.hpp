@@ -36,7 +36,9 @@
 
 #include "drv_disp_ssd1306_port.hpp"
 
-
+#ifdef __cplusplus
+extern "C"{
+#endif
 
 void DISP_SSD1306_Init(void);
 void DISP_SSD1306_Fill(uint8_t dat);
@@ -48,6 +50,10 @@ void DISP_SSD1306_Print_F8x16(uint8_t x,uint8_t y,const char* str);
 void DISP_SSD1306_Printf_F6x8(uint8_t x,uint8_t y,const char* fmt, ...);
 void DISP_SSD1306_Printf_F8x16(uint8_t x,uint8_t y,const char* fmt, ...);
 //void DISP_SSD1306_printFrame(uint8_t *p);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif // ! HITSIC_USE_DISP_SSD1306
 
