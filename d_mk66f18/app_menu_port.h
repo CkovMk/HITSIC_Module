@@ -63,40 +63,40 @@ extern "C"
 #define HITSIC_MENU_BUTTON_5DIR_BSP_INIT  \
     {                                     \
         {                                 \
-            RTEPIN_BOARD_BUTTON_OK_GPIO,  \
-            RTEPIN_BOARD_BUTTON_OK_PIN,   \
+            RTEPIN_BASIC_BUTTON_OK_GPIO,  \
+            RTEPIN_BASIC_BUTTON_OK_PIN,   \
             kPORT_InterruptOrDMADisabled, \
             0,                            \
             BUTTON_STAT_NONE,             \
             NULL,                         \
         },                                \
         {                                 \
-            RTEPIN_BOARD_BUTTON_UP_GPIO,  \
-            RTEPIN_BOARD_BUTTON_UP_PIN,   \
+            RTEPIN_BASIC_BUTTON_UP_GPIO,  \
+            RTEPIN_BASIC_BUTTON_UP_PIN,   \
             kPORT_InterruptOrDMADisabled, \
             0,                            \
             BUTTON_STAT_NONE,             \
             NULL,                         \
         },                                \
         {                                 \
-            RTEPIN_BOARD_BUTTON_DN_GPIO,  \
-            RTEPIN_BOARD_BUTTON_DN_PIN,   \
+            RTEPIN_BASIC_BUTTON_DN_GPIO,  \
+            RTEPIN_BASIC_BUTTON_DN_PIN,   \
             kPORT_InterruptOrDMADisabled, \
             0,                            \
             BUTTON_STAT_NONE,             \
             NULL,                         \
         },                                \
         {                                 \
-            RTEPIN_BOARD_BUTTON_LF_GPIO,  \
-            RTEPIN_BOARD_BUTTON_LF_PIN,   \
+            RTEPIN_BASIC_BUTTON_LF_GPIO,  \
+            RTEPIN_BASIC_BUTTON_LF_PIN,   \
             kPORT_InterruptOrDMADisabled, \
             0,                            \
             BUTTON_STAT_NONE,             \
             NULL,                         \
         },                                \
         {                                 \
-            RTEPIN_BOARD_BUTTON_RT_GPIO,  \
-            RTEPIN_BOARD_BUTTON_RT_PIN,   \
+            RTEPIN_BASIC_BUTTON_RT_GPIO,  \
+            RTEPIN_BASIC_BUTTON_RT_PIN,   \
             kPORT_InterruptOrDMADisabled, \
             0,                            \
             BUTTON_STAT_NONE,             \
