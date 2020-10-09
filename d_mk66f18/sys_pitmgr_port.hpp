@@ -33,22 +33,12 @@
 
 #define HITSIC_PITMGR_CNTFREQ 60000000
 
-#define HITSIC_PITMGR_INITLIZE		(0U)
+#define HITSIC_PITMGR_INITLIZE		(1U)
 
 #if defined(HITSIC_PITMGR_INITLIZE) && (HITSIC_PITMGR_INITLIZE > 0)
 inline void PITMGR_PlatformInit(void)
 {
-	pit_config_t cfg;
-	{
-		cfg.enableRunInDebug = true;
-	}
-	PIT_Init(PIT, &cfg);
-	PIT_SetTimerChainMode(PIT, kPIT_Chnl_1, true);
-	PIT_SetTimerPeriod(PIT, kPIT_Chnl_2, USEC_TO_COUNT(1000, RTE_PIT_CLKFREQ));
-	PIT_EnableInterrupts(PIT, kPIT_Chnl_2, kPIT_TimerInterruptEnable);
-	NVIC_SetPriority(PIT2_IRQn, 4);
-	EnableIRQ(PIT2_IRQn);
-	PIT_StartTimer(PIT, kPIT_Chnl_2);
+	LPTMR_StartTimer(LPTMR0);
 }
 #endif // ! HITSIC_PITMGR_INITLIZE
 

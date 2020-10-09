@@ -43,7 +43,7 @@ extern "C"
  * 编译选项为release时始终为空。
  */
 #if defined(DEBUG) && defined(HITSIC_MENU_PRINT_ENABLE) && (HITSIC_MENU_PRINT_ENABLE != 0u)
-#define HITSIC_MENU_PRINTF(...) (printf(__VA_ARGS__))
+#define HITSIC_MENU_PRINTF(...) (PRINTF(__VA_ARGS__))
 #else
 #define HITSIC_MENU_PRINTF(...)
 #endif // ! DEBUG
@@ -63,40 +63,40 @@ extern "C"
 #define HITSIC_MENU_BUTTON_5DIR_BSP_INIT  \
     {                                     \
         {                                 \
-            RTEPIN_BOARD_BUTTON_OK_GPIO,  \
-            RTEPIN_BOARD_BUTTON_OK_PIN,   \
+    	GPIO_KEY_BTOK_GPIO,  \
+		GPIO_KEY_BTOK_PIN,   \
             kPORT_InterruptOrDMADisabled, \
             0,                            \
             BUTTON_STAT_NONE,             \
             NULL,                         \
         },                                \
         {                                 \
-            RTEPIN_BOARD_BUTTON_UP_GPIO,  \
-            RTEPIN_BOARD_BUTTON_UP_PIN,   \
+        	GPIO_KEY_BTUP_GPIO,  \
+			GPIO_KEY_BTUP_PIN,   \
             kPORT_InterruptOrDMADisabled, \
             0,                            \
             BUTTON_STAT_NONE,             \
             NULL,                         \
         },                                \
         {                                 \
-            RTEPIN_BOARD_BUTTON_DN_GPIO,  \
-            RTEPIN_BOARD_BUTTON_DN_PIN,   \
+        	GPIO_KEY_BTDN_GPIO,  \
+			GPIO_KEY_BTDN_PIN,   \
             kPORT_InterruptOrDMADisabled, \
             0,                            \
             BUTTON_STAT_NONE,             \
             NULL,                         \
         },                                \
         {                                 \
-            RTEPIN_BOARD_BUTTON_LF_GPIO,  \
-            RTEPIN_BOARD_BUTTON_LF_PIN,   \
+        	GPIO_KEY_BTLF_GPIO,  \
+			GPIO_KEY_BTLF_PIN,   \
             kPORT_InterruptOrDMADisabled, \
             0,                            \
             BUTTON_STAT_NONE,             \
             NULL,                         \
         },                                \
         {                                 \
-            RTEPIN_BOARD_BUTTON_RT_GPIO,  \
-            RTEPIN_BOARD_BUTTON_RT_PIN,   \
+        	GPIO_KEY_BTRT_GPIO,  \
+			GPIO_KEY_BTRT_PIN,   \
             kPORT_InterruptOrDMADisabled, \
             0,                            \
             BUTTON_STAT_NONE,             \
@@ -153,13 +153,13 @@ extern "C"
 /**
  * @brief : 全局存储 Global Storage
  */
-#define HITSIC_MENU_NVM_GLOBAL_SECT_CNT (2u)	///< 全局存储区占用的扇区数
+#define HITSIC_MENU_NVM_GLOBAL_SECT_SIZE (2u)	///< 全局存储区占用的扇区数
 #define HITSIC_MENU_NVM_GLOBAL_SECT_OFFSET (2u) ///< 全局存储区扇区偏移
 /**
  * @brief : 局部存储 Region Storage
  */
 #define HITSIC_MENU_NVM_REGION_CNT (3u) 					///< 局部存储区的数量
-#define HITSIC_MENU_NVM_REGION_SECT_CNT  (4u)				///< 每个局部存储区占用的扇区数
+#define HITSIC_MENU_NVM_REGION_SECT_SIZE  (4u)				///< 每个局部存储区占用的扇区数
 
 #define HITSIC_MENU_NVM_AddressRead(addr, buf, byteCnt)		FLASH_AddressRead(addr, buf, byteCnt)	///< 读指定地址。必须返回表示操作是否成功的值。
 #define HITSIC_MENU_NVM_SectorRead(sect, buf)		FLASH_SectorRead(sect, buf)						///< 读指定扇区。sect为扇区号，buf为缓存区。必须返回表示操作是否成功的值。

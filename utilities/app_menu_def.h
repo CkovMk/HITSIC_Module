@@ -6,7 +6,7 @@
 #if defined(HITSIC_USE_APP_MENU) && (HITSIC_USE_APP_MENU > 0)
 
 #include "app_menu_port.h"
-#include "drv_button.h"
+#include "sys_pitmgr.hpp"
 #include "drv_disp_ssd1306.hpp"
 #include "lib_list.h"
 
@@ -15,6 +15,39 @@
 extern "C"
 {
 #endif
+
+/**
+ * BUTTON
+ */
+
+/**
+	 * @brief : 按键操作宏定义。
+	 *
+	 */
+typedef enum _menu_keyOpCode_t
+{
+    menuOpCode_nl = 0, ///< NULL
+    menuOpCode_ok = 1,
+    menuOpCode_up,
+    menuOpCode_dn,
+    menuOpCode_lf,
+    menuOpCode_rt,
+} menu_keyOpCode_t;
+typedef enum _menu_keyOpType_t
+{
+    menuOpType_shrt = 1 << 8,
+    menuOpType_long = 2 << 8,
+    menuOpType_lrpt = 3 << 8,
+} menu_keyOpType_t;
+
+typedef uint32_t menu_keyOp_t;
+
+/**
+ * @brief : 按键操作生成宏
+ */
+#define MENU_BUTTON_MAKE_OP(code, type) (menuOpCode_##code|menuOpType_##type)
+
+extern menu_keyOp_t menu_keyOpBuff;
 
 /**
 	 * @brief : 菜单项和菜单列表名称的最大长度为16个字符。用于定义缓存区大小。
@@ -50,7 +83,10 @@ typedef enum
     /** display config */
     menuItem_disp_forceSci = 1 << 8,  ///< 该菜单项强制使用科学计数法，适用于variType和varfType。
     //menuItem_disp_bitFlag = 1 << 9,   ///< 该菜单项为按位标志位，仅适用于variType。此时数据指针将被视为uint32_t*。
-    menuItem_disp_noPreview = 1 << 10 ///< 该菜单项不会在菜单列表中显示数据。数据区将显示占位字符。注意此选项对标记为按位标志位的variType无效，因为这类菜单项从不在菜单列表显示数据。
+    menuItem_disp_noPreview = 1 << 10, ///< 该菜单项不会在菜单列表中显示数据。数据区将显示占位字符。注意此选项对标记为按位标志位的variType无效，因为这类菜单项从不在菜单列表显示数据。
+	
+    menuItem_proc_runOnce = 1 << 11, ///< 该菜单项只会运行一次。仅适用于procType。
+    menuItem_proc_uiDisplay = 1 << 12, ///< 该菜单项会自行打印屏幕。仅适用于procType。
 
     /** error mask */
 } menu_itemPropety_t;
@@ -72,7 +108,7 @@ typedef enum
 	 * @brief : 函数类型菜单项的响应句柄。
 	 * 函数类型菜单项激活时会调用一个没有参数和返回值的函数。
 	 */
-typedef void (*menu_itemProcHandler_t)(void);
+typedef void (*menu_itemProcHandler_t)(menu_keyOp_t *const _op);
 
 /** 菜单列表结构体 前置定义 */
 typedef struct _menu_list_t menu_list_t;
@@ -233,38 +269,7 @@ extern int32_t menu_nvmCopySrc, menu_nvmCopyDst;
 
 extern char menu_dispStrBuf[MENU_DISP_STRBUF_ROW][MENU_DISP_STRBUF_COL];
 
-/**
- * BUTTON
- */
 
-/**
-	 * @brief : 按键操作宏定义。
-	 *
-	 */
-typedef enum _menu_keyOpCode_t
-{
-    menuOpCode_nl = 0, ///< NULL
-    menuOpCode_ok = 1,
-    menuOpCode_up,
-    menuOpCode_dn,
-    menuOpCode_lf,
-    menuOpCode_rt,
-} menu_keyOpCode_t;
-typedef enum _menu_keyOpType_t
-{
-    menuOpType_shrt = 1 << 8,
-    menuOpType_long = 2 << 8,
-    menuOpType_lrpt = 3 << 8,
-} menu_keyOpType_t;
-
-typedef uint32_t menu_keyOp_t;
-
-/**
- * @brief : 按键操作生成宏
- */
-#define MENU_BUTTON_MAKE_OP(code, type) (menuOpCode_##code|menuOpType_##type)
-
-extern menu_keyOp_t menu_keyOpBuff;
 
 
 

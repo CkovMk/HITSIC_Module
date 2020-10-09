@@ -15,8 +15,8 @@
  * limitations under the License.
  */
 
-#ifndef D_KV10Z7_DRV_IMU_PORT_H_
-#define D_KV10Z7_DRV_IMU_PORT_H_
+#ifndef D_MK66F18_DRV_IMU_PORT_H_
+#define D_MK66F18_DRV_IMU_PORT_H_
 
 #include "inc_stdlib.h"
 #include "hitsic_common.h"

@@ -27,10 +27,14 @@
 #define D_MK66F18_DRVOLED_H_
 #include "inc_stdlib.h"
 #include "hitsic_common.h"
+#include "sys_pitmgr.hpp"
 #include "pin_mux.h"
 
-#define OLED_SPI_BASE			SPI2
-#define OLED_SPI_CLKFREQ 		CLOCK_GetFreq(DSPI2_CLK_SRC)
+#define HITSIC_DISP_SSD1306_FLIP_X (0U)
+#define HITSIC_DISP_SSD1306_FLIP_Y (0U)
+
+#define OLED_SPI_BASE			SPI0
+#define OLED_SPI_CLKFREQ 		CLOCK_GetFreq(DSPI0_CLK_SRC)
 #define OLED_SPI_Pcsn		    kDSPI_Pcs0
 #define OLED_SPI_MasterPcsn		kDSPI_MasterPcs0
 #define OLED_SPI_Ctarn			kDSPI_Ctar0
@@ -38,17 +42,23 @@
 
 inline void DISP_SSD1306_gpioSetRST(uint8_t x)
 {
-	GPIO_PinWrite(RTEPIN_BOARD_OLED_RST_GPIO, RTEPIN_BOARD_OLED_RST_PIN, x);
+	GPIO_PinWrite(GPIO_OLED_RST_GPIO, GPIO_OLED_RST_PIN, x);
 }
 
 inline void DISP_SSD1306_gpioSetD_C(uint8_t x)
 {
-	GPIO_PinWrite(RTEPIN_BOARD_OLED_D_C_GPIO, RTEPIN_BOARD_OLED_D_C_PIN, x);
+	GPIO_PinWrite(GPIO_OLED_D_C_GPIO, GPIO_OLED_D_C_PIN, x);
 }
 
 inline void DISP_SSD1306_delay_ms(uint32_t ms)
 {
-
+	for(int i = 0; i < ms; ++i)
+	{
+		for(int j = 0; j < 1000; ++j)
+		{
+			__asm volatile ("nop");
+		}
+	}
 }
 
 

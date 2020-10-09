@@ -102,7 +102,7 @@ void MENU_Data_NvmSave(int32_t _region);
  * 该函数将使用全局变量 menu_currRegionNum 中保存的局部存储区号。
  *
  */
-void MENU_Data_NvmSave_Boxed(void);
+void MENU_Data_NvmSave_Boxed(menu_keyOp_t *const _op);
 
 /**
  * @brief : 从NVM读取整个菜单。
@@ -116,7 +116,7 @@ void MENU_Data_NvmRead(int32_t _region);
  * 该函数将使用全局变量 menu_currRegionNum 中保存的局部存储区号。
  *
  */
-void MENU_Data_NvmRead_Boxed(void);
+void MENU_Data_NvmRead_Boxed(menu_keyOp_t *const _op);
 
 /**
  * @brief : 保存当前局部存储区号到NVM。
@@ -125,12 +125,16 @@ void MENU_Data_NvmRead_Boxed(void);
  */
 void MENU_Data_NvmSaveRegionConfig(void);
 
+void MENU_Data_NvmSaveRegionConfig_Boxed(menu_keyOp_t *const _op);
+
 /**
  * @brief : 从NVM中读取当前局部存储区号。
  * 该数值设置为不自动保存。
  *
  */
 void MENU_Data_NvmReadRegionConfig(void);
+
+void MENU_Data_NvmReadRegionConfig_Boxed(menu_keyOp_t *const _op);
 
 /**
  * @brief : 将一个局部存储区的数据拷贝到另一个局部存储区。
@@ -145,7 +149,7 @@ void MENU_Data_NvmCopy(int32_t _srcRegion, int32_t _dstRegion);
  * 该函数将使用全局变量 menu_nvmCopySrc 和 menu_nvmCopyDst 中存储的值。
  *
  */
-void MENU_Data_NvmCopy_Boxed(void);
+void MENU_Data_NvmCopy_Boxed(menu_keyOp_t *const _op);
 
 /**
  * @brief : 读取NVM状态标志。
@@ -160,6 +164,12 @@ int32_t MENU_GetNvmStatus(void);
  * @param  {int32_t} _status : 要设置的状态标志。
  */
 void MENU_SetNvmStatus(int32_t _status);
+
+/**
+ * @brief : 定时中断管理器。
+ *
+ */
+void MENU_PitIsr(void);
 
 #endif // ! HITSIC_MENU_USE_NVM
 

@@ -192,20 +192,20 @@ extern "C"
 	{
 		menu_item_variHandle_t *handle = _item->handle.p_variType;
 		MENU_ItemSetContent_variType(&handle->bData, handle->v, handle->e);
-		menu_dispStrBuf[0][snprintf(menu_dispStrBuf[0], MENU_DISP_STRBUF_COL, "##%-12.12s*", _item->nameStr)] = ' ';
-		menu_dispStrBuf[2][snprintf(menu_dispStrBuf[2], MENU_DISP_STRBUF_COL, "  Cur: %+-10d", *handle->data)] = ' ';
-		menu_dispStrBuf[3][snprintf(menu_dispStrBuf[3], MENU_DISP_STRBUF_COL, "  Adj: %+-10d", handle->bData)] = ' ';
-		menu_dispStrBuf[4][snprintf(menu_dispStrBuf[4], MENU_DISP_STRBUF_COL, "  Mod: %+4.4de%+1.1d", handle->v, handle->e)] = ' ';
+		menu_dispStrBuf[0][snprintf(menu_dispStrBuf[0], MENU_DISP_STRBUF_COL, "##%-12.12s*", _item->nameStr)] = '\0';
+		menu_dispStrBuf[2][snprintf(menu_dispStrBuf[2], MENU_DISP_STRBUF_COL, "  Cur: %+-10d", *handle->data)] = '\0';
+		menu_dispStrBuf[3][snprintf(menu_dispStrBuf[3], MENU_DISP_STRBUF_COL, "  Adj: %+-10d", handle->bData)] = '\0';
+		menu_dispStrBuf[4][snprintf(menu_dispStrBuf[4], MENU_DISP_STRBUF_COL, "  Mod: %+4.4de%+1.1d", handle->v, handle->e)] = '\0';
 		int32_t pos = handle->cur < 0 ? 12 - handle->cur : 11 - handle->cur;
 		menu_dispStrBuf[5][pos] = '^';
 
 		if (_item->pptFlag & menuItem_data_ROFlag)
 		{
-			menu_dispStrBuf[7][snprintf(menu_dispStrBuf[7], MENU_DISP_STRBUF_COL, "    RO")] = ' ';
+			menu_dispStrBuf[7][snprintf(menu_dispStrBuf[7], MENU_DISP_STRBUF_COL, "    RO")] = '\0';
 		}
 		else
 		{
-			menu_dispStrBuf[7][snprintf(menu_dispStrBuf[7], MENU_DISP_STRBUF_COL, "    SOK>AC LOK>WA")] = ' ';
+			menu_dispStrBuf[7][snprintf(menu_dispStrBuf[7], MENU_DISP_STRBUF_COL, "    SOK>AC LOK>WA    ")] = '\0';
 		}
 		if (_item->pptFlag & menuItem_data_global)
 		{
@@ -448,21 +448,21 @@ extern "C"
 	{
 		menu_item_varfHandle_t *handle = _item->handle.p_varfType;
 		MENU_ItemSetContent_varfType(&handle->bData, handle->v, handle->e);
-		menu_dispStrBuf[0][snprintf(menu_dispStrBuf[0], MENU_DISP_STRBUF_COL, "##%-12.12s*", _item->nameStr)] = ' ';
-		menu_dispStrBuf[2][snprintf(menu_dispStrBuf[2], MENU_DISP_STRBUF_COL, "  Cur: %+-10.4f", *handle->data)] = ' ';
-		menu_dispStrBuf[3][snprintf(menu_dispStrBuf[3], MENU_DISP_STRBUF_COL, "  Adj: %+-10.4f", handle->bData)] = ' ';
-		menu_dispStrBuf[4][snprintf(menu_dispStrBuf[4], MENU_DISP_STRBUF_COL, "  Mod: %+3.3de%+1.1d", handle->v, handle->e)] = ' ';
+		menu_dispStrBuf[0][snprintf(menu_dispStrBuf[0], MENU_DISP_STRBUF_COL, "##%-12.12s*", _item->nameStr)] = '\0';
+		menu_dispStrBuf[2][snprintf(menu_dispStrBuf[2], MENU_DISP_STRBUF_COL, "  Cur: %+-10.4f", *handle->data)] = '\0';
+		menu_dispStrBuf[3][snprintf(menu_dispStrBuf[3], MENU_DISP_STRBUF_COL, "  Adj: %+-10.4f", handle->bData)] = '\0';
+		menu_dispStrBuf[4][snprintf(menu_dispStrBuf[4], MENU_DISP_STRBUF_COL, "  Mod: %+3.3de%+1.1d", handle->v, handle->e)] = '\0';
 		int32_t pos = handle->cur < 0 ? 12 - handle->cur : 11 - handle->cur;
 		//HITSIC_MENU_DEBUG_PRINTF("-Verbose MENU: cur = %d, pos = %d .\n",handle->cur, pos);
 		menu_dispStrBuf[5][pos] = '^';
 
 		if (_item->pptFlag & menuItem_data_ROFlag)
 		{
-			menu_dispStrBuf[7][snprintf(menu_dispStrBuf[7], MENU_DISP_STRBUF_COL, "    RO")] = ' ';
+			menu_dispStrBuf[7][snprintf(menu_dispStrBuf[7], MENU_DISP_STRBUF_COL, "    RO")] = '\0';
 		}
 		else
 		{
-			menu_dispStrBuf[7][snprintf(menu_dispStrBuf[7], MENU_DISP_STRBUF_COL, "    SOK>AC LOK>WA")] = ' ';
+			menu_dispStrBuf[7][snprintf(menu_dispStrBuf[7], MENU_DISP_STRBUF_COL, "    SOK>AC LOK>WA    ")] = '\0';
 		}
 		if (_item->pptFlag & menuItem_data_global)
 		{
@@ -633,7 +633,7 @@ extern "C"
 		{
 		case MENU_BUTTON_MAKE_OP(ok, shrt):
 		{
-			handle->data();
+			menu_currItem = _item;
 			*_op = 0;
 			break;
 		}
@@ -645,11 +645,33 @@ extern "C"
 	//used when in menuItem
 	void MENU_ItemPrintDisp_procType(menu_itemIfce_t *_item)
 	{
-		assert(0); //should never end up here.
+		menu_item_procHandle_t *handle = _item->handle.p_procType;
+		if(_item->pptFlag & menuItem_proc_uiDisplay)
+		{
+			menu_keyOp_t op_temp = 0;
+			handle->data(&op_temp);
+			return;
+		}
+		menu_dispStrBuf[0][snprintf(menu_dispStrBuf[0], MENU_DISP_STRBUF_COL, "##%-12.12s*", _item->nameStr)] = '\0';
+		menu_dispStrBuf[7][snprintf(menu_dispStrBuf[7], MENU_DISP_STRBUF_COL, "    SOK>AC LOK>WA    ")] = '\0';
 	}
 	void MENU_ItemKeyOp_procType(menu_itemIfce_t *_item, menu_keyOp_t *const _op)
 	{
-		assert(0); //should never end up here.
+		menu_item_procHandle_t *handle = _item->handle.p_procType;
+		switch (*_op)
+		{
+		case MENU_BUTTON_MAKE_OP(ok, long):
+			menu_currItem = NULL;
+			*_op = 0;
+			break;
+		default:
+			handle->data(_op);
+			if(_item->pptFlag & menuItem_proc_runOnce)
+			{
+				menu_currItem = NULL;
+			}
+			break;
+		}
 	}
 
 	/**

@@ -13,23 +13,17 @@ extern "C"{
  ************ NVM存储常量定义 **********
  **************************************/
 
-#define menu_nvm_rgCnt HITSIC_MENU_NVM_REGION_CNT /// 局部存储区的数量
-
-#define menu_nvm_sectorSize HITSIC_MENU_NVM_SECTOR_SIZE;
 	/**
 	 * @brief : 全局存储 Global Storage
 	 */
-	extern uint32_t menu_nvm_glSectCnt;	/// 全局存储区占用的扇区数
-	extern uint32_t menu_nvm_glSectOffset; /// 全局存储区扇区偏移
 	extern uint32_t menu_nvm_glAddrOffset;		 /// 全局存储区地址偏移
+
 	/**
 	 * @brief : 局部存储 Region Storage
 	 */
+	extern uint32_t menu_nvm_rgSectOffset[HITSIC_MENU_NVM_REGION_CNT]; /// 三个局部存储区的扇区偏移
 
-	extern uint32_t menu_nvm_rgSectCnt;				/// 每个局部存储区占用的扇区数
-	extern uint32_t menu_nvm_rgSectOffset[menu_nvm_rgCnt]; /// 三个局部存储区的扇区偏移
-
-	extern uint32_t menu_nvm_rgAddrOffset[menu_nvm_rgCnt]; /// 三个局部存储区的地址偏移
+	extern uint32_t menu_nvm_rgAddrOffset[HITSIC_MENU_NVM_REGION_CNT]; /// 三个局部存储区的地址偏移
 
 	/**
 	 * @brief : 菜单存储占用的总扇区数

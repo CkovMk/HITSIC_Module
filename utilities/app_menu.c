@@ -65,29 +65,26 @@ extern "C"
 		/**
 		 * @brief : 全局存储 Global Storage
 		 */
-		menu_nvm_glSectCnt = HITSIC_MENU_NVM_GLOBAL_SECT_CNT;	/// 全局存储区占用的扇区数
-		menu_nvm_glSectOffset = HITSIC_MENU_NVM_GLOBAL_SECT_OFFSET;/// 全局存储区扇区偏移
-		menu_nvm_glAddrOffset = menu_nvm_glSectOffset * menu_nvm_sectorSize;/// 全局存储区地址偏移
+		menu_nvm_glAddrOffset = HITSIC_MENU_NVM_GLOBAL_SECT_OFFSET * HITSIC_MENU_NVM_SECTOR_SIZE;/// 全局存储区地址偏移
 		/**
 		 * @brief : 局部存储 Region Storage
 		 */
-		menu_nvm_rgSectCnt = HITSIC_MENU_NVM_REGION_SECT_CNT; /// 每个局部存储区占用的扇区数
 		/// 三个局部存储区的扇区偏移
 		{
-			menu_nvm_rgSectOffset[0] = menu_nvm_glSectOffset + menu_nvm_glSectCnt + 0u * menu_nvm_rgSectCnt;
-			menu_nvm_rgSectOffset[1] = menu_nvm_glSectOffset + menu_nvm_glSectCnt + 1u * menu_nvm_rgSectCnt;
-			menu_nvm_rgSectOffset[2] = menu_nvm_glSectOffset + menu_nvm_glSectCnt + 2u * menu_nvm_rgSectCnt;
+			menu_nvm_rgSectOffset[0] = HITSIC_MENU_NVM_GLOBAL_SECT_OFFSET + HITSIC_MENU_NVM_GLOBAL_SECT_SIZE + 0u * HITSIC_MENU_NVM_REGION_SECT_SIZE;
+			menu_nvm_rgSectOffset[1] = HITSIC_MENU_NVM_GLOBAL_SECT_OFFSET + HITSIC_MENU_NVM_GLOBAL_SECT_SIZE + 1u * HITSIC_MENU_NVM_REGION_SECT_SIZE;
+			menu_nvm_rgSectOffset[2] = HITSIC_MENU_NVM_GLOBAL_SECT_OFFSET + HITSIC_MENU_NVM_GLOBAL_SECT_SIZE + 2u * HITSIC_MENU_NVM_REGION_SECT_SIZE;
 		}
 		/// 三个局部存储区的地址偏移
 		{
-			menu_nvm_rgAddrOffset[0] = menu_nvm_rgSectOffset[0] * menu_nvm_sectorSize;
-			menu_nvm_rgAddrOffset[1] = menu_nvm_rgSectOffset[1] * menu_nvm_sectorSize;
-			menu_nvm_rgAddrOffset[2] = menu_nvm_rgSectOffset[2] * menu_nvm_sectorSize;
+			menu_nvm_rgAddrOffset[0] = menu_nvm_rgSectOffset[0] * HITSIC_MENU_NVM_SECTOR_SIZE;
+			menu_nvm_rgAddrOffset[1] = menu_nvm_rgSectOffset[1] * HITSIC_MENU_NVM_SECTOR_SIZE;
+			menu_nvm_rgAddrOffset[2] = menu_nvm_rgSectOffset[2] * HITSIC_MENU_NVM_SECTOR_SIZE;
 		}
 		/**
 		 * @brief : 菜单存储占用的总扇区数
 		 */
-		menu_nvm_totalSectCnt = menu_nvm_glSectCnt + menu_nvm_rgCnt * menu_nvm_rgSectCnt;
+		menu_nvm_totalSectCnt = HITSIC_MENU_NVM_GLOBAL_SECT_SIZE + HITSIC_MENU_NVM_REGION_CNT * HITSIC_MENU_NVM_REGION_SECT_SIZE;
 		/**
 		 * @brief : 每个菜单项保存时占用的字节数
 		 */
@@ -112,13 +109,13 @@ extern "C"
 		{
 			MENU_ListInsert(menu_manageList, MENU_ItemConstruct(nullType, NULL, "", 0, 0));
 			MENU_ListInsert(menu_manageList, MENU_ItemConstruct(variType, &menu_currRegionNum, "RegnSel(0-2)", 0, menuItem_data_global | menuItem_data_NoSave));
-			MENU_ListInsert(menu_manageList, MENU_ItemConstruct(procType, (void *)MENU_Data_NvmSave_Boxed, "Save Data", 0, 0));
-			MENU_ListInsert(menu_manageList, MENU_ItemConstruct(procType, (void *)MENU_Data_NvmRead_Boxed, "Load Data", 0, 0));
-			MENU_ListInsert(menu_manageList, MENU_ItemConstruct(procType, (void *)MENU_Data_NvmSaveRegionConfig, "RegnSave", 0, 0));
+			MENU_ListInsert(menu_manageList, MENU_ItemConstruct(procType, (void *)MENU_Data_NvmSave_Boxed, "Save Data", 0, menuItem_proc_runOnce));
+			MENU_ListInsert(menu_manageList, MENU_ItemConstruct(procType, (void *)MENU_Data_NvmRead_Boxed, "Load Data", 0, menuItem_proc_runOnce));
+			MENU_ListInsert(menu_manageList, MENU_ItemConstruct(procType, (void *)MENU_Data_NvmSaveRegionConfig_Boxed, "RegnSave", 0, menuItem_proc_runOnce));
 			MENU_ListInsert(menu_manageList, MENU_ItemConstruct(nullType, NULL, "", 0, 0));
 			MENU_ListInsert(menu_manageList, MENU_ItemConstruct(variType, &menu_nvmCopySrc, "CopySrc(0-2)", 1, menuItem_data_global | menuItem_data_NoSave));
 			MENU_ListInsert(menu_manageList, MENU_ItemConstruct(variType, &menu_nvmCopyDst, "CopyDst(0-2)", 2, menuItem_data_global | menuItem_data_NoSave));
-			MENU_ListInsert(menu_manageList, MENU_ItemConstruct(procType, (void *)MENU_Data_NvmCopy_Boxed, "CopyData(S>D)", 0, 0));
+			MENU_ListInsert(menu_manageList, MENU_ItemConstruct(procType, (void *)MENU_Data_NvmCopy_Boxed, "CopyData(S>D)", 0, menuItem_proc_runOnce));
 			MENU_ListInsert(menu_manageList, MENU_ItemConstruct(nullType, NULL, "", 0, 0));
 		}
 #endif // ! HITSIC_MENU_USE_NVM
@@ -190,6 +187,7 @@ extern "C"
 
 	void MENU_Data_NvmSave(int32_t _region)
 	{
+		if(_region < 0 || _region >= HITSIC_MENU_NVM_REGION_CNT) { return; }
 		HITSIC_MENU_PRINTF("\nVerbose: MENU: Nvm Save Begin.\n");
 		menu_list_t **listQue = (menu_list_t**)calloc(menu_listCnt, sizeof(menu_list_t *));
 		listQue[0] = menu_manageList;
@@ -270,13 +268,15 @@ extern "C"
 		HITSIC_MENU_PRINTF("Verbose: MENU: Nvm Save Complete.\n\n");
 	}
 
-	void MENU_Data_NvmSave_Boxed(void)
+	void MENU_Data_NvmSave_Boxed(menu_keyOp_t *const _op)
 	{
 		MENU_Data_NvmSave(menu_currRegionNum);
+		*_op = 0;
 	}
 
 	void MENU_Data_NvmRead(int32_t _region)
 	{
+		if(_region < 0 || _region >= HITSIC_MENU_NVM_REGION_CNT) { return; }
 		HITSIC_MENU_PRINTF("\nVerbose: MENU: Nvm Read Begin.\n");
 		menu_list_t **listQue = (menu_list_t**)calloc(menu_listCnt, sizeof(menu_list_t *));
 		listQue[0] = menu_manageList;
@@ -346,9 +346,10 @@ extern "C"
 		HITSIC_MENU_PRINTF("Verbose: MENU: Nvm Read Complete.\n\n");
 	}
 
-	void MENU_Data_NvmRead_Boxed(void)
+	void MENU_Data_NvmRead_Boxed(menu_keyOp_t *const _op)
 	{
 		MENU_Data_NvmRead(menu_currRegionNum);
+		*_op = 0;
 	}
 
 	void MENU_Data_NvmSaveRegionConfig(void)
@@ -365,6 +366,11 @@ extern "C"
 		MENU_NvmWriteCache(realAddr, (void *)&dataBuf, sizeof(menu_nvmData_t));
 		MENU_NvmUpdateCache();
 	}
+	void MENU_Data_NvmSaveRegionConfig_Boxed(menu_keyOp_t *const _op)
+	{
+		MENU_Data_NvmSaveRegionConfig();
+		*_op = 0;
+	}
 
 	void MENU_Data_NvmReadRegionConfig(void)
 	{
@@ -375,21 +381,34 @@ extern "C"
 		MENU_ItemSetData(thisItem, &dataBuf);
 	}
 
+	void MENU_Data_NvmReadRegionConfig_Boxed(menu_keyOp_t *const _op)
+	{
+		MENU_Data_NvmReadRegionConfig();
+		*_op = 0;
+	}
+
 	void MENU_Data_NvmCopy(int32_t _srcRegion, int32_t _dstRegion)
 	{
-		if ((_srcRegion == _dstRegion) || (_srcRegion < 0 || _srcRegion > 2) || (_dstRegion < 0 || _dstRegion > 2))
+		if ((_srcRegion == _dstRegion) || (_srcRegion < 0 || _srcRegion >= HITSIC_MENU_NVM_REGION_CNT) || (_dstRegion < 0 || _dstRegion >= HITSIC_MENU_NVM_REGION_CNT))
 		{
 			return;
 		}
-		for (int i = 0; i < menu_nvm_rgSectCnt; ++i)
+		if (menu_nvm_cache != NULL)
 		{
-			FLASH_SectorWrite(menu_nvm_rgSectOffset[_dstRegion] + i, (void *)FLASH_GetPhysicalAddress(menu_nvm_rgSectOffset[_srcRegion] + i));
+			MENU_NvmUpdateCache();
+		}
+		for (int i = 0; i < HITSIC_MENU_NVM_REGION_SECT_SIZE; ++i)
+		{
+			MENU_NvmCacheSector(menu_nvm_rgSectOffset[_srcRegion] + i);
+			menu_nvm_cachedSector = menu_nvm_rgSectOffset[_dstRegion] + i;
+			MENU_NvmUpdateCache();
 		}
 	}
 
-	void MENU_Data_NvmCopy_Boxed(void)
+	void MENU_Data_NvmCopy_Boxed(menu_keyOp_t *const _op)
 	{
 		MENU_Data_NvmCopy(menu_nvmCopySrc, menu_nvmCopyDst);
+		*_op = 0;
 	}
 
 	int32_t MENU_GetNvmStatus(void)
@@ -408,6 +427,11 @@ extern "C"
 	}
 
 #endif // ! HITSIC_MENU_USE_NVM
+
+	void MENU_PitIsr(void)
+	{
+		NVIC_SetPendingIRQ(HITSIC_MENU_SERVICE_IRQn);
+	}
 
 	void HITSIC_MENU_SERVICE_IRQHandler(void)
 	{

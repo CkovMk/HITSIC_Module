@@ -18,21 +18,21 @@ extern "C"{
 	/**
 	  * @brief : 每个扇区包含的字节数
 	  */
-#define menu_nvm_sectorSize flash_sectorSize
+
 	/**
 	 * @brief : 全局存储 Global Storage
 	 */
-	uint32_t menu_nvm_glSectCnt = HITSIC_MENU_NVM_GLOBAL_SECT_CNT;	/// 全局存储区占用的扇区数
-	uint32_t menu_nvm_glSectOffset = HITSIC_MENU_NVM_GLOBAL_SECT_OFFSET; /// 全局存储区扇区偏移
+	//uint32_t menu_nvm_glSectCnt = HITSIC_MENU_NVM_GLOBAL_SECT_SIZE;	/// 全局存储区占用的扇区数
+	//uint32_t menu_nvm_glSectOffset = HITSIC_MENU_NVM_GLOBAL_SECT_OFFSET; /// 全局存储区扇区偏移
 	uint32_t menu_nvm_glAddrOffset;		 /// 全局存储区地址偏移
 	/**
 	 * @brief : 局部存储 Region Storage
 	 */
 
-	uint32_t menu_nvm_rgSectCnt = HITSIC_MENU_NVM_REGION_SECT_CNT;				/// 每个局部存储区占用的扇区数
-	uint32_t menu_nvm_rgSectOffset[menu_nvm_rgCnt]; /// 三个局部存储区的扇区偏移
+	//uint32_t menu_nvm_rgSectCnt = HITSIC_MENU_NVM_REGION_SECT_SIZE;				/// 每个局部存储区占用的扇区数
+	uint32_t menu_nvm_rgSectOffset[HITSIC_MENU_NVM_REGION_CNT]; /// 三个局部存储区的扇区偏移
 
-	uint32_t menu_nvm_rgAddrOffset[menu_nvm_rgCnt]; /// 三个局部存储区的地址偏移
+	uint32_t menu_nvm_rgAddrOffset[HITSIC_MENU_NVM_REGION_CNT]; /// 三个局部存储区的地址偏移
 
 	/**
 	 * @brief : 菜单存储占用的总扇区数
@@ -109,7 +109,7 @@ extern "C"{
 	{
 		if (menu_nvm_cache == NULL)
 		{
-			if(HITSIC_MENU_NVM_RETVAL_SUCCESS != MENU_NvmCacheSector(_addr / menu_nvm_sectorSize))
+			if(HITSIC_MENU_NVM_RETVAL_SUCCESS != MENU_NvmCacheSector(_addr / HITSIC_MENU_NVM_SECTOR_SIZE))
 			{
 				return kStatus_Fail;
 			}
