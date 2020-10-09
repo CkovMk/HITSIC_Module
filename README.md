@@ -21,6 +21,7 @@ HITSIC_Module是哈工大智能车创新俱乐部各MCU平台共用的程序模�
 | **SYS / 系统**                      |                                                           |
 | [EXTINT](doc/sys_extint.md)         | 外部中断管理器组件                                        |
 | [PITMGR](doc/sys_pitmgr.md)         | 定时中断管理器组件                                        |
+| [WIP:RMCALL](doc/sys_rmcall.md)     | 远程调用组件                                              |
 | **DRV / 驱动**                      |                                                           |
 | [FTFX_FLASH](doc/drv_ftfx_flash.md) | Kinetis系列单片机内部Flash驱动组件                        |
 | [BUTTON](doc/drv_button.md)         | 按钮事件识别组件                                          |
