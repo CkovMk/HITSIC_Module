@@ -54,7 +54,7 @@ by：CkovMk @hitsic 2020.10.09
 
 开发计划
 
-- 创建面向不同屏幕的移植接口
+- 创建面向不同屏幕的移植接口。
 
 已知问题
 
@@ -220,8 +220,9 @@ by：CkovMk @hitsic 2019.11.02
    * @brief : 保存整个菜单到NVM。
    * 该函数将使用全局变量 menu_currRegionNum 中保存的局部存储区号。
    * 
+   * @param {menu_keyOp_t* const} _op : 按键操作接口传入的按键操作
    */
-  void MENU_Data_NvmSave_Boxed(void);
+  void MENU_Data_NvmSave_Boxed(menu_keyOp_t *const _op);
   ```
 
 - 读取数据
@@ -237,9 +238,10 @@ by：CkovMk @hitsic 2019.11.02
   /**
    * @brief : 从NVM读取整个菜单。
    * 该函数将使用全局变量 menu_currRegionNum 中保存的局部存储区号。
-   * 
+   *
+   * @param {menu_keyOp_t* const} _op : 按键操作接口传入的按键操作
    */
-  void MENU_Data_NvmRead_Boxed(void);
+  void MENU_Data_NvmRead_Boxed(menu_keyOp_t *const _op);
   ```
 
 - 读写局部存储区设置
@@ -253,11 +255,12 @@ by：CkovMk @hitsic 2019.11.02
   void MENU_Data_NvmSaveRegionConfig(void);
   
   /**
-   * @brief : 从NVM中读取当前局部存储区号。
+   * @brief : 保存当前局部存储区号到NVM。
    * 该数值设置为不自动保存。
-   * 
+   *
+   * @param {menu_keyOp_t* const} _op : 按键操作接口传入的按键操作
    */
-  void MENU_Data_NvmReadRegionConfig(void);
+  void MENU_Data_NvmSaveRegionConfig_Boxed(menu_keyOp_t *const _op);
   ```
 
 - 在数据区之间拷贝数据（不可用）
@@ -275,8 +278,9 @@ by：CkovMk @hitsic 2019.11.02
    * @brief : 将一个局部存储区的数据拷贝到另一个局部存储区。
    * 该函数将使用全局变量 menu_nvmCopySrc 和 menu_nvmCopyDst 中存储的值。
    * 
+   * @param {menu_keyOp_t* const} _op : 按键操作接口传入的按键操作
    */
-  void MENU_Data_NvmCopy_Boxed(void);
+  void MENU_Data_NvmCopy_Boxed(menu_keyOp_t *const _op);
   ```
 
 - 读取NVM状态标志（不可用）
@@ -550,19 +554,32 @@ by：CkovMk @hitsic 2019.11.02
   目前支持的属性Flag有：
 
   ```c
+  /**
+   * @brief : 菜单项属性枚举类型。
+   * 标志位枚举。
+   */
   typedef enum
   {
-      /** data config 数据属性配置 */
-      menuItem_data_global = 1 << 0, ///< 该菜单项存储在全局数据区。所有参数类型的菜单都应包括此项，除非使用了ROFlag。
-      menuItem_data_ROFlag = 1 << 2, ///< 该菜单项为只读。只读菜单项不允许在菜单内修改，也不能保存到存储区或从存储区读取。
+      /** data config */
+      menuItem_data_global = 1 << 0, ///< 该菜单项存储在全局数据区。
+      menuItem_data_region = 1 << 1, ///< 该菜单项存储在局部数据区。
+      menuItem_data_getPos = menuItem_data_global | menuItem_data_region,
+      menuItem_data_ROFlag = 1 << 2, ///< 该菜单项为只读。只读菜单项不允许在菜单内修改。
+      menuItem_data_NoSave = 1 << 3, ///< 该菜单项默认不保存到NVM。
+    menuItem_data_getCfg = menuItem_data_global | menuItem_data_region | menuItem_data_ROFlag/* | menuItem_data_prioRW*/,
   
-      /** display config 显示属性配置 */
+      /** display config */
       menuItem_disp_forceSci = 1 << 8,  ///< 该菜单项强制使用科学计数法，适用于variType和varfType。
+      //menuItem_disp_bitFlag = 1 << 9,   ///< 该菜单项为按位标志位，仅适用于variType。此时数据指针将被视为uint32_t*。
+      menuItem_disp_noPreview = 1 << 10, ///< 该菜单项不会在菜单列表中显示数据。数据区将显示占位字符。注意此选项对标记为按位标志位的variType无效，因为这类菜单项从不在菜单列表显示数据。
+  	
+      menuItem_proc_runOnce = 1 << 11, ///< 该菜单项只会运行一次。仅适用于procType。
+      menuItem_proc_uiDisplay = 1 << 12, ///< 该菜单项会自行打印屏幕。仅适用于procType。
   
       /** error mask */
   } menu_itemPropety_t;
   ```
-
+  
   互不冲突的属性Flag之间用按位或运算符"|"连接。例如`(menuItem_data_ROFlag | menuItem_disp_forceSci)`表示该数据属性为”该数据为只读，且 强制使用科学计数法显示“。
 
 ## 应用指南

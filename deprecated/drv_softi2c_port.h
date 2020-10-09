@@ -1,6 +1,8 @@
 #ifndef D_MK66F18_DRV_SOFTI2C_PORT_H_
 #define D_MK66F18_DRV_SOFTI2C_PORT_H_
 
+#include "hitsic_common.h"
+
 gpio_pin_config_t pin_out = {
 		kGPIO_DigitalOutput,
 		1,

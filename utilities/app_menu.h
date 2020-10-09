@@ -25,9 +25,6 @@
  * @date    :   v0.1.3      2020.07.31
  * @date    :   v0.1.4      2020.10.09
  * 
- * @note    :   依赖库：drv_ftfx_flash、drv_button、drv_disp_ssd1306
- 依赖库必须先初始化。
- * @note 	:	预发布版本，代码不完整，仅供学习。
  */
 
 #pragma once
@@ -103,7 +100,8 @@ void MENU_Data_NvmSave(int32_t _region);
 /**
  * @brief : 保存整个菜单到NVM。
  * 该函数将使用全局变量 menu_currRegionNum 中保存的局部存储区号。
- *
+ * 
+ * @param {menu_keyOp_t* const} _op : 按键操作接口传入的按键操作
  */
 void MENU_Data_NvmSave_Boxed(menu_keyOp_t *const _op);
 
@@ -118,6 +116,7 @@ void MENU_Data_NvmRead(int32_t _region);
  * @brief : 从NVM读取整个菜单。
  * 该函数将使用全局变量 menu_currRegionNum 中保存的局部存储区号。
  *
+ * @param {menu_keyOp_t* const} _op : 按键操作接口传入的按键操作
  */
 void MENU_Data_NvmRead_Boxed(menu_keyOp_t *const _op);
 
@@ -128,6 +127,12 @@ void MENU_Data_NvmRead_Boxed(menu_keyOp_t *const _op);
  */
 void MENU_Data_NvmSaveRegionConfig(void);
 
+/**
+ * @brief : 保存当前局部存储区号到NVM。
+ * 该数值设置为不自动保存。
+ *
+ * @param {menu_keyOp_t* const} _op : 按键操作接口传入的按键操作
+ */
 void MENU_Data_NvmSaveRegionConfig_Boxed(menu_keyOp_t *const _op);
 
 /**
@@ -137,6 +142,12 @@ void MENU_Data_NvmSaveRegionConfig_Boxed(menu_keyOp_t *const _op);
  */
 void MENU_Data_NvmReadRegionConfig(void);
 
+/**
+ * @brief : 从NVM中读取当前局部存储区号。
+ * 该数值设置为不自动保存。
+ * 
+ * @param {menu_keyOp_t* const} _op : 按键操作接口传入的按键操作
+ */
 void MENU_Data_NvmReadRegionConfig_Boxed(menu_keyOp_t *const _op);
 
 /**
@@ -150,7 +161,8 @@ void MENU_Data_NvmCopy(int32_t _srcRegion, int32_t _dstRegion);
 /**
  * @brief : 将一个局部存储区的数据拷贝到另一个局部存储区。
  * 该函数将使用全局变量 menu_nvmCopySrc 和 menu_nvmCopyDst 中存储的值。
- *
+ * 
+ * @param {menu_keyOp_t* const} _op : 按键操作接口传入的按键操作
  */
 void MENU_Data_NvmCopy_Boxed(menu_keyOp_t *const _op);
 
@@ -169,7 +181,7 @@ int32_t MENU_GetNvmStatus(void);
 void MENU_SetNvmStatus(int32_t _status);
 
 /**
- * @brief : 定时中断管理器。
+ * @brief : 定时中断管理器句柄。
  *
  */
 void MENU_PitIsr(void);
