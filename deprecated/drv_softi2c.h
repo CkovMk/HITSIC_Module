@@ -18,18 +18,18 @@
 #ifndef RTE_SI2C_H
 #define RTE_SI2C_H
 
-#include "inc_stdlib.h"
 #include "hitsic_common.h"
-#include "clock_config.h"
-#include "pin_mux.h"
+#include "drv_softi2c_port.h"
 
-typedef struct _si2c_master_t {
+#define PORTxGet(...) (EXTINT_GetPortInst(__VA_ARGS__))
+
+typedef struct _SI2C_Type {
 	GPIO_Type* SDA;
 	uint32_t SDA_pin;
 	GPIO_Type* SCL;
 	uint32_t SCL_pin;
 	uint32_t nDELAY;//cpu延时用，一般为20的时候波特率大概是400k
-}si2c_master_t;
+}SI2C_Type;
 
 
 #ifdef __cplusplus
@@ -39,10 +39,10 @@ extern "C" {
 /**
  * @brief	软件i2c初始化
  *
- * @param  {si2c_master_t*} base : si2c_master_t对象句柄
+ * @param  {SI2C_Type*} base : SI2C_Type对象句柄
  * @return {status_t}         : 错误代码
  * @SampleUsage
- * 			si2c_master_t i2cs0;
+ * 			SI2C_Type i2cs0;
  *			i2cs0.nDELAY = 5;
  *			i2cs0.SCL = GPIOD;
  *			i2cs0.SDA = GPIOD;
@@ -50,11 +50,11 @@ extern "C" {
  *			i2cs0.SCL_pin = 8;
  *			SI2C_Init(&i2cs0);
  */
-status_t SI2C_Init(si2c_master_t* base);
+status_t SI2C_Init(SI2C_Type* base);
 
 /**
  *
- * @param  {si2c_master_t*} p        : si2c_master_t对象句柄
+ * @param  {SI2C_Type*} p        : SI2C_Type对象句柄
  * @param  {uint8_t} SlaveAddress : 从机地址
  * @param  {uint8_t} reg          : 从机寄存器
  * @param  {uint8_t*} data        : 缓存数组指针
@@ -64,11 +64,11 @@ status_t SI2C_Init(si2c_master_t* base);
  * 			uint8_t buf[10];
  * 			SI2C_MasterReadBlocking(i2cs0,0x68,0x6A,buf,1);
  */
-status_t SI2C_MasterReadBlocking(si2c_master_t* p, uint8_t SlaveAddress, uint8_t reg, uint8_t* data, uint32_t size);
+status_t SI2C_MasterReadBlocking(SI2C_Type* p, uint8_t SlaveAddress, uint8_t reg, uint8_t* data, uint32_t size);
 
 /**
  *
- * @param  {si2c_master_t*} p        : si2c_master_t对象句柄
+ * @param  {SI2C_Type*} p        : SI2C_Type对象句柄
  * @param  {uint8_t} SlaveAddress : 从机地址
  * @param  {uint8_t} reg          : 从机寄存器
  * @param  {uint8_t*} data        : 数组指针
@@ -78,7 +78,7 @@ status_t SI2C_MasterReadBlocking(si2c_master_t* p, uint8_t SlaveAddress, uint8_t
  * 			uint8_t buf[10];
  * 			SI2C_MasterWriteBlocking(i2cs0,0x68,0x6A,buf,1);
  */
-status_t SI2C_MasterWriteBlocking(si2c_master_t* p, uint8_t SlaveAddress, uint8_t reg, uint8_t* data, uint32_t size);
+status_t SI2C_MasterWriteBlocking(SI2C_Type* p, uint8_t SlaveAddress, uint8_t reg, uint8_t* data, uint32_t size);
 
 /**
  * @brief	内部使用，返回gpio对应的port
@@ -89,25 +89,25 @@ status_t SI2C_MasterWriteBlocking(si2c_master_t* p, uint8_t SlaveAddress, uint8_
 PORT_Type* PORTxGet(GPIO_Type* GPIOx);
 
 ////软件IIC所有操作函数
-//static void IIC_Delay(si2c_master_t* p);				//IIC延时函数
-//static void IIC_Delay2(si2c_master_t* p);				//IIC延时函数
-//static void IIC_Start(si2c_master_t* p);				//发送IIC开始信号
-//static void IIC_Stop(si2c_master_t* p);	  			//发送IIC停止信号
-//static void IIC_Send_Byte(si2c_master_t* p,uint8_t txd);			//IIC发送一个字节
-//static uint8_t IIC_Read_Byte(si2c_master_t* p,uint8_t ack);//IIC读取一个字节
-//static uint8_t IIC_Wait_Ack(si2c_master_t* p); 				//IIC等待ACK信号
-//static void IIC_Ack(si2c_master_t* p);					//IIC发送ACK信号
-//static void IIC_NAck(si2c_master_t* p);				//IIC不发送ACK信号
-//static void SCL_out(si2c_master_t* base);
-//static void SDA_out(si2c_master_t* base);
-//static void SDA_in(si2c_master_t* base);
-//static void SCL_in(si2c_master_t* base);
-//static void SDA_H(si2c_master_t* base);
-//static void SDA_L(si2c_master_t* base);
-//static void SCL_H(si2c_master_t* base);
-//static void SCL_L(si2c_master_t* base);
-//static uint32_t SDA_val(si2c_master_t* base);
-//static uint32_t SCL_val(si2c_master_t* base);
+//static void IIC_Delay(SI2C_Type* p);				//IIC延时函数
+//static void IIC_Delay2(SI2C_Type* p);				//IIC延时函数
+//static void IIC_Start(SI2C_Type* p);				//发送IIC开始信号
+//static void IIC_Stop(SI2C_Type* p);	  			//发送IIC停止信号
+//static void IIC_Send_Byte(SI2C_Type* p,uint8_t txd);			//IIC发送一个字节
+//static uint8_t IIC_Read_Byte(SI2C_Type* p,uint8_t ack);//IIC读取一个字节
+//static uint8_t IIC_Wait_Ack(SI2C_Type* p); 				//IIC等待ACK信号
+//static void IIC_Ack(SI2C_Type* p);					//IIC发送ACK信号
+//static void IIC_NAck(SI2C_Type* p);				//IIC不发送ACK信号
+//static void SCL_out(SI2C_Type* base);
+//static void SDA_out(SI2C_Type* base);
+//static void SDA_in(SI2C_Type* base);
+//static void SCL_in(SI2C_Type* base);
+//static void SDA_H(SI2C_Type* base);
+//static void SDA_L(SI2C_Type* base);
+//static void SCL_H(SI2C_Type* base);
+//static void SCL_L(SI2C_Type* base);
+//static uint32_t SDA_val(SI2C_Type* base);
+//static uint32_t SCL_val(SI2C_Type* base);
 
 
 

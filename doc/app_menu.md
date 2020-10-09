@@ -30,35 +30,41 @@ PIT任务管理器（PITMGR），用于计时、延时和按键PIT管理；
 
 I/O中断管理器（EXTINT），用于管理按键外部中断；
 
-Flash读写驱动（FTFX_FLASH），用于保存和读取菜单；
+Flash读写驱动（FTFX_FLASH），可选，用于保存和读取菜单；
 
 屏幕驱动（DISP_SSD1306），用于屏幕显示输出；
 
-按键驱动（BUTTON），用于管理按键功能；
-
-**直接包含的外部头文件：**
-
-`stdafx.h` 预编译头文件
-
-`hitsic_common.h` K66平台环境头文件
-
-**间接包含的主要文件：**
-
-`hitsic_common.h` 模块通用头文件。
-
-`inc_fsl_mk66f18.h` K66平台NXP官方库。
-
-`inc_stdlib.h` C/C++标准库。
-
-`inc_generic.h` 平台无关的符号定义。
+按键驱动（BUTTON），可选，用于管理按键功能；
 
 
 
 ## 版本说明
 
+### v0.1.4
+
+by：CkovMk @hitsic 2020.10.09
+
+继续完善功能
+
+改动说明：
+
+- 修改了`procType`菜单的运行逻辑，现在`procType`类型的菜单具有可进入的二级菜单，仅在二级菜单内短按`OK`键才会执行函数；任何时候在二级菜单内长按`OK`键将直接退出二级菜单。新增了两个属性Flag：`menuItem_proc_runOnce`表示该函数仅运行一次就自动退出。所有没有此Flag的`procType菜单`；`menuItem_proc_uiDisplay`属性Flag表示该函数具有打印屏幕的功能，将禁用菜单默认的界面显示。
+- 修改了菜单刷新逻辑。现在将有一个PITMGR任务以4Hz的频率写入屏幕刷新事件（`menu_message_printDisp`）并触发菜单响应。另外，按键操作也将写入屏幕刷新事件（`menu_message_buttonOp`）。
+- 优化了一些不需要的全局变量，现在已被宏定义替代。
+
+开发计划
+
+- 创建面向不同屏幕的移植接口
+
+已知问题
+
+- 暂无
+
+
+
 ### v0.1.3
 
-by：Chekhov Mark @hitsic 2020.07.31
+by：CkovMk @hitsic 2020.07.31
 
 增加了一些属性Flag。
 
@@ -86,7 +92,7 @@ by：Chekhov Mark @hitsic 2020.07.31
 
 ### v0.1.2
 
-by：Chekhov Mark @hitsic 2019.11.22
+by：CkovMk @hitsic 2019.11.22
 
 主要功能初步完善。
 
@@ -113,7 +119,7 @@ by：Chekhov Mark @hitsic 2019.11.22
 
 ### v0.1.1
 
-by：Chekhov Mark @hitsic 2019.11.02
+by：CkovMk @hitsic 2019.11.02
 
 第一个正式版。经过早期测试没有严重Bug。一些功能仍未完善。
 

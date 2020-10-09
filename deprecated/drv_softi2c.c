@@ -1,4 +1,4 @@
-#include <HITSIC_Module/deprecated/rte_softi2c.h>
+#include "rte_softi2c.h"
 
 
 #ifdef __cplusplus
@@ -6,29 +6,30 @@ extern "C" {
 #endif
 
 //foward declaration...
-//���IIC���в�������
-inline void IIC_Delay(si2c_master_t* p);				//IIC��ʱ����
-inline void IIC_Delay2(si2c_master_t* p);				//IIC��ʱ����
-void IIC_Start(si2c_master_t* p);				//����IIC��ʼ�ź�
-inline void IIC_Stop(si2c_master_t* p);	  			//����IICֹͣ�ź�
-inline void IIC_Send_Byte(si2c_master_t* p, uint8_t txd);			//IIC����һ���ֽ�
-inline uint8_t IIC_Read_Byte(si2c_master_t* p, uint8_t ack);//IIC��ȡһ���ֽ�
-inline uint8_t IIC_Wait_Ack(si2c_master_t* p); 				//IIC�ȴ�ACK�ź�
-inline void IIC_Ack(si2c_master_t* p);					//IIC����ACK�ź�
-inline void IIC_NAck(si2c_master_t* p);				//IIC������ACK�ź�
-inline void SCL_out(si2c_master_t* base);
-inline void SDA_out(si2c_master_t* base);
-inline void SDA_in(si2c_master_t* base);
-inline void SCL_in(si2c_master_t* base);
-inline void SDA_H(si2c_master_t* base);
-inline void SDA_L(si2c_master_t* base);
-inline void SCL_H(si2c_master_t* base);
-inline void SCL_L(si2c_master_t* base);
-inline uint32_t SDA_val(si2c_master_t* base);
-inline uint32_t SCL_val(si2c_master_t* base);
+//软件IIC所有操作函数
+static void IIC_Delay(SI2C_Type* p);				//IIC延时函数
+static void IIC_Delay2(SI2C_Type* p);				//IIC延时函数
+static void IIC_Start(SI2C_Type* p);				//发送IIC开始信号
+static void IIC_Stop(SI2C_Type* p);	  			//发送IIC停止信号
+static void IIC_Send_Byte(SI2C_Type* p,uint8_t txd);			//IIC发送一个字节
+static uint8_t IIC_Read_Byte(SI2C_Type* p,uint8_t ack);//IIC读取一个字节
+static uint8_t IIC_Wait_Ack(SI2C_Type* p); 				//IIC等待ACK信号
+static void IIC_Ack(SI2C_Type* p);					//IIC发送ACK信号
+static void IIC_NAck(SI2C_Type* p);				//IIC不发送ACK信号
+
+static void SCL_out(SI2C_Type* base);
+static void SDA_out(SI2C_Type* base);
+static void SDA_in(SI2C_Type* base);
+static void SCL_in(SI2C_Type* base);
+static void SDA_H(SI2C_Type* base);
+static void SDA_L(SI2C_Type* base);
+static void SCL_H(SI2C_Type* base);
+static void SCL_L(SI2C_Type* base);
+static uint32_t SDA_val(SI2C_Type* base);
+static uint32_t SCL_val(SI2C_Type* base);
 
 
-status_t SI2C_Init(si2c_master_t* base)
+status_t SI2C_Init(SI2C_Type* base)
 {
 	//����·�ɲ������ÿ�©����
 	PORT_SetPinMux(PORTxGet(base->SCL), base->SCL_pin, kPORT_MuxAsGpio);
@@ -58,7 +59,7 @@ status_t SI2C_Init(si2c_master_t* base)
 	return 0;
 }
 
-status_t SI2C_MasterReadBlocking(si2c_master_t* p, uint8_t SlaveAddress, uint8_t reg, uint8_t* data, uint32_t size)
+status_t SI2C_MasterReadBlocking(SI2C_Type* p, uint8_t SlaveAddress, uint8_t reg, uint8_t* data, uint32_t size)
 {
 	IIC_Start(p);
 	IIC_Send_Byte(p, (SlaveAddress << 1) | 0);//����������ַ+д����	
@@ -83,7 +84,7 @@ status_t SI2C_MasterReadBlocking(si2c_master_t* p, uint8_t SlaveAddress, uint8_t
 	return 0;
 }
 
-status_t SI2C_MasterWriteBlocking(si2c_master_t* p, uint8_t SlaveAddress, uint8_t reg, uint8_t* data, uint32_t size)
+status_t SI2C_MasterWriteBlocking(SI2C_Type* p, uint8_t SlaveAddress, uint8_t reg, uint8_t* data, uint32_t size)
 {
 	uint8_t i;
 	IIC_Start(p);
@@ -109,109 +110,12 @@ status_t SI2C_MasterWriteBlocking(si2c_master_t* p, uint8_t SlaveAddress, uint8_
 }
 
 
-PORT_Type* PORTxGet(GPIO_Type* GPIOx)
-{
-	if (GPIOx == GPIOA)
-	{
-		return PORTA;
-	}
-	else if (GPIOx == GPIOB)
-	{
-		return PORTB;
-	}
-	else if (GPIOx == GPIOC)
-	{
-		return PORTC;
-	}
-	else if (GPIOx == GPIOD)
-	{
-		return PORTD;
-	}
-	else if (GPIOx == GPIOE)
-	{
-		return PORTE;
-	}
-	else
-	{
-		return NULL;
-	}
-}
 
 
 
 
 
-gpio_pin_config_t pin_out = {
-		kGPIO_DigitalOutput,
-		1,
-};
-gpio_pin_config_t pin_in = {
-		kGPIO_DigitalInput,
-		1,
-};
-inline void SCL_out(si2c_master_t* base)
-{
-	base->SCL->PDDR |= (1 << base->SCL_pin);
-}
-
-inline void SDA_out(si2c_master_t* base)
-{
-	base->SDA->PDDR |= (1 << base->SDA_pin);
-}
-
-inline void SDA_in(si2c_master_t* base)
-{
-	base->SDA->PDDR &= ~(1 << base->SDA_pin);
-}
-
-inline void SCL_in(si2c_master_t* base)
-{
-	base->SCL->PDDR &= ~(1 << base->SCL_pin);
-}
-
-inline void SDA_H(si2c_master_t* base)
-{
-	base->SDA->PSOR = 1 << base->SDA_pin;
-}
-
-inline void SDA_L(si2c_master_t* base)
-{
-	base->SDA->PCOR = 1 << base->SDA_pin;
-}
-
-inline void SCL_H(si2c_master_t* base)
-{
-	base->SCL->PSOR = 1 << base->SCL_pin;
-}
-
-inline void SCL_L(si2c_master_t* base)
-{
-	base->SCL->PCOR = 1 << base->SCL_pin;
-}
-
-inline uint32_t SDA_val(si2c_master_t* base)
-{
-	return (((base->SDA->PDIR) >> base->SDA_pin) & 0x01U);
-}
-
-inline uint32_t SCL_val(si2c_master_t* base)
-{
-	return (((base->SCL->PDIR) >> base->SCL_pin) & 0x01U);
-}
-
-inline void IIC_Delay(si2c_master_t* p)
-{
-	uint32_t a = p->nDELAY;
-	while (--a) {}
-}
-
-inline void IIC_Delay2(si2c_master_t* p)
-{
-	uint32_t a = p->nDELAY >> 1;
-	while (--a) {}
-}
-
-inline void IIC_Start(si2c_master_t* p)
+inline void IIC_Start(SI2C_Type* p)
 {
 	SDA_H(p);
 	SCL_H(p);
@@ -224,7 +128,7 @@ inline void IIC_Start(si2c_master_t* p)
 	SCL_L(p); //ǯסI2C���ߣ�׼�����ͻ��������
 }
 
-inline void IIC_Stop(si2c_master_t* p)
+inline void IIC_Stop(SI2C_Type* p)
 {
 	SCL_L(p);
 	SDA_L(p);//STOP:when CLK is high DATA change form low to high
@@ -235,7 +139,7 @@ inline void IIC_Stop(si2c_master_t* p)
 	IIC_Delay(p);
 }
 
-inline void IIC_Send_Byte(si2c_master_t* p, uint8_t txd)
+inline void IIC_Send_Byte(SI2C_Type* p, uint8_t txd)
 {
 	uint8_t t;
 	SDA_out(p);
@@ -257,7 +161,7 @@ inline void IIC_Send_Byte(si2c_master_t* p, uint8_t txd)
 }
 
 //��1���ֽڣ�ack=1ʱ������ACK��ack=0������nACK   
-inline uint8_t IIC_Read_Byte(si2c_master_t* p, uint8_t ack)
+inline uint8_t IIC_Read_Byte(SI2C_Type* p, uint8_t ack)
 {
 	uint8_t i, receive = 0;
 	SDA_in(p);//SDA����Ϊ����
@@ -278,7 +182,7 @@ inline uint8_t IIC_Read_Byte(si2c_master_t* p, uint8_t ack)
 }
 
 
-inline uint8_t IIC_Wait_Ack(si2c_master_t* p)
+inline uint8_t IIC_Wait_Ack(SI2C_Type* p)
 {
 	uint8_t ucErrTime = 0;
 	SDA_in(p);      //SDA����Ϊ����  
@@ -298,7 +202,7 @@ inline uint8_t IIC_Wait_Ack(si2c_master_t* p)
 	return 0;
 }
 
-inline void IIC_Ack(si2c_master_t* p)
+inline void IIC_Ack(SI2C_Type* p)
 {
 	SCL_L(p);
 	SDA_out(p);
@@ -309,7 +213,7 @@ inline void IIC_Ack(si2c_master_t* p)
 	SCL_L(p);
 }
 
-inline void IIC_NAck(si2c_master_t* p)
+inline void IIC_NAck(SI2C_Type* p)
 {
 	SCL_L(p);
 	SDA_out(p);

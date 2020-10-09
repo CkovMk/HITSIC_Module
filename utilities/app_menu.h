@@ -20,7 +20,10 @@
  * @version :	v0.1.1
  * 
  * @date 	:	v0.1-beta.0 2019.10.28
- * @date 		v0.1.1		2019.11.02
+ * @date 	:	v0.1.1		2019.11.02
+ * @date    :   v0.1.2      2019.11.22
+ * @date    :   v0.1.3      2020.07.31
+ * @date    :   v0.1.4      2020.10.09
  * 
  * @note    :   依赖库：drv_ftfx_flash、drv_button、drv_disp_ssd1306
  依赖库必须先初始化。
