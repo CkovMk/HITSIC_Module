@@ -129,6 +129,8 @@ extern "C"
 
 		NVIC_SetPriority(HITSIC_MENU_SERVICE_IRQn, HITSIC_MENU_SERVICE_IRQPrio);
 		NVIC_EnableIRQ(HITSIC_MENU_SERVICE_IRQn);
+		pitMgr_t* ptr = pitMgr_t::insert(250U, 7U, MENU_PitIsr, pitMgr_t::enable);
+		assert(ptr);
 	}
 
 	__WEAK void MENU_DataSetUp(void)
@@ -165,6 +167,7 @@ extern "C"
 			menu_dispStrBuf[i][MENU_DISP_STRBUF_COL - 1] = '\0';
 			HITSIC_MENU_DISPLAY_PRINT(1, i, menu_dispStrBuf[i]);
 		}
+		menu_statusFlag &= ~menu_message_printDisp;
 	}
 
 	void MENU_KeyOp(menu_keyOp_t *const _op)
@@ -181,6 +184,8 @@ extern "C"
 		{
 			HITSIC_MENU_PRINTF("Warning: MENU: KeyOp remained unclear. OP = %d\n", *_op);
 		}
+		menu_statusFlag &= ~menu_message_buttonOp;
+		menu_statusFlag |= menu_message_printDisp;
 	}
 
 #if defined(HITSIC_MENU_USE_NVM) && (HITSIC_MENU_USE_NVM > 0)
@@ -430,6 +435,7 @@ extern "C"
 
 	void MENU_PitIsr(void)
 	{
+		menu_statusFlag |= menu_message_printDisp;
 		NVIC_SetPendingIRQ(HITSIC_MENU_SERVICE_IRQn);
 	}
 
@@ -440,12 +446,10 @@ extern "C"
 		{
 			//HITSIC_MENU_PRINTF("Verbose: MENU: Key %d pressed.\n", menu_keyOpBuff);
 			MENU_KeyOp(&menu_keyOpBuff);
-			MENU_PrintDisp();
-			menu_statusFlag &= ~menu_message_buttonOp;
 		}
 		if (menu_statusFlag & menu_message_printDisp)
 		{
-			menu_statusFlag &= ~menu_message_printDisp;
+			MENU_PrintDisp();
 		}
 	}
 
