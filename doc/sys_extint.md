@@ -55,7 +55,7 @@ by CkovMk @hitsic 2019.07.25
 
 - **设置任务 `void setup(INTC_Type* _gpio, uint32_t _pin, handler_t _handler);`**
 
-- **设置任务 `void setMode(interrupt_mode_t _mode);`**
+- **设置中断方式 `void setMode(interrupt_mode_t _mode);`**
 
 
 

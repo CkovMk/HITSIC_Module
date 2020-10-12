@@ -23,47 +23,38 @@ extern "C"
 {
 #endif
 
-    /**
-	 * ********** 按键操作定义 **********
-	 */
-
+/**
+ * ********** 按键操作定义 **********
+ */
 
 /**
  * @brief : 按键数量定义。
  */
 #define MENU_BUTTON_COUNT 5
 
+//test marco
+//MENU_BUTTON_MAKE_OP(ok,shrt)
 
+extern pitmgr_handle_t *menu_butonPitMgrHandle;
 
-    //test marco
-    //MENU_BUTTON_MAKE_OP(ok,shrt)
-
-
-
-
-    extern pitmgr_handle_t *menu_butonPitMgrHandle;
-
-    /***********************************
+/***********************************
  ************ 按键操作接口 **********
  ***********************************/
 
-    /**
-	 * @brief : 按键初始化函数，无需外部调用。
-	 */
-    void MENU_ButtonSetup(void);
+/**
+ * @brief : 按键初始化函数，无需外部调用。
+ */
+void MENU_ButtonSetup(void);
 
-    /**
-	 * @brief : 按键定时中断服务函数，无需外部调用。
-	 */
-    void MENU_ButtonPitIsr(void);
+/**
+ * @brief : 按键定时中断服务函数，无需外部调用。
+ */
+void MENU_ButtonPitIsr(void);
 
-    /**
-	 * @brief : 按键触发回调函数，无需外部调用。
-	 */
-    void MENU_ButtonCallback(button_t *_inst);
-
-
-
+/**
+ * @brief : 按键触发回调函数，无需外部调用。
+ */
+void MENU_ButtonCallback(button_t *_inst);
 
 #ifdef __cplusplus
 }
