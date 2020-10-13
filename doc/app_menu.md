@@ -48,7 +48,7 @@ by：CkovMk @hitsic 2020.10.09
 
 改动说明：
 
-- 修改了`procType`菜单的运行逻辑，现在`procType`类型的菜单具有可进入的二级菜单，仅在二级菜单内短按`OK`键才会执行函数；任何时候在二级菜单内长按`OK`键将直接退出二级菜单。新增了两个属性Flag：`menuItem_proc_runOnce`表示该函数仅运行一次就自动退出。所有没有此Flag的`procType菜单`；`menuItem_proc_uiDisplay`属性Flag表示该函数具有打印屏幕的功能，将禁用菜单默认的界面显示。
+- 修改了`procType`菜单的运行逻辑，现在`procType`类型的菜单具有可进入的二级菜单，仅在二级菜单内短按`OK`键才会执行函数；任何时候在二级菜单内长按`OK`键将直接退出二级菜单。新增了两个属性Flag：`menuItem_proc_runOnce`表示该函数仅运行一次就自动退出。所有没有此Flag的`procType菜单`短按OK键后都不会退出，只能由函数内逻辑退出或长按OK键退出。`menuItem_proc_uiDisplay`属性Flag表示该函数具有打印屏幕的功能，将禁用菜单默认的界面显示。
 - 修改了菜单刷新逻辑。现在将有一个PITMGR任务以4Hz的频率写入屏幕刷新事件（`menu_message_printDisp`）并触发菜单响应。另外，按键操作也将写入屏幕刷新事件（`menu_message_buttonOp`）。
 - 优化了一些不需要的全局变量，现在已被宏定义替代。
 
@@ -58,7 +58,8 @@ by：CkovMk @hitsic 2020.10.09
 
 已知问题
 
-- 暂无
+- 菜单内在不同局部存储区拷贝数据的功能存在问题，可能会造成数据丢失。
+- 在使用“disp_noPreview”属性时，仍可进行快速调参。
 
 
 
