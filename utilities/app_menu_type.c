@@ -110,10 +110,10 @@ extern "C"
     }
     void MENU_ItemSetData_variType(menu_itemIfce_t *_item, void *_data)
     {
-        if (!(_item->pptFlag & menuItem_data_ROFlag))
+        if (!(_item->pptFlag & menuItem_data_NoLoad))
         {
             *(_item->handle.p_variType->data) = *(int32_t *)_data;
-            HITSIC_MENU_PRINTF("Verbose: MENU: variType Data Updated %d\n", *(_item->handle.p_variType->data));
+            MENU_ITEM_LOG_V("variType Data Updated %12.12d", *(_item->handle.p_variType->data));
         }
     }
     //used when in menuList
@@ -195,17 +195,17 @@ extern "C"
         MENU_ItemSetContent_variType(&handle->bData, handle->v, handle->e);
         menu_dispStrBuf[0][snprintf(menu_dispStrBuf[0], MENU_DISP_STRBUF_COL, "##%-12.12s*", _item->nameStr)] = ' ';
         menu_dispStrBuf[2][snprintf(menu_dispStrBuf[2], MENU_DISP_STRBUF_COL, "  Cur: %+-10d", *handle->data)] = ' ';
-        menu_dispStrBuf[3][snprintf(menu_dispStrBuf[3], MENU_DISP_STRBUF_COL, "  Adj: %+-10d", handle->bData)] = ' ';
-        menu_dispStrBuf[4][snprintf(menu_dispStrBuf[4], MENU_DISP_STRBUF_COL, "  Mod: %+4.4de%+1.1d", handle->v, handle->e)] = ' ';
-        int32_t pos = handle->cur < 0 ? 12 - handle->cur : 11 - handle->cur;
-        menu_dispStrBuf[5][pos] = '^';
 
         if (_item->pptFlag & menuItem_data_ROFlag)
         {
-            menu_dispStrBuf[7][snprintf(menu_dispStrBuf[7], MENU_DISP_STRBUF_COL, "    RO")] = ' ';
+            menu_dispStrBuf[7][snprintf(menu_dispStrBuf[7], MENU_DISP_STRBUF_COL, "    READ     ONLY    ")] = ' ';
         }
         else
         {
+            menu_dispStrBuf[3][snprintf(menu_dispStrBuf[3], MENU_DISP_STRBUF_COL, "  Adj: %+-10d", handle->bData)] = ' ';
+            menu_dispStrBuf[4][snprintf(menu_dispStrBuf[4], MENU_DISP_STRBUF_COL, "  Mod: %+4.4de%+1.1d", handle->v, handle->e)] = ' ';
+            int32_t pos = handle->cur < 0 ? 12 - handle->cur : 11 - handle->cur;
+            menu_dispStrBuf[5][pos] = '^';
             menu_dispStrBuf[7][snprintf(menu_dispStrBuf[7], MENU_DISP_STRBUF_COL, "    SOK>AC LOK>WA    ")] = ' ';
         }
         if (_item->pptFlag & menuItem_data_global)
@@ -380,10 +380,10 @@ extern "C"
     }
     void MENU_ItemSetData_varfType(menu_itemIfce_t *_item, void *_data)
     {
-        if (!(_item->pptFlag & menuItem_data_ROFlag))
+        if (!(_item->pptFlag & menuItem_data_NoLoad))
         {
             *(_item->handle.p_varfType->data) = *(float *)_data;
-            HITSIC_MENU_PRINTF("Verbose: MENU: varfType Data Updated %f\n", *(_item->handle.p_varfType->data));
+            MENU_ITEM_LOG_V("varfType Data Updated %12.4f", *(_item->handle.p_varfType->data));
         }
     }
     //used when in menuList
@@ -451,18 +451,17 @@ extern "C"
         MENU_ItemSetContent_varfType(&handle->bData, handle->v, handle->e);
         menu_dispStrBuf[0][snprintf(menu_dispStrBuf[0], MENU_DISP_STRBUF_COL, "##%-12.12s*", _item->nameStr)] = ' ';
         menu_dispStrBuf[2][snprintf(menu_dispStrBuf[2], MENU_DISP_STRBUF_COL, "  Cur: %+-10.4f", *handle->data)] = ' ';
-        menu_dispStrBuf[3][snprintf(menu_dispStrBuf[3], MENU_DISP_STRBUF_COL, "  Adj: %+-10.4f", handle->bData)] = ' ';
-        menu_dispStrBuf[4][snprintf(menu_dispStrBuf[4], MENU_DISP_STRBUF_COL, "  Mod: %+3.3de%+1.1d", handle->v, handle->e)] = ' ';
-        int32_t pos = handle->cur < 0 ? 12 - handle->cur : 11 - handle->cur;
-        //HITSIC_MENU_DEBUG_PRINTF("-Verbose MENU: cur = %d, pos = %d .\n",handle->cur, pos);
-        menu_dispStrBuf[5][pos] = '^';
 
         if (_item->pptFlag & menuItem_data_ROFlag)
         {
-            menu_dispStrBuf[7][snprintf(menu_dispStrBuf[7], MENU_DISP_STRBUF_COL, "    RO")] = ' ';
+            menu_dispStrBuf[7][snprintf(menu_dispStrBuf[7], MENU_DISP_STRBUF_COL, "    READ     ONLY    ")] = ' ';
         }
         else
         {
+            menu_dispStrBuf[3][snprintf(menu_dispStrBuf[3], MENU_DISP_STRBUF_COL, "  Adj: %+-10.4f", handle->bData)] = ' ';
+            menu_dispStrBuf[4][snprintf(menu_dispStrBuf[4], MENU_DISP_STRBUF_COL, "  Mod: %+3.3de%+1.1d", handle->v, handle->e)] = ' ';
+            int32_t pos = handle->cur < 0 ? 12 - handle->cur : 11 - handle->cur;
+            menu_dispStrBuf[5][pos] = '^';
             menu_dispStrBuf[7][snprintf(menu_dispStrBuf[7], MENU_DISP_STRBUF_COL, "    SOK>AC LOK>WA    ")] = ' ';
         }
         if (_item->pptFlag & menuItem_data_global)
@@ -763,7 +762,7 @@ extern "C"
 
     void MENU_ItemPrintSlot(menu_itemIfce_t *_item, uint32_t _slotNum)
     {
-        //HITSIC_MENU_PRINTF("-Verbose MENU: printing slot menu %s, type=%d, slot=%d.\n", _item->nameStr, _item->type, _slotNum);
+        //HITSIC_MENU_PRINTF("-Verbose MENU: printing slot menu %s, type=%d, slot=%d.", _item->nameStr, _item->type, _slotNum);
         MENU_ITEM_SWITCH_CASE(MENU_ItemPrintSlot, _item, _slotNum);
     }
 

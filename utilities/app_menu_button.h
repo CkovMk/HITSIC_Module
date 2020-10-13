@@ -10,17 +10,18 @@
  */
 #define MENU_BUTTON_MAKE_EXT_ISR(instNum) (MENU_ButtonExtIsr##instNum)
 #define MENU_BUTTON_CALL_EXT_ISR(instNum) BUTTON_ExtIsr(&menu_button[instNum])
-#define MENU_BUTTON_DEF_EXT_ISR(instNum) \
-    void MENU_BUTTON_MAKE_EXT_ISR(instNum)(void) { MENU_BUTTON_CALL_EXT_ISR(instNum); }
+#define MENU_BUTTON_DEF_EXT_ISR(instNum)                                       \
+    void MENU_BUTTON_MAKE_EXT_ISR(instNum)(void) {                             \
+        MENU_BUTTON_CALL_EXT_ISR(instNum);                                     \
+    }
 #define MENU_BUTTON_MAKEE_PIT_ISR(instNum) (MENU_ButtonPitIsr##instNum)
 #define MENU_BUTTON_CALL_PIT_ISR(instNum) BUTTON_PitIsr(&menu_button[instNum]);
 
-//test macro
-//MENU_BUTTON_DEF_EXT_ISR(1)
+// test macro
+// MENU_BUTTON_DEF_EXT_ISR(1)
 
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
 /**
@@ -32,8 +33,8 @@ extern "C"
  */
 #define MENU_BUTTON_COUNT 5
 
-//test marco
-//MENU_BUTTON_MAKE_OP(ok,shrt)
+// test marco
+// MENU_BUTTON_MAKE_OP(ok,shrt)
 
 extern pitmgr_handle_t *menu_butonPitMgrHandle;
 

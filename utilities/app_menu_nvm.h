@@ -8,7 +8,7 @@
 #ifdef __cplusplus
 extern "C"
 {
-#endif 
+#endif
 
 /**************************************
  ************ NVM存储常量定义 **********
@@ -17,7 +17,7 @@ extern "C"
 /**
  * @brief : 全局存储 Global Storage
  */
-extern uint32_t menu_nvm_glAddrOffset;		 /// 全局存储区地址偏移
+extern uint32_t menu_nvm_glAddrOffset; /// 全局存储区地址偏移
 
 /**
  * @brief : 局部存储 Region Storage
@@ -43,6 +43,10 @@ extern uint32_t menu_nvm_dataSize;
  */
 extern uint8_t *menu_nvm_cache;
 extern uint32_t menu_nvm_cachedSector;
+/**
+ * @brief : 菜单进行全局擦除/保存的次数，可用于估计Flash寿命
+ */
+extern uint32_t menu_nvm_eraseCnt;
 
 /**************************************
  ************ NVM存储操作接口 **********
@@ -61,13 +65,14 @@ status_t MENU_NvmRead(uint32_t _addr, void *_buf, uint32_t _byteCnt);
 
 /**
  * @brief : 检查地址是否在可缓存范围内。
- * 如果当前未缓存任何扇区（menu_nvm_cache == NULL），始终返回true。如果当前已有缓存扇区，则根据保存的
+ * 如果当前未缓存任何扇区（menu_nvm_cache ==
+ * NULL），始终返回true。如果当前已有缓存扇区，则根据保存的
  * 扇区号判断输入地址是否在缓存范围内。
  *
  * @param  {uint32_t} _addr : 要检查的地址
  * @return {bool}           : 可缓存返回true，不可缓存返回false。
  */
-bool MENU_NvmCacheable(uint32_t _addr); //check if addr is ready to write.
+bool MENU_NvmCacheable(uint32_t _addr); // check if addr is ready to write.
 
 status_t MENU_NvmCacheSector(uint32_t _sect);
 
@@ -78,7 +83,8 @@ status_t MENU_NvmCacheSector(uint32_t _sect);
  * @param  {uint32_t} _addr    :
  * @param  {void*} _buf        :
  * @param  {uint32_t} _byteCnt :
- * @return {status_t}          : 成功写入返回kStatus_Success，失败返回kStatus_Fail。
+ * @return {status_t}          :
+ * 成功写入返回kStatus_Success，失败返回kStatus_Fail。
  */
 status_t MENU_NvmWriteCache(uint32_t _addr, void *_buf, uint32_t _byteCnt);
 
@@ -93,7 +99,7 @@ status_t MENU_NvmUpdateCache(void);
 
 #ifdef __cplusplus
 }
-#endif 
+#endif
 
 #endif // ! HITSIC_MENU_USE_NVM
 

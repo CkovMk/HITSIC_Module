@@ -5,16 +5,12 @@
 #ifdef __cplusplus
 extern "C"
 {
-#endif 
+#endif
 
     /**
      * ********** NVM存储变量定义 **********
      */
 
-    //gl = global
-    //rg = region
-    //addr = address
-    //sect = sector
     /**
      * @brief : 每个扇区包含的字节数
      */
@@ -22,17 +18,19 @@ extern "C"
     /**
      * @brief : 全局存储 Global Storage
      */
-    //uint32_t menu_nvm_glSectCnt = HITSIC_MENU_NVM_GLOBAL_SECT_SIZE;	/// 全局存储区占用的扇区数
-    //uint32_t menu_nvm_glSectOffset = HITSIC_MENU_NVM_GLOBAL_SECT_OFFSET; /// 全局存储区扇区偏移
     uint32_t menu_nvm_glAddrOffset;/// 全局存储区地址偏移
+
     /**
      * @brief : 局部存储 Region Storage
      */
 
-    //uint32_t menu_nvm_rgSectCnt = HITSIC_MENU_NVM_REGION_SECT_SIZE;				/// 每个局部存储区占用的扇区数
-    uint32_t menu_nvm_rgSectOffset[HITSIC_MENU_NVM_REGION_CNT];/// 三个局部存储区的扇区偏移
 
-    uint32_t menu_nvm_rgAddrOffset[HITSIC_MENU_NVM_REGION_CNT];/// 三个局部存储区的地址偏移
+    // 每个局部存储区占用的扇区数
+    uint32_t menu_nvm_rgSectOffset
+    [HITSIC_MENU_NVM_REGION_CNT];/// 三个局部存储区的扇区偏移
+
+    uint32_t menu_nvm_rgAddrOffset
+    [HITSIC_MENU_NVM_REGION_CNT];/// 三个局部存储区的地址偏移
 
     /**
      * @brief : 菜单存储占用的总扇区数
@@ -51,6 +49,10 @@ extern "C"
      */
     uint8_t *menu_nvm_cache = NULL;
     uint32_t menu_nvm_cachedSector = 0;
+    /**
+     * @brief : 菜单进行全局擦除/保存的次数，可用于估计Flash寿命
+     */
+    uint32_t menu_nvm_eraseCnt = 0;
 
     /**
      * ********** NVM存储操作接口 **********
@@ -58,8 +60,9 @@ extern "C"
 
     status_t MENU_NvmRead(uint32_t _addr, void *_buf, uint32_t _byteCnt)
     {
-        HITSIC_MENU_PRINTF("Verbose: MENU: Nvm Rx Addr = 0x%8.8x, Size = %4.4d\n", _addr, _byteCnt);
-        if(HITSIC_MENU_NVM_RETVAL_SUCCESS == HITSIC_MENU_NVM_AddressRead(_addr, _buf, _byteCnt))
+        MENU_NVM_LOG_V("Rx Addr = 0x%8.8x, Size = %4.4d", _addr, _byteCnt);
+        if (HITSIC_MENU_NVM_RETVAL_SUCCESS ==
+                HITSIC_MENU_NVM_AddressRead(_addr, _buf, _byteCnt))
         {
             return kStatus_Success;
         }
@@ -71,7 +74,8 @@ extern "C"
 
     bool MENU_NvmCacheable(uint32_t _addr)
     {
-        if(menu_nvm_cache == NULL || _addr / flash_sectorSize == menu_nvm_cachedSector)
+        if (menu_nvm_cache == NULL ||
+                _addr / flash_sectorSize == menu_nvm_cachedSector)
         {
             return true;
         }
@@ -87,21 +91,25 @@ extern "C"
         {
             return kStatus_Fail;
         }
-        menu_nvm_cache = (uint8_t*)malloc(flash_sectorSize);
+        menu_nvm_cache = (uint8_t *)malloc(flash_sectorSize);
         if (menu_nvm_cache == NULL)
         {
-            HITSIC_MENU_PRINTF("Warning: MENU: Nvm Cached Sector %2.2d\n Failed! [-MemMalloc]", menu_nvm_cachedSector);
+            MENU_NVM_LOG_E("Cached Sector %2.2d\n Failed! [-MemMalloc]",
+                    menu_nvm_cachedSector);
             return kStatus_Fail;
         }
-        if (HITSIC_MENU_NVM_RETVAL_SUCCESS != HITSIC_MENU_NVM_SectorRead(menu_nvm_cachedSector, (void *)menu_nvm_cache))
+        if (HITSIC_MENU_NVM_RETVAL_SUCCESS !=
+                HITSIC_MENU_NVM_SectorRead(menu_nvm_cachedSector,
+                        (void *)menu_nvm_cache))
         {
             free(menu_nvm_cache);
             menu_nvm_cache = NULL;
-            HITSIC_MENU_PRINTF("Warning: MENU: Nvm Cached Sector %2.2d\n Failed! [-FlashRead]", menu_nvm_cachedSector);
+            MENU_NVM_LOG_E("Cached Sector %2.2d\n Failed! [-FlashRead]",
+                    menu_nvm_cachedSector);
             return kStatus_Fail;
         }
         menu_nvm_cachedSector = _sect;
-        HITSIC_MENU_PRINTF("Verbose: MENU: Nvm Cached Sector %2.2d\n", menu_nvm_cachedSector);
+        MENU_NVM_LOG_V("Cached Sector %2.2d", menu_nvm_cachedSector);
         return kStatus_Success;
     }
 
@@ -109,31 +117,33 @@ extern "C"
     {
         if (menu_nvm_cache == NULL)
         {
-            if(HITSIC_MENU_NVM_RETVAL_SUCCESS != MENU_NvmCacheSector(_addr / HITSIC_MENU_NVM_SECTOR_SIZE))
+            if (HITSIC_MENU_NVM_RETVAL_SUCCESS !=
+                    MENU_NvmCacheSector(_addr / HITSIC_MENU_NVM_SECTOR_SIZE))
             {
                 return kStatus_Fail;
             }
         }
         memcpy(menu_nvm_cache + _addr % flash_sectorSize, _buf, _byteCnt);
-        HITSIC_MENU_PRINTF("Verbose: MENU: Nvm Tx Addr = 0x%8.8x, Size = %4.4d\n", _addr, _byteCnt);
+        MENU_NVM_LOG_V("Tx Addr = 0x%8.8x, Size = %4.4d", _addr, _byteCnt);
         return kStatus_Success;
     }
 
     status_t MENU_NvmUpdateCache(void)
     {
-        if (HITSIC_MENU_NVM_RETVAL_SUCCESS != HITSIC_MENU_NVM_SectorWrite(menu_nvm_cachedSector, menu_nvm_cache))
+        if (HITSIC_MENU_NVM_RETVAL_SUCCESS !=
+                HITSIC_MENU_NVM_SectorWrite(menu_nvm_cachedSector, menu_nvm_cache))
         {
             return kStatus_Fail;
         }
-        //void* readBuf = malloc(flash_sectorSize);
-        //FLASH_SectorRead(menu_nvm_cachedSector, readBuf);
-        HITSIC_MENU_PRINTF("Verbose: MENU: Nvm Update Cached Sector %2.2d\n", menu_nvm_cachedSector);
-//		if(memcmp(readBuf, menu_nvm_cache, flash_sectorSize) != 0)
-//		{
-//			HITSIC_MENU_PRINTF("Warning: MENU: Nvm Update Cache Fail.\n");
-//		}
-//		free(readBuf);
-//		readBuf = NULL;
+        // void* readBuf = malloc(flash_sectorSize);
+        // FLASH_SectorRead(menu_nvm_cachedSector, readBuf);
+        MENU_NVM_LOG_V("Update Cached Sector %2.2d", menu_nvm_cachedSector);
+        //		if(memcmp(readBuf, menu_nvm_cache, flash_sectorSize) != 0)
+        //		{
+        //			HITSIC_MENU_PRINTF("Warning: MENU: Nvm Update Cache Fail.\n");
+        //		}
+        //		free(readBuf);
+        //		readBuf = NULL;
 
         free(menu_nvm_cache);
         menu_nvm_cache = NULL;
@@ -142,7 +152,6 @@ extern "C"
 
 #ifdef __cplusplus
 }
-#endif 
+#endif
 
 #endif // ! HITSIC_MENU_USE_NVM
-
