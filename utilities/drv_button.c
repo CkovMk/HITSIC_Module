@@ -104,7 +104,7 @@ extern "C"
             _inst->msCnt = BUTTON_TIMER_MS;
         }
     }
-
+/** This is New version, but buggy.
     void BUTTON_PitIsr(button_t *_inst)
     {
         
@@ -142,7 +142,8 @@ extern "C"
 			}
 		}
     }
-/** This is old version. It seems buggy but works. If the new one is broken, use this instead.
+*/
+/** This is old version. It seems buggy but works. If the new one is broken, use this instead. */
     void BUTTON_PitIsr(button_t *_inst)
     {
 		if (BUTTON_ReadPin(_inst) == BUTTON_RELEASE_LOGIC)
@@ -182,7 +183,6 @@ extern "C"
 			}
 		}
     }
-*/
 #ifdef __cplusplus
 }
 #endif

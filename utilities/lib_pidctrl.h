@@ -19,7 +19,7 @@
  * @author  :	Chekhov Mark/马奇科(qq:905497173)
  * @version :	v0.1-beta.0
  *
- * @date 	:	v0.1-beta.0 2019.10.18 马奇科
+ * @date 	:	v0.1-beta.0 2019.10.18
  *
  * @brief   :   PID控制算法
  */

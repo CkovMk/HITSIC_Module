@@ -30,35 +30,42 @@ PIT任务管理器（PITMGR），用于计时、延时和按键PIT管理；
 
 I/O中断管理器（EXTINT），用于管理按键外部中断；
 
-Flash读写驱动（FTFX_FLASH），用于保存和读取菜单；
+Flash读写驱动（FTFX_FLASH），可选，用于保存和读取菜单；
 
 屏幕驱动（DISP_SSD1306），用于屏幕显示输出；
 
-按键驱动（BUTTON），用于管理按键功能；
-
-**直接包含的外部头文件：**
-
-`stdafx.h` 预编译头文件
-
-`hitsic_common.h` K66平台环境头文件
-
-**间接包含的主要文件：**
-
-`hitsic_common.h` 模块通用头文件。
-
-`inc_fsl_mk66f18.h` K66平台NXP官方库。
-
-`inc_stdlib.h` C/C++标准库。
-
-`inc_generic.h` 平台无关的符号定义。
+按键驱动（BUTTON），可选，用于管理按键功能；
 
 
 
 ## 版本说明
 
+### v0.1.4
+
+by：CkovMk @hitsic 2020.10.09
+
+继续完善功能
+
+改动说明：
+
+- 修改了`procType`菜单的运行逻辑，现在`procType`类型的菜单具有可进入的二级菜单，仅在二级菜单内短按`OK`键才会执行函数；任何时候在二级菜单内长按`OK`键将直接退出二级菜单。新增了两个属性Flag：`menuItem_proc_runOnce`表示该函数仅运行一次就自动退出。所有没有此Flag的`procType菜单`短按OK键后都不会退出，只能由函数内逻辑退出或长按OK键退出。`menuItem_proc_uiDisplay`属性Flag表示该函数具有打印屏幕的功能，将禁用菜单默认的界面显示。
+- 修改了菜单刷新逻辑。现在将有一个PITMGR任务以4Hz的频率写入屏幕刷新事件（`menu_message_printDisp`）并触发菜单响应。另外，按键操作也将写入屏幕刷新事件（`menu_message_buttonOp`）。
+- 优化了一些不需要的全局变量，现在已被宏定义替代。
+
+开发计划
+
+- 创建面向不同屏幕的移植接口。
+
+已知问题
+
+- 菜单内在不同局部存储区拷贝数据的功能存在问题，可能会造成数据丢失。
+- 在使用“disp_noPreview”属性时，仍可进行快速调参。
+
+
+
 ### v0.1.3
 
-by：Chekhov Mark @hitsic 2020.07.31
+by：CkovMk @hitsic 2020.07.31
 
 增加了一些属性Flag。
 
@@ -86,7 +93,7 @@ by：Chekhov Mark @hitsic 2020.07.31
 
 ### v0.1.2
 
-by：Chekhov Mark @hitsic 2019.11.22
+by：CkovMk @hitsic 2019.11.22
 
 主要功能初步完善。
 
@@ -113,7 +120,7 @@ by：Chekhov Mark @hitsic 2019.11.22
 
 ### v0.1.1
 
-by：Chekhov Mark @hitsic 2019.11.02
+by：CkovMk @hitsic 2019.11.02
 
 第一个正式版。经过早期测试没有严重Bug。一些功能仍未完善。
 
@@ -150,7 +157,7 @@ by：Chekhov Mark @hitsic 2019.11.02
 
 ## API文档
 
-### 顶层API
+### 顶层API（`APP_MENU`）
 
 - 菜单初始化
   
@@ -162,6 +169,10 @@ by：Chekhov Mark @hitsic 2019.11.02
    */
   void MENU_Init(void);
   ```
+
+  将进行初始化菜单运行所必需的变量、初始化NVM（如果启用）相关变量、初始化按钮驱动（如果启用）、添加管理菜单等操作，并调用`void MENU_DataSetUp(void);`函数配置用户菜单。使用菜单前必须首先调用。
+  
+  
 
 - 设置菜单数据
 
@@ -175,6 +186,10 @@ by：Chekhov Mark @hitsic 2019.11.02
   void MENU_DataSetUp(void);
   ```
 
+  在这里配置菜单。本模组内包含了该函数的一个弱符号实现，仅用于菜单测试。您可以创建您自己的实现，并在其中插入您所需的数据、子菜单和函数等项目。**注意：在使用C++编译器时，您的实现须由`extern "C"{}`保护。**
+
+  
+
 - 打印屏幕
 
   ```C
@@ -186,6 +201,10 @@ by：Chekhov Mark @hitsic 2019.11.02
    */
   void MENU_PrintDisp(void);
   ```
+
+  用于刷新屏幕。大多数时候屏幕刷新都是自动进行的，您无需手动刷新。
+
+  
 
 - 按键操作
 
@@ -199,6 +218,10 @@ by：Chekhov Mark @hitsic 2019.11.02
    */
   void MENU_KeyOp(menu_keyOp_t * const _op);
   ```
+
+  用于解析按键操作并根据菜单逻辑给出响应。如果执行按键操作后需要刷新屏幕，其将自动产生一次屏幕刷新事件，但可能不会立即进行屏幕刷新。在使用本模组自带的按键处理函数时，您无需手动调用该函数。反之，如果您自行编写了按键识别代码，您可以通过调用此函数向菜单传输指令。
+
+  
 
 - 保存数据
 
@@ -214,9 +237,14 @@ by：Chekhov Mark @hitsic 2019.11.02
    * @brief : 保存整个菜单到NVM。
    * 该函数将使用全局变量 menu_currRegionNum 中保存的局部存储区号。
    * 
+   * @param {menu_keyOp_t* const} _op : 按键操作接口传入的按键操作
    */
-  void MENU_Data_NvmSave_Boxed(void);
+  void MENU_Data_NvmSave_Boxed(menu_keyOp_t *const _op);
   ```
+
+  保存菜单内的数据到NVM（非易失性存储）。仅在启用NVM功能时有效。本模组不会自动保存参数到NVM。在程序中，您应该调用`void MENU_Data_NvmSave(int32_t _region);`来执行保存操作。`int32_t menu_currRegionNum;`是当前菜单选中的局部存储区。您也可以人为指定存储区，取值范围为0 ≤ `_region` ＜ `HITSIC_MENU_NVM_REGION_CNT`。`void MENU_Data_NvmSave_Boxed(menu_keyOp_t *const _op);`是程序类型菜单项的服务函数，将被自动添加至管理菜单。您可以通过菜单执行数据保存操作。
+
+  
 
 - 读取数据
 
@@ -231,10 +259,17 @@ by：Chekhov Mark @hitsic 2019.11.02
   /**
    * @brief : 从NVM读取整个菜单。
    * 该函数将使用全局变量 menu_currRegionNum 中保存的局部存储区号。
-   * 
+   *
+   * @param {menu_keyOp_t* const} _op : 按键操作接口传入的按键操作
    */
-  void MENU_Data_NvmRead_Boxed(void);
+  void MENU_Data_NvmRead_Boxed(menu_keyOp_t *const _op);
   ```
+
+  从NVM（非易失性存储）中读取数据到当前菜单。仅在启用NVM功能时有效。本模组不会自动读取参数到NVM。在程序中，您可以在初始化后立即调用`void MENU_Data_NvmSave(int32_t _region);`来执行读取操作。您可以人为指定存储区，取值范围为0 ≤ `_region` ＜ `HITSIC_MENU_NVM_REGION_CNT`，或先读取NVM中保存的分区号，再执行读取操作。`void MENU_Data_NvmRead_Boxed(menu_keyOp_t *const _op);`是程序类型菜单项的服务函数，将被自动添加至管理菜单。您可以通过菜单执行数据读取操作。
+
+  **注意：菜单内的数据在NVM中按地址存储，且设置了校验机制。如果修改了菜单结构或菜单名称，可能会导致数据丢失。请在修改菜单结构前备份数据。**
+
+  
 
 - 读写局部存储区设置
 
@@ -247,12 +282,17 @@ by：Chekhov Mark @hitsic 2019.11.02
   void MENU_Data_NvmSaveRegionConfig(void);
   
   /**
-   * @brief : 从NVM中读取当前局部存储区号。
+   * @brief : 保存当前局部存储区号到NVM。
    * 该数值设置为不自动保存。
-   * 
+   *
+   * @param {menu_keyOp_t* const} _op : 按键操作接口传入的按键操作
    */
-  void MENU_Data_NvmReadRegionConfig(void);
+  void MENU_Data_NvmSaveRegionConfig_Boxed(menu_keyOp_t *const _op);
   ```
+
+  用于保存局部存储区编号到NVM（非易失性存储）。该变量不会随其他变量一起保存。`void MENU_Data_NvmSaveRegionConfig_Boxed(menu_keyOp_t *const _op);`函数用于通过菜单保存该编号。
+
+  
 
 - 在数据区之间拷贝数据（不可用）
 
@@ -269,8 +309,9 @@ by：Chekhov Mark @hitsic 2019.11.02
    * @brief : 将一个局部存储区的数据拷贝到另一个局部存储区。
    * 该函数将使用全局变量 menu_nvmCopySrc 和 menu_nvmCopyDst 中存储的值。
    * 
+   * @param {menu_keyOp_t* const} _op : 按键操作接口传入的按键操作
    */
-  void MENU_Data_NvmCopy_Boxed(void);
+  void MENU_Data_NvmCopy_Boxed(menu_keyOp_t *const _op);
   ```
 
 - 读取NVM状态标志（不可用）
@@ -295,6 +336,247 @@ by：Chekhov Mark @hitsic 2019.11.02
   void MENU_SetNvmStatus(int32_t _status);
   ```
 
+  
+
+### 菜单项（`APP_MENU_TYPE`）
+
+- 构造菜单项
+	```c++
+	/**
+	 * @brief : 菜单项结构体的构造函数。
+	 * 该函数分配一块内存，根据传入的参数填入内容，然后返回所产生的菜单项结构体指针。
+	 *
+	 * @param  {menu_itemType_t} _type : 要生成的菜单项类型。
+	 * @param  {void*} _data           : 指向要操作的数据的指针。
+	 * @param  {char*} _nameStr        : 菜单项名称字符串，不超过最大长度，以'\0'结尾。
+	 * @param  {uint32_t} _saveAddr    : 变量要保存到的地址。对非数据类型及属性设置中只读的菜单项无效。
+	 * @param  {uint32_t} _pptFlag     : 属性标志。
+	 *
+	 * @return {menu_itemIfce_t *}     : 返回所产生的菜单项结构体指针。
+	 */
+	menu_itemIfce_t* MENU_ItemConstruct(menu_itemType_t _type, void *_data,
+	        const char *_nameStr, uint32_t _saveAddr, uint32_t _pptFlag);
+	```
+	
+	目前支持的菜单项类型有：分隔线/孔类型（`nullType`）、`int32_t`参数型（`variType`）、`float`参数型（`varfType`）、菜单跳转型（`menuType`）、运行程序型（`procType`）。
+	
+	- `nullType`
+	
+	​	_type：menu_nulllType
+	
+	​	_data：空指针。
+	
+	​	_nameStr：对此类菜单项无意义。该位置将显示一条分隔线。
+	
+	​	_saveAddr：对此类菜单项无意义。
+	
+	​	_pptFlag：对此类菜单项无意义。
+	
+	- `variType`
+	
+	  _type：menu_variType
+	
+	  _data：指向要操作的int32_t型变量的指针。
+	
+	  _nameStr：显示在菜单列表和二级页面的名称。
+	
+	  _saveAddr：数据保存的地址号。同一数据区内的编号不能重复。
+	
+	  _pptFlag：属性标志。多个互不冲突的标志位用按位或`|`连接。支持的属性标志位有：
+	
+	  - `menuItem_data_global`：该变量存储在全局数据区。
+	  - `menuItem_data_region`：该变量存储在局部数据区。
+	  - `menuItem_data_ROFlag`：该变量为只读，无法通过菜单修改。
+	  - `menuItem_data_NoSave`：该变量默认不保存。管理菜单内名称为的`RegnSel(0-2)`的菜单项就应用了该属性。
+	  - `menuItem_disp_forceSci`：强制以科学计数法显示。默认为自适应模式，数字位数过多自动切换为科学计数法显示。
+	  - `menuItem_disp_noPreview`：关闭菜单列表内的变量数值显示，这将允许显示更长的菜单项名称。**注意：这不会禁用快速调参功能。这是一个已知BUG。**
+	
+	- `varfType`
+	
+	  _type：varfType
+	
+	  _data：指向要操作的float型变量的指针。
+	
+	  _nameStr：显示在菜单列表和二级页面的名称。
+	
+	  _saveAddr：数据保存的地址号。同一数据区内的编号不能重复。
+	
+	  _pptFlag：属性标志。多个互不冲突标志位用按位或`|`连接。支持的属性标志位与`variType`相同。
+	
+	- `menuType`
+	
+	  _type：menuType
+	
+	  _data：指向要跳转到的菜单列表的指针。
+	
+	  _nameStr：显示在菜单列表和二级页面的名称。显示时会自动用方括号`[]`括起来以提高辨识度。
+	
+	  _saveAddr：对此类菜单项无意义。
+	
+	  _pptFlag：对此类菜单项无意义。
+	
+	- `procType`
+	
+	  _type：procType
+	
+	  _data：指向要运行的程序的函数指针。该函数必须是`void (*)(menu_keyOp_t* cosnt)`类型。
+	
+	  _nameStr：显示在菜单列表和二级页面的名称。显示时会自动在左边加冒号`:`以提高辨识度。
+	
+	  _saveAddr：对此类菜单项无意义。
+	
+	  _pptFlag：属性标志。多个互不冲突标志位用按位或`|`连接。支持的属性标志位有：
+	  
+	  - `menuItem_proc_runOnce`：该程序仅运行一次就立刻退出。
+	  - `menuItem_proc_uiDisplay`：该程序具备打印屏幕的功能。这将暂时关闭菜单在屏幕的显示。
+	
+	
+	
+- 析构菜单项
+
+  ```c++
+  /**
+   * @brief : 菜单项结构体析构函数。
+   *
+   * @param  {menu_itemIfce_t*} _item : 要析构的菜单项结构体指针。析构后该指针会被自动赋值为NULL。
+   */
+  void MENU_itemDestruct(menu_itemIfce_t *_item);
+  ```
+
+- 获取菜单项内存放的数据指针
+  ```c++
+  /**
+   * @brief : 获取菜单项内存放的数据指针。
+   * TODO : 更新注释
+   * @param  {menu_itemIfce_t*} _item : 要访问的菜单项的指针
+   *
+   * @return {void *}					: 返回数据指针。注意，无论何种类型，都会返回对应的数据指针。
+   */
+  void MENU_ItemGetData(menu_itemIfce_t *_item, menu_nvmData_t *_data);
+  ```
+
+- 设置菜单项内指针指向的数据的值
+  ```c++
+  /**
+   * @brief : 设置菜单项内指针指向的数据的值。
+   * 注意，该函数对非数据类型菜单和只读数据菜单无效。
+   * @param  {menu_itemIfce_t*} _item : 要访问的菜单项的指针
+   * @param  {void*} _data            :
+   */
+  void MENU_ItemSetData(menu_itemIfce_t *_item, menu_nvmData_t *_data);
+  ```
+
+- 在菜单列表中打印一行菜单
+  ```c++
+  //used when in menuList
+  
+  /**
+   * @brief : 在菜单列表中打印一行菜单。
+   *
+   * @param  {menu_itemIfce_t*} _item : 要访问的菜单项的指针。
+   * @param  {uint32_t} _slotNum      : 要打印位置（第几行）。对于12864 OLED而言，取值范围为0~7。
+   */
+  void MENU_ItemPrintSlot(menu_itemIfce_t *_item, uint32_t _slotNum);
+  ```
+
+- 在菜单列表中响应直接按键操作
+  ```c++
+  /**
+   * @brief : 在菜单列表中响应直接按键操作。
+   *
+   * @param  {menu_itemIfce_t*} _item : 要访问的菜单项的指针。
+   * @param  {menu_keyOp_t*} _op      : 按键操作指针。按键响应后会被清除为空操作。
+   */
+  void MENU_ItemDirectKeyOp(menu_itemIfce_t *_item, menu_keyOp_t *const _op);
+  ```
+
+- 打印访问菜单项的二级页面
+  ```c++
+  /**
+   * @brief : 打印访问菜单项的二级页面。
+   *
+   * @param  {menu_itemIfce_t*} _item : 要访问的菜单项的指针。
+   */
+  void MENU_ItemPrintDisp(menu_itemIfce_t *_item);
+  ```
+
+- 访问菜单项的二级页面时响应按键操作
+  ```c++
+  /**
+   * @brief : 访问菜单项的二级页面时响应按键操作。
+   *
+   * @param  {menu_itemIfce_t*} _item : 要访问的菜单项的指针。
+   * @param  {menu_keyOp_t*} _op      : 按键操作指针。按键响应后会被清除为空操作。
+   */
+  void MENU_ItemKeyOp(menu_itemIfce_t *_item, menu_keyOp_t *const _op);
+  ```
+
+
+
+### 菜单列表（`APP_MENU_TYPE`）
+
+- 构造菜单列表
+	```c++
+	/**
+	 * @brief : 菜单列表的构造函数。
+	 *
+	 * @param  {const char*} _nameStr : 菜单列表的名称，显示在页面顶部。
+	 * @param  {uint32_t}    _size	  : 菜单列表的长度。须预留一位用于存储[Back]返回项。
+	 * @param  {menu_list_t*} _prev   : 指向该菜单列表的上级菜单列表，仅供返回时使用。
+	 *
+	 * @return {menu_list_t *}        : 返回构造的菜单列表结构体指针。
+	 */
+	menu_list_t* MENU_ListConstruct(const char *_nameStr, uint32_t _size,
+	        menu_list_t *_prev);
+	```
+	
+	
+	
+- 析构菜单列表
+  ```c++
+  /**
+   * @brief : 菜单列表的析构函数。
+   *
+   * @param  {menu_list_t*} _list : 要析构的菜单列表结构体指针。析构后该指针会被自动赋为NULL。
+   */
+  void MENU_ListDestruct(menu_list_t *_list);
+  ```
+
+- 插入菜单项
+  ```c++
+  /**
+   * @brief : 插入一个菜单项。
+   *
+   * @param  {menu_list_t*} _list     : 要访问的菜单列表的指针。
+   * @param  {menu_itemIfce_t*} _item : 要插入的菜单项指针。该指针应为将亡值。
+   * @return {status_t}               : 返回操作的结果。正常应返回kStatus_Success。
+   */
+  status_t MENU_ListInsert(menu_list_t *_list, menu_itemIfce_t *_item);
+  ```
+
+- 向显存中打印菜单列表
+  ```c++
+  /**
+   * @brief : 打印菜单列表。
+   *
+   * @param  {menu_list_t*} _list : 要访问的菜单列表的指针。
+   */
+  void MENU_ListPrintDisp(menu_list_t *_list);
+  ```
+
+- 菜单列表响应按键操作
+  ```c++
+  /**
+   * @brief : 菜单列表中响应按键操作。
+   *
+   * @param  {menu_list_t*} _list : 要访问的菜单列表的指针。
+   * @param  {menu_keyOp_t*} _op  : 按键操作指针。按键响应后会被清除为空操作。
+   */
+  void MENU_ListKeyOp(menu_list_t *_list, menu_keyOp_t *const _op);
+  ```
+
+
+
 ### 其他API
 
 - 其他API的说明参见代码注释。
@@ -308,10 +590,10 @@ by：Chekhov Mark @hitsic 2019.11.02
 ### 术语与概述
 
 - 菜单：管理菜单项和菜单表的结构。处理菜单的操作、显示、数据。
-- 菜单项：对数据进行操作的单元，表现为菜单表中的元素。可接受操作。
+- 菜单项：对数据进行操作的单元，表现为菜单列表中的元素。可接受操作。
 - 菜单项界面：显示一个菜单项的详细内容，供用户对数据进行精细操作的界面。
-- 菜单表：对菜单项进行管理的结构，表现为菜单项组成的列表。可接受操作。
-- 菜单表界面：用于显示多个菜单项，供用户选择和调节的界面。
+- 菜单列表：对菜单项进行管理的结构，表现为菜单项组成的列表。可接受操作。
+- 菜单列表界面：用于显示多个菜单项，供用户选择和调节的界面。
 - 操作：按键等输入设备对菜单的输入。
 - 显示槽：一个菜单项在菜单表界面中的显示空间。
 
@@ -385,7 +667,7 @@ by：Chekhov Mark @hitsic 2019.11.02
   void MENU_ItemKeyOp_variType(menu_itemIfce_t *_item, menu_keyOp_t * const _op);
   ```
   
-  
+  每个菜单类型都应包含上述7个函数，并应完全按照此格式命名。
   
 - 菜单表结构体
 
@@ -402,7 +684,7 @@ by：Chekhov Mark @hitsic 2019.11.02
   } menu_list_t;
   ```
 
-  `menu_itemIfce_t **menu;` ：一个元素类型为 `menu*` 的数组。该数组的大小由构造函数指定，并在构造时分配，一旦分配不再更改，直到析构时释放内存。
+  `menu_itemIfce_t **menu;` ：一个元素类型为 `menu_itemIfce_t*` 的数组。该数组的大小由构造函数指定，并在构造时分配，一旦分配不再更改，直到析构时释放内存。
 
 - 菜单表操作接口
 
@@ -520,7 +802,7 @@ by：Chekhov Mark @hitsic 2019.11.02
 
 - NVM存储接口
 
-  每个保存的菜单项都占用32个字节的Flash空间。在保存菜单数据时，为了节约NVM（一般是Flash存储器）的寿命，采用惰性缓存的方法：则开辟一块与扇区大小相同的内存作为缓存，并开辟一个整型变量用于存储所缓存的扇区号。如要将数据写入地址 `Addr`，分三种情况：1. 如果 `Addr` 所在扇区已被缓存，则直接修改缓存区中对应位置的值。 2. 若 `Addr` 所在扇区未被缓存，且当前未缓存任何扇区，则缓存 `Addr` 所在扇区，执行情况1。 3. 若 `Addr` 所在扇区未被缓存，且当前已缓存其他扇区，则擦除已缓存扇区后将缓存写回该扇区，执行情况2。**注意：最后一次写NVM操作结束后，需要手动将已缓存扇区写回NVM。**
+  每个保存的菜单项都占用32个字节的Flash空间。在保存菜单数据时，为了节约NVM（一般是Flash存储器）的寿命，采用惰性缓存的方法：开辟一块与扇区大小相同的内存作为缓存，并开辟一个整型变量用于存储所缓存的扇区号。如要将数据写入地址 `Addr`，分三种情况：1. 如果 `Addr` 所在扇区已被缓存，则直接修改缓存区中对应位置的值。 2. 若 `Addr` 所在扇区未被缓存，且当前未缓存任何扇区，则缓存 `Addr` 所在扇区，执行情况1。 3. 若 `Addr` 所在扇区未被缓存，且当前已缓存其他扇区，则擦除已缓存扇区后将缓存写回该扇区，执行情况2。**注意：最后一次写NVM操作结束后，需要手动将已缓存扇区写回NVM。**
 
 ### 附录1：符号说明
 
@@ -544,40 +826,43 @@ by：Chekhov Mark @hitsic 2019.11.02
   目前支持的属性Flag有：
 
   ```c
+  /**
+   * @brief : 菜单项属性枚举类型。
+   * 标志位枚举。
+   */
   typedef enum
   {
-      /** data config 数据属性配置 */
-      menuItem_data_global = 1 << 0, ///< 该菜单项存储在全局数据区。所有参数类型的菜单都应包括此项，除非使用了ROFlag。
-      menuItem_data_ROFlag = 1 << 2, ///< 该菜单项为只读。只读菜单项不允许在菜单内修改，也不能保存到存储区或从存储区读取。
+      /** data config */
+      menuItem_data_global = 1 << 0, ///< 该菜单项存储在全局数据区。
+      menuItem_data_region = 1 << 1, ///< 该菜单项存储在局部数据区。
+      menuItem_data_getPos = menuItem_data_global | menuItem_data_region,
+      menuItem_data_ROFlag = 1 << 2, ///< 该菜单项为只读。只读菜单项不允许在菜单内修改。
+      menuItem_data_NoSave = 1 << 3, ///< 该菜单项默认不保存到NVM。
+    menuItem_data_getCfg = menuItem_data_global | menuItem_data_region | menuItem_data_ROFlag/* | menuItem_data_prioRW*/,
   
-      /** display config 显示属性配置 */
+      /** display config */
       menuItem_disp_forceSci = 1 << 8,  ///< 该菜单项强制使用科学计数法，适用于variType和varfType。
+      //menuItem_disp_bitFlag = 1 << 9,   ///< 该菜单项为按位标志位，仅适用于variType。此时数据指针将被视为uint32_t*。
+      menuItem_disp_noPreview = 1 << 10, ///< 该菜单项不会在菜单列表中显示数据。数据区将显示占位字符。注意此选项对标记为按位标志位的variType无效，因为这类菜单项从不在菜单列表显示数据。
+  	
+      menuItem_proc_runOnce = 1 << 11, ///< 该菜单项只会运行一次。仅适用于procType。
+      menuItem_proc_uiDisplay = 1 << 12, ///< 该菜单项会自行打印屏幕。仅适用于procType。
   
       /** error mask */
   } menu_itemPropety_t;
   ```
-
+  
   互不冲突的属性Flag之间用按位或运算符"|"连接。例如`(menuItem_data_ROFlag | menuItem_disp_forceSci)`表示该数据属性为”该数据为只读，且 强制使用科学计数法显示“。
 
 ## 应用指南
 
-### APP_MENU v0.1.1 移植说明
+### 依赖项与初始化
 
-For hello_world_v2.x
+by：CkovMk @hitsic 2020.10.13
 
-by：Chekhov Mark @hitsic 2019.11.02
+内容已更新以适配v0.1.4版本。
 
-内容已更新以适配v0.1.2版本。
-
-#### 移植须知
-
-**注意事项**
-
-移植前必须备份工程！该菜单使用了一些与`hello_world_v2.x`版本工程功能重复却不兼容的模块，移植过程中需要重写使用了不兼容模块的已有代码，如果移植失败对原有工程影响较大。除Flash驱动外，本菜单附带的所有驱动均包含了原工程内冲突驱动的所有功能，移植成功后只需对原有代码做少量修改。事实上一部分驱动仅修改了原有代码的名称，使其更符合代码规范。不过PITMGR与原有工程区别较大，需特别注意。
-
-**移植步骤**
-
-- 从原工程中移除冲突的模块：flash_driver（被ftfx_flash替换）、IRQ_manager（被extint替换）、sys_pitmgr（这个可以不移除，和菜单自带的pitmgr一样。如果这里不移除此模块，添加文件时注意不要重复添加）、SmartCar_Pit（与pitmgr冲突）、SmartCar_Systick（可以不移除，但pitmgr已经提供计时和延时的功能且更加安全，该模块已不再必要）。注释或暂时移除受影响的模块，使得工程能编译通过。
+#### 注意事项
 
 - 菜单初始化时必须关闭总中断。事实上，整个初始化阶段均应关闭总中断。如无特殊情况，开启总中断应该是主函数进入死循环前的最后一条语句。
 
@@ -589,7 +874,7 @@ by：Chekhov Mark @hitsic 2019.11.02
   > void main()
   > {
   >      /** 初始化阶段，关闭总中断 */
-  >      __disable_irq();
+  >      HAL_EnterCritical();
   >  
   >      /** 其他初始化代码 */
   >  
@@ -609,7 +894,7 @@ by：Chekhov Mark @hitsic 2019.11.02
   >      /** 其他初始化代码 */
   >  
   >      /** 初始化结束，开启总中断 */
-  >      __enable_irq();
+  >      HAL_ExitCritical();
   >      while(1)
   >      {
   >            /** 无限循环 */
@@ -617,21 +902,9 @@ by：Chekhov Mark @hitsic 2019.11.02
   > }
   > ```
 
-- 修改`hitsic_def.h`文件。前面的数字表示行号，仅供参考。
+  
 
-  073：宏`HITSIC_MENU_DEBUG_ENABLE`：是否开启调试信息输出。为避免浪费打印输出的时间，将其置0。
-
-  080：打印输出语句的名称。如要使用调试输出功能，根据自己的平台适配一个printf格式的函数。
-
-  086：根菜单的容量。为了简化代码，菜单内存采用一次性动态分配的方式，因此创建菜单时需要指定菜单大小。如果需要在根菜单插入大量菜单项，可适当将其改大，够用即可。推荐在根菜单插入几个子菜单，在子菜单中插入菜单项。
-
-  089：菜单按键所使用GPIO定义。每组只需修改前两个，第一个是GPIO实例，第二个是GPIO编号。例如A15端口，对应{GPIOA, 15, ... } 。五组定义的顺序为：确认键、上方向、下方向、左方向、右方向。**不要修改每组中的其他定义！**
-
-  137：这三行是菜单所使用的中断服务定义，一般不需要修改。如有必要，合理设置中断优先级即可。菜单优先级一般较低。
-
-  144：这是OLED打印函数的接口定义。如果不使用MENU中自带的OLED驱动，需要将名称改为`SmartCar_OLED`中的函数名称`OLED_P6x8Str`（都是学嘉的代码，MENU这个改了改名，其实大同小异）。
-
-- 此时应该可以编译通过并运行了。屏幕上将显示和Demo文件一样的界面。不能编译通过的再找找问题。
+- 此时应该就可以编译通过并运行了。屏幕上将显示Demo界面。。
 
 
 
@@ -639,65 +912,80 @@ by：Chekhov Mark @hitsic 2019.11.02
 
 ### 创建自己的菜单
 
-内容已更新以适配v0.1.2版本。
+by：CkovMk @hitsic 2020.10.13
 
-- 添加自己的菜单项。~~找到`app_menu.c`内的`void MENU_DataSetUp(void)`函数，将其注释掉（仅注释源文件中的函数实现，保留头文件中的函数声明），然后在main()函数后~~创建`void MENU_DataSetUp(void)`新的实现。原函数已声明为`__WEAK`，新定义将自动覆盖旧定义。**注意：禁止在`app_menu.c`中直接修改代码！**该函数会被`MENU_Init(void);`函数调用，禁止手动调用。
+内容已更新以适配v0.1.4版本。
+
+- 添加自己的菜单项。在合适的位置创建`void MENU_DataSetUp(void)`新的实现。原函数已声明为弱符号`__WEAK`，新定义将自动覆盖旧定义，不会产生重复定义的错误。**注意：禁止在`app_menu.c`中直接修改代码！**该函数会在初始化时被`MENU_Init(void);`函数调用，禁止手动调用。
 
   > 代码清单1
   >
   > ```c
   > /** 在其他位置创建的MENU_DataSetup函数 */
-  >
+  > 
   > /** 创建子菜单指针 */
   > menu_list_t* myList_1;
-  >
+  > 
   > /** 这些变量仅用于示例 */
   > int32_t testInt = 19981214;
   > float testFlt = 3.1415926f;
-  >
+  > 
+  > void ExampleHandler(menu_keyOp_t* const _op)
+  > {
+  >     *_op = 0;
+  > }
+  > 
   > void MENU_DataSetUp(void)
   > {
   >     MENU_ListInsert(menu_menuRoot, MENU_ItemConstruct(nullType, NULL, "", 0, 0));
-  >
-  >  /** 子菜单指针初始化 */
+  > 
+  > /** 子菜单指针初始化 */
   >     myList_1 = MENU_ListConstruct(
-  >      "myList_1",     ///> 菜单标题，在菜单列表中的第一行显示，最大12字符。
-  >      50,             ///> 菜单列表的大小，须预留1位用于返回上一级的[back]。
-  >      menu_menuRoot  ///> 该菜单的上级菜单指针。
-  >  );
-  >  /** 检查内存分配是否成功 */
+  >         "myList_1",     ///> 菜单标题，在菜单列表中的第一行显示，最大12字符。
+  >         50,             ///> 菜单列表的大小，须预留1位用于返回上一级的[back]。
+  >         menu_menuRoot   ///> 该菜单的上级菜单指针。注意：该指针仅用于返回上级菜单，并不会将子菜单插入上级菜单。
+  >     );
+  > /** 检查内存分配是否成功 */
   >     assert(testList);
-  >  /** 将子菜单的跳转入口插入其上级菜单 */
+  > /** 将子菜单的跳转入口插入其上级菜单 */
   >     MENU_ListInsert(
-  >      menu_menuRoot, ///> 要插入的上级菜单。
-  >      MENU_ItemConstruct(
-  >          menuType,  ///> 类型标识，指明这是一个菜单跳转类型的菜单项。
-  >          myList_1,  ///> 数据指针，这里指向要跳转到的菜单列表。
-  >          "TestList", ///> 菜单项名称，在菜单列表中显示。
-  >          0,          ///> 数据的保存位置，对于非数据类型填0即可。
-  >          0           ///> 属性Flag，无任何属性填0。
-  >      ));
+  >         menu_menuRoot,  ///> 要插入的上级菜单。
+  >         MENU_ItemConstruct(
+  >         menuType,   ///> 类型标识，指明这是一个菜单跳转类型的菜单项。
+  >         myList_1,   ///> 数据指针，这里指向要跳转到的菜单列表。
+  >         "TestList", ///> 菜单项名称，在菜单列表中显示。
+  >         0,          ///> 数据的保存位置，对于非数据类型填0即可。
+  >         0           ///> 属性Flag，无任何属性填0。
+  >     ));
   >     {   //这里加这组括号只是为了缩进方便，其内部的语句用于向myList_1插入菜单项。
   >         MENU_ListInsert(myList_1, MENU_ItemConstruct(
-  >          variType,  ///> 类型标识，指明这是一个整数类型的菜单项
-  >          &testInt,  ///> 数据指针，这里指向要操作的整数。必须是int32_t类型。
-  >          "T_int",   ///> 菜单项名称，在菜单列表中显示。
-  >          10,        ///> 数据的保存地址，对于数据类型不能重复且尽可能连续，步长为1。
-  >                     ///> 10以内的地址为保留地址，不能使用。
-  >          menuItem_data_global
-  >                     ///> 属性flag。此flag表示该变量存储于全局数据区。在多组参数功
-  >                     ///> 能写好之前维持此值。其他的Flag参见附录。
-  >      ));
-  >          MENU_ListInsert(myList_1, MENU_ItemConstruct(
-  >          varfType,  ///> 类型标识，指明这是一个浮点类型的菜单项
-  >          &testFlt,  ///> 数据指针，这里指向要操作的整数。必须是float类型。
-  >          "T_float", 
-  >          11,
-  >          menuItem_data_global
-  >      ));
+  >             variType,  ///> 类型标识，指明这是一个整数类型的菜单项
+  >             &testInt,  ///> 数据指针，这里指向要操作的整数。必须是int32_t类型。
+  >             "T_int",   ///> 菜单项名称，在菜单列表中显示。
+  >             10,        ///> 数据的保存地址，不能重复且尽可能连续，步长为1。
+  >                        ///> 全局数据区0~9的地址为保留地址，不能使用。
+  >             menuItem_data_global | menuItem_data_ROFlag
+  >                        ///> 属性flag。此flag表示该变量存储于全局数据区，且为只读变量。
+  >         ));
+  >         MENU_ListInsert(myList_1, MENU_ItemConstruct(
+  >             varfType,  ///> 类型标识，指明这是一个浮点类型的菜单项
+  >             &testFlt,  ///> 数据指针，这里指向要操作的整数。必须是float类型。
+  >             "T_float", ///> 菜单项名称，在菜单列表中显示。
+  >             0,         ///> 数据的保存地址，不能重复且尽可能连续，步长为1。
+  >             menuItem_data_region
+  >                        ///> 属性flag。此flag表示该变量存储于局部数据区。局部数据区内的数据没有保留地址。
+  >         ));
   >     }
+  >     MENU_ListInsert(myList_1, MENU_ItemConstruct(
+  >           procType,  ///> 类型标识，指明这是一个浮点类型的菜单项
+  >           &ExampleHandler,///> 数据指针，这里指向要操作的整数。必须是float类型。
+  >           "T_proc ", ///> 菜单项名称，在菜单列表中显示。
+  >           0,         ///> 数据的保存地址，不能重复且尽可能连续，步长为1。
+  >           menuItem_proc_runOnce
+  >                      ///> 属性flag。此flag表示该该程序运行一次就退出。
+  >     ));
   > }
-  >
+  > 
   > ```
 
 - 设置好自己的菜单后，编译下载，就可以看到自己定义的菜单了。
@@ -706,5 +994,32 @@ by：Chekhov Mark @hitsic 2019.11.02
 
 ## 移植指南
 
+修改`hitsic_def.h`文件。前面的数字表示行号，仅供参考。
+
+073：宏`HITSIC_MENU_DEBUG_ENABLE`：是否开启调试信息输出。为避免浪费打印输出的时间，将其置0。
+
+080：打印输出语句的名称。如要使用调试输出功能，根据自己的平台适配一个printf格式的函数。
+
+086：根菜单的容量。为了简化代码，菜单内存采用一次性动态分配的方式，因此创建菜单时需要指定菜单大小。如果需要在根菜单插入大量菜单项，可适当将其改大，够用即可。推荐在根菜单插入几个子菜单，在子菜单中插入菜单项。
+
+089：菜单按键所使用GPIO定义。每组只需修改前两个，第一个是GPIO实例，第二个是GPIO编号。例如A15端口，对应{GPIOA, 15, ... } 。五组定义的顺序为：确认键、上方向、下方向、左方向、右方向。**不要修改每组中的其他定义！**
+
+137：这三行是菜单所使用的中断服务定义，一般不需要修改。如有必要，合理设置中断优先级即可。菜单优先级一般较低。
+
+144：这是OLED打印函数的接口定义。如果不使用MENU中自带的OLED驱动，需要将名称改为`SmartCar_OLED`中的函数名称`OLED_P6x8Str`（都是学嘉的代码，MENU这个改了改名，其实大同小异）。
 
 
+
+### 屏幕显示接口
+
+
+
+### 按键输入接口
+
+
+
+### NVM存储接口
+
+
+
+### 日志输出接口

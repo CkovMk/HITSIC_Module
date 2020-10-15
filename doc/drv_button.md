@@ -12,6 +12,8 @@
 
 ### v0.1.0
 
+by CkovMk @hitsic 2020.02.15
+
 改动说明：
 
 - 初始版本
@@ -142,11 +144,11 @@ typedef void(*button_handler_t)(button_t *_inst);
   
 - 按下中断过程
 
-  等待按下中断（`BUTTON_PRESSDN_EXTINT`）触发后，按钮外部中断响应函数被调用，进入按下中断过程。首先判断与上次触发的时间间隔，如果时间过短（`if (t < BUTTON_TIME_INTV)`），判断为抖动，直接退出程序（`return;`）。如果满足消抖条件，则将中断方式修改为等待释放中断（`BUTTON_SetInterrupt(_inst, BUTTON_RELEASE_EXTINT);`）。如果判断不是由于长按重时的抖动产生的按下事件（`if (!((_inst->status == BUTTON_LONG_PRES || _inst->status == BUTTON_LRPT_PRES) && (t < BUTTON_TIME_INTV)))`），则清除按键事件标志（`_inst->status = BUTTON_STAT_NONE;`）。最后记录当前时间（`_inst->msCnt = BUTTON_TIMER_MS;`），退出程序。
+  等待按下中断（`BUTTON_PRESSDN_EXTINT`）触发后，按钮外部中断响应函数被调用，进入按下中断过程。首先判断与上次触发的时间间隔，如果时间过短（`if (t < BUTTON_TIME_INTV)`），判断为抖动，直接退出程序（`return;`）。如果满足消抖条件，则将中断方式修改为等待释放中断（`BUTTON_SetInterrupt(_inst, BUTTON_RELEASE_EXTINT);`）。如果判断不是由于长按时的抖动产生的按下事件（`if (!((_inst->status == BUTTON_LONG_PRES || _inst->status == BUTTON_LRPT_PRES) && (t < BUTTON_TIME_INTV)))`），则清除按键事件标志（`_inst->status = BUTTON_STAT_NONE;`）。最后记录当前时间（`_inst->msCnt = BUTTON_TIMER_MS;`），退出程序。
 
 - 释放中断过程（短按)
 
-  等待释放中断（`BUTTON_RELEASE_EXTINT`）触发后，按钮外部中断响应函数被调用，进入释放中断过程。将中断方式修改为等待按下中断（`BUTTON_SetInterrupt(_inst, *BUTTON_PRESSDN_EXTINT);`），判断与上次触发的时间间隔并记录当前时间，如果当前按钮事件标志为空，且时间间隔符合短按的特征（`if (BUTTON_TIME_SHRT <= t && t < BUTTON_SHRT_TOUT && _inst->status == BUTTON_STAT_NONE){...}`），则设置按钮事件标志（`_inst->status = BUTTON_SHRT_PRES;`）并调用按钮事件响应句柄（如果存在）。否则，判断为已经产生了直接将按钮事件标志置空并退出程序。这是为了防止在定时中断已经产生长按事件或长按重复事件后，随着按键释放再次产生短按事件。
+  等待释放中断（`BUTTON_RELEASE_EXTINT`）触发后，按钮外部中断响应函数被调用，进入释放中断过程。将中断方式修改为等待按下中断（`BUTTON_SetInterrupt(_inst, *BUTTON_PRESSDN_EXTINT);`），判断与上次触发的时间间隔并记录当前时间，如果当前按钮事件标志为空，且时间间隔符合短按的特征（`if (BUTTON_TIME_SHRT <= t && t < BUTTON_SHRT_TOUT && _inst->status == BUTTON_STAT_NONE){...}`），则设置按钮事件标志（`_inst->status = BUTTON_SHRT_PRES;`）并调用按钮事件响应句柄（如果存在）。否则，判断为已经产生了事件，直接将按钮事件标志置空并退出程序。这是为了防止在定时中断已经产生长按事件或长按重复事件后，随着按键释放再次产生短按事件。
 
 - 定时中断
 

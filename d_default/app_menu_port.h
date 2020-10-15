@@ -169,13 +169,13 @@ extern "C"
 /**
  * @brief : 全局存储 Global Storage
  */
-#define HITSIC_MENU_NVM_GLOBAL_SECT_CNT (2u)	///< 全局存储区占用的扇区数
+#define HITSIC_MENU_NVM_GLOBAL_SECT_SIZE (2u)	///< 全局存储区占用的扇区数
 #define HITSIC_MENU_NVM_GLOBAL_SECT_OFFSET (2u) ///< 全局存储区扇区偏移
 /**
  * @brief : 局部存储 Region Storage
  */
 #define HITSIC_MENU_NVM_REGION_CNT (3u) 					///< 局部存储区的数量
-#define HITSIC_MENU_NVM_REGION_SECT_CNT  (4u)				///< 每个局部存储区占用的扇区数
+#define HITSIC_MENU_NVM_REGION_SECT_SIZE  (4u)				///< 每个局部存储区占用的扇区数
 
 #define HITSIC_MENU_NVM_AddressRead(addr, buf, byteCnt)		FLASH_AddressRead(addr, buf, byteCnt)	///< 读指定地址。必须返回表示操作是否成功的值。
 #define HITSIC_MENU_NVM_SectorRead(sect, buf)		FLASH_SectorRead(sect, buf)						///< 读指定扇区。sect为扇区号，buf为缓存区。必须返回表示操作是否成功的值。

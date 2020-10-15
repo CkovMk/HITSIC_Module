@@ -100,8 +100,17 @@ void DISP_SSD1306_Init(void)
 	DISP_SSD1306_WriteCmd(0x40); //--set start line address  Set Mapping RAM Display Start Line (0x00~0x3F)
 	DISP_SSD1306_WriteCmd(0x81); //--set contrast control register
 	DISP_SSD1306_WriteCmd(0xcf); // Set SEG Output Current OLED_SSD1306_Brightness
+#if defined(HITSIC_DISP_SSD1306_FLIP_X) && (HITSIC_DISP_SSD1306_FLIP_X > 0)
 	DISP_SSD1306_WriteCmd(0xa0); //--Set SEG/Column Mapping     0xa0左右反置 0xa1正常
+#else // ! HITSIC_DISP_SSD1306_FLIP_X
+	DISP_SSD1306_WriteCmd(0xa1); //--Set SEG/Column Mapping     0xa0左右反置 0xa1正常
+#endif// ! HITSIC_DISP_SSD1306_FLIP_X
+#if defined(HITSIC_DISP_SSD1306_FLIP_Y) && (HITSIC_DISP_SSD1306_FLIP_Y > 0)
 	DISP_SSD1306_WriteCmd(0xc0); //Set COM/Row Scan Direction   0xc0上下反置 0xc8正常
+#else // ! HITSIC_DISP_SSD1306_FLIP_Y
+	DISP_SSD1306_WriteCmd(0xc8); //Set COM/Row Scan Direction   0xc0上下反置 0xc8正常
+#endif// ! HITSIC_DISP_SSD1306_FLIP_Y
+
 	DISP_SSD1306_WriteCmd(0xa6); //--set normal display
 	DISP_SSD1306_WriteCmd(0xa8); //--set multiplex ratio(1 to 64)
 	DISP_SSD1306_WriteCmd(0x3f); //--1/64 duty

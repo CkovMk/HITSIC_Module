@@ -14,29 +14,30 @@ HITSIC_Module是哈工大智能车创新俱乐部各MCU平台共用的程序模�
 
 ### 2.1. 内部组件文档
 
-| 模块名                              | 说明                                                      |
-| ----------------------------------- | --------------------------------------------------------- |
-| **INC / 包含**                      |                                                           |
-| INC_STDLIB                          | 包含了大多数C/C++标准库、位操作宏定义，禁用了不安全函数。 |
-| **SYS / 系统**                      |                                                           |
-| [EXTINT](doc/sys_extint.md)         | 外部中断管理器组件                                        |
-| [PITMGR](doc/sys_pitmgr.md)         | 定时中断管理器组件                                        |
-| **DRV / 驱动**                      |                                                           |
-| [FTFX_FLASH](doc/drv_ftfx_flash.md) | Kinetis系列单片机内部Flash驱动组件                        |
-| [BUTTON](doc/drv_button.md)         | 按钮事件识别组件                                          |
-| DISP_FONT                           | 显示字体组件                                              |
-| DISP_SSD1306                        | OLED屏幕SSD1306驱动组件                                   |
-| WIP:：IMU_INVENSENSE                | Invensense公司IMU惯导模块统一驱动组件                     |
-| WIP：TCS34725                       | I2C颜色传感器                                             |
-| WIP：TFMINI                         |                                                           |
-| WIP：TOF_VL53L0x                    |                                                           |
-| WIP：TOF_VL53L1x                    |                                                           |
-| **LIB / 工具**                      |                                                           |
-| LIST                                | 轻量级链表组件                                            |
-| PIDCTRL                             | PID控制组件                                               |
-| ADRCCTRL                            | ADRC控制组件                                              |
-| **APP / 应用**                      |                                                           |
-| [MENU](doc/app_menu.md)             | 简单调参菜单组件                                          |
+| 模块名                                  | 说明                                                      |
+| --------------------------------------- | --------------------------------------------------------- |
+| **INC / 包含**                          |                                                           |
+| INC_STDLIB                              | 包含了大多数C/C++标准库、位操作宏定义，禁用了不安全函数。 |
+| **SYS / 系统**                          |                                                           |
+| [EXTINT](doc/sys_extint.md)             | 外部中断管理器组件                                        |
+| [PITMGR](doc/sys_pitmgr.md)             | 定时中断管理器组件                                        |
+| [WIP:RMCALL](doc/sys_rmcall.md)         | 远程调用组件                                              |
+| **DRV / 驱动**                          |                                                           |
+| [FTFX_FLASH](doc/drv_ftfx_flash.md)     | Kinetis系列单片机内部Flash驱动组件                        |
+| [BUTTON](doc/drv_button.md)             | 按钮事件识别组件                                          |
+| DISP_FONT                               | 显示字体组件                                              |
+| [DISP_SSD1306](doc/drv_disp_ssd1306.md) | OLED屏幕SSD1306驱动组件                                   |
+| WIP:：IMU_INVENSENSE                    | Invensense公司IMU惯导模块统一驱动组件                     |
+| WIP：TCS34725                           | I2C颜色传感器                                             |
+| WIP：TFMINI                             |                                                           |
+| WIP：TOF_VL53L0x                        |                                                           |
+| WIP：TOF_VL53L1x                        |                                                           |
+| **LIB / 工具**                          |                                                           |
+| LIST                                    | 轻量级链表组件                                            |
+| PIDCTRL                                 | PID控制组件                                               |
+| ADRCCTRL                                | ADRC控制组件                                              |
+| **APP / 应用**                          |                                                           |
+| [MENU](doc/app_menu.md)                 | 简单调参菜单组件                                          |
 
 
 
@@ -94,7 +95,7 @@ git submodule add https://github.com/CkovMk/HITSIC_Module /HITSIC_Module
 
 Apache 2.0许可，详细信息参见根目录下LICENSE文件。
 
-本库内引用了[CMSIS_5](https://github.com/ARM-software/CMSIS_5)、[MCUXpresso SDK](https://mcuxpresso.nxp.com/en/welcome)、[CmBacktrace](https://github.com/armink/CmBacktrace)、[EasyFlash](https://github.com/armink/EasyFlash)、[EasyLogger](https://github.com/armink/EasyLogger)中的代码，
+本库内引用了[CMSIS_5](https://github.com/ARM-software/CMSIS_5)、[MCUXpresso SDK](https://mcuxpresso.nxp.com/en/welcome)、[CmBacktrace](https://github.com/armink/CmBacktrace)、[EasyFlash](https://github.com/armink/EasyFlash)、[EasyLogger](https://github.com/armink/EasyLogger)中的代码。
 
 
 
