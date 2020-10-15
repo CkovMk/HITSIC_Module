@@ -38,7 +38,6 @@
 #define LIB_LIST_H
 #include "inc_stdlib.h"
 #include "hitsic_common.h"
-//TODO: remove stdafx.h
 
 
 #ifdef __cplusplus

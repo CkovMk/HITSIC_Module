@@ -52,13 +52,10 @@ inline void DISP_SSD1306_gpioSetD_C(uint8_t x)
 
 inline void DISP_SSD1306_delay_ms(uint32_t ms)
 {
-	for(int i = 0; i < ms; ++i)
-	{
-		for(int j = 0; j < 1000; ++j)
-		{
-			__asm volatile ("nop");
-		}
-	}
+    for(int i = 0; i < ms, ++i)
+    {
+        SDK_DelayAtLeastUs(1000, CLOCK_GetFreq(kCLOCK_CoreSysClk));
+    }
 }
 
 

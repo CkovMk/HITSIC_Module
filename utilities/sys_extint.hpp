@@ -35,7 +35,7 @@
 #if defined(HITSIC_USE_EXTINT) && (HITSIC_USE_EXTINT > 0)
 #include "sys_extint_port.hpp"
 
-
+//TODO: delete this
 //CPU Selection
 #if defined(D_RT1052_SYS_EXTINT_PORT_HPP_) || defined (D_MK66F18_SYS_EXTINT_PORT_HPP_) || defined (D_KV10Z7_SYS_EXTINT_PORT_HPP_)
 
