@@ -30,8 +30,8 @@
 #include "sys_pitmgr.hpp"
 #include "pin_mux.h"
 
-#define HITSIC_DISP_SSD1306_FLIP_X (0U)
-#define HITSIC_DISP_SSD1306_FLIP_Y (0U)
+#define HITSIC_DISP_SSD1306_FLIP_X (1U)
+#define HITSIC_DISP_SSD1306_FLIP_Y (1U)
 
 #define OLED_SPI_BASE			SPI0
 #define OLED_SPI_CLKFREQ 		CLOCK_GetFreq(DSPI0_CLK_SRC)
@@ -42,22 +42,34 @@
 
 inline void DISP_SSD1306_gpioSetRST(uint8_t x)
 {
-	GPIO_PinWrite(GPIO_OLED_RST_GPIO, GPIO_OLED_RST_PIN, x);
+	GPIO_PinWrite(RTEPIN_BASIC_OLED_RST_GPIO, RTEPIN_BASIC_OLED_RST_PIN, x);
+	//GPIO_PinWrite(GPIOA, 10, x);
 }
 
 inline void DISP_SSD1306_gpioSetD_C(uint8_t x)
 {
-	GPIO_PinWrite(GPIO_OLED_D_C_GPIO, GPIO_OLED_D_C_PIN, x);
+	GPIO_PinWrite(RTEPIN_BASIC_OLED_D_C_GPIO, RTEPIN_BASIC_OLED_D_C_PIN, x);
+    //GPIO_PinWrite(GPIOA, 11, x);
+}
+
+//内部使用用户无需调用
+inline void OLED_SCL(uint8_t data)
+{
+    GPIO_PinWrite(RTEPIN_BASIC_OLED_SCK_GPIO, RTEPIN_BASIC_OLED_SCK_PIN, data);
+    //GPIO_PinWrite(GPIOA, 15, data);
+}
+//内部使用用户无需调用
+inline void OLED_SDA(uint8_t data)
+{
+    GPIO_PinWrite(RTEPIN_BASIC_OLED_SOT_GPIO, RTEPIN_BASIC_OLED_SOT_PIN, data);
+    //GPIO_PinWrite(GPIOA, 16, data);
 }
 
 inline void DISP_SSD1306_delay_ms(uint32_t ms)
 {
 	for(int i = 0; i < ms; ++i)
 	{
-		for(int j = 0; j < 1000; ++j)
-		{
-			__asm volatile ("nop");
-		}
+        SDK_DelayAtLeastUs(1000,CLOCK_GetFreq(kCLOCK_CoreSysClk));
 	}
 }
 
@@ -88,15 +100,34 @@ inline void DISP_SSD1306_delay_ms(uint32_t ms)
 //}
 inline void DISP_SSD1306_spiWrite(uint8_t data)
 {
-	static dspi_transfer_t oled_spi_xfer =
-		{
-			.txData = NULL,
-			.rxData = NULL,
-			.dataSize = 1,
-			.configFlags = OLED_SPI_MasterCtarn | OLED_SPI_MasterPcsn | kDSPI_MasterPcsContinuous,
-		};
-	oled_spi_xfer.txData = &data;
-	DSPI_MasterTransferBlocking(OLED_SPI_BASE, &oled_spi_xfer);
+//	static dspi_transfer_t oled_spi_xfer =
+//		{
+//			.txData = NULL,
+//			.rxData = NULL,
+//			.dataSize = 1,
+//			.configFlags = OLED_SPI_MasterCtarn | OLED_SPI_MasterPcsn | kDSPI_MasterPcsContinuous,
+//		};
+//	oled_spi_xfer.txData = &data;
+//	DSPI_MasterTransferBlocking(OLED_SPI_BASE, &oled_spi_xfer);
+
+    uint8_t i=8;
+
+    OLED_SCL(0);;
+
+    while(i--)
+    {
+        if(data&0x80){OLED_SDA(1);}
+        else{OLED_SDA(0);}
+
+        //SDK_DelayAtLeastUs(2,CLOCK_GetFreq(kCLOCK_CoreSysClk));
+        OLED_SCL(1);
+
+        //SDK_DelayAtLeastUs(3,CLOCK_GetFreq(kCLOCK_CoreSysClk));
+        OLED_SCL(0);
+        data<<=1;
+    }
+
+
 }
 
 
