@@ -651,7 +651,7 @@ namespace inv {
         return rtv;
     }
 
-    int mpu9250_t::SubI2cRead(unsigned char addr, unsigned char reg, unsigned char *val,
+    int mpu9250_t::SubI2cRead(uint8_t addr, uint8_t reg, uint8_t *val,
                               unsigned int len) {
         uint8_t index = 0;
         uint8_t status = 0;
@@ -678,7 +678,7 @@ namespace inv {
         return res;
     }
 
-    int mpu9250_t::SubI2cWrite(unsigned char addr, unsigned char reg, const unsigned char *val,
+    int mpu9250_t::SubI2cWrite(uint8_t addr, uint8_t reg, const uint8_t *val,
                                unsigned int len) {
         uint32_t timeout = 0;
         uint8_t status = 0;

@@ -6,14 +6,28 @@
  * @date 2020-10-16
  */
 
-#ifndef REMOTEIIC_DRV_IMU_INVENSENSE_HPP
-#define REMOTEIIC_DRV_IMU_INVENSENSE_HPP
+#ifndef DRV_IMU_INVENSENSE_HPP
+#define DRV_IMU_INVENSENSE_HPP
 
 #include <cstdint>
 #include <string>
 #include <memory>
 #include "drv_imu_invensense_def.hpp"
 #include "drv_imu_invensense_port.hpp"
+
+#if defined(__linux__)
+#include<iostream>
+#undef INV_TRACE_
+#undef INV_TRACE
+#undef INV_DEBUG_
+#undef INV_DEBUG
+#define INV_TRACE_(fmt, ...) \
+    printf("%s:%d:trace: " fmt "%s\r\n", __FILE__, __LINE__, __VA_ARGS__)
+#define INV_TRACE(...) INV_TRACE_(__VA_ARGS__, "")
+#define INV_DEBUG_(fmt, ...) \
+    printf("%s:%d:debug: " fmt "%s\r\n", __FILE__, __LINE__, __VA_ARGS__)
+#define INV_DEBUG(...) INV_DEBUG_(__VA_ARGS__, "")
+#endif//defined(__linux__)
 
 
 namespace inv {
@@ -79,7 +93,8 @@ namespace inv {
 
     class imu_t {
     public:
-        virtual ~imu_t(){}
+        virtual ~imu_t() {}
+
         /**
          * @brief   初始化imu，初始化之后才能使用其他方法
          * @param  {config_t} _cfg : 量程等配置信息
@@ -203,19 +218,15 @@ namespace inv {
 
     class mpuSeries_t : public imu_t {
     public:
-        virtual ~mpuSeries_t(){}
+        virtual ~mpuSeries_t() {}
+
         int Init(config_t _cfg = config_t()) override;
         bool Detect() override;
         int Converter(float *acc_x, float *acc_y, float *acc_z,
                       float *gyro_x, float *gyro_y, float *gyro_z) override;
         int Converter(float *mag_x, float *mag_y, float *mag_z) override;
-
-
-
         int ReadSensorBlocking() override;
         int ReadSensorNonBlocking() override;
-
-
     public:
         /**
          * @brief   软复位，可以在初始化之前执行
@@ -230,11 +241,11 @@ namespace inv {
          * @param  {int16_t*} acc_z  : 可以等于NULL
          * @param  {int16_t*} gyro_x : 可以等于NULL
          * @param  {int16_t*} gyro_y : 可以等于NULL
-         * @param  {int16_t*} gyro_z : 可以等于NULLs
+         * @param  {int16_t*} gyro_z : 可以等于NULL
          * @return {int}             : 错误码
          */
         virtual int Converter(int16_t *acc_x, int16_t *acc_y, int16_t *acc_z,
-                              int16_t *gyro_x, int16_t *gyro_y, int16_t *gyro_z) ;
+                              int16_t *gyro_x, int16_t *gyro_y, int16_t *gyro_z);
         /**
          * @brief   转换！！！缓存！！!中磁力计的数据到指定的地方，单位为LSB
          * @param  {int16_t*} mag_x : 可以等于NULL
@@ -290,7 +301,8 @@ namespace inv {
 
     class mpu6050_t : public mpuSeries_t {
     public:
-        virtual ~mpu6050_t(){}
+        virtual ~mpu6050_t() {}
+
         /**
          * mpu6050_t 
          * 
@@ -320,7 +332,8 @@ namespace inv {
 
     class mpu6500Series_t : public mpuSeries_t {
     protected:
-        virtual ~mpu6500Series_t(){}
+        virtual ~mpu6500Series_t() {}
+
         /**
          * mpu6500Series_t 
          * 
@@ -392,7 +405,8 @@ namespace inv {
 
     class icm20602_t : public mpu6500Series_t {
     public:
-        virtual ~icm20602_t(){}
+        virtual ~icm20602_t() {}
+
         /**
          * icm20602_t 
          * 
@@ -413,7 +427,8 @@ namespace inv {
 
     class mpu9250_t : public mpu6500Series_t {
     public:
-        virtual ~mpu9250_t(){}
+        virtual ~mpu9250_t() {}
+
         /**
          * mpu9250_t 
          * 
@@ -442,28 +457,23 @@ namespace inv {
     public:
         /**
          * @brief   使用mpu9250的片上iic主机控制器读写挂载在mpu9250 iic bus上的iic从机
-         * @param  {unsigned} char  : iic从机地址
-         * @param  {unsigned} char  : 从机寄存器地址
-         * @param  {unsigned*} char : 缓存地址
-         * @param  {unsigned} int   : 数据长度
-         * @return {int}            : 错误码
+         * @param  {uint8_t} addr :  iic从机地址
+         * @param  {uint8_t} reg  :  从机寄存器地址
+         * @param  {uint8_t*} val :  缓存地址
+         * @param  {unsigned} int :  数据长度
+         * @return {int}          :  错误码
          */
-        int SubI2cRead(unsigned char addr,
-                       unsigned char reg,
-                       unsigned char *val,
-                       unsigned int len = 1);
+        int SubI2cRead(uint8_t addr, uint8_t reg, uint8_t *val, unsigned int len = 1);
+
         /**
          * @brief   使用mpu9250的片上iic主机控制器读写挂载在mpu9250 iic bus上的iic从机
-         * @param  {unsigned} char        : iic从机地址
-         * @param  {unsigned} char        : 从机寄存器地址
-         * @param  {const unsigned*} char : 缓存地址
-         * @param  {unsigned} int         : 数据长度
-         * @return {int}                  : 错误码
+         * @param  {uint8_t} addr       : iic从机地址
+         * @param  {uint8_t} reg        : 从机寄存器地址
+         * @param  {const uint8_t*} val : 缓存地址
+         * @param  {unsigned} int       : 数据长度
+         * @return {int}                : 错误码
          */
-        int SubI2cWrite(unsigned char addr,
-                        unsigned char reg,
-                        const unsigned char *val,
-                        unsigned int len = 1);
+        int SubI2cWrite(uint8_t addr, uint8_t reg, const uint8_t *val, unsigned int len = 1);
     public:
         constexpr static const int MPU9250_I2C_SLV4_EN = 0x80;
         constexpr static const int MPU9250_I2C_SLV4_DONE = 0x40;
@@ -498,4 +508,4 @@ namespace inv {
         int Load(i2cInterface_t &_i2c);
     };
 }
-#endif //REMOTEIIC_DRV_IMU_INVENSENSE_HPP
+#endif //DRV_IMU_INVENSENSE_HPP
