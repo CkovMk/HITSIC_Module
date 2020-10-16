@@ -6,8 +6,8 @@
  * @date 2020-10-16
  */
 
-#ifndef DRV_IMU_INVENSENSE_DEF_HPP
-#define DRV_IMU_INVENSENSE_DEF_HPP
+#ifndef UTILITIES_DRV_IMU_INVENSENSE_DEF_HPP
+#define UTILITIES_DRV_IMU_INVENSENSE_DEF_HPP
 #include <cstdint>
 namespace inv {
 	enum class icm20602_RegMap :uint8_t
@@ -297,4 +297,4 @@ namespace inv {
 
 
 }
-#endif //DRV_IMU_INVENSENSE_DEF_HPP
+#endif //UTILITIES_DRV_IMU_INVENSENSE_DEF_HPP

@@ -6,33 +6,33 @@
  * @date 2020-10-16
  */
 
-#ifndef DRV_IMU_INVENSENSE_PORT_HPP
-#define DRV_IMU_INVENSENSE_PORT_HPP
+#ifndef D_DEFAULT_DRV_IMU_INVENSENSE_PORT_HPP
+#define D_DEFAULT_DRV_IMU_INVENSENSE_PORT_HPP
 
-#define INV_IMU_DEBUG 1
-#define INV_YES_TRACE 0
-#define INV_NO_DEBUG 1
+#define HITSIC_IMU_INV_DEBUG 1
+#define HITSIC_IMU_INV_YES_TRACE 0
+#define HITSIC_IMU_INV_NO_DEBUG 1
 //#define INV_PRINTF printf
 
-#if (defined(INV_IMU_DEBUG) && (INV_IMU_DEBUG > 0))
+#if (defined(HITSIC_IMU_INV_DEBUG) && (HITSIC_IMU_INV_DEBUG > 0))
 
-#if (defined(INV_YES_TRACE) && (INV_YES_TRACE > 0))
+#if (defined(HITSIC_IMU_INV_YES_TRACE) && (HITSIC_IMU_INV_YES_TRACE > 0))
 #define INV_TRACE_(fmt, ...) \
     INV_PRINTF("[I]imu_inv line:%d:trace: " fmt "%s\r\n",  __LINE__, __VA_ARGS__)
 #define INV_TRACE(...) INV_TRACE_(__VA_ARGS__, "")
 #else
 #define INV_TRACE(...)
-#endif//(defined(INV_YES_TRACE)&&(INV_YES_TRACE>0))
+#endif//(defined(HITSIC_IMU_INV_YES_TRACE)&&(HITSIC_IMU_INV_YES_TRACE>0))
 
-#if !(defined(INV_NO_DEBUG) && (INV_NO_DEBUG > 0))
+#if !(defined(HITSIC_IMU_INV_NO_DEBUG) && (HITSIC_IMU_INV_NO_DEBUG > 0))
 #define INV_DEBUG_(fmt, ...) \
     INV_PRINTF("[E]imu_inv line:%d:debug: " fmt "%s\r\n",  __LINE__, __VA_ARGS__)
 #define INV_DEBUG(...) INV_DEBUG_(__VA_ARGS__, "")
 #else
 #define INV_DEBUG(...)
-#endif//!(defined(INV_NO_DEBUG)&&(INV_NO_DEBUG>0))
+#endif//!(defined(HITSIC_IMU_INV_NO_DEBUG)&&(HITSIC_IMU_INV_NO_DEBUG>0))
 
-#endif//(defined(INV_IMU_DEBUG)&&(INV_IMU_DEBUG>0))
+#endif//(defined(HITSIC_IMU_INV_DEBUG)&&(HITSIC_IMU_INV_DEBUG>0))
 
 namespace inv {
     //i2c接口
@@ -130,4 +130,4 @@ namespace inv {
                                 uint8_t addr, uint8_t reg, const uint8_t *val, unsigned int len);
     };
 }
-#endif //DRV_IMU_INVENSENSE_PORT_HPP
+#endif //D_DEFAULT_DRV_IMU_INVENSENSE_PORT_HPP
