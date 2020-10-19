@@ -819,21 +819,21 @@ namespace inv {
 
     int imu_t::WriteReg(uint8_t reg, const uint8_t val) {
         int res = (*i2c.writeBlocking)(i2c.context, addr, reg, &val, 1);
-#ifdef HITSIC_INV_IMU_DEBUG
+#if (defined(HITSIC_INV_IMU_DEBUG) && (HITSIC_INV_IMU_DEBUG > 0))
         if (res != 0) {
             INV_DEBUG("i2c write return code = %d", res);
         }
-#endif
+#endif //(defined(HITSIC_INV_IMU_DEBUG) && (HITSIC_INV_IMU_DEBUG > 0))
         return res;
     }
 
     int imu_t::ReadReg(uint8_t reg, uint8_t *val) {
         int res = (*i2c.readBlocking)(i2c.context, addr, reg, val, 1);
-#ifdef HITSIC_INV_IMU_DEBUG
+#if (defined(HITSIC_INV_IMU_DEBUG) && (HITSIC_INV_IMU_DEBUG > 0))
         if (res != 0) {
             INV_DEBUG("i2c read return code = %d", res);
         }
-#endif
+#endif //(defined(HITSIC_INV_IMU_DEBUG) && (HITSIC_INV_IMU_DEBUG > 0))
         return res;
     }
 }

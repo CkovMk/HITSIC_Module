@@ -45,6 +45,8 @@
 #undef INV_TRACE
 #undef INV_DEBUG_
 #undef INV_DEBUG
+#undef HITSIC_INV_IMU_DEBUG
+#define HITSIC_INV_IMU_DEBUG 1
 #define INV_TRACE_(fmt, ...) \
     printf("%s:%d:trace: " fmt "%s\r\n", __FILE__, __LINE__, __VA_ARGS__)
 #define INV_TRACE(...) INV_TRACE_(__VA_ARGS__, "")
@@ -98,6 +100,14 @@ namespace inv {
                                                uint8_t addr, uint8_t reg, uint8_t *val, unsigned int len))
                 : context(_context), readBlocking(_readBlocking), writeBlocking(_writeBlocking),
                   readNonBlocking(_readNonBlocking) {}
+
+        i2cInterface_t(void *_context,
+                       int (*_readBlocking)(void *context,
+                                            uint8_t addr, uint8_t reg, uint8_t *val, unsigned int len),
+                       int (*_writeBlocking)(void *context,
+                                             uint8_t addr, uint8_t reg, const uint8_t *val, unsigned int len)):
+                i2cInterface_t(_context,_readBlocking,_writeBlocking,_readBlocking){}
+
 
         void *context;
         int (*readBlocking)(void *context,
@@ -375,6 +385,7 @@ namespace inv {
         mpu6050_t(i2cInterface_t &_i2c) : mpuSeries_t(_i2c) {}
 
         int SelfTest() override;
+        using mpuSeries_t::Converter;
         int Converter(float *temp) override;
         std::string Report() override;
         int SoftReset(void) override;
@@ -479,6 +490,7 @@ namespace inv {
         icm20602_t(i2cInterface_t &_i2c) : mpu6500Series_t(_i2c) {}
 
         int SoftReset(void) override;
+        using mpuSeries_t::Converter;
         int Converter(float *temp) override;
         std::string Report() override;
 
