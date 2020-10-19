@@ -10,8 +10,6 @@
 
 #include "hitsic_common.h"
 
-#define HITSIC_USE_UARTMGR (0U)
-
 #if defined(HITSIC_USE_UARTMGR) && (HITSIC_USE_UARTMGR > 0)
 
 /* RT1052
