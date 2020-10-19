@@ -19,13 +19,13 @@
 
 #include <cstdint>
 
-int MyImuI2cRead(void *context,
+int IMU_INV_I2cRxBlocking(void *userData,
                     uint8_t addr, uint8_t reg, uint8_t *val, unsigned int len);
 
-int MyImuI2cWrite(void *context,
+int IMU_INV_I2cTxBlocking(void *userData,
                      uint8_t addr, uint8_t reg, const uint8_t *val, unsigned int len);
 
-int MyImuI2cReadNonBlocking(void *context,
+int IMU_INV_I2cTxNonBlocking(void *userData,
                  uint8_t addr, uint8_t reg, uint8_t *val, unsigned int len);
 
 #endif // ! HITSIC_USE_DRV_IMU_INV
