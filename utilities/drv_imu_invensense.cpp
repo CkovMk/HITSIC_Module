@@ -88,7 +88,7 @@ int inv::mpu6500Series_t::SelfTest() {
     int st_shift_prod[3], st_shift_cust[3], st_shift_ratio[3], i;
 //    int result;
 
-    res |= i2c.ReadBlocking(GetI2cAddr(), RegSelfTestXAccel(), regs, 3);
+    res |= (*i2c.readBlocking)(i2c.context, GetI2cAddr(), RegSelfTestXAccel(), regs, 3);
     for (i = 0; i < 3; i++) {
         if (regs[i] != 0) {
             st_shift_prod[i] = sSelfTestEquation[regs[i] - 1];
@@ -108,7 +108,7 @@ int inv::mpu6500Series_t::SelfTest() {
                 accel_result = 1;
                 INV_DEBUG("accel[%d] st fail,result = %d,it demands less than %d", i, st_shift_ratio[i],
                           DEF_ACCEL_ST_SHIFT_DELTA);
-            }else{
+            } else {
                 INV_TRACE("accel[%d] st result = %d,it demands less than %d", i, st_shift_ratio[i],
                           DEF_ACCEL_ST_SHIFT_DELTA);
             }
@@ -121,17 +121,17 @@ int inv::mpu6500Series_t::SelfTest() {
                 || st_shift_cust[i] > DEF_ACCEL_ST_AL_MAX * (32768 / 2000) * 1000) {
                 //加速度计自检未通过
                 accel_result = 1;
-                INV_DEBUG("accel[%d] st fail,result = %d,it demands <%d && >%d", i, st_shift_cust[i] ,
-                          DEF_ACCEL_ST_AL_MAX * (32768 / 2000) * 1000,DEF_ACCEL_ST_AL_MIN * (32768 / 2000) * 1000);
-            }else{
-                INV_TRACE("accel[%d] st result = %d,it demands <%d && >%d", i, st_shift_cust[i] ,
-                          DEF_ACCEL_ST_AL_MAX * (32768 / 2000) * 1000,DEF_ACCEL_ST_AL_MIN * (32768 / 2000) * 1000);
+                INV_DEBUG("accel[%d] st fail,result = %d,it demands <%d && >%d", i, st_shift_cust[i],
+                          DEF_ACCEL_ST_AL_MAX * (32768 / 2000) * 1000, DEF_ACCEL_ST_AL_MIN * (32768 / 2000) * 1000);
+            } else {
+                INV_TRACE("accel[%d] st result = %d,it demands <%d && >%d", i, st_shift_cust[i],
+                          DEF_ACCEL_ST_AL_MAX * (32768 / 2000) * 1000, DEF_ACCEL_ST_AL_MIN * (32768 / 2000) * 1000);
             }
         }
     }
 
     //计算陀螺仪自检结果
-    res |= i2c.ReadBlocking(GetI2cAddr(), RegSelfTestXGyro(), regs, 3);
+    res |= (*i2c.readBlocking)(i2c.context, GetI2cAddr(), RegSelfTestXGyro(), regs, 3);
     for (i = 0; i < 3; i++) {
         if (regs[i] != 0) {
             st_shift_prod[i] = sSelfTestEquation[regs[i] - 1];
@@ -150,7 +150,7 @@ int inv::mpu6500Series_t::SelfTest() {
                 gyro_result = 1;
                 INV_DEBUG("gyro[%d] st fail,result = %d,it demands greater than %d", i, st_shift_cust[i],
                           DEF_GYRO_CT_SHIFT_DELTA * st_shift_prod[i]);
-            }else{
+            } else {
                 INV_TRACE("gyro[%d] st result = %d,it demands greater than %d", i, st_shift_cust[i],
                           DEF_GYRO_CT_SHIFT_DELTA * st_shift_prod[i]);
             }
@@ -161,7 +161,7 @@ int inv::mpu6500Series_t::SelfTest() {
                 gyro_result = 1;
                 INV_DEBUG("gyro[%d] st fail,result = %d,it demands greater than %d", i, st_shift_cust[i],
                           DEF_GYRO_ST_AL * (32768 / 250) * DEF_ST_PRECISION);
-            }else{
+            } else {
                 INV_TRACE("gyro[%d] st result = %d,it demands greater than %d", i, st_shift_cust[i],
                           DEF_GYRO_ST_AL * (32768 / 250) * DEF_ST_PRECISION);
             }
@@ -177,7 +177,7 @@ int inv::mpu6500Series_t::SelfTest() {
                 gyro_result = 1;
                 INV_DEBUG("gyro[%d] st fail,result = %d,ift demands less than %d", i, (int) abs(gyro_bias_regular[i]),
                           DEF_GYRO_OFFSET_MAX * (32768 / 250) * DEF_ST_PRECISION);
-            }else{
+            } else {
                 INV_TRACE("gyro[%d] st result = %d,it demands less than %d", i, (int) abs(gyro_bias_regular[i]),
                           DEF_GYRO_OFFSET_MAX * (32768 / 250) * DEF_ST_PRECISION);
             }
@@ -341,13 +341,13 @@ namespace inv {
     }
 
     int mpuSeries_t::ReadSensorBlocking() {
-        return i2c.ReadBlocking(GetI2cAddr(), (uint8_t) icm20602_RegMap::ACCEL_XOUT_H, buf, 14);
+        return (*i2c.readBlocking)(i2c.context, GetI2cAddr(), (uint8_t) icm20602_RegMap::ACCEL_XOUT_H, buf, 14);
     }
 
     int mpuSeries_t::ReadSensorNonBlocking() {
-        return i2c.ReadNonBlocking(GetI2cAddr(),
-                                   (uint8_t) icm20602_RegMap::ACCEL_XOUT_H,
-                                   buf, 14);
+        return (*i2c.readNonBlocking)(i2c.context, GetI2cAddr(),
+                                      (uint8_t) icm20602_RegMap::ACCEL_XOUT_H,
+                                      buf, 14);
     }
 
     int icm20602_t::SoftReset(void) {
@@ -472,7 +472,7 @@ namespace inv {
 
         //开始计算自检结果
         uint8_t regs[4];
-        res |= i2c.ReadBlocking(GetI2cAddr(), (uint8_t) mpu6050_RegMap::SELF_TEST_X, regs, 4);
+        res |= (*i2c.readBlocking)(i2c.context, GetI2cAddr(), (uint8_t) mpu6050_RegMap::SELF_TEST_X, regs, 4);
         int a_st[3];
         int g_st[3];
         int ft_a[3];
@@ -768,13 +768,13 @@ namespace inv {
     }
 
     int mpu9250_t::ReadSensorBlocking() {
-        return i2c.ReadBlocking(GetI2cAddr(), (uint8_t) mpu9250_RegMap::ACCEL_XOUT_H, buf, 22);
+        return (*i2c.readBlocking)(i2c.context, GetI2cAddr(), (uint8_t) mpu9250_RegMap::ACCEL_XOUT_H, buf, 22);
     }
 
     int mpu9250_t::ReadSensorNonBlocking() {
-        return i2c.ReadNonBlocking(GetI2cAddr(),
-                                   (uint8_t) mpu9250_RegMap::ACCEL_XOUT_H,
-                                   buf, 22);
+        return (*i2c.readNonBlocking)(i2c.context, GetI2cAddr(),
+                                      (uint8_t) mpu9250_RegMap::ACCEL_XOUT_H,
+                                      buf, 22);
     }
 
     mpu9250_t::mpu9250_t(i2cInterface_t &_i2c) : mpu6500Series_t(_i2c), ak8963DeviceId(0), ak8963Information(0) {
@@ -818,8 +818,8 @@ namespace inv {
     }
 
     int imu_t::WriteReg(uint8_t reg, const uint8_t val) {
-        int res = i2c.WriteBlocking(addr, reg, &val, 1);
-#ifdef INV_IMU_DEBUG
+        int res = (*i2c.writeBlocking)(i2c.context, addr, reg, &val, 1);
+#ifdef HITSIC_INV_IMU_DEBUG
         if (res != 0) {
             INV_DEBUG("i2c write return code = %d", res);
         }
@@ -828,8 +828,8 @@ namespace inv {
     }
 
     int imu_t::ReadReg(uint8_t reg, uint8_t *val) {
-        int res = i2c.ReadBlocking(addr, reg, val, 1);
-#ifdef INV_IMU_DEBUG
+        int res = (*i2c.readBlocking)(i2c.context, addr, reg, val, 1);
+#ifdef HITSIC_INV_IMU_DEBUG
         if (res != 0) {
             INV_DEBUG("i2c read return code = %d", res);
         }

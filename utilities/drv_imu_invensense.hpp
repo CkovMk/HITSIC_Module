@@ -6,14 +6,38 @@
  * @date 2020-10-16
  */
 
-#ifndef DRV_IMU_INVENSENSE_HPP
-#define DRV_IMU_INVENSENSE_HPP
+#ifndef UTILITIES_DRV_IMU_INVENSENSE_HPP
+#define UTILITIES_DRV_IMU_INVENSENSE_HPP
 
 #include <cstdint>
 #include <string>
 #include <memory>
 #include "drv_imu_invensense_def.hpp"
 #include "drv_imu_invensense_port.hpp"
+
+#ifdef INV_PRINTF
+
+#if (defined(HITSIC_INV_IMU_DEBUG) && (HITSIC_INV_IMU_DEBUG > 0))
+
+#if (defined(HITSIC_INV_YES_TRACE) && (HITSIC_INV_YES_TRACE > 0))
+#define INV_TRACE_(fmt, ...) \
+    INV_PRINTF("[I]imu_inv line:%d:trace: " fmt "%s\r\n",  __LINE__, __VA_ARGS__)
+#define INV_TRACE(...) INV_TRACE_(__VA_ARGS__, "")
+#else
+#define INV_TRACE(...)
+#endif//(defined(HITSIC_INV_YES_TRACE)&&(HITSIC_INV_YES_TRACE>0))
+
+#if !(defined(HITSIC_INV_NO_DEBUG) && (HITSIC_INV_NO_DEBUG > 0))
+#define INV_DEBUG_(fmt, ...) \
+    INV_PRINTF("[E]imu_inv line:%d:debug: " fmt "%s\r\n",  __LINE__, __VA_ARGS__)
+#define INV_DEBUG(...) INV_DEBUG_(__VA_ARGS__, "")
+#else
+#define INV_DEBUG(...)
+#endif//!(defined(HITSIC_INV_NO_DEBUG)&&(HITSIC_INV_NO_DEBUG>0))
+
+#endif//(defined(HITSIC_INV_IMU_DEBUG)&&(HITSIC_INV_IMU_DEBUG>0))
+
+#endif //INV_PRINTF
 
 #if defined(__linux__)
 #include<iostream>
@@ -33,16 +57,56 @@
 namespace inv {
     class i2cInterface_t;//i2c接口
     struct config_t;//设置量程和数字低通滤波器
-    class imu_t;//imu接口类
-    class mpuSeries_t;//基类，抽象出invensense的mpu系列以及部分icm系列imu的初始化/数据转换api
+
+    class imu_t;//imu接口类，抽象出初始化/数据转换/SelfTest/Detect/IO的欸皮埃
+
+    class mpuSeries_t;//基类，抽象出invensense的mpu系列以及部分icm系列imu的软复位/中断/温度转换/WhoAmI的api，实现初始化/数据转换/Detect/IO的方法
     class mpu6050_t;//mpu6050驱动
-    class mpu6500Series_t;//基类，抽象出mpu6500系列以及部分icm系列imu的自检api
+
+    class mpu6500Series_t;//基类，实现mpu6500系列以及部分icm系列imu的自检方法
+
     class icm20602_t;//icm20602驱动
     class mpu9250_t;//mpu9250驱动
+
     class imuPtr_t;//imu的智能指针类，用于实例化imu对象
 
 
+    //i2c接口
+    class i2cInterface_t {
+    public:
+        /**
+         * @param  _context          :调用函数指针传入的用户参数
+         * @param  _readBlocking     :约定如下，阻塞读
+         *  **************************************************
+         *  * @brief   这里的函数指针的参数约定
+         *  * @param  {void*}                : 用户参数
+         *  * @param  {uint8_t}        : iic从机地址
+         *  * @param  {uint8_t}        : 从机寄存器地址
+         *  * @param  {const unsigned* char} : 缓存地址
+         *  * @param  {unsigned int}         : 数据长度
+         *  * @return {int}                  : 错误码
+         *  **************************************************
+         * @param  _writeBlocking    :约定同上，阻塞写
+         * @param  _readNonBlocking  :约定同上，非阻塞读
+         */
+        i2cInterface_t(void *_context,
+                       int (*_readBlocking)(void *context,
+                                            uint8_t addr, uint8_t reg, uint8_t *val, unsigned int len),
+                       int (*_writeBlocking)(void *context,
+                                             uint8_t addr, uint8_t reg, const uint8_t *val, unsigned int len),
+                       int (*_readNonBlocking)(void *context,
+                                               uint8_t addr, uint8_t reg, uint8_t *val, unsigned int len))
+                : context(_context), readBlocking(_readBlocking), writeBlocking(_writeBlocking),
+                  readNonBlocking(_readNonBlocking) {}
 
+        void *context;
+        int (*readBlocking)(void *context,
+                            uint8_t addr, uint8_t reg, uint8_t *val, unsigned int len);
+        int (*writeBlocking)(void *context,
+                             uint8_t addr, uint8_t reg, const uint8_t *val, unsigned int len);
+        int (*readNonBlocking)(void *context,
+                               uint8_t addr, uint8_t reg, uint8_t *val, unsigned int len);
+    };
 
     struct config_t {
         enum mpu_accel_fs {    // In the ACCEL_CONFIG (0x1C) register, the full scale select  bits are :
@@ -508,4 +572,4 @@ namespace inv {
         int Load(i2cInterface_t &_i2c);
     };
 }
-#endif //DRV_IMU_INVENSENSE_HPP
+#endif //UTILITIES_DRV_IMU_INVENSENSE_HPP
