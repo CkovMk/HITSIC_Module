@@ -5,9 +5,10 @@
  * @version v1.0
  * @date 2020-10-16
  */
-#include <cstring>
-#include <cmath>
+
 #include"drv_imu_invensense.hpp"
+
+#if (defined(HITSIC_USE_DRV_IMU_INV) && (HITSIC_USE_DRV_IMU_INV > 0U))
 
 std::string inv::icm20602_t::Report() {
     std::string rtv;
@@ -837,3 +838,5 @@ namespace inv {
         return res;
     }
 }
+
+#endif // ! HITSIC_USE_DRV_IMU_INV

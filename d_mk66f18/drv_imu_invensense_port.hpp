@@ -6,19 +6,18 @@
  * @date 2020-10-16
  */
 
-#ifndef D_DEFAULT_DRV_IMU_INVENSENSE_PORT_HPP
-#define D_DEFAULT_DRV_IMU_INVENSENSE_PORT_HPP
+#ifndef D_MK66F18_DRV_IMU_INVENSENSE_PORT_HPP
+#define D_MK66F18_DRV_IMU_INVENSENSE_PORT_HPP
 
 #define HITSIC_INV_IMU_DEBUG 1
 #define HITSIC_INV_YES_TRACE 0
 #define HITSIC_INV_NO_DEBUG 1
 #include "hitsic_common.h"
-#define INV_PRINTF printf
+#define INV_PRINTF PRINTF   // FIXME: HITSICC_INV_PRINTF(...)
 
 #if (defined(HITSIC_USE_DRV_IMU_INV) && (HITSIC_USE_DRV_IMU_INV > 0U))
 
-#include <cstdint>
-
+//TODO:port this file. change the names.
 int MyImuI2cRead(void *context,
                     uint8_t addr, uint8_t reg, uint8_t *val, unsigned int len);
 
@@ -30,4 +29,4 @@ int MyImuI2cReadNonBlocking(void *context,
 
 #endif // ! HITSIC_USE_DRV_IMU_INV
 
-#endif //D_DEFAULT_DRV_IMU_INVENSENSE_PORT_HPP
+#endif //D_MK66F18_DRV_IMU_INVENSENSE_PORT_HPP

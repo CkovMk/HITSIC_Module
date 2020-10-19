@@ -8,7 +8,9 @@
 
 #ifndef UTILITIES_DRV_IMU_INVENSENSE_DEF_HPP
 #define UTILITIES_DRV_IMU_INVENSENSE_DEF_HPP
-#include <cstdint>
+#include "hitsic_common.h"
+
+#if (defined(HITSIC_USE_DRV_IMU_INV) && (HITSIC_USE_DRV_IMU_INV > 0U))
 namespace inv {
 	enum class icm20602_RegMap :uint8_t
 	{
@@ -294,7 +296,8 @@ namespace inv {
         ASAZ = 0x12,
     };
 
-
-
 }
+
+#endif // ! HITSIC_USE_DRV_IMU_INV
+
 #endif //UTILITIES_DRV_IMU_INVENSENSE_DEF_HPP

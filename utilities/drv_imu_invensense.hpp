@@ -8,12 +8,12 @@
 
 #ifndef UTILITIES_DRV_IMU_INVENSENSE_HPP
 #define UTILITIES_DRV_IMU_INVENSENSE_HPP
+#include "hitsic_common.h"
+//#include <memory>
 
-#include <cstdint>
-#include <string>
-#include <memory>
-#include "drv_imu_invensense_def.hpp"
+#if (defined(HITSIC_USE_DRV_IMU_INV) && (HITSIC_USE_DRV_IMU_INV > 0U))
 #include "drv_imu_invensense_port.hpp"
+#include "drv_imu_invensense_def.hpp"
 
 #ifdef INV_PRINTF
 
@@ -33,11 +33,11 @@
 #define INV_DEBUG(...) INV_DEBUG_(__VA_ARGS__, "")
 #else
 #define INV_DEBUG(...)
-#endif//!(defined(HITSIC_INV_NO_DEBUG)&&(HITSIC_INV_NO_DEBUG>0))
+#endif// ! HITSIC_INV_NO_DEBUG
 
-#endif//(defined(HITSIC_INV_IMU_DEBUG)&&(HITSIC_INV_IMU_DEBUG>0))
+#endif// ! HITSIC_INV_IMU_DEBUG
+#endif // ! INV_PRINTF
 
-#endif //INV_PRINTF
 
 #if defined(__linux__)
 #include<iostream>
@@ -572,4 +572,7 @@ namespace inv {
         int Load(i2cInterface_t &_i2c);
     };
 }
-#endif //UTILITIES_DRV_IMU_INVENSENSE_HPP
+
+#endif // ! HITSIC_USE_DRV_IMU_INV
+
+#endif // ! UTILITIES_DRV_IMU_INVENSENSE_HPP
