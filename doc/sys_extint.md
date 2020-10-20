@@ -11,7 +11,7 @@
 
 ## 版本说明
 
-### v1.0-beta0
+### v1.0-beta.0
 
 by CkovMk @hitsic 2019.07.25
 
