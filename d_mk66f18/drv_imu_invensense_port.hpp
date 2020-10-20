@@ -18,13 +18,13 @@
 #if (defined(HITSIC_USE_DRV_IMU_INV) && (HITSIC_USE_DRV_IMU_INV > 0U))
 
 //TODO:port this file. change the names.
-int IMU_INV_I2cRxBlocking(void *context,
+int IMU_INV_I2cRxBlocking(void *userData,
                     uint8_t addr, uint8_t reg, uint8_t *val, unsigned int len);
 
-int IMU_INV_I2cTxBlocking(void *context,
+int IMU_INV_I2cTxBlocking(void *userData,
                      uint8_t addr, uint8_t reg, const uint8_t *val, unsigned int len);
 
-int IMU_INV_I2cTxNonBlocking(void *context,
+int IMU_INV_I2cTxNonBlocking(void *userData,
                  uint8_t addr, uint8_t reg, uint8_t *val, unsigned int len);
 
 #endif // ! HITSIC_USE_DRV_IMU_INV
