@@ -30,8 +30,8 @@
 #include "sys_pitmgr.hpp"
 #include "pin_mux.h"
 
-#define HITSIC_DISP_SSD1306_FLIP_X (0U)
-#define HITSIC_DISP_SSD1306_FLIP_Y (0U)
+#define HITSIC_DISP_SSD1306_FLIP_X (1U)
+#define HITSIC_DISP_SSD1306_FLIP_Y (1U)
 
 #define OLED_SPI_BASE			SPI0
 #define OLED_SPI_CLKFREQ 		CLOCK_GetFreq(DSPI0_CLK_SRC)
@@ -42,22 +42,19 @@
 
 inline void DISP_SSD1306_gpioSetRST(uint8_t x)
 {
-	GPIO_PinWrite(GPIO_OLED_RST_GPIO, GPIO_OLED_RST_PIN, x);
+	GPIO_PinWrite(RTEPIN_BASIC_OLED_RST_GPIO, RTEPIN_BASIC_OLED_RST_PIN, x);
 }
 
 inline void DISP_SSD1306_gpioSetD_C(uint8_t x)
 {
-	GPIO_PinWrite(GPIO_OLED_D_C_GPIO, GPIO_OLED_D_C_PIN, x);
+	GPIO_PinWrite(RTEPIN_BASIC_OLED_D_C_GPIO, RTEPIN_BASIC_OLED_D_C_PIN, x);
 }
 
 inline void DISP_SSD1306_delay_ms(uint32_t ms)
 {
 	for(int i = 0; i < ms; ++i)
 	{
-		for(int j = 0; j < 1000; ++j)
-		{
-			__asm volatile ("nop");
-		}
+        SDK_DelayAtLeastUs(1000,CLOCK_GetFreq(kCLOCK_CoreSysClk));
 	}
 }
 
