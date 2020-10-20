@@ -1,10 +1,10 @@
 # DRV_IMU_INVENSENSE
 
-[toc]
+[TOC]
 
 ## 简介
 
-Invensense惯性导航驱动库（DRV_IMU_INVENSENSE）简称DRV_IMU_INV，是给mpu6050,mpu9250,icm20602等InvenSense的imu设计的驱动。
+InvenSense惯性导航驱动库（DRV_IMU_INVENSENSE，简称DRV_IMU_INV），是给MPU6050、MPU9250、ICM20602等InvenSense公司开发的的惯性导航传感器（IMU）设计的驱动。
 
 考虑到该传感器数据量不大，且I2C使用简便可靠，本驱动设计上主要考虑I2C接口。实际应用中如要使用SPI接口，请参见“移植指南 - 移植通信接口 - 使用SPI通信 ”。
 
@@ -14,7 +14,7 @@ Invensense惯性导航驱动库（DRV_IMU_INVENSENSE）简称DRV_IMU_INV，是�
 
 返回类型为int的函数返回错误码，为0代表正常，其余全是错误。
 
-返回类型为bool的函数返回true代表成功，false失败，和返回int的函数刚好相反
+返回类型为bool的函数返回`true`代表成功，`false`失败，和返回`int`的函数刚好相反
 
 override方法的注释请参看它在基类中的注释
 
@@ -43,22 +43,22 @@ by beforelight（网瘾少年） @hitsic 2020-10-16
 
 ![类图](drv_imu_invensense.assets/ClassDiagram.png)
 
-### 快速了解
+### 类型简介
 
-class i2cInterface_t;//i2c接口
-struct config_t;//设置量程和数字低通滤波器
+`class i2cInterface_t;`//i2c接口
+`struct config_t;`//设置量程和数字低通滤波器
 
-class imu_t;	//imu接口类，抽象出初始化/数据转换/SelfTest/Detect/IO的欸皮埃
+`class imu_t;`	//imu接口类，抽象出初始化/数据转换/SelfTest/Detect/IO的欸皮埃
 
-class mpuSeries_t : public imu_t ;//基类，抽象出invensense的mpu系列以及部分icm系列imu的软复位/中断/温度转换/WhoAmI的api，实现初始化/数据转换/Detect/IO的方法
+`class mpuSeries_t : public imu_t ;`//基类，抽象出invensense的mpu系列以及部分icm系列imu的软复位/中断/温度转换/WhoAmI的api，实现初始化/数据转换/Detect/IO的方法
 
-class mpu6050_t : public mpuSeries_t;//mpu6050驱动
-class mpu6500Series_t : public mpuSeries_t;//基类，实现mpu6500系列以及部分icm系列imu的自检方法
+`class mpu6050_t : public mpuSeries_t;`//mpu6050驱动
+`class mpu6500Series_t : public mpuSeries_t;`//基类，实现mpu6500系列以及部分icm系列imu的自检方法
 
-class icm20602_t : public mpu6500Series_t;//icm20602驱动
-class mpu9250_t : public mpu6500Series_t;//mpu9250驱动
+`class icm20602_t : public mpu6500Series_t;`//icm20602驱动
+`class mpu9250_t : public mpu6500Series_t;`//mpu9250驱动
 
-class imuPtr_t : public std::shared_ptr<imu_t>;//imu_t的智能指针类，用于实例化imu_t对象
+`class imuPtr_t : public std::shared_ptr<imu_t>;`//imu_t的智能指针类，用于实例化imu_t对象
 
 
 
