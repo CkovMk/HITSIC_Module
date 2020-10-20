@@ -35,6 +35,11 @@
 #if defined(HITSIC_USE_PITMGR) && (HITSIC_USE_PITMGR > 0)
 #include "sys_pitmgr_port.hpp"
 
+/*!
+ * @addtogroup pitmgr
+ * @{
+ */
+
 //CPU Selection
 #if defined(D_RT1052_SYS_PITMGR_PORT_HPP_) || defined (D_MK66F18_SYS_PITMGR_PORT_HPP_) || defined (D_KV10Z7_SYS_PITMGR_PORT_HPP_)
 
@@ -130,6 +135,8 @@ private:
 #error "C++ API does NOT support this CPU!"
 
 #endif // CPU Selection
+
+/* @} */
 
 #endif // ! HITSIC_USE_PITMGR
 

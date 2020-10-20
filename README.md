@@ -29,9 +29,11 @@ HITSIC_Module是哈工大智能车创新俱乐部各MCU平台共用的程序模�
 | [DISP_SSD1306](doc/drv_disp_ssd1306.md) | OLED屏幕SSD1306驱动组件                                   |
 | WIP:：IMU_INVENSENSE                    | Invensense公司IMU惯导模块统一驱动组件                     |
 | WIP：TCS34725                           | I2C颜色传感器                                             |
-| WIP：TFMINI                             |                                                           |
-| WIP：TOF_VL53L0x                        |                                                           |
-| WIP：TOF_VL53L1x                        |                                                           |
+| WIP：TFMINI                             | TFmini激光测距雷达                                        |
+| WIP：TOF_VL53L0x                        | ST VL53L0x激光测距传感器                                  |
+| WIP：TOF_VL53L1x                        | ST VL53L1x激光测距传感器                                  |
+| [WIP：DMADVP](doc/drv_dmadvp.md)    | DVP摄像头DMA接收器模组，用于Kinetis系列单片机             |
+| [WIP：CAM_ZF9V034](doc/drv_cam_zf9v034.md) | 逐飞总钻风（CMOS：MT9V034）摄像头配置模组                 |
 | **LIB / 工具**                          |                                                           |
 | LIST                                    | 轻量级链表组件                                            |
 | PIDCTRL                                 | PID控制组件                                               |

@@ -2,6 +2,11 @@
 
 #if defined(HITSIC_USE_PITMGR) && (HITSIC_USE_PITMGR > 0)
 
+/*!
+ * @addtogroup pitmgr
+ * @{
+ */
+
 //CPU Selection
 #if defined(D_RT1052_SYS_PITMGR_PORT_HPP_) || defined (D_MK66F18_SYS_PITMGR_PORT_HPP_) || defined (D_KV10Z7_SYS_PITMGR_PORT_HPP_)
 
@@ -84,6 +89,8 @@ void pitMgr_t::setup(uint32_t _ms, uint32_t _mso, handler_t _handler,
 }
 
 #endif // CPU Selection
+
+/* @} */
 
 #endif // ! HITSIC_USE_PITMGR
 
