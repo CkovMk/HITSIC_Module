@@ -60,7 +60,7 @@ void extInt_t::isr(INTC_Type* _gpio)
 	{
 		if (flag & (1 << it.first))
 		{
-			(*it.second.handler)();
+			(*it.second.handler)(it.second);
 		}
 	}
 	EXTINT_ClearInterruptFlags(_gpio, 0xffff);

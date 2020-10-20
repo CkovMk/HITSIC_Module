@@ -41,10 +41,10 @@ struct cam_zf9v034_configPacket_t
     uint16_t imageGainCmd, imageGain;
     uint16_t initCmd, dummyData0;
 };
-
-void CAM_ZF9V034_CfgWrite(const cam_zf9v034_configPacket_t *config);	//TODO: update this to accept cfg struct pointer.
-void CAM_ZF9V034_CfgRead(cam_zf9v034_configPacket_t *config);     //TODO: update this to accept cfg struct pointer.
-uint16_t CAM_ZF9V034_GetVersion(void);
+void CAM_ZF9V034_GetDefaultConfig(cam_zf9v034_configPacket_t *config);
+void CAM_ZF9V034_CfgWrite(const cam_zf9v034_configPacket_t *config);
+void CAM_ZF9V034_CfgRead(cam_zf9v034_configPacket_t *config);
+uint16_t CAM_ZF9V034_GetVersion(void);//TODO: use struct
 uint16_t CAM_ZF9V034_SetExposeTime(uint16_t light);
 
 // Receiver Config

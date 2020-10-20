@@ -6,7 +6,7 @@
 #if (defined(HITSIC_USE_CAM_ZF9V034) && (HITSIC_USE_CAM_ZF9V034 > 0))
 #include "drv_cam_zf9v034_port.hpp"
 
-#define ZF9V034_UART_INST (UART0)
+#define ZF9V034_UART_INST (UART3)
 
 inline status_t CAM_ZF9V034_UartRxBlocking(uint8_t *data, uint32_t length)
 {

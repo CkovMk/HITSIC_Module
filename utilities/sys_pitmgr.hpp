@@ -51,7 +51,7 @@ class pitMgr_t
 public:
 
 	//isr service manager
-	typedef void (*handler_t)(void);
+	typedef void (*handler_t)(pitMgr_t &_this);
 	enum pptFlag_t : uint32_t
 	{
 		enable = 1 << 0, runOnce = 1 << 1,
@@ -86,6 +86,9 @@ public:
 	handler_t handler;
 	uint32_t pptFlag;
 	uint64_t prevTime_ms;
+	void *userData;
+
+	
 
 	void setup(uint32_t _ms, uint32_t _mso, handler_t _handler, uint32_t _ppt);
 	void setEnable(bool _b)
@@ -98,6 +101,11 @@ public:
 		{
 			pptFlag &= (~enable);
 		}
+	}
+	
+	void setUserData(void *_userData)
+	{
+		userData = _userData;
 	}
 
 	pitMgr_t(void);

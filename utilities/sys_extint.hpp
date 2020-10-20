@@ -47,8 +47,9 @@
 class extInt_t
 {
 public:
-	typedef void (*handler_t)(void);
+	typedef void (*handler_t)(extInt_t &_this);
 
+	/*TODO: make this more efficient*/
 	static std::map<INTC_Type*, std::map<uint32_t, extInt_t>> isrSet;
 
 	static status_t init(void);
@@ -60,6 +61,7 @@ public:
 	INTC_Type* gpio;
 	uint32_t pin;
 	handler_t handler;
+	void* userData;
 
 	void setup(INTC_Type* _gpio, uint32_t _pin, handler_t _handler);
 
@@ -68,6 +70,11 @@ public:
 		//mode = _mode;
 		EXTINT_SetInterruptConfig(gpio, pin, _mode);
 	}
+	void setUserData(void* _userData)
+	{
+		userData = _userData;
+	}
+
 	extInt_t(void){}
 private:
 	extInt_t(INTC_Type* _gpio, uint32_t _pin, handler_t _handler)

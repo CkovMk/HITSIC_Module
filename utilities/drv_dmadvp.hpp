@@ -74,6 +74,7 @@ struct dmadvp_handle_t
     DMADVP_Type* base;              /*!< DMADVP虚拟设备地址 */
     edma_handle_t dmaHandle;        /*!< DMA传输句柄 */
     edma_transfer_config_t xferCfg; /*!< DMA传输配置 */
+    extInt_t* extIntHandle;
     volatile bool transferStarted;  /*!< 传输中标志位，true：正在进行传输 */
 };
 
@@ -101,7 +102,7 @@ status_t DMADVP_Init(DMADVP_Type *base, const dmadvp_config_t *config);
  * @param callback 要使用的DMA回调函数
  * @param userData 要传递的用户数据 //FIXME这里似乎有问题
  */
-void DMADVP_TransferCreateHandle(dmadvp_handle_t *handle, DMADVP_Type *base, edma_callback callback, void *userData);
+void DMADVP_TransferCreateHandle(dmadvp_handle_t *handle, DMADVP_Type *base, edma_callback callback);
 
 /**
  * @brief 将缓存区提交至DMADVP句柄
@@ -134,7 +135,7 @@ void DMADVP_TransferStop(DMADVP_Type *base, dmadvp_handle_t *handle);
  * 
  * @param handle 要响应的DMADVP传输句柄
  */
-void DMADVP_VsncExtIntHandler(dmadvp_handle_t* handle);
+void DMADVP_VsncExtIntHandler(extInt_t &isr);
 
 /**
  * @brief DMA回调预处理函数。必须在EDMA回调函数中调用。

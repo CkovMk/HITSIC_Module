@@ -35,6 +35,28 @@ uint16_t camera_version;
 //  {(int16_t)CAM_CMD_GAIN,              0},   //图像增益
 //};
 
+void CAM_ZF9V034_GetDefaultConfig(cam_zf9v034_configPacket_t *config)
+{
+	config->autoExpSetCmd = CAM_CMD_AUTO_EXP;
+	config->autoExpSet = 0;
+    config->autoExpTimeCmd = CAM_CMD_EXP_TIME;
+	config->autoExpTime = 32222;//FIXME: check this value
+    config->FrameRateCmd = CAM_CMD_FPS;
+	config->FrameRate = 50;
+    config->imageColCmd = CAM_CMD_SET_COL;
+	config->imageCol = 188;
+    config->imageRowCmd = CAM_CMD_SET_ROW;
+	config->imageRow = 120;
+    config->HorizontalOffsetCmd = CAM_CMD_LR_OFFSET;
+	config->HorizontalOffset = 0;
+    config->VerticalOffsetCmd = CAM_CMD_UD_OFFSET;
+	config->VerticalOffset = 0;
+    config->imageGainCmd = CAM_CMD_GAIN;
+	config->imageGain = 32;
+    config->initCmd = CAM_CMD_INIT;
+	config->dummyData0 = 0;
+}
+
 void CAM_ZF9V034_CfgWrite(const cam_zf9v034_configPacket_t *config)
 {
 	uint8_t camera_uartTxBuf[8];

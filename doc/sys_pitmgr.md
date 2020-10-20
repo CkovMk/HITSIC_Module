@@ -79,6 +79,8 @@ by CkovMk @hitsic 2019.07.25
 
   该函数控制`pptFlag`中启用属性的开关。
 
+- **设置传递参数`void pitMgr_t::setUserData(void *_userData);`**
+
 - **服务接口 `static void pitMgr_t::isr(void);`**
 
   该函数无需用户调用，是由系统自动在定时器中断服务函数中调用的。

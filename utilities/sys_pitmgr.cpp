@@ -56,7 +56,7 @@ void pitMgr_t::isr(void)
 	{
 		if (isr.pptFlag & enable && timer_ms % isr.ms == isr.mso)
 		{
-			(*isr.handler)();
+			(*isr.handler)(isr);
 			if (isr.pptFlag & runOnce)
 			{
 				isr.pptFlag ^= enable;

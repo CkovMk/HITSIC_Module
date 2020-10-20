@@ -30,8 +30,8 @@
 #include "sys_pitmgr.hpp"
 #include "pin_mux.h"
 
-#define HITSIC_DISP_SSD1306_FLIP_X (1U)
-#define HITSIC_DISP_SSD1306_FLIP_Y (1U)
+#define HITSIC_DISP_SSD1306_FLIP_X (0U)
+#define HITSIC_DISP_SSD1306_FLIP_Y (0U)
 
 #define OLED_SPI_BASE			SPI2
 #define OLED_SPI_CLKFREQ 		CLOCK_GetFreq(DSPI0_CLK_SRC)

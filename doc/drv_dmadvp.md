@@ -47,6 +47,8 @@ by CkovMk @hitsic 2020.10.20
 
 ## API文档
 
+详见头文件内的doxygen风格注释
+
 
 
 ## 设计文档
@@ -91,6 +93,8 @@ extern DMADVP_Type __DMADVP0;
 
 
 ## 应用指南
+
+
 
 
 

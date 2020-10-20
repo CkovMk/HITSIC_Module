@@ -25,7 +25,6 @@ status_t DMADVP_Init(DMADVP_Type *base, const dmadvp_config_t *config)
 
 	PORT_SetPinInterruptConfig(base->vsnc_intc, base->vsnc_pin, kPORT_InterruptOrDMADisabled);
 	
-	extInt_t::insert(base->vsnc_intc, base->vsnc_pin, DMADVP_VsncExtIntHandler/*TODO: fix this*/);
 	DisableIRQ(base->dmaIrqn);
 	NVIC_SetPriority(base->dmaIrqn, base->dmaIrqPrio);
 
@@ -56,6 +55,10 @@ void DMADVP_TransferCreateHandle(dmadvp_handle_t *handle, DMADVP_Type *base, edm
 	
 	dmadvp_handleList[instance] = handle;
 
+	handle->extIntHandle = extInt_t::insert(base->vsnc_intc, base->vsnc_pin, DMADVP_VsncExtIntHandler/*TODO: fix this*/);
+	assert(handle->extIntHandle);
+	handle->extIntHandle->setUserData((void*)handle);
+
 	handle->base = base;
 	EDMA_CreateHandle(&handle->dmaHandle, DMADVP0_DMA_INST, base->dmaChannel);//句柄存有使用哪个通道的信息
 	EDMA_SetCallback(&handle->dmaHandle, callback, (void*)handle);//回调函数设置,userData设置为handle
@@ -82,6 +85,7 @@ void DMADVP_TransferStart(DMADVP_Type *base, dmadvp_handle_t *handle)
 		return ;
 	}
 	PORT_SetPinInterruptConfig(base->vsnc_intc, base->vsnc_pin, base->vsncInterruptCfg);
+	handle->transferStarted = true;
 }
 
 void DMADVP_TransferStop(DMADVP_Type *base, dmadvp_handle_t *handle)
@@ -89,8 +93,9 @@ void DMADVP_TransferStop(DMADVP_Type *base, dmadvp_handle_t *handle)
 	EDMA_AbortTransfer(&handle->dmaHandle);
 }
 
-void DMADVP_VsncExtIntHandler(dmadvp_handle_t *handle)
+void DMADVP_VsncExtIntHandler(extInt_t &isr)
 {
+	dmadvp_handle_t *handle = (dmadvp_handle_t*)isr.userData;
 	PORT_SetPinInterruptConfig(handle->base->vsnc_intc, handle->base->vsnc_pin, kPORT_InterruptOrDMADisabled);
 	PORT_SetPinInterruptConfig(handle->base->pclk_intc, handle->base->pclk_pin, handle->base->pclkInterruptCfg);
 	EDMA_StartTransfer(&handle->dmaHandle);//启动传输
