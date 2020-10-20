@@ -33,29 +33,31 @@ by CkovMk @hitsic 2019.07.25
 
 ## API文档
 
-- **初始化 `static status_t init(void);`**
+- **初始化 `static status_t extInt_t::init(void);`**
 
   该函数用于初始化EXTINT。
 
-- **插入任务`static extInt_t* insert(INTC_Type* _gpio, uint32_t _pin, handler_t _handler);`**
+- **插入任务`static extInt_t* extInt_t::insert(INTC_Type* _gpio, uint32_t _pin, handler_t _handler);`**
 
   该函数用于向任务列表插入指定GPIO引脚上的触发任务。
 
-- **移除任务`static status_t remove(INTC_Type* _gpio, uint32_t _pin);`**
+- **移除任务`static status_t extInt_t::remove(INTC_Type* _gpio, uint32_t _pin);`**
 
   该函数用于移除指定GPIO引脚上的触发任务。
 
-- **移除任务 `static status_t remove(extInt_t* _inst);`**
+- **移除任务 `static status_t extInt_t::remove(extInt_t* _inst);`**
 
   该函数用于移除指针指向的触发任务。移除成功后返回`kStatus_Success`，且指针将变为野指针，您需要手动将其置为NULL。
 
-- **服务接口 `static void isr(INTC_Type* _gpio);`**
+- **服务接口 `static void extInt_t::isr(INTC_Type* _gpio);`**
 
   该函数用于为某一个端口提供中断服务。参数类型`INTC_Type*`是指本MCU上用于管理外部中断的外设类型，应在`sys_extint_port.hpp`中定义。例如，对于K66、KV58等单片机，`#define INTC_Type PORT_Type`，而对于RT1052等单片机，`#define INTC_Type GPIO_Type`。您也可以使用`typedef`关键字。
 
-- **设置任务 `void setup(INTC_Type* _gpio, uint32_t _pin, handler_t _handler);`**
+- **设置任务 `void extInt_t::setup(INTC_Type* _gpio, uint32_t _pin, handler_t _handler);`**
 
-- **设置中断方式 `void setMode(interrupt_mode_t _mode);`**
+- **设置中断方式 `void extInt_t::setMode(interrupt_mode_t _mode);`**
+
+- **设置传递参数`void extInt_t::setUserData(void *_userData);`**
 
 
 

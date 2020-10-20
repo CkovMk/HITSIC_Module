@@ -27,8 +27,6 @@
 
 #include "hitsic_common.h"
 
-#define HITSIC_USE_PITMGR (1U)
-
 #if defined(HITSIC_USE_PITMGR) && (HITSIC_USE_PITMGR > 0)
 
 #define HITSIC_PITMGR_CNTFREQ 60000000

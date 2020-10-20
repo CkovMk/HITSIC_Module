@@ -2,6 +2,11 @@
 
 #if defined(HITSIC_USE_EXTINT) && (HITSIC_USE_EXTINT > 0)
 
+/*!
+ * @addtogroup extint
+ * @{
+ */
+
 //CPU Selection
 #if defined(D_RT1052_SYS_EXTINT_PORT_HPP_) || defined (D_MK66F18_SYS_EXTINT_PORT_HPP_) || defined (D_KV10Z7_SYS_EXTINT_PORT_HPP_)
 
@@ -55,7 +60,7 @@ void extInt_t::isr(INTC_Type* _gpio)
 	{
 		if (flag & (1 << it.first))
 		{
-			(*it.second.handler)();
+			(*it.second.handler)(it.second);
 		}
 	}
 	EXTINT_ClearInterruptFlags(_gpio, 0xffff);
@@ -80,5 +85,7 @@ void extInt_t::setup(INTC_Type* _gpio, uint32_t _pin, handler_t _handler)
 }
 
 #endif // ! CPU Selection
+
+/* @} */
 
 #endif // ! HITSIC_USE_EXTINT
