@@ -27,7 +27,7 @@ InvenSense惯性导航驱动库（DRV_IMU_INVENSENSE，简称DRV_IMU_INV），�
 by [beforelight](https://github.com/beforelight/RemoteIIC)（网瘾少年） @hitsic 2020-10-16 
 改动说明：
 
-- 本驱动重构了在k66工程上的c语言版本的imu驱动，同样支持了3款mpu6050,mpu9250,icm20602，把i2c作为主要接口，并且添加了自检函数，增加使用的可靠性。
+- 本驱动重构了在k66工程上的c语言版本的IMU驱动，同样支持了3款MPU6050,MPU9250,ICM20602，把I2C作为主要接口，并且添加了自检函数，增加使用的可靠性。
 
 开发计划
 
@@ -73,7 +73,7 @@ override方法的注释请参看它在基类中的注释
 
 #### 使用步骤
 
-##### 不确定使用的imu型号
+##### 不确定使用的IMU型号
 
 1. 声明一个`i2cInterface_t`对象，这个对象负责i2c通讯
 
@@ -90,11 +90,11 @@ override方法的注释请参看它在基类中的注释
 
 4. 自检，调用`SelfTest()`方法自检，自检时保持传感器静止。如果自检多次不通过说明传感器的内部微机械结构已经损坏。如果觉得自检不靠谱也可以跳过自检
 
-5. 调用`ReadSensorBlocking()`方法读取传感器数据并调用`Converter()`方法转换数据，或者，调用`ReadSensorNonBlocking()` 方法，等待数据传输完成之后再调用`Converter()`方法转换数据。
+5. 调用`ReadSensorBlocking()`方法读取传感器数据并调用`Convert()`方法转换数据，或者，调用`ReadSensorNonBlocking()` 方法，等待数据传输完成之后再调用`Convert()`方法转换数据。
 
 6. 示例见示例代码中的**example1**
 
-##### 确定使用什么型号的imu
+##### 确定使用什么型号的IMU
 
 确定比如确定是用mpu6050
 
@@ -115,11 +115,13 @@ override方法的注释请参看它在基类中的注释
 
 5. 自检，调用`SelfTest()`方法自检，自检时保持传感器静止。如果自检多次不通过说明传感器的内部微机械结构已经损坏。如果觉得自检不靠谱也可以跳过自检
 
-6. 调用`ReadSensorBlocking()`方法读取传感器数据并调用`Converter()`方法转换数据，或者，调用`ReadSensorNonBlocking()` 方法，等待数据传输完成之后再调用`Converter()`方法转换数据。
+6. 调用`ReadSensorBlocking()`方法读取传感器数据并调用`Convert()`方法转换数据，或者，调用`ReadSensorNonBlocking()` 方法，等待数据传输完成之后再调用`Convert()`方法转换数据。
 
 7. 示例见示例代码中的**example2**
 
 #### 示例代码
+
+> 注意，本示例有些函数在单片机工程上不存在
 
 ```c++
 #include <iostream>
@@ -156,9 +158,9 @@ int example1(int argc, const char **argv) {
             if (my_imu->SelfTest() == 0) {
                 usleep(10000);//等待10ms
                 my_imu->ReadSensorBlocking();
-                my_imu->Converter(acc, acc + 1, acc + 2, gyro, gyro + 1, gyro + 2);
-//                static_cast<inv::mpuSeries_t*>(my_imu.get())->Converter(&temp);
-                my_imu->Converter(mag, mag + 1, mag + 2);
+                my_imu->Convert(acc, acc + 1, acc + 2, gyro, gyro + 1, gyro + 2);
+//                static_cast<inv::mpuSeries_t*>(my_imu.get())->Convert(&temp);
+                my_imu->Convert(mag, mag + 1, mag + 2);
                 printf("%s\r\n", my_imu->Report().c_str());
                 printf("accel \t%.3f \t%.3f \t%.3f m/s^2\r\n", acc[0], acc[1], acc[2]);
                 printf("gyro \t%.3f \t%.3f \t%.3f dps \r\n", gyro[0], gyro[1], gyro[2]);
@@ -184,9 +186,9 @@ int example2(int argc, const char **argv) {
             if (my_imu.SelfTest() == 0) {
                 usleep(10000);//等待10ms
                 my_imu.ReadSensorBlocking();
-                my_imu.Converter(acc, acc + 1, acc + 2, gyro, gyro + 1, gyro + 2);
-                my_imu.Converter(&temp);
-                my_imu.Converter(mag, mag + 1, mag + 2);
+                my_imu.Convert(acc, acc + 1, acc + 2, gyro, gyro + 1, gyro + 2);
+                my_imu.Convert(&temp);
+                my_imu.Convert(mag, mag + 1, mag + 2);
                 printf("%s\r\n", my_imu.Report().c_str());
                 printf("accel \t%.3f \t%.3f \t%.3f m/s^2\r\n", acc[0], acc[1], acc[2]);
                 printf("gyro \t%.3f \t%.3f \t%.3f dps \r\n", gyro[0], gyro[1], gyro[2]);
@@ -218,7 +220,7 @@ int main(int argc, const char **argv){
 
 ```
 
-##### 运行结果（mpu6050)
+##### 运行结果（MPU6050)
 
 > ```
 > /tmp/tmp.5gHXYJ77gB/cmake-build-debug-/RemoteIIC
@@ -262,7 +264,7 @@ int main(int argc, const char **argv){
 >
 > 
 
-##### 运行结果（mpu9250)
+##### 运行结果（MPU9250)
 
 > ```
 > /tmp/tmp.5gHXYJ77gB/cmake-build-debug-/RemoteIIC
@@ -399,7 +401,7 @@ inv::i2cInterface_t my_i2c(&iic, remote_i2c_read, remote_i2c_write);
 
 ###  添加其他型号的驱动
 
-当前支持的有三款，mpu6050,mpu9250,icm20602，如果要支持其他寄存器结构类似的imu：，步骤如下
+当前支持的有三款，MPU6050,MPU9250,ICM20602，如果要支持其他寄存器结构类似的imu：，步骤如下
 
 1. 继承class imu_t或者class imu_t的子类，然后override基类的方法
 2. 如果要使用自动创建已连接传感器的的imu_t对象的话，继承class imuPtr_t并重写Load()方法。
