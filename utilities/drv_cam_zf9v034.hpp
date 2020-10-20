@@ -38,8 +38,10 @@ uint16_t CAM_ZF9V034_SetExposeTime(uint16_t light);
 
 // Receiver Config
 #if (defined(ZF9V034_USE_EDMADVP) && (ZF9V034_USE_EDMADVP > 0U))
+#include "drv_edmadvp.hpp"
 void CAM_ZF9V034_GetReceiverConfig(edmadvp_config_t* config);
 #else if(defined(ZF9V034_USE_RTCSI) && (ZF9V034_USE_RTCSI > 0U))
+#include "drv_rtdvp.hpp"
 void CAM_ZF9V034_GetReceiverConfig(csi_config_t* config); //FIXME
 #endif // ! Receiver Config
 

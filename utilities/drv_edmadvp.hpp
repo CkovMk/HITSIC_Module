@@ -29,7 +29,8 @@
 #include "hitsic_common.h"
 
 #if defined(HITSIC_USE_EDMADVP) && (HITSIC_USE_EDMADVP > 0)
-#inclide "drv_edmadvp_port.hpp"
+#include "drv_edmadvp_port.hpp"
+#include "sys_extint.hpp"
 
 /*! @brief Error codes for the EDMADVP driver. */
 enum
