@@ -67,7 +67,7 @@ int inv::mpu6500Series_t::SelfTest() {
     while (times--) {
         while (!DataReady()) {}
         res |= ReadSensorBlocking();
-        Converter(abuf, abuf + 1, abuf + 2, gbuf, gbuf + 1, gbuf + 2);
+        Convert(abuf, abuf + 1, abuf + 2, gbuf, gbuf + 1, gbuf + 2);
         for (int i = 0; i < 3; ++i) {
             gyro_bias_regular[i] += gbuf[i];
             accel_bias_regular[i] += abuf[i];
@@ -84,7 +84,7 @@ int inv::mpu6500Series_t::SelfTest() {
     while (times--) {
         while (!DataReady()) {}
         res |= ReadSensorBlocking();
-        Converter(abuf, abuf + 1, abuf + 2, gbuf, gbuf + 1, gbuf + 2);
+        Convert(abuf, abuf + 1, abuf + 2, gbuf, gbuf + 1, gbuf + 2);
         for (int i = 0; i < 3; ++i) {
             gyro_bias_st[i] += gbuf[i];
             accel_bias_st[i] += abuf[i];
@@ -330,7 +330,7 @@ namespace inv {
         return res;
     }
 
-    int mpuSeries_t::Converter(int16_t *acc_x, int16_t *acc_y, int16_t *acc_z, int16_t *gyro_x,
+    int mpuSeries_t::Convert(int16_t *acc_x, int16_t *acc_y, int16_t *acc_z, int16_t *gyro_x,
                                int16_t *gyro_y, int16_t *gyro_z) {
         if (acc_x) { *acc_x = ((int16_t) (buf[0] << 8) | buf[1]); }
         if (acc_y) { *acc_y = ((int16_t) (buf[2] << 8) | buf[3]); }
@@ -341,7 +341,7 @@ namespace inv {
         return 0;
     }
 
-    int mpuSeries_t::Converter(float *acc_x, float *acc_y, float *acc_z, float *gyro_x, float *gyro_y,
+    int mpuSeries_t::Convert(float *acc_x, float *acc_y, float *acc_z, float *gyro_x, float *gyro_y,
                                float *gyro_z) {
         if (acc_x) { *acc_x = accelUnit * ((int16_t) (buf[0] << 8) | buf[1]); }
         if (acc_y) { *acc_y = accelUnit * ((int16_t) (buf[2] << 8) | buf[3]); }
@@ -352,7 +352,7 @@ namespace inv {
         return 0;
     }
 
-    int icm20602_t::Converter(float *temp) {
+    int icm20602_t::Convert(float *temp) {
         if (temp) { *temp = (float) ((int16_t) (buf[6] << 8) | buf[7]) / 326.8f + 25.0f; }
         return 0;
     }
@@ -395,12 +395,12 @@ namespace inv {
         memset(buf, 0, sizeof(buf));
     }
 
-    int mpuSeries_t::Converter(float *mag_x, float *mag_y, float *mag_z) {
+    int mpuSeries_t::Convert(float *mag_x, float *mag_y, float *mag_z) {
         (void) mag_x, (void) mag_y, (void) mag_z;
         return 0;
     }
 
-    int mpuSeries_t::Converter(int16_t *mag_x, int16_t *mag_y, int16_t *mag_z) {
+    int mpuSeries_t::Convert(int16_t *mag_x, int16_t *mag_y, int16_t *mag_z) {
         (void) mag_x, (void) mag_y, (void) mag_z;
         return 0;
     }
@@ -456,7 +456,7 @@ namespace inv {
         while (times--) {
             while (!DataReady()) {}
             res |= ReadSensorBlocking();
-            mpuSeries_t::Converter(abuf, abuf + 1, abuf + 2, gbuf, gbuf + 1, gbuf + 2);
+            mpuSeries_t::Convert(abuf, abuf + 1, abuf + 2, gbuf, gbuf + 1, gbuf + 2);
             for (int i = 0; i < 3; ++i) {
                 gyro_bias_regular[i] += gbuf[i];
                 accel_bias_regular[i] += abuf[i];
@@ -473,7 +473,7 @@ namespace inv {
         while (times--) {
             while (!DataReady()) {}
             res |= ReadSensorBlocking();
-            mpuSeries_t::Converter(abuf, abuf + 1, abuf + 2, gbuf, gbuf + 1, gbuf + 2);
+            mpuSeries_t::Convert(abuf, abuf + 1, abuf + 2, gbuf, gbuf + 1, gbuf + 2);
             for (int i = 0; i < 3; ++i) {
                 gyro_bias_st[i] += gbuf[i];
                 accel_bias_st[i] += abuf[i];
@@ -547,7 +547,7 @@ namespace inv {
     }
 
 
-    int mpu6050_t::Converter(float *temp) {
+    int mpu6050_t::Convert(float *temp) {
         if (temp) {
             *temp = (float) ((int16_t) (mpuSeries_t::buf[6] << 8)
                              | mpuSeries_t::buf[7] - 521) / 340.0f + 35;
@@ -727,7 +727,7 @@ namespace inv {
         return res;
     }
 
-    int mpu9250_t::Converter(float *acc_x, float *acc_y, float *acc_z, float *gyro_x, float *gyro_y,
+    int mpu9250_t::Convert(float *acc_x, float *acc_y, float *acc_z, float *gyro_x, float *gyro_y,
                              float *gyro_z) {
         if (acc_x) { *acc_x = accelUnit * ((int16_t) (buf[0] << 8) | buf[1]); }
         if (acc_y) { *acc_y = accelUnit * ((int16_t) (buf[2] << 8) | buf[3]); }
@@ -738,7 +738,7 @@ namespace inv {
         return 0;
     }
 
-    int mpu9250_t::Converter(int16_t *acc_x, int16_t *acc_y, int16_t *acc_z, int16_t *gyro_x,
+    int mpu9250_t::Convert(int16_t *acc_x, int16_t *acc_y, int16_t *acc_z, int16_t *gyro_x,
                              int16_t *gyro_y, int16_t *gyro_z) {
         if (acc_x) { *acc_x = ((int16_t) (buf[0] << 8) | buf[1]); }
         if (acc_y) { *acc_y = ((int16_t) (buf[2] << 8) | buf[3]); }
@@ -749,7 +749,7 @@ namespace inv {
         return 0;
     }
 
-    int mpu9250_t::Converter(float *mag_x, float *mag_y, float *mag_z) {
+    int mpu9250_t::Convert(float *mag_x, float *mag_y, float *mag_z) {
         if (!(buf[14 + 0] & MPU9250_AK8963_DATA_READY) || (buf[14 + 0] & MPU9250_AK8963_DATA_OVERRUN)) {
             INV_TRACE("0x%x at buf[14 + 0]", (int) buf[14 + 0]);
             return -1;
@@ -764,7 +764,7 @@ namespace inv {
         return 0;
     }
 
-    int mpu9250_t::Converter(int16_t *mag_x, int16_t *mag_y, int16_t *mag_z) {
+    int mpu9250_t::Convert(int16_t *mag_x, int16_t *mag_y, int16_t *mag_z) {
         if (!(buf[14 + 0] & MPU9250_AK8963_DATA_READY) || (buf[14 + 0] & MPU9250_AK8963_DATA_OVERRUN)) {
             INV_TRACE("0x%x at buf[14 + 0]", (int) buf[14 + 0]);
             return -1;
@@ -779,7 +779,7 @@ namespace inv {
         return 0;
     }
 
-    int mpu9250_t::Converter(float *temp) {
+    int mpu9250_t::Convert(float *temp) {
         if (temp) { *temp = (float) ((int16_t) (buf[6] << 8) | buf[7]) / 333.87f + 21.0f; }
         return 0;
     }
@@ -836,21 +836,21 @@ namespace inv {
 
     int imu_t::WriteReg(uint8_t reg, const uint8_t val) {
         int res = (*i2c.writeBlocking)(i2c.context, addr, reg, &val, 1);
-#ifdef HITSIC_INV_IMU_DEBUG
+#if (defined(HITSIC_INV_IMU_DEBUG) && (HITSIC_INV_IMU_DEBUG > 0))
         if (res != 0) {
             INV_DEBUG("i2c write return code = %d", res);
         }
-#endif
+#endif //(defined(HITSIC_INV_IMU_DEBUG) && (HITSIC_INV_IMU_DEBUG > 0))
         return res;
     }
 
     int imu_t::ReadReg(uint8_t reg, uint8_t *val) {
         int res = (*i2c.readBlocking)(i2c.context, addr, reg, val, 1);
-#ifdef HITSIC_INV_IMU_DEBUG
+#if (defined(HITSIC_INV_IMU_DEBUG) && (HITSIC_INV_IMU_DEBUG > 0))
         if (res != 0) {
             INV_DEBUG("i2c read return code = %d", res);
         }
-#endif
+#endif //(defined(HITSIC_INV_IMU_DEBUG) && (HITSIC_INV_IMU_DEBUG > 0))
         return res;
     }
 }

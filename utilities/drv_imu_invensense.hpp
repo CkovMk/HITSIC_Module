@@ -61,6 +61,8 @@
 #undef INV_TRACE
 #undef INV_DEBUG_
 #undef INV_DEBUG
+#undef HITSIC_INV_IMU_DEBUG
+#define HITSIC_INV_IMU_DEBUG 1
 #define INV_TRACE_(fmt, ...) \
     printf("%s:%d:trace: " fmt "%s\r\n", __FILE__, __LINE__, __VA_ARGS__)
 #define INV_TRACE(...) INV_TRACE_(__VA_ARGS__, "")
@@ -114,6 +116,14 @@ namespace inv {
                                                uint8_t addr, uint8_t reg, uint8_t *val, unsigned int len))
                 : context(_context), readBlocking(_readBlocking), writeBlocking(_writeBlocking),
                   readNonBlocking(_readNonBlocking) {}
+
+        i2cInterface_t(void *_context,
+                       int (*_readBlocking)(void *context,
+                                            uint8_t addr, uint8_t reg, uint8_t *val, unsigned int len),
+                       int (*_writeBlocking)(void *context,
+                                             uint8_t addr, uint8_t reg, const uint8_t *val, unsigned int len)):
+                i2cInterface_t(_context,_readBlocking,_writeBlocking,_readBlocking){}
+
 
         void *context;
         int (*readBlocking)(void *context,
@@ -204,7 +214,7 @@ namespace inv {
          * @param  {float*} gyro_z :可以等于NULL， dps(degree per second)
          * @return {int}           :错误码
          */
-        virtual int Converter(float *acc_x, float *acc_y, float *acc_z,
+        virtual int Convert(float *acc_x, float *acc_y, float *acc_z,
                               float *gyro_x, float *gyro_y, float *gyro_z) = 0;
 
         /**
@@ -214,7 +224,7 @@ namespace inv {
          * @param  {float*} mag_z : 可以等于NULL
          * @return {int}          : 错误码
          */
-        virtual int Converter(float *mag_x, float *mag_y, float *mag_z) = 0;
+        virtual int Convert(float *mag_x, float *mag_y, float *mag_z) = 0;
 
         /**
          * @brief   调用阻塞IO读取传感器数据到缓存，当读取完成或者发送错误时返回
@@ -302,9 +312,9 @@ namespace inv {
 
         int Init(config_t _cfg = config_t()) override;
         bool Detect() override;
-        int Converter(float *acc_x, float *acc_y, float *acc_z,
+        int Convert(float *acc_x, float *acc_y, float *acc_z,
                       float *gyro_x, float *gyro_y, float *gyro_z) override;
-        int Converter(float *mag_x, float *mag_y, float *mag_z) override;
+        int Convert(float *mag_x, float *mag_y, float *mag_z) override;
         int ReadSensorBlocking() override;
         int ReadSensorNonBlocking() override;
     public:
@@ -324,7 +334,7 @@ namespace inv {
          * @param  {int16_t*} gyro_z : 可以等于NULL
          * @return {int}             : 错误码
          */
-        virtual int Converter(int16_t *acc_x, int16_t *acc_y, int16_t *acc_z,
+        virtual int Convert(int16_t *acc_x, int16_t *acc_y, int16_t *acc_z,
                               int16_t *gyro_x, int16_t *gyro_y, int16_t *gyro_z);
         /**
          * @brief   转换！！！缓存！！!中磁力计的数据到指定的地方，单位为LSB
@@ -333,14 +343,14 @@ namespace inv {
          * @param  {int16_t*} mag_z : 可以等于NULL
          * @return {int}            : 错误码
          */
-        virtual int Converter(int16_t *mag_x, int16_t *mag_y, int16_t *mag_z);
+        virtual int Convert(int16_t *mag_x, int16_t *mag_y, int16_t *mag_z);
 
         /**
          * @brief   转换缓冲中的温度到其他地方，单位为摄氏度
          * @param  {float*} temp :可以等于NULL
          * @return {int}         :错误码
          */
-        virtual int Converter(float *temp) = 0;
+        virtual int Convert(float *temp) = 0;
 
         /**
          * @brief   使能传感器的DataReady中断
@@ -391,7 +401,8 @@ namespace inv {
         mpu6050_t(i2cInterface_t &_i2c) : mpuSeries_t(_i2c) {}
 
         int SelfTest() override;
-        int Converter(float *temp) override;
+        using mpuSeries_t::Convert;
+        int Convert(float *temp) override;
         std::string Report() override;
         int SoftReset(void) override;
 
@@ -495,7 +506,8 @@ namespace inv {
         icm20602_t(i2cInterface_t &_i2c) : mpu6500Series_t(_i2c) {}
 
         int SoftReset(void) override;
-        int Converter(float *temp) override;
+        using mpuSeries_t::Convert;
+        int Convert(float *temp) override;
         std::string Report() override;
 
         uint8_t WhoAmI() override { return 0x12; }
@@ -516,13 +528,13 @@ namespace inv {
          */
         mpu9250_t(i2cInterface_t &_i2c);
         int Init(config_t _cfg = config_t()) override;
-        int Converter(float *acc_x, float *acc_y, float *acc_z,
+        int Convert(float *acc_x, float *acc_y, float *acc_z,
                       float *gyro_x, float *gyro_y, float *gyro_z) override;
-        int Converter(int16_t *acc_x, int16_t *acc_y, int16_t *acc_z,
+        int Convert(int16_t *acc_x, int16_t *acc_y, int16_t *acc_z,
                       int16_t *gyro_x, int16_t *gyro_y, int16_t *gyro_z) override;
-        int Converter(float *mag_x, float *mag_y, float *mag_z) override;
-        int Converter(int16_t *mag_x, int16_t *mag_y, int16_t *mag_z) override;
-        int Converter(float *temp) override;
+        int Convert(float *mag_x, float *mag_y, float *mag_z) override;
+        int Convert(int16_t *mag_x, int16_t *mag_y, int16_t *mag_z) override;
+        int Convert(float *temp) override;
         int ReadSensorBlocking() override;
         int ReadSensorNonBlocking() override;
         std::string Report() override;
