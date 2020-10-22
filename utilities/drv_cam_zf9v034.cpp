@@ -73,8 +73,9 @@ void CAM_ZF9V034_CfgWrite(const cam_zf9v034_configPacket_t *config)
 	}
 
 	do {
+	    camera_uartTxBuf[0] = 0;
 		CAM_ZF9V034_UartRxBlocking(camera_uartTxBuf, 1);
-	} while ((0xff != camera_uartTxBuf[0]));
+	} while ((0xff != camera_uartTxBuf[0]));//TODO: 增加次数限制
 	//以上部分对摄像头配置的数据全部都会保存在摄像头上51单片机的eeprom中
 	//利用camera_setEpTime函数单独配置的曝光数据不存储在eeprom中
 }

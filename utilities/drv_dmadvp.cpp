@@ -25,8 +25,7 @@ status_t DMADVP_Init(DMADVP_Type *base, const dmadvp_config_t *config)
 
 	PORT_SetPinInterruptConfig(base->vsnc_intc, base->vsnc_pin, kPORT_InterruptOrDMADisabled);
 	
-	DisableIRQ(base->dmaIrqn);
-	NVIC_SetPriority(base->dmaIrqn, base->dmaIrqPrio);
+	//DisableIRQ(base->dmaIrqn);
 
 	DMAMUX_SetSource(DMADVP0_DMAMUX_INST, base->dmauxChannel, base->dmamuxRequestSrc);
 	DMAMUX_EnableChannel(DMADVP0_DMAMUX_INST, base->dmauxChannel);//启动DMAMUX通道0，按DMAMUX_SetSource设置
@@ -34,6 +33,7 @@ status_t DMADVP_Init(DMADVP_Type *base, const dmadvp_config_t *config)
 	EDMA_SetBandWidth(DMADVP0_DMA_INST, base->dmaChannel, kEDMA_BandwidthStall8Cycle);//休息
 	//EDMA_SetChannelPreemptionConfig(DMA0,0u,&ecpc);//优先级很高
 	EDMA_EnableAutoStopRequest(DMADVP0_DMA_INST, base->dmaChannel, true);
+	NVIC_SetPriority(base->dmaIrqn, base->dmaIrqPrio);
 	EnableIRQ(base->dmaIrqn);
 
 	return kStatus_Success;
@@ -68,10 +68,10 @@ void DMADVP_TransferCreateHandle(dmadvp_handle_t *handle, DMADVP_Type *base, edm
 
 status_t DMADVP_TransferSubmitEmptyBuffer(DMADVP_Type *base, dmadvp_handle_t *handle, uint8_t *destAddr)
 {
-	if(handle->xferCfg.destAddr != NULL)
-	{
-		return kStatus_DMADVP_QueueFull;
-	}
+//	if(handle->xferCfg.destAddr != NULL)
+//	{
+//		return kStatus_DMADVP_QueueFull;
+//	} TODO: Fix this
 	EDMA_PrepareTransfer(&handle->xferCfg, (void *)(base->dmaDataAddress),
 	        1, destAddr, 1, 1, base->imgSize, kEDMA_PeripheralToMemory);
 	EDMA_SubmitTransfer(&handle->dmaHandle, &handle->xferCfg);
