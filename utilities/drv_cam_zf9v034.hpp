@@ -6,7 +6,7 @@
 #if (defined(HITSIC_USE_CAM_ZF9V034) && (HITSIC_USE_CAM_ZF9V034 > 0))
 #include  "drv_cam_zf9v034_port.hpp"
 
-typedef enum //TODO: Update these to enum class
+typedef enum
 {
     CAM_CMD_INIT = 0,               //����ͷ��ʼ������
     CAM_CMD_AUTO_EXP,               //�Զ��ع�����
@@ -26,7 +26,30 @@ typedef enum //TODO: Update these to enum class
     CAM_CMD_SET_ADDR = 0XFE,        //�Ĵ�����ַ����
     CAM_CMD_SET_DATA                //�Ĵ�����������
 }cam_zf9v034_cmd_t;
-/*FIXME: fit these chaos...*/
+/* TODO: use the other one instead...*/
+
+////摄像头命令枚举
+//enum class cam_zf9v034_cmd_t : uint16_t
+//{
+//    INIT = 0,               //摄像头初始化命令
+//    AUTO_EXP,               //自动曝光命令
+//    EXP_TIME,               //曝光时间命令
+//    FPS,                    //摄像头帧率命令
+//    SET_COL,                //图像列命令
+//    SET_ROW,                //图像行命令
+//    LR_OFFSET,              //图像左右偏移命令
+//    UD_OFFSET,              //图像上下偏移命令
+//    GAIN,                   //图像偏移命令
+//    CONFIG_FINISH,          //非命令位，主要用来占位计数
+//
+//    COLOR_GET_WHO_AM_I = 0xEF,
+//    SET_EXP_TIME = 0XF0,    //单独设置曝光时间命令
+//    GET_STATUS,             //获取摄像头配置命令
+//    GET_VERSION,            //固件版本号命令
+//
+//    SET_ADDR = 0XFE,        //寄存器地址命令
+//    SET_DATA                //寄存器数据命令
+//};
 
 __attribute__ ((__packed__))
 struct cam_zf9v034_configPacket_t
