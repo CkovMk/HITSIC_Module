@@ -31,10 +31,7 @@
 
 #if defined(HITSIC_USE_APP_MENU) && (HITSIC_USE_APP_MENU > 0)
 
-#ifdef __cplusplus
-extern "C"
-{
-#endif
+
 
 	/**
 	 * 菜单定义
@@ -157,16 +154,16 @@ extern "C"
 		static menu_list_t *testList;
 		testList = MENU_ListConstruct("TestList", 50, menu_menuRoot);
 		assert(testList);
-		MENU_ListInsert(menu_menuRoot, MENU_ItemConstruct(variType, &readonly_i, "readonly", 1, menuItem_data_ROFlag | menuItem_data_NoSave | menuItem_data_NoLoad));
+		MENU_ListInsert(menu_menuRoot, MENU_ItemConstruct(variType, &readonly_i, "readonly", 0, menuItem_data_ROFlag | menuItem_data_NoSave | menuItem_data_NoLoad));
 		MENU_ListInsert(menu_menuRoot, MENU_ItemConstruct(menuType, testList, "TestList", 0, 0));
 		{
-			MENU_ListInsert(testList, MENU_ItemConstruct(variType, &global_i, "global_i", 1, menuItem_data_global));
-			MENU_ListInsert(testList, MENU_ItemConstruct(varfType, &global_f, "global_f", 2, menuItem_data_global));
+			MENU_ListInsert(testList, MENU_ItemConstruct(variType, &global_i, "global_i", 10, menuItem_data_global));
+			MENU_ListInsert(testList, MENU_ItemConstruct(varfType, &global_f, "global_f", 11, menuItem_data_global));
 			MENU_ListInsert(testList, MENU_ItemConstruct(variType, &region_i, "region_i", 1, menuItem_data_region));
 			MENU_ListInsert(testList, MENU_ItemConstruct(varfType, &region_f, "region_f", 2, menuItem_data_region));
 		}
-		MENU_ListInsert(menu_menuRoot, MENU_ItemConstruct(varfType, &longname_f, "C.M.'s Birthday", 1, menuItem_data_ROFlag | menuItem_data_NoSave | menuItem_data_NoLoad | menuItem_disp_noPreview));
-		MENU_ListInsert(menu_menuRoot, MENU_ItemConstruct(variType, &forceSciData, "forceSci", 1, menuItem_data_ROFlag | menuItem_data_NoSave | menuItem_data_NoLoad | menuItem_disp_forceSci));
+		MENU_ListInsert(menu_menuRoot, MENU_ItemConstruct(varfType, &longname_f, "C.M.'s Birthday", 0, menuItem_data_ROFlag | menuItem_data_NoSave | menuItem_data_NoLoad | menuItem_disp_noPreview));
+		MENU_ListInsert(menu_menuRoot, MENU_ItemConstruct(variType, &forceSciData, "forceSci", 0, menuItem_data_ROFlag | menuItem_data_NoSave | menuItem_data_NoLoad | menuItem_disp_forceSci));
 	}
 
 	void MENU_PrintDisp(void)
@@ -251,7 +248,7 @@ extern "C"
 				if (thisItem->pptFlag & menuItem_data_global && !(thisItem->pptFlag & menuItem_data_NoSave))
 				{
 					MENU_ItemGetData(thisItem, &dataBuf);
-					MENU_NVM_LOG_D("Get Data.  menu: %-16.16s addr: %4.4d data: %8.8x .", dataBuf.nameStr, thisItem->saveAddr, dataBuf.data);
+					MENU_NVM_LOG_D("Get Data.  menu: %-16.16s addr: %-4.4d data: 0x%-8.8x .", dataBuf.nameStr, thisItem->saveAddr, dataBuf.data);
 					uint32_t realAddr = menu_nvm_glAddrOffset + thisItem->saveAddr * sizeof(menu_nvmData_t);
 					if (!MENU_NvmCacheable(realAddr))
 					{
@@ -278,7 +275,7 @@ extern "C"
 				if (thisItem->pptFlag & menuItem_data_region && !(thisItem->pptFlag & menuItem_data_NoSave))
 				{
 					MENU_ItemGetData(thisItem, &dataBuf);
-					MENU_NVM_LOG_D("Get Data.  menu: %-16.16s addr: %4.4d data: 0x%8.8x .", dataBuf.nameStr, thisItem->saveAddr, dataBuf.data);
+					MENU_NVM_LOG_D("Get Data.  menu: %-16.16s addr: %-4.4d data: 0x%-8.8x .", dataBuf.nameStr, thisItem->saveAddr, dataBuf.data);
 					uint32_t realAddr = menu_nvm_rgAddrOffset[_region] + thisItem->saveAddr * sizeof(menu_nvmData_t);
 					if (!MENU_NvmCacheable(realAddr))
 					{
@@ -341,9 +338,9 @@ extern "C"
 				{
 					uint32_t realAddr = menu_nvm_glAddrOffset + thisItem->saveAddr * sizeof(menu_nvmData_t);
 					MENU_NvmRead(realAddr, &dataBuf, sizeof(menu_nvmData_t));
-					MENU_NVM_LOG_D("Get Flash. menu: %-16.16s addr: %4.4d data: %8.8x .", dataBuf.nameStr, thisItem->saveAddr, dataBuf.data);
+					MENU_NVM_LOG_D("Get Flash. menu: %-16.16s addr: %-4.4d data: 0x%-8.8x .", dataBuf.nameStr, thisItem->saveAddr, dataBuf.data);
 					MENU_ItemSetData(thisItem, &dataBuf);
-					MENU_NVM_LOG_D("Set Data.  menu: %-16.16s addr: %4.4d .", thisItem->nameStr, thisItem->saveAddr);
+					MENU_NVM_LOG_D("Set Data.  menu: %-16.16s addr: %-4.4d .", thisItem->nameStr, thisItem->saveAddr);
 				}
 			}
 		}
@@ -362,9 +359,9 @@ extern "C"
 				{
 					uint32_t realAddr = menu_nvm_rgAddrOffset[_region] + thisItem->saveAddr * sizeof(menu_nvmData_t);
 					MENU_NvmRead(realAddr, &dataBuf, sizeof(menu_nvmData_t));
-					MENU_NVM_LOG_D("Get Flash. menu: %-16.16s addr: %4.4d data: 0x%8.8x .", dataBuf.nameStr, thisItem->saveAddr, dataBuf.data);
+					MENU_NVM_LOG_D("Get Flash. menu: %-16.16s addr: %-4.4d data: 0x%-8.8x .", dataBuf.nameStr, thisItem->saveAddr, dataBuf.data);
 					MENU_ItemSetData(thisItem, &dataBuf);
-					MENU_NVM_LOG_D("Set Data.  menu: %-16.16s addr: %4.4d .", thisItem->nameStr, thisItem->saveAddr);
+					MENU_NVM_LOG_D("Set Data.  menu: %-16.16s addr: %-4.4d .", thisItem->nameStr, thisItem->saveAddr);
 				}
 			}
 		}
@@ -461,6 +458,11 @@ extern "C"
 		NVIC_SetPendingIRQ(HITSIC_MENU_SERVICE_IRQn);
 	}
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 	void HITSIC_MENU_SERVICE_IRQHandler(void)
 	{
 		NVIC_ClearPendingIRQ(HITSIC_MENU_SERVICE_IRQn);
@@ -474,6 +476,10 @@ extern "C"
 			MENU_PrintDisp();
 		}
 	}
+
+#ifdef __cplusplus
+}
+#endif
 
 	void MENU_Suspend(void)
 	{
@@ -503,8 +509,6 @@ extern "C"
 		}
 	}
 
-#ifdef __cplusplus
-}
-#endif
+
 
 #endif // ! HITSIC_USE_APP_MENU

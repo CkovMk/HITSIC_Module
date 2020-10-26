@@ -111,7 +111,7 @@ extern "C"
     }
     void MENU_ItemSetData_variType(menu_itemIfce_t *_item, void *_data)
     {
-        if (!(_item->pptFlag & menuItem_data_NoLoad))
+        //if (!(_item->pptFlag & menuItem_data_NoLoad))
         {
             *(_item->handle.p_variType->data) = *(int32_t *)_data;
             MENU_ITEM_LOG_V("variType Data Updated %12.12d", *(_item->handle.p_variType->data));
@@ -395,7 +395,7 @@ extern "C"
     }
     void MENU_ItemSetData_varfType(menu_itemIfce_t *_item, void *_data)
     {
-        if (!(_item->pptFlag & menuItem_data_NoLoad))
+        //if (!(_item->pptFlag & menuItem_data_NoLoad))
         {
             *(_item->handle.p_varfType->data) = *(float *)_data;
             MENU_ITEM_LOG_V("varfType Data Updated %12.4f", *(_item->handle.p_varfType->data));
@@ -786,6 +786,10 @@ extern "C"
         if (0 == strncmp(_data->nameStr, _item->nameStr, menu_nameStrSize) && _data->type == (uint32_t)_item->type)
         {
             MENU_ITEM_SWITCH_CASE(MENU_ItemSetData, _item, &_data->data);
+        }
+        else
+        {
+            //TODO: print log error HERE.
         }
     }
 

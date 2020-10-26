@@ -46,11 +46,6 @@
 
 #if defined(HITSIC_USE_APP_MENU) && (HITSIC_USE_APP_MENU > 0)
 
-#ifdef __cplusplus
-extern "C"
-{
-#endif
-
 /**************************************
  ************ 菜单顶层操作接口 **********
  **************************************/
@@ -192,9 +187,7 @@ void MENU_Suspend(void);
 
 void MENU_Resume(void);
 
-#ifdef __cplusplus
-}
-#endif
+
 
 #endif // ! HITSIC_USE_APP_MENU
 
