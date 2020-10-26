@@ -188,6 +188,10 @@ void MENU_PitIsr(void);
 
 #endif // ! HITSIC_MENU_USE_NVM
 
+void MENU_Suspend(void);
+
+void MENU_Resume(void);
+
 #ifdef __cplusplus
 }
 #endif

@@ -93,9 +93,10 @@ void DMADVP_TransferStop(DMADVP_Type *base, dmadvp_handle_t *handle)
 	EDMA_AbortTransfer(&handle->dmaHandle);
 }
 
-void DMADVP_VsncExtIntHandler(extInt_t &isr)
+void DMADVP_VsncExtIntHandler(void *userData)
 {
-	dmadvp_handle_t *handle = (dmadvp_handle_t*)isr.userData;
+    assert(userData);
+	dmadvp_handle_t *handle = (dmadvp_handle_t*)userData;
 	PORT_SetPinInterruptConfig(handle->base->vsnc_intc, handle->base->vsnc_pin, kPORT_InterruptOrDMADisabled);
 	PORT_SetPinInterruptConfig(handle->base->pclk_intc, handle->base->pclk_pin, handle->base->pclkInterruptCfg);
 	EDMA_StartTransfer(&handle->dmaHandle);//启动传输

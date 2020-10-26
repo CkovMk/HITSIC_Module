@@ -48,7 +48,7 @@ void MENU_ButtonSetup(void) {
         BUTTON_PITMGR_TIME_MS, 0, MENU_ButtonPitIsr, pitmgr_pptEnable);
 }
 
-void MENU_ButtonPitIsr(pitMgr_t &isr) {
+void MENU_ButtonPitIsr(void *userData) {
     for (int i = 0; i < MENU_BUTTON_COUNT; ++i) {
         BUTTON_PitIsr(&menu_button[i]);
     }

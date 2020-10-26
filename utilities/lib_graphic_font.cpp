@@ -1,13 +1,11 @@
 #include "hitsic_common.h"
 // begin is the first , endin is the one after the last.
-const uint8_t graphic_asciiBegin = 32;
-const uint8_t graphic_asciiEndin = 127;
-const uint8_t graphic_asciiCnt = 95;
+constexpr uint8_t graphic_asciiBegin = 32;
+constexpr uint8_t graphic_asciiEndin = 127;
+constexpr uint8_t graphic_asciiCnt = 95;
 
 
 /** ---------- FONT0816 ---------- **/
-
-#define GRAPHIC_GET_FONT0816(type,ch) (graphic_font0816_##type##[((uint8_t)ch) - gnc_asciiBegin])
 
 /*
  * this font is in Totally Hscan Mode.
@@ -116,8 +114,6 @@ extern const uint8_t graphic_font0816_newSongType[graphic_asciiCnt][16] =
 
 
 /** ---------- FONT0608 ---------- **/
-
-#define GRAPHIC_GET_FONT0608(type,ch) (graphic_font0608_##type##[((uint8_t)ch) - gnc_asciiBegin])
 
 /*
  * this font is in Totally Vscan Mode.

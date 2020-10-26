@@ -133,9 +133,9 @@ void DMADVP_TransferStop(DMADVP_Type *base, dmadvp_handle_t *handle);
 /**
  * @brief 外部中断服务函数
  * 
- * @param handle 要响应的DMADVP传输句柄
+ * @param userData 要响应的DMADVP传输句柄
  */
-void DMADVP_VsncExtIntHandler(extInt_t &isr);
+void DMADVP_VsncExtIntHandler(void *userData);
 
 /**
  * @brief DMA回调预处理函数。必须在EDMA回调函数中调用。
