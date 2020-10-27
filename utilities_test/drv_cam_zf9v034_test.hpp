@@ -19,7 +19,7 @@ inline void CAM_ZF9V034_UnitTest(void)
     cam_zf9v034_configPacket_t cameraCfg;
     CAM_ZF9V034_GetDefaultConfig(&cameraCfg);
     PRINTF("[D] ZF9V034: Writing config data.\n");
-    //CAM_ZF9V034_CfgWrite(&cameraCfg);
+    CAM_ZF9V034_CfgWrite(&cameraCfg);
     //CAM_ZF9V034_CfgRead(&cameraCfg);
 
     dmadvp_config_t dmadvpCfg;
