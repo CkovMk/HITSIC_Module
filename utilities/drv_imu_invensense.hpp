@@ -27,6 +27,8 @@
 #include "hitsic_common.h"
 //#include <memory>
 
+#include "inc_stdlib.h"
+
 #if (defined(HITSIC_USE_DRV_IMU_INV) && (HITSIC_USE_DRV_IMU_INV > 0U))
 #include "drv_imu_invensense_port.hpp"
 #include "drv_imu_invensense_def.hpp"

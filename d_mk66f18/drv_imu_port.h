@@ -21,11 +21,6 @@
 #include "inc_stdlib.h"
 #include "hitsic_common.h"
 
-#define HITSIC_USE_DRV_IMU_INV (0U)
-
-
-
-
 
 #if defined(HITSIC_USE_DRV_IMU_INV) && (HITSIC_USE_DRV_IMU_INV > 0)
 

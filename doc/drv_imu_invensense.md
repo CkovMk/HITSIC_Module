@@ -49,7 +49,7 @@ by [beforelight](https://github.com/beforelight/RemoteIIC)（网瘾少年） @hi
 `class i2cInterface_t;`//i2c接口
 `struct config_t;`//设置量程和数字低通滤波器
 
-`class imu_t;`	//imu接口类，抽象出初始化/数据转换/SelfTest/Detect/IO的欸皮埃
+`class imu_t;`	//imu接口类，抽象出初始化/数据转换/SelfTest/Detect/IO的API
 
 `class mpuSeries_t : public imu_t ;`//基类，抽象出invensense的mpu系列以及部分icm系列imu的软复位/中断/温度转换/WhoAmI的api，实现初始化/数据转换/Detect/IO的方法
 
