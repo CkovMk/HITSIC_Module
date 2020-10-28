@@ -82,6 +82,10 @@
 #define HITSIC_USE_APP_MENU (1U)
 #endif // ! HITSIC_USE_APP_MENU
 
+#ifndef HITSIC_USE_APP_SVBMP
+#define HITSIC_USE_APP_SVBMP (1U)
+#endif // ! HITSIC_USE_APP_SVBMP
+
 
 
 
@@ -94,6 +98,7 @@ typedef UART_Type HAL_UART_Type;
 extern "C"{
 #endif
 
+//TODO: update this to save primask.
 extern uint32_t hal_criticalCnt;
 
 inline void HAL_EnterCritical(void)
