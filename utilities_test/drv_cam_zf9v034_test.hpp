@@ -19,7 +19,7 @@ inline void CAM_ZF9V034_UnitTest(void)
     cam_zf9v034_configPacket_t cameraCfg;
     CAM_ZF9V034_GetDefaultConfig(&cameraCfg);
     PRINTF("[D] ZF9V034: Writing config data.\n");
-    CAM_ZF9V034_CfgWrite(&cameraCfg);
+    //CAM_ZF9V034_CfgWrite(&cameraCfg);
     //CAM_ZF9V034_CfgRead(&cameraCfg);
 
     dmadvp_config_t dmadvpCfg;
@@ -34,16 +34,18 @@ inline void CAM_ZF9V034_UnitTest(void)
     DMADVP_TransferCreateHandle(&dmadvpHandle, DMADVP0, CAM_ZF9V034_UnitTestDmaCallback);
 
     PRINTF("[D] DMADVP: Allocating image buffer.\n");
-    uint8_t* imageBuffer = new uint8_t[DMADVP0->imgSize];
+    volatile uint8_t *imageBuffer0 = new uint8_t[DMADVP0->imgSize];
+    volatile uint8_t *imageBuffer1 = new uint8_t[DMADVP0->imgSize];
+    volatile uint8_t *fullBuffer = NULL;
     disp_ssd1306_frameBuffer_t* dispBuffer = new disp_ssd1306_frameBuffer_t;
 
-
+    DMADVP_TransferSubmitEmptyBuffer(DMADVP0, &dmadvpHandle, imageBuffer0);
+    DMADVP_TransferSubmitEmptyBuffer(DMADVP0, &dmadvpHandle, imageBuffer1);
+    DMADVP_TransferStart(DMADVP0, &dmadvpHandle);
     PRINTF("[D] DMADVP: Begin time: %d ms.\n", pitMgr_t::timer_ms);
     for(int time = 0; time < 512; ++time){
-    DMADVP_TransferSubmitEmptyBuffer(DMADVP0, &dmadvpHandle, imageBuffer);
     PRINTF("[D] DMADVP: Transfer %4.4d.\n", time);
-    DMADVP_TransferStart(DMADVP0, &dmadvpHandle);
-    while(dmadvpHandle.transferStarted == true);
+    while(kStatus_Success != DMADVP_TransferGetFullBuffer(DMADVP0, &dmadvpHandle, &fullBuffer));
 
     //memset((void*)dispBuffer, 0x00, 8 * 128);
     dispBuffer->Clear();
@@ -55,24 +57,23 @@ inline void CAM_ZF9V034_UnitTest(void)
         for(int j = 0; j < cameraCfg.imageCol; j += 2)
         {
             int16_t dispCol = j >> 1;
-            if(imageBuffer[i * cameraCfg.imageCol + j] > imageTH)
+            if(fullBuffer[i * cameraCfg.imageCol + j] > imageTH)
             {
                 dispBuffer->SetPixelColor(dispCol, imageRow, 1);
-                //dispBuffer[dispRow * 128 + dispCol] |= (1U << dispShift);
-//                PRINTF("[D] DMADVP: (%3.3d, %3.3d):1\n", imageRow, dispCol);
             }
         }
     }
-    extern const uint8_t DISP_image_100thAnniversary[8][128];
+    DMADVP_TransferSubmitEmptyBuffer(DMADVP0, &dmadvpHandle, fullBuffer);
     DISP_SSD1306_BufferUpload((uint8_t*)dispBuffer);
-
     }
+    DMADVP_TransferStop(DMADVP0, &dmadvpHandle);
     PRINTF("[D] DMADVP: End time: %d ms.\n", pitMgr_t::timer_ms);
 
 
 
     PRINTF("[D] DMADVP: Transfer Stop. Cleaning up.\n");
-    delete[] imageBuffer;
+    delete[] imageBuffer0;
+    delete[] imageBuffer1;
     delete[] dispBuffer;
     PRINTF("\n---------- ZF9V034 Test Done ----------\n\n");
 }

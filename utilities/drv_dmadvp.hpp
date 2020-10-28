@@ -76,6 +76,7 @@ struct dmadvp_handle_t
     edma_transfer_config_t xferCfg; /*!< DMA传输配置 */
     extInt_t* extIntHandle;
     volatile bool transferStarted;  /*!< 传输中标志位，true：正在进行传输 */
+    volatile std::queue<uint8_t*> emptyBuffer, fullBuffer;
 };
 
 /**
@@ -112,7 +113,10 @@ void DMADVP_TransferCreateHandle(dmadvp_handle_t *handle, DMADVP_Type *base, edm
  * @param destAddr 要提交的缓存区指针
  * @return status_t 提交成功则返回kStatus_Success.
  */
-status_t DMADVP_TransferSubmitEmptyBuffer(DMADVP_Type *base, dmadvp_handle_t *handle, uint8_t *destAddr);
+status_t DMADVP_TransferSubmitEmptyBuffer(DMADVP_Type *base, dmadvp_handle_t *handle, uint8_t *buffer);
+
+
+status_t DMADVP_TransferGetFullBuffer(DMADVP_Type *base, dmadvp_handle_t *handle, uint8_t **buffer);
 
 /**
  * @brief 启动当前传输。
@@ -120,7 +124,7 @@ status_t DMADVP_TransferSubmitEmptyBuffer(DMADVP_Type *base, dmadvp_handle_t *ha
  * @param base DMADVP虚拟设备地址
  * @param handle DMADVP传输句柄
  */
-void DMADVP_TransferStart(DMADVP_Type *base, dmadvp_handle_t *handle);
+status_t DMADVP_TransferStart(DMADVP_Type *base, dmadvp_handle_t *handle);
 
 /**
  * @brief 停止当前传输。
