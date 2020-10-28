@@ -14,7 +14,7 @@ extern "C"
     uint32_t menu_listCnt = 0;
 
     const int32_t menu_itemAdjustLut[] =
-    {   1, 10, 100, 1000};
+    { 1, 10, 100, 1000, 10000, 100000 };
 
     /**
      * @brief : 占位类型菜单项的操作句柄及操作函数。
@@ -35,7 +35,8 @@ extern "C"
     //used when in menuList
     void MENU_ItemPrintSlot_nullType(menu_itemIfce_t *_item, uint32_t _slotNum)
     {
-        snprintf(menu_dispStrBuf[_slotNum], MENU_DISP_STRBUF_COL, " - - - - - - - - - - ");
+        snprintf(menu_dispStrBuf[_slotNum], MENU_DISP_STRBUF_COL, " ------------------- ");
+        menu_dispStrBuf[_slotNum][snprintf(menu_dispStrBuf[_slotNum] + 3, MENU_DISP_STRBUF_COL, "%s", _item->nameStr) + 3] = '-';
     }
     void MENU_ItemDirectKeyOp_nullType(menu_itemIfce_t *_item, menu_keyOp_t *const _op)
     {
@@ -110,7 +111,7 @@ extern "C"
     }
     void MENU_ItemSetData_variType(menu_itemIfce_t *_item, void *_data)
     {
-        if (!(_item->pptFlag & menuItem_data_NoLoad))
+        //if (!(_item->pptFlag & menuItem_data_NoLoad))
         {
             *(_item->handle.p_variType->data) = *(int32_t *)_data;
             MENU_ITEM_LOG_V("variType Data Updated %12.12d", *(_item->handle.p_variType->data));
@@ -120,6 +121,7 @@ extern "C"
     void MENU_ItemPrintSlot_variType(menu_itemIfce_t *_item, uint32_t _slotNum)
     {
         menu_item_variHandle_t *handle = _item->handle.p_variType;
+        MENU_ItemGetContent_variType(&handle->v, &handle->e, *handle->data);
         if (_item->pptFlag & menuItem_disp_noPreview)
         {
             menu_dispStrBuf[_slotNum][snprintf(menu_dispStrBuf[_slotNum], MENU_DISP_STRBUF_COL, " %-16.16s  ->", _item->nameStr)] = ' ';
@@ -149,7 +151,7 @@ extern "C"
             case MENU_BUTTON_MAKE_OP(lf, long):
             case MENU_BUTTON_MAKE_OP(lf, lrpt):
             {
-                if (!(_item->pptFlag & menuItem_data_ROFlag))
+                if (!(_item->pptFlag & (menuItem_data_ROFlag | menuItem_disp_noPreview)))
                 {
                     if (*handle->data < 10 && *handle->data > -10)
                     {
@@ -160,6 +162,10 @@ extern "C"
                         MENU_ItemGetContent_variType(&handle->v, &handle->e, *handle->data);
                         MENU_ItemSetContent_variType(handle->data, handle->v - 100, handle->e);
                     }
+                    if (_item->pptFlag & menuItem_dataExt_HasMinMax)
+                    {
+                        *handle->data = (*(handle->data) > *(handle->data + 1)) ? (*handle->data) : *(handle->data + 1);
+                    }
                 }
                 *_op = 0;
                 break;
@@ -168,9 +174,9 @@ extern "C"
             case MENU_BUTTON_MAKE_OP(rt, long):
             case MENU_BUTTON_MAKE_OP(rt, lrpt):
             {
-                if (!(_item->pptFlag & menuItem_data_ROFlag))
+                if (!(_item->pptFlag & (menuItem_data_ROFlag | menuItem_disp_noPreview)))
                 {
-                    if (*handle->data < 10 && *handle->data > -10)
+                    if (*handle->data < 100 && *handle->data > -100)
                     {
                         ++*handle->data;
                     }
@@ -178,6 +184,10 @@ extern "C"
                     {
                         MENU_ItemGetContent_variType(&handle->v, &handle->e, *handle->data);
                         MENU_ItemSetContent_variType(handle->data, handle->v + 100, handle->e);
+                    }
+                    if (_item->pptFlag & menuItem_dataExt_HasMinMax)
+                    {
+                        *handle->data = (*(handle->data) < * (handle->data + 2)) ? (*handle->data) : *(handle->data + 2);
                     }
                 }
                 *_op = 0;
@@ -193,12 +203,12 @@ extern "C"
     {
         menu_item_variHandle_t *handle = _item->handle.p_variType;
         MENU_ItemSetContent_variType(&handle->bData, handle->v, handle->e);
-        menu_dispStrBuf[0][snprintf(menu_dispStrBuf[0], MENU_DISP_STRBUF_COL, "##%-12.12s*", _item->nameStr)] = ' ';
+        menu_dispStrBuf[0][snprintf(menu_dispStrBuf[0], MENU_DISP_STRBUF_COL, "##%-15.15s *", _item->nameStr)] = ' ';
         menu_dispStrBuf[2][snprintf(menu_dispStrBuf[2], MENU_DISP_STRBUF_COL, "  Cur: %+-10d", *handle->data)] = ' ';
 
         if (_item->pptFlag & menuItem_data_ROFlag)
         {
-            menu_dispStrBuf[7][snprintf(menu_dispStrBuf[7], MENU_DISP_STRBUF_COL, "    READ     ONLY    ")] = ' ';
+            menu_dispStrBuf[7][snprintf(menu_dispStrBuf[7], MENU_DISP_STRBUF_COL, "     READ   ONLY     ")] = ' ';
         }
         else
         {
@@ -210,18 +220,18 @@ extern "C"
         }
         if (_item->pptFlag & menuItem_data_global)
         {
-            menu_dispStrBuf[0][16] = 'G';
-            menu_dispStrBuf[0][17] = 'L';
+            menu_dispStrBuf[0][19] = 'G';
+            menu_dispStrBuf[0][20] = 'L';
         }
         else if (_item->pptFlag & menuItem_data_region)
         {
-            menu_dispStrBuf[0][16] = 'R';
-            menu_dispStrBuf[0][17] = 'G';
+            menu_dispStrBuf[0][19] = 'R';
+            menu_dispStrBuf[0][20] = 'G';
         }
         else
         {
-            menu_dispStrBuf[0][16] = 'N';
-            menu_dispStrBuf[0][17] = 'O';
+            menu_dispStrBuf[0][19] = 'N';
+            menu_dispStrBuf[0][20] = 'O';
         }
     }
     void MENU_ItemKeyOp_variType(menu_itemIfce_t *_item, menu_keyOp_t *const _op)
@@ -233,6 +243,11 @@ extern "C"
             if (!(_item->pptFlag & menuItem_data_ROFlag))
             {
                 MENU_ItemSetContent_variType(handle->data, handle->v, handle->e);
+                if (_item->pptFlag & menuItem_dataExt_HasMinMax)
+                {
+                    *handle->data = (*(handle->data) > *(handle->data + 1)) ? (*handle->data) : *(handle->data + 1);
+                    *handle->data = (*(handle->data) < *(handle->data + 2)) ? (*handle->data) : *(handle->data + 2);
+                }
             }
             case MENU_BUTTON_MAKE_OP(ok, long):
             menu_currItem = NULL;
@@ -265,7 +280,7 @@ extern "C"
             case MENU_BUTTON_MAKE_OP(up, lrpt):
             if (handle->cur == -2)
             {
-                ++handle->e;
+                handle->e = (handle->e < 5) ? (handle->e + 1) : (5);
             }
             else if (handle->cur == -1)
             {
@@ -286,7 +301,7 @@ extern "C"
             case MENU_BUTTON_MAKE_OP(dn, lrpt):
             if (handle->cur == -2)
             {
-                --handle->e;
+                handle->e = (handle->e > -5) ? (handle->e - 1) : (-5);
             }
             else if (handle->cur == -1)
             {
@@ -380,7 +395,7 @@ extern "C"
     }
     void MENU_ItemSetData_varfType(menu_itemIfce_t *_item, void *_data)
     {
-        if (!(_item->pptFlag & menuItem_data_NoLoad))
+        //if (!(_item->pptFlag & menuItem_data_NoLoad))
         {
             *(_item->handle.p_varfType->data) = *(float *)_data;
             MENU_ITEM_LOG_V("varfType Data Updated %12.4f", *(_item->handle.p_varfType->data));
@@ -390,6 +405,7 @@ extern "C"
     void MENU_ItemPrintSlot_varfType(menu_itemIfce_t *_item, uint32_t _slotNum)
     {
         menu_item_varfHandle_t *handle = _item->handle.p_varfType;
+        MENU_ItemGetContent_varfType(&handle->v, &handle->e, *handle->data);
         if (_item->pptFlag & menuItem_disp_noPreview)
         {
             menu_dispStrBuf[_slotNum][snprintf(menu_dispStrBuf[_slotNum], MENU_DISP_STRBUF_COL, " %-16.16s  ->", _item->nameStr)] = ' ';
@@ -419,10 +435,14 @@ extern "C"
             case MENU_BUTTON_MAKE_OP(lf, long):
             case MENU_BUTTON_MAKE_OP(lf, lrpt):
             {
-                if (!(_item->pptFlag & menuItem_data_ROFlag))
+                if (!(_item->pptFlag & (menuItem_data_ROFlag | menuItem_disp_noPreview)))
                 {
                     MENU_ItemGetContent_varfType(&handle->v, &handle->e, *handle->data);
                     MENU_ItemSetContent_varfType(handle->data, handle->v - 100, handle->e);
+                    if (_item->pptFlag & menuItem_dataExt_HasMinMax)
+                    {
+                        *handle->data = (*(handle->data) > *(handle->data + 1)) ? (*handle->data) : *(handle->data + 1);
+                    }
                 }
                 *_op = 0;
                 break;
@@ -431,10 +451,14 @@ extern "C"
             case MENU_BUTTON_MAKE_OP(rt, long):
             case MENU_BUTTON_MAKE_OP(rt, lrpt):
             {
-                if (!(_item->pptFlag & menuItem_data_ROFlag))
+                if (!(_item->pptFlag & (menuItem_data_ROFlag | menuItem_disp_noPreview)))
                 {
                     MENU_ItemGetContent_varfType(&handle->v, &handle->e, *handle->data);
                     MENU_ItemSetContent_varfType(handle->data, handle->v + 100, handle->e);
+                    if (_item->pptFlag & menuItem_dataExt_HasMinMax)
+                    {
+                        *handle->data = (*(handle->data) < *(handle->data + 2)) ? (*handle->data) : *(handle->data + 2);
+                    }
                 }
                 *_op = 0;
                 break;
@@ -449,12 +473,12 @@ extern "C"
     {
         menu_item_varfHandle_t *handle = _item->handle.p_varfType;
         MENU_ItemSetContent_varfType(&handle->bData, handle->v, handle->e);
-        menu_dispStrBuf[0][snprintf(menu_dispStrBuf[0], MENU_DISP_STRBUF_COL, "##%-12.12s*", _item->nameStr)] = ' ';
+        menu_dispStrBuf[0][snprintf(menu_dispStrBuf[0], MENU_DISP_STRBUF_COL, "##%-15.15s *", _item->nameStr)] = ' ';
         menu_dispStrBuf[2][snprintf(menu_dispStrBuf[2], MENU_DISP_STRBUF_COL, "  Cur: %+-10.4f", *handle->data)] = ' ';
 
         if (_item->pptFlag & menuItem_data_ROFlag)
         {
-            menu_dispStrBuf[7][snprintf(menu_dispStrBuf[7], MENU_DISP_STRBUF_COL, "    READ     ONLY    ")] = ' ';
+            menu_dispStrBuf[7][snprintf(menu_dispStrBuf[7], MENU_DISP_STRBUF_COL, "     READ   ONLY     ")] = ' ';
         }
         else
         {
@@ -466,18 +490,18 @@ extern "C"
         }
         if (_item->pptFlag & menuItem_data_global)
         {
-            menu_dispStrBuf[0][16] = 'G';
-            menu_dispStrBuf[0][17] = 'L';
+            menu_dispStrBuf[0][19] = 'G';
+            menu_dispStrBuf[0][20] = 'L';
         }
         else if (_item->pptFlag & menuItem_data_region)
         {
-            menu_dispStrBuf[0][16] = 'R';
-            menu_dispStrBuf[0][17] = 'G';
+            menu_dispStrBuf[0][19] = 'R';
+            menu_dispStrBuf[0][20] = 'G';
         }
         else
         {
-            menu_dispStrBuf[0][16] = 'N';
-            menu_dispStrBuf[0][17] = 'O';
+            menu_dispStrBuf[0][19] = 'N';
+            menu_dispStrBuf[0][20] = 'O';
         }
     }
     void MENU_ItemKeyOp_varfType(menu_itemIfce_t *_item, menu_keyOp_t *const _op)
@@ -489,6 +513,11 @@ extern "C"
             if (!(_item->pptFlag & menuItem_data_ROFlag))
             {
                 MENU_ItemSetContent_varfType(handle->data, handle->v, handle->e);
+                if (_item->pptFlag & menuItem_dataExt_HasMinMax)
+                {
+                    *handle->data = (*(handle->data) > *(handle->data + 1)) ? (*handle->data) : *(handle->data + 1);
+                    *handle->data = (*(handle->data) < *(handle->data + 2)) ? (*handle->data) : *(handle->data + 2);
+                }
             }
             case MENU_BUTTON_MAKE_OP(ok, long):
             menu_currItem = NULL;
@@ -521,7 +550,7 @@ extern "C"
             case MENU_BUTTON_MAKE_OP(up, lrpt):
             if (handle->cur == -2)
             {
-                ++handle->e;
+                handle->e = (handle->e < 9) ? (handle->e + 1) : (9);
             }
             else if (handle->cur == -1)
             {
@@ -542,7 +571,7 @@ extern "C"
             case MENU_BUTTON_MAKE_OP(dn, lrpt):
             if (handle->cur == -2)
             {
-                --handle->e;
+                handle->e = (handle->e > -9) ? (handle->e - 1) : (-9);
             }
             else if (handle->cur == -1)
             {
@@ -652,8 +681,8 @@ extern "C"
             handle->data(&op_temp);
             return;
         }
-        menu_dispStrBuf[0][snprintf(menu_dispStrBuf[0], MENU_DISP_STRBUF_COL, "##%-12.12s*", _item->nameStr)] = '\0';
-        menu_dispStrBuf[7][snprintf(menu_dispStrBuf[7], MENU_DISP_STRBUF_COL, "    SOK>AC LOK>WA    ")] = '\0';
+        menu_dispStrBuf[0][snprintf(menu_dispStrBuf[0], MENU_DISP_STRBUF_COL, "##%-15.15s *", _item->nameStr)] = ' ';
+        menu_dispStrBuf[7][snprintf(menu_dispStrBuf[7], MENU_DISP_STRBUF_COL, "    SOK>AC LOK>WA    ")] = ' ';
     }
     void MENU_ItemKeyOp_procType(menu_itemIfce_t *_item, menu_keyOp_t *const _op)
     {
@@ -739,7 +768,7 @@ extern "C"
 
     void MENU_itemDestruct(menu_itemIfce_t *_item)
     {
-        free(&_item->handle); //TODO: fix this!
+        free(_item->handle.p_void); //TODO: fix this!
         free(_item);
         _item = NULL;
         --menu_itemCnt;
@@ -757,6 +786,10 @@ extern "C"
         if (0 == strncmp(_data->nameStr, _item->nameStr, menu_nameStrSize) && _data->type == (uint32_t)_item->type)
         {
             MENU_ITEM_SWITCH_CASE(MENU_ItemSetData, _item, &_data->data);
+        }
+        else
+        {
+            //TODO: print log error HERE.
         }
     }
 
@@ -820,14 +853,13 @@ extern "C"
         }
         _list->menu[_list->listNum] = _item;
         _item->list_id = _list->listNum++;
-        //_item->myList = _list;
 
         return kStatus_Success;
     }
 
     void MENU_ListPrintDisp(menu_list_t *_list)
     {
-        menu_dispStrBuf[0][snprintf(menu_dispStrBuf[0], MENU_DISP_STRBUF_COL, "##%-12.12s*%2.2d/%2.2d", _list->nameStr, _list->slct_p, _list->listNum)] = ' ';
+        menu_dispStrBuf[0][snprintf(menu_dispStrBuf[0], MENU_DISP_STRBUF_COL, "##%-13.13s*%2.2d/%2.2d", _list->nameStr, _list->slct_p + 1, _list->listNum)] = ' ';
         uint32_t printCnt = _list->listNum < MENU_DISP_STRBUF_ROW - 1 ? _list->listNum : MENU_DISP_STRBUF_ROW - 1;
         for (uint8_t i = 0; i < printCnt; ++i)
         {
@@ -840,15 +872,18 @@ extern "C"
     {
         switch (*_op)
         {
-            case MENU_BUTTON_MAKE_OP(ok, long):
+        case MENU_BUTTON_MAKE_OP(ok, long):
             //return
-            menu_currList = _list->menu[0]->handle.p_menuType->data;
-            case MENU_BUTTON_MAKE_OP(ok, lrpt):
+            if (menu_currList != menu_menuRoot)
+            {
+                menu_currList = _list->menu[0]->handle.p_menuType->data;
+            }
+        case MENU_BUTTON_MAKE_OP(ok, lrpt):
             *_op = 0;
             break;
-            case MENU_BUTTON_MAKE_OP(up, shrt):
-            case MENU_BUTTON_MAKE_OP(up, long):
-            case MENU_BUTTON_MAKE_OP(up, lrpt):
+        case MENU_BUTTON_MAKE_OP(up, shrt):
+        case MENU_BUTTON_MAKE_OP(up, long):
+        case MENU_BUTTON_MAKE_OP(up, lrpt):
             //menu up
             if (_list->slct_p > 0)
             {
@@ -860,9 +895,9 @@ extern "C"
             }
             *_op = 0;
             break;
-            case MENU_BUTTON_MAKE_OP(dn, shrt):
-            case MENU_BUTTON_MAKE_OP(dn, long):
-            case MENU_BUTTON_MAKE_OP(dn, lrpt):
+        case MENU_BUTTON_MAKE_OP(dn, shrt):
+        case MENU_BUTTON_MAKE_OP(dn, long):
+        case MENU_BUTTON_MAKE_OP(dn, lrpt):
             //menu dn
             if (_list->slct_p < _list->listNum - 1)
             {
@@ -874,7 +909,7 @@ extern "C"
             }
             *_op = 0;
             break;
-            default:
+        default:
             //direct op
             MENU_ItemDirectKeyOp(_list->menu[_list->slct_p], _op);
             break;

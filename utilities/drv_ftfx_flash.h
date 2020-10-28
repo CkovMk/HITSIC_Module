@@ -114,18 +114,18 @@ extern "C" {
 
 
 
-	/**
-	 * @brief   flash扇区擦除
-	 *
-	 * @param  {uint8_t*} dst     : 读出数据的目标地址
-	 * @param  {uint32_t} sectors : 扇区号，0是k66倒数一块扇区，1是倒数第2块扇区，以此类推
-	 * @return {status_t}         : 错误代码
-	 * @SampleUsage		status_t result;
-	 *					uint8_t a[4096] = {1};
-	 *					uint8_t b[4096] = {0};
-	 *					result = FLASH_SectorWrite(a,0);
-	 *					result = FLASH_SectorRead(b,0);
-	 */
+    /**
+     * @brief   flash扇区擦除
+     *
+     * @param  {uint8_t*} dst     : 读出数据的目标地址
+     * @param  {uint32_t} sectors : 扇区号，0是k66倒数一块扇区，1是倒数第2块扇区，以此类推
+     * @return {status_t}         : 错误代码
+     * @SampleUsage		status_t result;
+     *					uint8_t a[4096] = {1};
+     *					uint8_t b[4096] = {0};
+     *					result = FLASH_SectorWrite(a,0);
+     *					result = FLASH_SectorRead(b,0);
+     */
 	status_t FLASH_SectorErase(uint32_t _sect);
 
 

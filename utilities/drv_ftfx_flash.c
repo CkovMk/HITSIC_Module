@@ -44,6 +44,7 @@ extern "C" {
 
 	status_t FLASH_SimpleInit(void)
 	{
+	    PRINTF("\n[I] FTFX_FLASH: Init Begin.\n");
 		/* Return code from each flash driver function */
 		status_t result;
 		flash_securityStatus = kFTFx_SecurityStateNotSecure;
@@ -63,9 +64,9 @@ extern "C" {
 		FLASH_GetProperty(&flash_config, kFLASH_PropertyPflash0SectorSize, &flash_sectorSize);
 
 		/* Print flash information - PFlash. */
-		PRINTF("\r\n PFlash Information: ");
-		PRINTF("\r\n Total Program Flash Size:\t%d KB, Hex: (0x%x)", (flash_totalSize / 1024), flash_totalSize);
-		PRINTF("\r\n Program Flash Sector Size:\t%d KB, Hex: (0x%x) ", (flash_sectorSize / 1024), flash_sectorSize);
+		PRINTF("[D] FTFX_FLASH: Flash Information:\n");
+		PRINTF("[D] FTFX_FLASH: Total Flash Size:\t%d KB, Hex: (0x%x)\n", (flash_totalSize / 1024), flash_totalSize);
+		PRINTF("[D] FTFX_FLASH: Flash Sector Size:\t%d KB, Hex: (0x%x)\n", (flash_sectorSize / 1024), flash_sectorSize);
 		/* Check security status. */
 		result = FLASH_GetSecurityState(&flash_config, &flash_securityStatus);
 
@@ -73,18 +74,18 @@ extern "C" {
 		switch (flash_securityStatus)
 		{
 		case kFTFx_SecurityStateNotSecure:
-			PRINTF("\r\n Flash is UNSECURE!");
+			PRINTF("[D] FTFX_FLASH: Flash is UNSECURE!\n");
 			break;
 		case kFTFx_SecurityStateBackdoorEnabled:
-			PRINTF("\r\n Flash is SECURE, BACKDOOR is ENABLED!");
+			PRINTF("[D] FTFX_FLASH: Flash is SECURE, BACKDOOR is ENABLED!\n");
 			break;
 		case kFTFx_SecurityStateBackdoorDisabled:
-			PRINTF("\r\n Flash is SECURE, BACKDOOR is DISABLED!");
+			PRINTF("[D] FTFX_FLASH: Flash is SECURE, BACKDOOR is DISABLED!\n");
 			break;
 		default:
 			break;
 		}
-		PRINTF("\r\n");
+		PRINTF("[I] FTFX_FLASH: Init Complete.\n\n");
 		return result;
 	}
 

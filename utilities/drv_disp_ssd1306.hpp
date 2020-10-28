@@ -36,24 +36,39 @@
 
 #include "drv_disp_ssd1306_port.hpp"
 
-#ifdef __cplusplus
-extern "C"{
-#endif
+extern const uint8_t DISP_font_6x8[][6];
+extern const uint8_t DISP_font_8x16[][16];
+
+class disp_ssd1306_frameBuffer_t
+{
+public:
+    static const uint16_t row = 64, col = 128;
+    uint8_t frame[8][128];
+
+    void Clear(void)
+    {
+        static_assert(sizeof(disp_ssd1306_frameBuffer_t) == 8U * 128U);
+        memset(&frame, 0U, sizeof(disp_ssd1306_frameBuffer_t));
+    }
+    void SetPixelColor(uint16_t x, uint16_t y, bool color)
+    {
+        color ? (frame[y >> 3][x] |= (1U << (y & 7U))) : (frame[y >> 3][x] &= ~(1U << (y & 7U)));
+    }
+};
 
 void DISP_SSD1306_Init(void);
 void DISP_SSD1306_Fill(uint8_t dat);
-void DISP_SSD1306_PutPixel(uint8_t x,uint8_t y);
-void DISP_SSD1306_ClrPixel(uint8_t x,uint8_t y);
+//void DISP_SSD1306_PutPixel(uint8_t x,uint8_t y);
+//void DISP_SSD1306_ClrPixel(uint8_t x,uint8_t y);TODO del this
+void DISP_SSD1306_SetPixel(uint8_t x,uint8_t y, uint8_t value);//TODO: add this
 void DISP_SSD1306_SetPos(uint8_t x, uint8_t y);
 void DISP_SSD1306_Print_F6x8(uint8_t x,uint8_t y,const char* str);
 void DISP_SSD1306_Print_F8x16(uint8_t x,uint8_t y,const char* str);
 void DISP_SSD1306_Printf_F6x8(uint8_t x,uint8_t y,const char* fmt, ...);
 void DISP_SSD1306_Printf_F8x16(uint8_t x,uint8_t y,const char* fmt, ...);
-//void DISP_SSD1306_printFrame(uint8_t *p);
 
-#ifdef __cplusplus
-}
-#endif
+void DISP_SSD1306_BufferUpload(uint8_t *buffer);
+
 
 #endif // ! HITSIC_USE_DISP_SSD1306
 

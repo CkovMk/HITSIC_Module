@@ -31,29 +31,32 @@
 
 #if defined(HITSIC_USE_APP_MENU) && (HITSIC_USE_APP_MENU > 0)
 
-#ifdef __cplusplus
-extern "C"
-{
-#endif
+
 
 	/**
 	 * 菜单定义
 	 */
 
 	//menu_t menuInst;
-	menu_list_t *menu_currList;
-	menu_itemIfce_t *menu_currItem;
+	volatile menu_list_t *menu_currList;
+	volatile menu_itemIfce_t *menu_currItem;
 	menu_list_t *menu_menuRoot;
 	menu_list_t *menu_manageList;
-	int32_t menu_currRegionNum;
+	volatile int32_t menu_currRegionNumAdj[3] = { 0, 0, HITSIC_MENU_NVM_REGION_CNT - 1 };
+	volatile int32_t &menu_currRegionNum = menu_currRegionNumAdj[0];
 	int32_t menu_statusFlag;
 	uint32_t menu_nvm_statusFlagAddr;
 
-	int32_t menu_nvmCopySrc = 0, menu_nvmCopyDst = 0;
+	volatile int32_t menu_nvmCopySrcAdj[3] = { 0, 0, HITSIC_MENU_NVM_REGION_CNT - 1 };
+	volatile int32_t menu_nvmCopyDstAdj[3] = { 0, 0, HITSIC_MENU_NVM_REGION_CNT - 1 };
+	volatile int32_t &menu_nvmCopySrc = menu_nvmCopySrcAdj[0], &menu_nvmCopyDst = menu_nvmCopyDstAdj[0];
 
 	char menu_dispStrBuf[MENU_DISP_STRBUF_ROW][MENU_DISP_STRBUF_COL];
 
 	menu_keyOp_t menu_keyOpBuff;
+
+	pitMgr_t* menu_pitHandle = NULL;
+	volatile int32_t menu_suspendCnt = 0U;
 
 	/**
 	 * ********** 菜单顶层操作接口 **********
@@ -96,10 +99,11 @@ extern "C"
 
 		menu_menuRoot = MENU_ListConstruct("MenuRoot", HITSIC_MENU_ROOT_SIZE, (menu_list_t *)1);
 		assert(menu_menuRoot);
-		menu_menuRoot->menu[0]->handle.p_menuType->data = menu_menuRoot;
+		MENU_itemDestruct(menu_menuRoot->menu[0]);
+		--menu_menuRoot->listNum;
+		//menu_menuRoot->menu[0]->handle.p_menuType->data = menu_menuRoot;
 		menu_currList = menu_menuRoot;
 		menu_currItem = NULL;
-		menu_currRegionNum = 0;
 		menu_statusFlag = 0;
 
 		menu_manageList = MENU_ListConstruct("MenuManager", 21, menu_menuRoot);
@@ -107,16 +111,20 @@ extern "C"
 		MENU_ListInsert(menu_menuRoot, MENU_ItemConstruct(menuType, menu_manageList, "MenuManager", 0, 0));
 		{
 #if defined(HITSIC_MENU_USE_NVM) && (HITSIC_MENU_USE_NVM > 0)
-			MENU_ListInsert(menu_manageList, MENU_ItemConstruct(nullType, NULL, "", 0, 0));
-			MENU_ListInsert(menu_manageList, MENU_ItemConstruct(variType, &menu_currRegionNum, "RegnSel(0-2)", 0, menuItem_data_global | menuItem_data_NoSave | menuItem_data_NoLoad));
+		    menu_itemIfce_t *p = NULL;
+			MENU_ListInsert(menu_manageList, MENU_ItemConstruct(nullType, NULL, "SAVE", 0, 0));
+			MENU_ListInsert(menu_manageList, p = MENU_ItemConstruct(variType, &menu_currRegionNum, "RegnSel(0-N)", 0, menuItem_data_global | menuItem_data_NoSave | menuItem_data_NoLoad | menuItem_dataExt_HasMinMax));
+			p->nameStr[10] = '0' + HITSIC_MENU_NVM_REGION_CNT - 1;
 			MENU_ListInsert(menu_manageList, MENU_ItemConstruct(procType, (void *)MENU_Data_NvmSave_Boxed, "Save Data", 0, menuItem_proc_runOnce));
 			MENU_ListInsert(menu_manageList, MENU_ItemConstruct(procType, (void *)MENU_Data_NvmRead_Boxed, "Load Data", 0, menuItem_proc_runOnce));
 			MENU_ListInsert(menu_manageList, MENU_ItemConstruct(procType, (void *)MENU_Data_NvmSaveRegionConfig_Boxed, "RegnSave", 0, menuItem_proc_runOnce));
-			MENU_ListInsert(menu_manageList, MENU_ItemConstruct(nullType, NULL, "", 0, 0));
-			MENU_ListInsert(menu_manageList, MENU_ItemConstruct(variType, &menu_nvmCopySrc, "CopySrc(0-2)", 1, menuItem_data_global | menuItem_data_NoSave | menuItem_data_NoLoad));
-			MENU_ListInsert(menu_manageList, MENU_ItemConstruct(variType, &menu_nvmCopyDst, "CopyDst(0-2)", 2, menuItem_data_global | menuItem_data_NoSave | menuItem_data_NoLoad));
+			MENU_ListInsert(menu_manageList, MENU_ItemConstruct(nullType, NULL, "COPY", 0, 0));
+			MENU_ListInsert(menu_manageList, p = MENU_ItemConstruct(variType, &menu_nvmCopySrc, "CopySrc(0-N)", 1, menuItem_data_global | menuItem_data_NoSave | menuItem_data_NoLoad | menuItem_dataExt_HasMinMax));
+			p->nameStr[10] = '0' + HITSIC_MENU_NVM_REGION_CNT - 1;
+			MENU_ListInsert(menu_manageList, p = MENU_ItemConstruct(variType, &menu_nvmCopyDst, "CopyDst(0-N)", 2, menuItem_data_global | menuItem_data_NoSave | menuItem_data_NoLoad | menuItem_dataExt_HasMinMax));
+			p->nameStr[10] = '0' + HITSIC_MENU_NVM_REGION_CNT - 1;
 			MENU_ListInsert(menu_manageList, MENU_ItemConstruct(procType, (void *)MENU_Data_NvmCopy_Boxed, "CopyData(S>D)", 0, menuItem_proc_runOnce));
-			MENU_ListInsert(menu_manageList, MENU_ItemConstruct(nullType, NULL, "", 0, 0));
+			MENU_ListInsert(menu_manageList, MENU_ItemConstruct(nullType, NULL, "INFO", 0, 0));
 			MENU_ListInsert(menu_manageList, MENU_ItemConstruct(variType, &menu_nvm_eraseCnt, "EraseCnt", 3, menuItem_data_global |menuItem_data_ROFlag));
 
 #endif // ! HITSIC_MENU_USE_NVM
@@ -131,24 +139,31 @@ extern "C"
 
 		NVIC_SetPriority(HITSIC_MENU_SERVICE_IRQn, HITSIC_MENU_SERVICE_IRQPrio);
 		NVIC_EnableIRQ(HITSIC_MENU_SERVICE_IRQn);
-		pitMgr_t* ptr = pitMgr_t::insert(250U, 7U, MENU_PitIsr, pitMgr_t::enable);
-		assert(ptr);
+		menu_pitHandle = pitMgr_t::insert(250U, 7U, MENU_PitIsr, pitMgr_t::enable);
+		assert(menu_pitHandle);
+		menu_suspendCnt = 0U;
 	}
 
 	__WEAK void MENU_DataSetUp(void)
 	{
-		MENU_ListInsert(menu_menuRoot, MENU_ItemConstruct(nullType, NULL, "", 0, 0));
+		MENU_ListInsert(menu_menuRoot, MENU_ItemConstruct(nullType, NULL, "DATA", 0, 0));
 
-		static int32_t T_int = 253000;
-		static float T_flt = 32.768;
+		static int32_t region_i = 4096, global_i = 1024, readonly_i = 1998;
+		static float region_f = 32.768, global_f = 3.14, longname_f = 12.14;
+		static int32_t forceSciData = 202000;
 		static menu_list_t *testList;
 		testList = MENU_ListConstruct("TestList", 50, menu_menuRoot);
 		assert(testList);
+		MENU_ListInsert(menu_menuRoot, MENU_ItemConstruct(variType, &readonly_i, "readonly", 0, menuItem_data_ROFlag | menuItem_data_NoSave | menuItem_data_NoLoad));
 		MENU_ListInsert(menu_menuRoot, MENU_ItemConstruct(menuType, testList, "TestList", 0, 0));
 		{
-			MENU_ListInsert(testList, MENU_ItemConstruct(variType, &T_int, "T_int", 1, menuItem_data_region));
-			MENU_ListInsert(testList, MENU_ItemConstruct(varfType, &T_flt, "T_float", 2, menuItem_data_region));
+			MENU_ListInsert(testList, MENU_ItemConstruct(variType, &global_i, "global_i", 10, menuItem_data_global));
+			MENU_ListInsert(testList, MENU_ItemConstruct(varfType, &global_f, "global_f", 11, menuItem_data_global));
+			MENU_ListInsert(testList, MENU_ItemConstruct(variType, &region_i, "region_i", 1, menuItem_data_region));
+			MENU_ListInsert(testList, MENU_ItemConstruct(varfType, &region_f, "region_f", 2, menuItem_data_region));
 		}
+		MENU_ListInsert(menu_menuRoot, MENU_ItemConstruct(varfType, &longname_f, "C.M.'s Birthday", 0, menuItem_data_ROFlag | menuItem_data_NoSave | menuItem_data_NoLoad | menuItem_disp_noPreview));
+		MENU_ListInsert(menu_menuRoot, MENU_ItemConstruct(variType, &forceSciData, "forceSci", 0, menuItem_data_ROFlag | menuItem_data_NoSave | menuItem_data_NoLoad | menuItem_disp_forceSci));
 	}
 
 	void MENU_PrintDisp(void)
@@ -233,7 +248,7 @@ extern "C"
 				if (thisItem->pptFlag & menuItem_data_global && !(thisItem->pptFlag & menuItem_data_NoSave))
 				{
 					MENU_ItemGetData(thisItem, &dataBuf);
-					MENU_NVM_LOG_D("Get Data.  menu: %-16.16s addr: %4.4d data: %8.8x .", dataBuf.nameStr, thisItem->saveAddr, dataBuf.data);
+					MENU_NVM_LOG_D("Get Data.  menu: %-16.16s addr: %-4.4d data: 0x%-8.8x .", dataBuf.nameStr, thisItem->saveAddr, dataBuf.data);
 					uint32_t realAddr = menu_nvm_glAddrOffset + thisItem->saveAddr * sizeof(menu_nvmData_t);
 					if (!MENU_NvmCacheable(realAddr))
 					{
@@ -260,7 +275,7 @@ extern "C"
 				if (thisItem->pptFlag & menuItem_data_region && !(thisItem->pptFlag & menuItem_data_NoSave))
 				{
 					MENU_ItemGetData(thisItem, &dataBuf);
-					MENU_NVM_LOG_D("Get Data.  menu: %-16.16s addr: %4.4d data: 0x%8.8x .", dataBuf.nameStr, thisItem->saveAddr, dataBuf.data);
+					MENU_NVM_LOG_D("Get Data.  menu: %-16.16s addr: %-4.4d data: 0x%-8.8x .", dataBuf.nameStr, thisItem->saveAddr, dataBuf.data);
 					uint32_t realAddr = menu_nvm_rgAddrOffset[_region] + thisItem->saveAddr * sizeof(menu_nvmData_t);
 					if (!MENU_NvmCacheable(realAddr))
 					{
@@ -323,9 +338,9 @@ extern "C"
 				{
 					uint32_t realAddr = menu_nvm_glAddrOffset + thisItem->saveAddr * sizeof(menu_nvmData_t);
 					MENU_NvmRead(realAddr, &dataBuf, sizeof(menu_nvmData_t));
-					MENU_NVM_LOG_D("Get Flash. menu: %-16.16s addr: %4.4d data: %8.8x .", dataBuf.nameStr, thisItem->saveAddr, dataBuf.data);
+					MENU_NVM_LOG_D("Get Flash. menu: %-16.16s addr: %-4.4d data: 0x%-8.8x .", dataBuf.nameStr, thisItem->saveAddr, dataBuf.data);
 					MENU_ItemSetData(thisItem, &dataBuf);
-					MENU_NVM_LOG_D("Set Data.  menu: %-16.16s addr: %4.4d .", thisItem->nameStr, thisItem->saveAddr);
+					MENU_NVM_LOG_D("Set Data.  menu: %-16.16s addr: %-4.4d .", thisItem->nameStr, thisItem->saveAddr);
 				}
 			}
 		}
@@ -344,9 +359,9 @@ extern "C"
 				{
 					uint32_t realAddr = menu_nvm_rgAddrOffset[_region] + thisItem->saveAddr * sizeof(menu_nvmData_t);
 					MENU_NvmRead(realAddr, &dataBuf, sizeof(menu_nvmData_t));
-					MENU_NVM_LOG_D("Get Flash. menu: %-16.16s addr: %4.4d data: 0x%8.8x .", dataBuf.nameStr, thisItem->saveAddr, dataBuf.data);
+					MENU_NVM_LOG_D("Get Flash. menu: %-16.16s addr: %-4.4d data: 0x%-8.8x .", dataBuf.nameStr, thisItem->saveAddr, dataBuf.data);
 					MENU_ItemSetData(thisItem, &dataBuf);
-					MENU_NVM_LOG_D("Set Data.  menu: %-16.16s addr: %4.4d .", thisItem->nameStr, thisItem->saveAddr);
+					MENU_NVM_LOG_D("Set Data.  menu: %-16.16s addr: %-4.4d .", thisItem->nameStr, thisItem->saveAddr);
 				}
 			}
 		}
@@ -443,6 +458,11 @@ extern "C"
 		NVIC_SetPendingIRQ(HITSIC_MENU_SERVICE_IRQn);
 	}
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 	void HITSIC_MENU_SERVICE_IRQHandler(void)
 	{
 		NVIC_ClearPendingIRQ(HITSIC_MENU_SERVICE_IRQn);
@@ -460,5 +480,35 @@ extern "C"
 #ifdef __cplusplus
 }
 #endif
+
+	void MENU_Suspend(void)
+	{
+		assert(menu_pitHandle);
+		if (0U == menu_suspendCnt)
+		{
+			menu_pitHandle->setEnable(false);
+			NVIC_DisableIRQ(HITSIC_MENU_SERVICE_IRQn);
+			MENU_LOG_I("Suspended.");
+		}
+		++menu_suspendCnt;
+		MENU_LOG_D("SuspendCnt = %d", menu_suspendCnt);
+	}
+
+	void MENU_Resume(void)
+	{
+		assert(menu_pitHandle);
+		--menu_suspendCnt;
+		MENU_LOG_D("SuspendCnt = %d", menu_suspendCnt);
+		if (0U <= menu_suspendCnt)
+		{
+			menu_suspendCnt = 0;
+			menu_statusFlag = 0;
+			menu_pitHandle->setEnable(true);
+			NVIC_EnableIRQ(HITSIC_MENU_SERVICE_IRQn);
+			MENU_LOG_I("Resumed.");
+		}
+	}
+
+
 
 #endif // ! HITSIC_USE_APP_MENU

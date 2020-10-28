@@ -71,32 +71,32 @@ extern "C"
             NULL,                         \
         },                                \
         {                                 \
-            RTEPIN_DIGITAL_BUTTON_UP_GPIO,  \
-            RTEPIN_DIGITAL_BUTTON_UP_PIN,   \
+        	RTEPIN_DIGITAL_BUTTON_UP_GPIO,  \
+			RTEPIN_DIGITAL_BUTTON_UP_PIN,   \
             kPORT_InterruptOrDMADisabled, \
             0,                            \
             BUTTON_STAT_NONE,             \
             NULL,                         \
         },                                \
         {                                 \
-            RTEPIN_DIGITAL_BUTTON_DN_GPIO,  \
-            RTEPIN_DIGITAL_BUTTON_DN_PIN,   \
+        	RTEPIN_DIGITAL_BUTTON_DN_GPIO,  \
+			RTEPIN_DIGITAL_BUTTON_DN_PIN,   \
             kPORT_InterruptOrDMADisabled, \
             0,                            \
             BUTTON_STAT_NONE,             \
             NULL,                         \
         },                                \
         {                                 \
-            RTEPIN_DIGITAL_BUTTON_LF_GPIO,  \
-            RTEPIN_DIGITAL_BUTTON_LF_PIN,   \
+        	RTEPIN_DIGITAL_BUTTON_LF_GPIO,  \
+			RTEPIN_DIGITAL_BUTTON_LF_PIN,   \
             kPORT_InterruptOrDMADisabled, \
             0,                            \
             BUTTON_STAT_NONE,             \
             NULL,                         \
         },                                \
         {                                 \
-            RTEPIN_DIGITAL_BUTTON_RT_GPIO,  \
-            RTEPIN_DIGITAL_BUTTON_RT_PIN,   \
+        	RTEPIN_DIGITAL_BUTTON_RT_GPIO,  \
+			RTEPIN_DIGITAL_BUTTON_RT_PIN,   \
             kPORT_InterruptOrDMADisabled, \
             0,                            \
             BUTTON_STAT_NONE,             \

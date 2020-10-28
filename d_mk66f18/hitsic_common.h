@@ -48,6 +48,14 @@
 #define HITSIC_USE_DRV_BUTTON (1U)
 #endif // ! HITSIC_USE_DRV_BUTTON
 
+#ifndef HITSIC_USE_DMADVP
+#define HITSIC_USE_DMADVP (1U)
+#endif // ! HITSIC_USE_DMADVP
+
+#ifndef HITSIC_USE_CAM_ZF9V034
+#define HITSIC_USE_CAM_ZF9V034 (1U)
+#endif // ! HITSIC_USE_CAM_ZF9V034
+
 
 
 
@@ -74,6 +82,10 @@
 #define HITSIC_USE_APP_MENU (1U)
 #endif // ! HITSIC_USE_APP_MENU
 
+#ifndef HITSIC_USE_APP_SVBMP
+#define HITSIC_USE_APP_SVBMP (1U)
+#endif // ! HITSIC_USE_APP_SVBMP
+
 
 
 
@@ -87,21 +99,23 @@ extern "C"{
 #endif
 
 extern uint32_t hal_criticalCnt;
+extern uint32_t hal_regPrimask;
 
 inline void HAL_EnterCritical(void)
 {
-	if(0u == hal_criticalCnt++)
-	{
-		__disable_irq();
-	}
+    if(0u == hal_criticalCnt++)
+    {
+        hal_regPrimask = DisableGlobalIRQ();
+    }
 }
 
 inline void HAL_ExitCritical(void)
 {
-	if(--hal_criticalCnt == 0u)
-	{
-		__enable_irq();
-	}
+    assert(hal_criticalCnt);
+    if(--hal_criticalCnt == 0u)
+    {
+        EnableGlobalIRQ(hal_regPrimask);
+    }
 }
 
 

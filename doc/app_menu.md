@@ -862,49 +862,55 @@ by：CkovMk @hitsic 2020.10.13
 
 内容已更新以适配v0.1.4版本。
 
-#### 注意事项
+#### 初始化步骤
 
-- 菜单初始化时必须关闭总中断。事实上，整个初始化阶段均应关闭总中断。如无特殊情况，开启总中断应该是主函数进入死循环前的最后一条语句。
-
-- 将菜单本体及依赖项复制到合适的位置，添加包含路径，加入工程，包含相关头文件。在主函数初始化阶段依次调用PITMGR、EXTMGR、FLASH、OLED、MENU的初始化函数。这些函数都没有参数，具体内容详见头文件内的函数注释，在此不再说明。 **注意：按键BUTTON的初始化已包含在MENU内部，不需要手动初始化。**
+- 在主函数初始化阶段依次调用PITMGR、EXTMGR、FLASH、OLED、MENU的初始化函数。这些函数都没有参数，具体内容详见头文件内的函数注释，在此不再说明。 **注意：按键BUTTON的初始化已包含在MENU内部，不需要手动初始化。**
 
   > 代码清单1
   >
   > ```c
   > void main()
   > {
-  >      /** 初始化阶段，关闭总中断 */
-  >      HAL_EnterCritical();
-  >  
-  >      /** 其他初始化代码 */
-  >  
-  >      /** 初始化PIT中断管理器 */
-  >      PITMGR_Init();
-  >      /** 初始化I/O中断管理器 */
-  >      EXTINT_Init();
-  >      /** 初始化ftfx_Flash */
-  >      FLASH_SimpleInit();
-  >      /** 初始化OLED屏幕 */
-  >      OLED_Init();
-  >      /** 初始化菜单 */
-  >      MENU_Init();
-  >      /** 打印第一帧菜单 */
-  >      MENU_PrintDisp();
-  >  
-  >      /** 其他初始化代码 */
-  >  
-  >      /** 初始化结束，开启总中断 */
-  >      HAL_ExitCritical();
-  >      while(1)
-  >      {
-  >            /** 无限循环 */
-  >      }
-  > }
+  >   	/** 初始化阶段，关闭总中断 */
+  >   	HAL_EnterCritical();
+  > 	
+  >   	/** 其他初始化代码 */
+  > 	
+  >   	/** 初始化PIT中断管理器 */
+  >   	PITMGR_Init();
+  >   	/** 初始化I/O中断管理器 */
+  >   	EXTINT_Init();
+  >   	/** 初始化ftfx_Flash */
+  >   	FLASH_SimpleInit();
+  >   	/** 初始化OLED屏幕 */
+  >   	OLED_Init();
+  >   	/** 初始化菜单 */
+  >   	MENU_Init();
+  >       /** 读取NVM中保存的存储区号 */
+  >   	MENU_Data_NvmReadRegionConfig();
+  >     /** 读取全局存储区和局部存储区 */
+  >   	MENU_Data_NvmRead(menu_currRegionNum);
+  >   	
+  > 	/** 其他初始化代码 */
+  >   	
+  > 	/** 初始化结束，开启总中断 */
+  >   	HAL_ExitCritical();
+  >   	while(1)
+  >   	{
+  >   	      /** 无限循环 */
+  >   	}
+  >   }
   > ```
-
   
 
-- 此时应该就可以编译通过并运行了。屏幕上将显示Demo界面。。
+  
+- 此时应该就可以编译通过并运行了。屏幕上将显示Demo界面。
+
+#### 注意事项
+
+- 菜单初始化时必须关闭总中断。事实上，整个初始化阶段均应关闭总中断。如无特殊情况，开启总中断应该是主函数进入死循环前的最后一条语句。
+- 菜单本体初始化前必须完成OLED模组及NVM模组（一般是Flash）的初始化，且所有按键所在引脚必须初始化为
+- 
 
 
 
@@ -976,7 +982,7 @@ by：CkovMk @hitsic 2020.10.13
   >                        ///> 属性flag。此flag表示该变量存储于局部数据区。局部数据区内的数据没有保留地址。
   >         ));
   >     }
-  >     MENU_ListInsert(myList_1, MENU_ItemConstruct(
+  >     MENU_ListInsert(menu_menuRoot, MENU_ItemConstruct(
   >           procType,  ///> 类型标识，指明这是一个浮点类型的菜单项
   >           &ExampleHandler,///> 数据指针，这里指向要操作的整数。必须是float类型。
   >           "T_proc ", ///> 菜单项名称，在菜单列表中显示。
@@ -989,6 +995,10 @@ by：CkovMk @hitsic 2020.10.13
   > ```
 
 - 设置好自己的菜单后，编译下载，就可以看到自己定义的菜单了。
+
+
+
+### 菜单第一次启动
 
 
 

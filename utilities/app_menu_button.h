@@ -11,7 +11,7 @@
 #define MENU_BUTTON_MAKE_EXT_ISR(instNum) (MENU_ButtonExtIsr##instNum)
 #define MENU_BUTTON_CALL_EXT_ISR(instNum) BUTTON_ExtIsr(&menu_button[instNum])
 #define MENU_BUTTON_DEF_EXT_ISR(instNum)                                       \
-    void MENU_BUTTON_MAKE_EXT_ISR(instNum)(void) {                             \
+    void MENU_BUTTON_MAKE_EXT_ISR(instNum)(void *userData) {                             \
         MENU_BUTTON_CALL_EXT_ISR(instNum);                                     \
     }
 #define MENU_BUTTON_MAKEE_PIT_ISR(instNum) (MENU_ButtonPitIsr##instNum)
@@ -50,7 +50,7 @@ void MENU_ButtonSetup(void);
 /**
  * @brief : 按键定时中断服务函数，无需外部调用。
  */
-void MENU_ButtonPitIsr(void);
+void MENU_ButtonPitIsr(void *userData);
 
 /**
  * @brief : 按键触发回调函数，无需外部调用。
