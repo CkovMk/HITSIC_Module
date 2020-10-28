@@ -117,7 +117,7 @@ inline void IMU_UnitTest_AutoRefreshPitTask(void *userData)
 }
 
 #if (defined(HITSIC_USE_APP_MENU) && (HITSIC_USE_APP_MENU > 0))
-inline void IMU_UnitTest_AutoRefreshAddMenu(const menu_list_t* menu)
+inline void IMU_UnitTest_AutoRefreshAddMenu(const menu_list_t *menu)
 {
     menu_list_t *imuinvList = MENU_ListConstruct("IMU(INV)", 11, menu_menuRoot);
     assert(imuinvList);
@@ -152,8 +152,23 @@ inline void IMU_UnitTest_AutoRefresh(void)
 {
     uint32_t result = 0U;
     result |= imu_unitTest_imu.Load(my_i2c);
+    if (result != 0U)
+    {
+        PRINTF("未检测到IMU\n");
+        return;
+    }
     result |= imu_unitTest_imu->Init();
+    if (result != 0U)
+    {
+        PRINTF("初始化失败\n");
+        return;
+    }
     result |= imu_unitTest_imu->SelfTest();
+    if (result != 0U)
+    {
+        PRINTF("自检失败，IMU精度可能降低\n");
+        return;
+    }
     pitMgr_t::insert(5U, 1U, inv::IMU_UnitTest_AutoRefreshPitTask, pitMgr_t::enable);
 }
 
