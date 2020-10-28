@@ -297,6 +297,11 @@ namespace inv {
             int res = 0;
             res |= ReadReg(reg, &regVal);
             res |= WriteReg(reg, (regVal & (~mask)) | (val & mask));
+            res |= ReadReg(reg, &regVal);
+            if ((regVal & mask) != (val & mask)) {
+                INV_DEBUG("i2c rw error");
+                res |= -1;
+            }
             return res;
         }
 
