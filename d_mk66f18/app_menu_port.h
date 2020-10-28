@@ -63,40 +63,40 @@ extern "C"
 #define HITSIC_MENU_BUTTON_5DIR_BSP_INIT  \
     {                                     \
         {                                 \
-    	GPIO_KEY_BTOK_GPIO,  \
-		GPIO_KEY_BTOK_PIN,   \
+            RTEPIN_DIGITAL_BUTTON_OK_GPIO, \
+            RTEPIN_DIGITAL_BUTTON_OK_PIN,   \
             kPORT_InterruptOrDMADisabled, \
             0,                            \
             BUTTON_STAT_NONE,             \
             NULL,                         \
         },                                \
         {                                 \
-        	GPIO_KEY_BTUP_GPIO,  \
-			GPIO_KEY_BTUP_PIN,   \
+            RTEPIN_DIGITAL_BUTTON_UP_GPIO,  \
+            RTEPIN_DIGITAL_BUTTON_UP_PIN,   \
             kPORT_InterruptOrDMADisabled, \
             0,                            \
             BUTTON_STAT_NONE,             \
             NULL,                         \
         },                                \
         {                                 \
-        	GPIO_KEY_BTDN_GPIO,  \
-			GPIO_KEY_BTDN_PIN,   \
+            RTEPIN_DIGITAL_BUTTON_DN_GPIO,  \
+            RTEPIN_DIGITAL_BUTTON_DN_PIN,   \
             kPORT_InterruptOrDMADisabled, \
             0,                            \
             BUTTON_STAT_NONE,             \
             NULL,                         \
         },                                \
         {                                 \
-        	GPIO_KEY_BTLF_GPIO,  \
-			GPIO_KEY_BTLF_PIN,   \
+            RTEPIN_DIGITAL_BUTTON_LF_GPIO,  \
+            RTEPIN_DIGITAL_BUTTON_LF_PIN,   \
             kPORT_InterruptOrDMADisabled, \
             0,                            \
             BUTTON_STAT_NONE,             \
             NULL,                         \
         },                                \
         {                                 \
-        	GPIO_KEY_BTRT_GPIO,  \
-			GPIO_KEY_BTRT_PIN,   \
+            RTEPIN_DIGITAL_BUTTON_RT_GPIO,  \
+            RTEPIN_DIGITAL_BUTTON_RT_PIN,   \
             kPORT_InterruptOrDMADisabled, \
             0,                            \
             BUTTON_STAT_NONE,             \
