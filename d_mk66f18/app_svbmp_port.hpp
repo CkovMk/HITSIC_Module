@@ -16,7 +16,7 @@
 
 typedef FIL svbmp_file_t;
 
-inline int BMP_FileWrite(svbmp_file_t* fp, const void* buff, uint32_t btw)
+inline int SVBMP_FileWrite(svbmp_file_t* fp, const void* buff, uint32_t btw)
 {
 #ifdef ON_WINDOWS
     fwrite(buff, 1, btw, fp);

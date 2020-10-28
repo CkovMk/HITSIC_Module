@@ -35,17 +35,17 @@ typedef enum _camera_pixel_format
 {
     PixelFormatGray = 1,//灰度
     PixelFormatRGB565 = 2,
-}camera_pixel_format_t;
+}svbmp_pixelFormat_t;
 
 
 typedef struct __img {
-    camera_pixel_format_t format;
+    svbmp_pixelFormat_t format;
     uint16_t height;
     uint16_t width;
     void* pImg;
-}img_t;
+}svbmp_img_t;
 
-int BMP_Save(svbmp_file_t* fp, img_t* img);
+int SVBMP_Save(svbmp_file_t* fp, svbmp_img_t* img);
 
 #endif // ! HITSIC_USE_APP_SVBMP
 

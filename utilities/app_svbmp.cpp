@@ -315,7 +315,7 @@ BITMAPINFOHEADER bmih;
 
 
 
-int BMP_Save(svbmp_file_t* fp, img_t* img)
+int SVBMP_Save(svbmp_file_t* fp, svbmp_img_t* img)
 {
     if (img->format == PixelFormatGray) {
         bmih.bmfh.bfType = 0x4d42;//"BM"
@@ -357,16 +357,16 @@ int BMP_Save(svbmp_file_t* fp, img_t* img)
         bmih.biClrImportant = 0;
     }
     
-    BMP_FileWrite(fp, &bmih, sizeof(BITMAPINFOHEADER));
+    SVBMP_FileWrite(fp, &bmih, sizeof(BITMAPINFOHEADER));
     
     if (img->format == PixelFormatGray) {
-        BMP_FileWrite(fp, &bmp_gray_color_palette, sizeof(BITMAPGRAYHEADER));
-        BMP_FileWrite(fp, img->pImg, img->height * img->width);
+        SVBMP_FileWrite(fp, &bmp_gray_color_palette, sizeof(BITMAPGRAYHEADER));
+        SVBMP_FileWrite(fp, img->pImg, img->height * img->width);
     }
     else if (img->format == PixelFormatRGB565)
     {
-        BMP_FileWrite(fp, &bmp_rgb_color_palette, sizeof(BITMAPRGBHEADER));
-        BMP_FileWrite(fp, img->pImg, img->height * img->width * 2);
+        SVBMP_FileWrite(fp, &bmp_rgb_color_palette, sizeof(BITMAPRGBHEADER));
+        SVBMP_FileWrite(fp, img->pImg, img->height * img->width * 2);
     }
     return 0;
 }

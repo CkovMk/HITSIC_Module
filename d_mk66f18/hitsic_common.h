@@ -98,23 +98,24 @@ typedef UART_Type HAL_UART_Type;
 extern "C"{
 #endif
 
-//TODO: update this to save primask.
 extern uint32_t hal_criticalCnt;
+extern uint32_t hal_regPrimask;
 
 inline void HAL_EnterCritical(void)
 {
-	if(0u == hal_criticalCnt++)
-	{
-		__disable_irq();
-	}
+    if(0u == hal_criticalCnt++)
+    {
+        hal_regPrimask = DisableGlobalIRQ();
+    }
 }
 
 inline void HAL_ExitCritical(void)
 {
-	if(--hal_criticalCnt == 0u)
-	{
-		__enable_irq();
-	}
+    assert(hal_criticalCnt);
+    if(--hal_criticalCnt == 0u)
+    {
+        EnableGlobalIRQ(hal_regPrimask);
+    }
 }
 
 
