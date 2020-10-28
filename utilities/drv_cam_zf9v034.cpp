@@ -61,7 +61,7 @@ void CAM_ZF9V034_CfgWrite(const cam_zf9v034_configPacket_t *config)
 {
 	uint8_t camera_uartTxBuf[8];
 	uint16_t* configData = (uint16_t*)config;
-	CAM_ZF9V034_Delay_ms(200);        //等待摄像头上电初始化成功
+	//CAM_ZF9V034_Delay_ms(200);        //等待摄像头上电初始化成功
 
 	for (uint8_t i = 0; i < (int16_t)(CAM_CMD_CONFIG_FINISH); ++i)//开始配置摄像头并重新初始化
 	{
@@ -70,11 +70,13 @@ void CAM_ZF9V034_CfgWrite(const cam_zf9v034_configPacket_t *config)
 		camera_uartTxBuf[2] = (uint8_t)(configData[(i << 1) + 1] >> 8);
 		camera_uartTxBuf[3] = (uint8_t)(configData[(i << 1) + 1]);
 		CAM_ZF9V034_UartTxBlocking(camera_uartTxBuf, 4);
+		CAM_ZF9V034_Delay_ms(2);
 	}
 
 	do {
+	    camera_uartTxBuf[0] = 0;
 		CAM_ZF9V034_UartRxBlocking(camera_uartTxBuf, 1);
-	} while ((0xff != camera_uartTxBuf[0]));
+	} while ((0xff != camera_uartTxBuf[0]));//TODO: 增加次数限制
 	//以上部分对摄像头配置的数据全部都会保存在摄像头上51单片机的eeprom中
 	//利用camera_setEpTime函数单独配置的曝光数据不存储在eeprom中
 }
@@ -136,7 +138,7 @@ void CAM_ZF9V034_GetReceiverConfig(dmadvp_config_t* config, const cam_zf9v034_co
 	config->width = camConfig->imageCol;
 	config->height = camConfig->imageRow;
 	config->bytesPerPixel = 1U;
-	config->polarityFlags = DMADVP_HsyncActiveHigh/*FIXME*/ | DMADVP_VsyncActiveHigh | DMADVP_DataLatchOnRisingEdge;
+	config->polarityFlags = DMADVP_HsyncActiveHigh/*FIXME*/ | DMADVP_VsyncActiveLow | DMADVP_DataLatchOnRisingEdge;
 }
 #elif(defined(ZF9V034_USE_RTCSI) && (ZF9V034_USE_RTCSI > 0U))
 void CAM_ZF9V034_GetReceiverConfig(csi_config_t* config, const cam_zf9v034_configPacket_t *camConfig); //FIXME

@@ -10,12 +10,12 @@
 
 inline status_t CAM_ZF9V034_UartRxBlocking(uint8_t *data, uint32_t length)
 {
-    UART_ReadBlocking(ZF9V034_UART_INST, data, length);
+    return UART_ReadBlocking(ZF9V034_UART_INST, data, length);
 }
 
 inline status_t CAM_ZF9V034_UartTxBlocking(const uint8_t *data, uint32_t length)
 {
-    UART_WriteBlocking(ZF9V034_UART_INST, data, length);
+    return UART_WriteBlocking(ZF9V034_UART_INST, data, length);
 }
 
 inline void CAM_ZF9V034_Delay_ms(uint32_t ms)

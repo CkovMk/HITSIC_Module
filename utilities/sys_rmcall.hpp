@@ -94,13 +94,13 @@ public:
 
     union message_t
     {
-        __attribute__ ((__packed__))struct
+        __PACKED struct
         {
             uint8_t magic;
             uint8_t itemId;
             uint16_t dataSize;
         }header;
-        __attribute__ ((__packed__))struct
+        __PACKED struct
         {
             uint8_t magic;
             uint8_t itemId;

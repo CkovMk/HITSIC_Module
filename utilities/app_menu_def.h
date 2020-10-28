@@ -172,11 +172,12 @@ typedef enum
     menuItem_data_NoLoad = 1 << 4, ///< 该菜单项默认不从NVM读取。
     menuItem_data_getCfg = menuItem_data_global | menuItem_data_region
             | menuItem_data_ROFlag | menuItem_data_NoSave
-            | menuItem_data_NoLoad /* | menuItem_data_prioRW*/,
+            | menuItem_data_NoLoad,
+    menuItem_dataExt_HasMinMax = 1 << 5, ///< 数据属性扩展：最小/最大值限制。该属性使用data指针偏移+1和+2的地址。
 
     /** display config */
     menuItem_disp_forceSci = 1 << 8, ///< 该菜单项强制使用科学计数法，适用于variType和varfType。
-    // menuItem_disp_bitFlag = 1 << 9,   ///<
+    //menuItem_disp_bitFlag = 1 << 9,   ///<
     // 该菜单项为按位标志位，仅适用于variType。此时数据指针将被视为uint32_t*。
     menuItem_disp_noPreview = 1 << 10, ///< 该菜单项不会在菜单列表中显示数据。数据区将显示占位字符。注意此选项对标记为按位标志位的variType无效，因为这类菜单项从不在菜单列表显示数据。
 
@@ -284,12 +285,13 @@ typedef struct _menu_itemIfce_t
 extern uint32_t menu_itemCnt;
 extern uint32_t menu_listCnt;
 
-extern menu_list_t *menu_currList;
-extern menu_itemIfce_t *menu_currItem;
+extern volatile menu_list_t *menu_currList;
+extern volatile menu_itemIfce_t *menu_currItem;
 extern menu_list_t *menu_menuRoot;
-extern int32_t menu_currRegionNum;
+extern volatile int32_t &menu_currRegionNum;
 extern int32_t menu_statusFlag;
 extern uint32_t menu_nvm_statusFlagAddr;
+extern volatile int32_t &menu_nvmCopySrc, &menu_nvmCopyDst;
 
 extern char menu_dispStrBuf[MENU_DISP_STRBUF_ROW][MENU_DISP_STRBUF_COL];
 
@@ -357,13 +359,7 @@ enum menu_status_t
 //	int32_t menu_statusFlag;
 //}menu_t;
 // menu_t menuInst;
-extern menu_list_t *menu_currList;
-extern menu_itemIfce_t *menu_currItem;
-extern menu_list_t *menu_menuRoot;
-extern int32_t menu_currRegionNum;
-extern int32_t menu_statusFlag;
-extern uint32_t menu_nvm_statusFlagAddr;
-extern int32_t menu_nvmCopySrc, menu_nvmCopyDst;
+
 
 extern char menu_dispStrBuf[MENU_DISP_STRBUF_ROW][MENU_DISP_STRBUF_COL];
 

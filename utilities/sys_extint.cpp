@@ -12,6 +12,8 @@
 
 std::map<INTC_Type*, std::map<uint32_t, extInt_t>> extInt_t::isrSet;
 
+//std::map<uint32_t, extInt_t> extInt_t::isrSet[FSL_FEATURE_SOC_PORT_COUNT]; // TODO: this is not portable.
+
 status_t extInt_t::init(void)
 {
 	status_t result = kStatus_Success;
@@ -60,7 +62,7 @@ void extInt_t::isr(INTC_Type* _gpio)
 	{
 		if (flag & (1 << it.first))
 		{
-			(*it.second.handler)(it.second);
+			(*it.second.handler)(it.second.userData);
 		}
 	}
 	EXTINT_ClearInterruptFlags(_gpio, 0xffff);

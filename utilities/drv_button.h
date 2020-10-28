@@ -33,6 +33,7 @@
 #if defined(HITSIC_USE_DRV_BUTTON) && (HITSIC_USE_DRV_BUTTON > 0)
 #include "sys_extint.hpp"
 #include "sys_pitmgr.hpp"
+#include "drv_button_port.h"
 
 
 #ifdef __cplusplus
@@ -40,22 +41,6 @@ extern "C"{
 #endif
 
 #define DRV_BUTTON_VERSION (HITSIC_MAKE_VERSION(0u, 1u, 1u))
-
-#define BUTTON_TIME_SHRT 50u     //short press
-#define BUTTON_SHRT_TOUT 200u	//short timeout
-#define BUTTON_TIME_LONG 250u   //long press
-#define BUTTON_TIME_LRPT 100u   //long press repeat, time calculated from key press. the actual time for repeat will be REPT-LONG
-#define BUTTON_REPT_TOUT 300u   //repeat timeout
-#define BUTTON_TIME_INTV 50u
-
-#define BUTTON_PRESSDN_LOGIC 0u
-#define BUTTON_RELEASE_LOGIC 1u
-#define BUTTON_PRESSDN_EXTINT kPORT_InterruptFallingEdge //define which edge indicates button pressed.
-#define BUTTON_RELEASE_EXTINT kPORT_InterruptRisingEdge  //define which edge indicates button release.
-
-#define BUTTON_PITMGR_TIME_MS 10
-
-#define BUTTON_TIMER_MS     (PITMGR_GetTimer_ms())
 
     typedef enum 
     {
@@ -75,7 +60,7 @@ extern "C"{
         GPIO_Type *gpio;
         //PORT_Type* port;
         uint32_t pin;
-        interrupt_mode_t intCfg;
+        extInt_interruptMode_t intCfg;
         uint64_t msCnt;
         button_status_t status;
         button_handler_t handler;
