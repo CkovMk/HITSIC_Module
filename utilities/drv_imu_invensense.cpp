@@ -375,7 +375,7 @@ namespace inv {
         res |= WriteReg((uint8_t) icm20602_RegMap::PWR_MGMT_1, 0x80);
         //等待复位成功
         do {
-            res |= ReadReg((uint8_t) icm20602_RegMap::PWR_MGMT_1, &val);
+            ReadReg((uint8_t) icm20602_RegMap::PWR_MGMT_1, &val);
             INV_TRACE("0x%x at PWR_MGMT_1,wait it get 0x41", val);
         } while (val != 0x41);
 
@@ -573,7 +573,7 @@ namespace inv {
         res |= WriteReg((uint8_t) icm20602_RegMap::PWR_MGMT_1, 0x80);
         //等待复位成功
         do {
-            res |= ReadReg((uint8_t) icm20602_RegMap::PWR_MGMT_1, &val);
+            ReadReg((uint8_t) icm20602_RegMap::PWR_MGMT_1, &val);
             INV_TRACE("0x%x at PWR_MGMT_1,wait it get 0x40", val);
         } while (val != 0x40);
 
@@ -808,7 +808,7 @@ namespace inv {
         res |= WriteReg((uint8_t) icm20602_RegMap::PWR_MGMT_1, 0x80);
         //等待复位成功
         do {
-            res |= ReadReg((uint8_t) icm20602_RegMap::PWR_MGMT_1, &val);
+            ReadReg((uint8_t) icm20602_RegMap::PWR_MGMT_1, &val);
             INV_TRACE("0x%x at PWR_MGMT_1,wait it get 0x1", val);
         } while (val != 0x1);
 
