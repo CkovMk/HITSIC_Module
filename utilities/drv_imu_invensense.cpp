@@ -411,14 +411,15 @@ namespace inv {
     }
 
     bool mpuSeries_t::Detect() {
-        uint8_t val;
+        uint8_t val = 0;
         SetI2cAddr(0x68);
-        if (0 != ReadReg((uint8_t) RegWhoAmI(), &val)) { return false; };
+        ReadReg((uint8_t) RegWhoAmI(), &val);
         if (WhoAmI() == val) {
             return true;
         }
+        val = 0;
         SetI2cAddr(0x69);
-        if (0 != ReadReg((uint8_t) RegWhoAmI(), &val)) { return false; };
+        ReadReg((uint8_t) RegWhoAmI(), &val);
         if (WhoAmI() == val) {
             return true;
         }
