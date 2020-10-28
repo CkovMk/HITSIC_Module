@@ -67,7 +67,7 @@
 #endif // ! HITSIC_USE_EXTINT
 
 #ifndef HITSIC_USE_UARTMGR
-#define HITSIC_USE_UARTMGR 		(0U)
+#define HITSIC_USE_UARTMGR 		(1U)
 #endif // ! HITSIC_USE_UARTMGR
 
 #ifndef HITSIC_USE_RMCALL

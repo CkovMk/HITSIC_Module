@@ -9,20 +9,16 @@
 #ifndef D_DEFAULT_DRV_IMU_INVENSENSE_PORT_HPP
 #define D_DEFAULT_DRV_IMU_INVENSENSE_PORT_HPP
 
-#define HITSIC_INV_IMU_DEBUG 1
-#define HITSIC_INV_YES_TRACE 1
-#define HITSIC_INV_NO_DEBUG 0
+
 #include "hitsic_common.h"
-#define INV_PRINTF PRINTF
 
 #if (defined(HITSIC_USE_DRV_IMU_INV) && (HITSIC_USE_DRV_IMU_INV > 0U))
 
+#define HITSIC_INV_IMU_DEBUG 1
+#define HITSIC_INV_YES_TRACE 1
+#define HITSIC_INV_NO_DEBUG 0
 
-#include <cstdint>
-#include "drv_imu_port.h"
-
-
-
+#define INV_PRINTF PRINTF
 
 inline int IMU_INV_I2cRxBlocking(void *userData,
                     uint8_t addr, uint8_t reg, uint8_t *val, unsigned int len)
