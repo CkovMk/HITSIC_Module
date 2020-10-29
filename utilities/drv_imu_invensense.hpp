@@ -290,22 +290,13 @@ namespace inv {
 
         i2cInterface_t &i2c;
 
-        int WriteReg(uint8_t reg, const uint8_t val);;
+        int WriteReg(uint8_t reg, const uint8_t val);
 
-        int ReadReg(uint8_t reg, uint8_t *val);;
+        int WriteRegVerified(uint8_t reg, const uint8_t val);
 
-        int ModifyReg(uint8_t reg, const uint8_t val, const uint8_t mask) {
-            uint8_t regVal;
-            int res = 0;
-            res |= ReadReg(reg, &regVal);
-            res |= WriteReg(reg, (regVal & (~mask)) | (val & mask));
-            res |= ReadReg(reg, &regVal);
-            if ((regVal & mask) != (val & mask)) {
-                INV_DEBUG("i2c rw error");
-                res |= -1;
-            }
-            return res;
-        }
+        int ReadReg(uint8_t reg, uint8_t *val);
+
+        int ModifyReg(uint8_t reg, const uint8_t val, const uint8_t mask);
 
     private:
         uint8_t addr;
@@ -320,7 +311,7 @@ namespace inv {
         int Init(config_t _cfg = config_t()) override;
         bool Detect() override;
         int Convert(float *acc_x, float *acc_y, float *acc_z,
-                      float *gyro_x, float *gyro_y, float *gyro_z) override;
+                    float *gyro_x, float *gyro_y, float *gyro_z) override;
         int Convert(float *mag_x, float *mag_y, float *mag_z) override;
         int ReadSensorBlocking() override;
         int ReadSensorNonBlocking() override;
@@ -342,7 +333,7 @@ namespace inv {
          * @return {int}             : 错误码
          */
         virtual int Convert(int16_t *acc_x, int16_t *acc_y, int16_t *acc_z,
-                              int16_t *gyro_x, int16_t *gyro_y, int16_t *gyro_z);
+                            int16_t *gyro_x, int16_t *gyro_y, int16_t *gyro_z);
         /**
          * @brief   转换！！！缓存！！!中磁力计的数据到指定的地方，单位为LSB
          * @param  {int16_t*} mag_x : 可以等于NULL
@@ -536,9 +527,9 @@ namespace inv {
         mpu9250_t(i2cInterface_t &_i2c);
         int Init(config_t _cfg = config_t()) override;
         int Convert(float *acc_x, float *acc_y, float *acc_z,
-                      float *gyro_x, float *gyro_y, float *gyro_z) override;
+                    float *gyro_x, float *gyro_y, float *gyro_z) override;
         int Convert(int16_t *acc_x, int16_t *acc_y, int16_t *acc_z,
-                      int16_t *gyro_x, int16_t *gyro_y, int16_t *gyro_z) override;
+                    int16_t *gyro_x, int16_t *gyro_y, int16_t *gyro_z) override;
         int Convert(float *mag_x, float *mag_y, float *mag_z) override;
         int Convert(int16_t *mag_x, int16_t *mag_y, int16_t *mag_z) override;
         int Convert(float *temp) override;
