@@ -15,8 +15,8 @@
 #if (defined(HITSIC_USE_DRV_IMU_INV) && (HITSIC_USE_DRV_IMU_INV > 0U))
 
 #define HITSIC_INV_IMU_DEBUG 1
-#define HITSIC_INV_YES_TRACE 1
-#define HITSIC_INV_NO_DEBUG 0
+#define HITSIC_INV_YES_TRACE 0
+#define HITSIC_INV_NO_DEBUG 1
 
 #define INV_PRINTF PRINTF
 
@@ -37,7 +37,7 @@ inline int IMU_INV_I2cTxNonBlocking(void *userData,
     return kStatus_Fail;
 }
 
-inline void IMU_DelayMs(uint32_t delay_ms)
+inline void IMU_DelayUs(uint32_t delay_ms)
 {
     SDK_DelayAtLeastUs(delay_ms,CLOCK_GetFreq(kCLOCK_CoreSysClk));
 }

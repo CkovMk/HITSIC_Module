@@ -16,74 +16,74 @@ std::map<INTC_Type*, std::map<uint32_t, extInt_t>> extInt_t::isrSet;
 
 status_t extInt_t::init(void)
 {
-	status_t result = kStatus_Success;
-	isrSet.clear();
+    status_t result = kStatus_Success;
+    isrSet.clear();
 #if defined(HITSIC_EXTMGR_INITLIZE) && (HITSIC_EXTMGR_INITLIZE > 0)
-	EXTINT_PlatformInit();
+    EXTINT_PlatformInit();
 #endif // ! HITSIC_EXTMGR_INITLIZE
-	return result;
+    return result;
 }
 
-extInt_t* extInt_t::insert(INTC_Type* _gpio, uint32_t _pin, handler_t _handler)
+extInt_t* extInt_t::insert(INTC_Type *_gpio, uint32_t _pin, handler_t _handler)
 {
-	isrSet[_gpio][_pin] = extInt_t(_gpio, _pin, _handler);
-	return &isrSet[_gpio][_pin];
+    isrSet[_gpio][_pin] = extInt_t(_gpio, _pin, _handler);
+    return &isrSet[_gpio][_pin];
 }
 
-status_t extInt_t::remove(INTC_Type* _gpio, uint32_t _pin)
+status_t extInt_t::remove(INTC_Type *_gpio, uint32_t _pin)
 {
-	HAL_EnterCritical();
-	auto set_it = isrSet.find(_gpio);
-	if(set_it == isrSet.end())
-	{
-		HAL_ExitCritical();
-		return kStatus_Fail;
-	}
-	auto it = set_it->second.find(_pin);
-	if(it != set_it->second.end())
-	{
-		set_it->second.erase(it);
+    HAL_EnterCritical();
+    auto set_it = isrSet.find(_gpio);
+    if (set_it == isrSet.end())
+    {
+        HAL_ExitCritical();
+        return kStatus_Fail;
+    }
+    auto it = set_it->second.find(_pin);
+    if (it != set_it->second.end())
+    {
+        set_it->second.erase(it);
 
-	}
-	HAL_ExitCritical();
-	return kStatus_Success;
+    }
+    HAL_ExitCritical();
+    return kStatus_Success;
 }
 
-status_t extInt_t::remove(extInt_t* _inst)
+status_t extInt_t::remove(extInt_t *_inst)
 {
-	return remove(_inst->gpio, _inst->pin);
+    return remove(_inst->gpio, _inst->pin);
 }
 
-void extInt_t::isr(INTC_Type* _gpio)
+void extInt_t::isr(INTC_Type *_gpio)
 {
-	uint32_t flag = EXTINT_GetInterruptFlags(_gpio);
-	
-	for (auto it : isrSet[_gpio])
-	{
-		if (flag & (1 << it.first))
-		{
-			(*it.second.handler)(it.second.userData);
-		}
-	}
-	EXTINT_ClearInterruptFlags(_gpio, 0xffff);
+    uint32_t flag = EXTINT_GetInterruptFlags(_gpio);
+
+    for (auto it : isrSet[_gpio])
+    {
+        if (flag & (1 << it.first))
+        {
+            (*it.second.handler)(it.second.userData);
+        }
+    }
+    EXTINT_ClearInterruptFlags(_gpio, 0xffff);
 }
 
-void extInt_t::setup(INTC_Type* _gpio, uint32_t _pin, handler_t _handler)
+void extInt_t::setup(INTC_Type *_gpio, uint32_t _pin, handler_t _handler)
 {
 #ifdef DEBUG
-	if (_handler == NULL)
-	{
-		throw std::invalid_argument(std::string("extInt_t setup failure.\n"));
-		return;
-	}
+    if (_handler == NULL)
+    {
+        throw std::invalid_argument(std::string("extInt_t setup failure.\n"));
+        return;
+    }
 #else
 
 #endif // ! DEBUG
-	HAL_EnterCritical();
-	gpio = _gpio;
-	pin = _pin;
-	handler = _handler;
-	HAL_ExitCritical();
+    HAL_EnterCritical();
+    gpio = _gpio;
+    pin = _pin;
+    handler = _handler;
+    HAL_ExitCritical();
 }
 
 #endif // ! CPU Selection

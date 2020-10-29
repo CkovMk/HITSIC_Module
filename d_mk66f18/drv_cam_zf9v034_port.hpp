@@ -20,7 +20,7 @@ inline status_t CAM_ZF9V034_UartTxBlocking(const uint8_t *data, uint32_t length)
 
 inline void CAM_ZF9V034_Delay_ms(uint32_t ms)
 {
-	for(int i = 0; i < ms; ++i)
+    for (int i = 0; i < ms; ++i)
     {
         SDK_DelayAtLeastUs(1000, CLOCK_GetFreq(kCLOCK_CoreSysClk));
     }

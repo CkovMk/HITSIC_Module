@@ -43,7 +43,7 @@ inline void CAM_ZF9V034_UnitTest(void)
     DMADVP_TransferSubmitEmptyBuffer(DMADVP0, &dmadvpHandle, imageBuffer1);
     DMADVP_TransferStart(DMADVP0, &dmadvpHandle);
     PRINTF("[D] DMADVP: Begin time: %d ms.\n", pitMgr_t::timer_ms);
-    for(int time = 0; time < 512; ++time){
+    for(int time = 0; time < 128; ++time){
     PRINTF("[D] DMADVP: Transfer %4.4d.\n", time);
     while(kStatus_Success != DMADVP_TransferGetFullBuffer(DMADVP0, &dmadvpHandle, &fullBuffer));
 

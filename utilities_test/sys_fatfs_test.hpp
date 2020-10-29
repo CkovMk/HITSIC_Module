@@ -130,7 +130,7 @@ inline void FATFS_BasicTest(void)
     }
     break;
     }
-    PRINTF("\n---------- ZF9V034 Test Done ----------\n\n");
+    PRINTF("\n---------- FATFS Test Done ----------\n\n");
 }
 
 #endif // ! UTILITIES_TEST_SYS_FATFS_TEST_HPP

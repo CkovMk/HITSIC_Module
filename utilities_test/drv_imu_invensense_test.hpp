@@ -46,7 +46,7 @@ inline int32_t IMU_UnitTest_AutoDetect(void)
     }
 
     //等待10ms
-    IMU_DelayMs(10 * 1000);
+    IMU_DelayUs(10 * 1000);
 
     my_imu->ReadSensorBlocking();
     my_imu->Convert(acc, acc + 1, acc + 2, gyro, gyro + 1, gyro + 2);
@@ -100,7 +100,7 @@ inline int32_t IMU_UnitTest_MPU6050(void)
     }
 
     //等待10ms
-    IMU_DelayMs(10 * 1000);
+    IMU_DelayUs(10 * 1000);
 
     my_imu.ReadSensorBlocking();
     my_imu.Convert(acc, acc + 1, acc + 2, gyro, gyro + 1, gyro + 2);
@@ -127,7 +127,7 @@ float imu_unitTest_temp = 0;
 
 inline void IMU_UnitTest_AutoRefreshPitTask(void *userData)
 {
-    imu_unitTest_imu->ReadSensorBlocking();
+    int res = imu_unitTest_imu->ReadSensorBlocking();
     imu_unitTest_imu->Convert(imu_unitTest_acc, imu_unitTest_acc + 1, imu_unitTest_acc + 2, imu_unitTest_gyro, imu_unitTest_gyro + 1, imu_unitTest_gyro + 2);
     //imu_unitTest_imu->Convert(&imu_unitTest_temp);
     imu_unitTest_imu->Convert(imu_unitTest_mag, imu_unitTest_mag + 1, imu_unitTest_mag + 2);
