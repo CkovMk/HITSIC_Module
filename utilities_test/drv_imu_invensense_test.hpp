@@ -8,6 +8,11 @@ namespace inv
 //remote_i2c iic("/dev/i2c-1");
 inv::i2cInterface_t my_i2c(nullptr, IMU_INV_I2cRxBlocking, IMU_INV_I2cTxBlocking);
 
+/**
+ * @brief A unit test on IMU. Using auto detection mode.
+ * @param void
+ * @return 0
+ */
 inline int32_t IMU_UnitTest_AutoDetect(void)
 {
     float acc[3] =
@@ -18,41 +23,47 @@ inline int32_t IMU_UnitTest_AutoDetect(void)
     { 0, 0, 0 };
     float temp = 0;
     inv::imuPtr_t my_imu;
-    if (0 == my_imu.Load(my_i2c))
+
+    PRINTF("IMU UnitTest Start\r\n");
+    PRINTF("Mode: Auto Detect\r\n");
+
+    if (0 != my_imu.Load(my_i2c))
     {
-        if (my_imu->Init() == 0)
-        {
-            //自检时保持静止，否则会直接失败
-            if (my_imu->SelfTest() == 0)
-            {
-                SDK_DelayAtLeastUs(10 * 1000, CLOCK_GetFreq(kCLOCK_CoreSysClk)); //等待10ms
-                my_imu->ReadSensorBlocking();
-                my_imu->Convert(acc, acc + 1, acc + 2, gyro, gyro + 1, gyro + 2);
-//                static_cast<inv::mpuSeries_t*>(my_imu.get())->Convert(&temp);
-                my_imu->Convert(mag, mag + 1, mag + 2);
-                PRINTF("%s\r\n", my_imu->Report().c_str());
-                PRINTF("accel \t%.3f \t%.3f \t%.3f m/s^2\r\n", acc[0], acc[1], acc[2]);
-                PRINTF("gyro \t%.3f \t%.3f \t%.3f dps \r\n", gyro[0], gyro[1], gyro[2]);
-                PRINTF("mag \t%.1f \t%.1f \t%.1f uT \r\n", mag[0], mag[1], mag[2]);
-//                PRINTF("temp \t%.3f C \r\n", temp);
-            }
-            else
-            {
-                PRINTF("自检未通过\r\n");
-            }
-        }
-        else
-        {
-            PRINTF("初始化未通过\r\n");
-        }
+        PRINTF("IMU Detection Failure\r\n");
+        return 0;
     }
-    else
+
+    if (0 != my_imu->Init())
     {
-        PRINTF("未检测到imu\r\n");
+        PRINTF("IMU Initialization Failure\r\n");
+        return 0;
     }
+    //自检时保持静止，否则会直接失败
+    if (0 != my_imu->SelfTest())
+    {
+        PRINTF("IMU Self Test Failure\r\n");
+        return 0;
+    }
+
+    SDK_DelayAtLeastUs(10 * 1000, CLOCK_GetFreq(kCLOCK_CoreSysClk)); //等待10ms
+    my_imu->ReadSensorBlocking();
+    my_imu->Convert(acc, acc + 1, acc + 2, gyro, gyro + 1, gyro + 2);
+//     static_cast<inv::mpuSeries_t*>(my_imu.get())->Convert(&temp);
+    my_imu->Convert(mag, mag + 1, mag + 2);
+    PRINTF("%s\r\n", my_imu->Report().c_str());
+    PRINTF("accel \t%.3f \t%.3f \t%.3f m/s^2\r\n", acc[0], acc[1], acc[2]);
+    PRINTF("gyro \t%.3f \t%.3f \t%.3f dps \r\n", gyro[0], gyro[1], gyro[2]);
+    PRINTF("mag \t%.1f \t%.1f \t%.1f uT \r\n", mag[0], mag[1], mag[2]);
+//    PRINTF("temp \t%.3f C \r\n", temp);
+
     return 0;
 }
 
+/**
+ * @brief A unit test on IMU. For MPU6050 Only.
+ * @param void
+ * @return 0
+ */
 inline int32_t IMU_UnitTest_MPU6050(void)
 {
     float acc[3] =
@@ -63,38 +74,40 @@ inline int32_t IMU_UnitTest_MPU6050(void)
     { 0, 0, 0 };
     float temp = 0;
     inv::mpu6050_t my_imu(my_i2c);
-    if (true == my_imu.Detect())
+
+    PRINTF("IMU UnitTest Start\r\n");
+    PRINTF("Mode: MPU6050 Only\r\n");
+
+    if (true != my_imu.Detect())
     {
-        if (my_imu.Init() == 0)
-        {
-            //自检时保持静止，否则会直接失败
-            if (my_imu.SelfTest() == 0)
-            {
-                SDK_DelayAtLeastUs(10 * 1000, CLOCK_GetFreq(kCLOCK_CoreSysClk)); //等待10ms
-                my_imu.ReadSensorBlocking();
-                my_imu.Convert(acc, acc + 1, acc + 2, gyro, gyro + 1, gyro + 2);
-                my_imu.Convert(&temp);
-                my_imu.Convert(mag, mag + 1, mag + 2);
-                PRINTF("%s\r\n", my_imu.Report().c_str());
-                PRINTF("accel \t%.3f \t%.3f \t%.3f m/s^2\r\n", acc[0], acc[1], acc[2]);
-                PRINTF("gyro \t%.3f \t%.3f \t%.3f dps \r\n", gyro[0], gyro[1], gyro[2]);
-                PRINTF("mag \t%.1f \t%.1f \t%.1f uT \r\n", mag[0], mag[1], mag[2]);
-                PRINTF("temp \t%.3f C \r\n", temp);
-            }
-            else
-            {
-                PRINTF("自检未通过\r\n");
-            }
-        }
-        else
-        {
-            PRINTF("初始化未通过\r\n");
-        }
+        PRINTF("IMU Detection Failure\r\n");
+        return 0;
     }
-    else
+
+    if (0 != my_imu.Init())
     {
-        PRINTF("未检测到mpu6050\r\n");
+        PRINTF("IMU Initialization Failure\r\n");
+        return 0;
     }
+
+    if (0 != my_imu.SelfTest())
+    {
+        PRINTF("IMU Self Test Failure\r\n");
+        return 0;
+    }
+
+    //自检时保持静止，否则会直接失败
+    SDK_DelayAtLeastUs(10 * 1000, CLOCK_GetFreq(kCLOCK_CoreSysClk)); //等待10ms
+    my_imu.ReadSensorBlocking();
+    my_imu.Convert(acc, acc + 1, acc + 2, gyro, gyro + 1, gyro + 2);
+    my_imu.Convert(&temp);
+    my_imu.Convert(mag, mag + 1, mag + 2);
+    PRINTF("%s\r\n", my_imu.Report().c_str());
+    PRINTF("accel \t%.3f \t%.3f \t%.3f m/s^2\r\n", acc[0], acc[1], acc[2]);
+    PRINTF("gyro \t%.3f \t%.3f \t%.3f dps \r\n", gyro[0], gyro[1], gyro[2]);
+    PRINTF("mag \t%.1f \t%.1f \t%.1f uT \r\n", mag[0], mag[1], mag[2]);
+    PRINTF("temp \t%.3f C \r\n", temp);
+
     return 0;
 }
 
