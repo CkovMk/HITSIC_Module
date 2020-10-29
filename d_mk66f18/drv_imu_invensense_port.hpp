@@ -36,6 +36,11 @@ inline int IMU_INV_I2cTxNonBlocking(void *userData,
 {
     return kStatus_Fail;
 }
+
+inline void IMU_DelayMs(uint32_t delay_ms)
+{
+    SDK_DelayAtLeastUs(delay_ms,CLOCK_GetFreq(kCLOCK_CoreSysClk));
+}
 #endif // ! HITSIC_USE_DRV_IMU_INV
 
 #endif //D_DEFAULT_DRV_IMU_INVENSENSE_PORT_HPP

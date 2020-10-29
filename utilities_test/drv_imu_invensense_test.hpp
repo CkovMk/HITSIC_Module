@@ -45,7 +45,9 @@ inline int32_t IMU_UnitTest_AutoDetect(void)
         return 0;
     }
 
-    SDK_DelayAtLeastUs(10 * 1000, CLOCK_GetFreq(kCLOCK_CoreSysClk)); //等待10ms
+    //等待10ms
+    IMU_DelayMs(10 * 1000);
+
     my_imu->ReadSensorBlocking();
     my_imu->Convert(acc, acc + 1, acc + 2, gyro, gyro + 1, gyro + 2);
 //     static_cast<inv::mpuSeries_t*>(my_imu.get())->Convert(&temp);
@@ -90,14 +92,16 @@ inline int32_t IMU_UnitTest_MPU6050(void)
         return 0;
     }
 
+    //自检时保持静止，否则会直接失败
     if (0 != my_imu.SelfTest())
     {
         PRINTF("IMU Self Test Failure\r\n");
         return 0;
     }
 
-    //自检时保持静止，否则会直接失败
-    SDK_DelayAtLeastUs(10 * 1000, CLOCK_GetFreq(kCLOCK_CoreSysClk)); //等待10ms
+    //等待10ms
+    IMU_DelayMs(10 * 1000);
+
     my_imu.ReadSensorBlocking();
     my_imu.Convert(acc, acc + 1, acc + 2, gyro, gyro + 1, gyro + 2);
     my_imu.Convert(&temp);
