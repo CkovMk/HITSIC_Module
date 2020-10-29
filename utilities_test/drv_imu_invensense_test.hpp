@@ -119,7 +119,7 @@ inline void IMU_UnitTest_AutoRefreshPitTask(void *userData)
 #if (defined(HITSIC_USE_APP_MENU) && (HITSIC_USE_APP_MENU > 0))
 inline void IMU_UnitTest_AutoRefreshAddMenu(const menu_list_t *menu)
 {
-    menu_list_t *imuinvList = MENU_ListConstruct("IMU(INV)", 11, menu_menuRoot);
+    static menu_list_t *imuinvList = MENU_ListConstruct("IMU(INV)", 11, menu);
     assert(imuinvList);
     MENU_ListInsert(menu, MENU_ItemConstruct(menuType, imuinvList, "IMU(INV)", 0, 0));
     {
