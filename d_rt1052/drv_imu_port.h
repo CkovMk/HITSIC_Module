@@ -21,13 +21,13 @@
 #include "inc_stdlib.h"
 #include "hitsic_common.h"
 
-#define HITSIC_USE_DRV_IMU (0U)
+#define HITSIC_USE_DRV_IMU_INV (0U)
 
 
 
 
 
-#if defined(HITSIC_USE_DRV_IMU) && (HITSIC_USE_DRV_IMU > 0)
+#if defined(HITSIC_USE_DRV_IMU_INV) && (HITSIC_USE_DRV_IMU_INV > 0)
 
 #ifdef __cplusplus
 extern "C"{
@@ -57,7 +57,7 @@ extern "C"{
 }
 #endif
 
-#endif // HITSIC_USE_DRV_IMU
+#endif // HITSIC_USE_DRV_IMU_INV
 
 
 #endif // ! D_MK66F18_DRV_IMU_PORT_H_
