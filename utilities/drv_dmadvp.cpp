@@ -108,12 +108,15 @@ status_t DMADVP_TransferStart(DMADVP_Type *base, dmadvp_handle_t *handle)
     {
         return kStatus_DMADVP_NoEmptyBuffer;
     }
-
+    status_t result = 0;
     EDMA_PrepareTransfer(&handle->xferCfg, (void*) (base->dmaDataAddress), 1,
             handle->emptyBuffer.front(), 1, 1, base->imgSize, kEDMA_PeripheralToMemory);
     handle->emptyBuffer.pop();
-    EDMA_SubmitTransfer(&handle->dmaHandle, &handle->xferCfg);
-
+    result = EDMA_SubmitTransfer(&handle->dmaHandle, &handle->xferCfg);
+    if(kStatus_Success != result)
+    {
+        return result;
+    }
     PORT_SetPinInterruptConfig(base->vsnc_intc, base->vsnc_pin,
             base->vsncInterruptCfg);
     handle->transferStarted = true;

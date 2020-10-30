@@ -45,7 +45,7 @@ extern "C"
 #if defined(DEBUG) && defined(HITSIC_MENU_PRINT_ENABLE) && (HITSIC_MENU_PRINT_ENABLE != 0u)
 #define HITSIC_MENU_PRINTF(...) (PRINTF(__VA_ARGS__))
 #else
-#define HITSIC_MENU_PRINTF(...)
+#define HITSIC_MENU_PRINTF(...) (0)
 #endif // ! DEBUG
 
 /** @brief : 根菜单最大容量 */
