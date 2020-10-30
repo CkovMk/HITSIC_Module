@@ -63,6 +63,7 @@ by：CkovMk @hitsic 2020.10.30
 **已知问题**
 
 - 局部数据区间的数据拷贝功能仍不可用。
+- `menuItem_dataExt_HasMinMax`扩展属性对数据初值、NVM读取无效。
 
 
 
@@ -401,7 +402,7 @@ by：CkovMk @hitsic 2019.11.02
 	        const char *_nameStr, uint32_t _saveAddr, uint32_t _pptFlag);
 	```
 	
-	目前支持的菜单项类型有：分隔线/孔类型（`nullType`）、`int32_t`参数型（`variType`）、`float`参数型（`varfType`）、菜单跳转型（`menuType`）、运行程序型（`procType`）。
+	目前支持的菜单项类型有：分隔线/空类型（`nullType`）、`int32_t`参数型（`variType`）、`float`参数型（`varfType`）、菜单跳转型（`menuType`）、运行程序型（`procType`）。
 	
 	- `nullType`
 	
@@ -443,7 +444,7 @@ by：CkovMk @hitsic 2019.11.02
 	
 	  - `menuItem_disp_noPreview`：关闭菜单列表内的变量数值显示，这将允许显示更长的菜单项名称。
 	
-	  - `menuItem_dataExt_HasMinMax`：该（变量）具有最小/最大值扩展属性。
+	  - `menuItem_dataExt_HasMinMax`：该（变量）具有最小/最大值的扩展属性。最小值存储在`data+1`地址，最大值存储在`data+2`地址。
 	
 	- `varfType`
 	
