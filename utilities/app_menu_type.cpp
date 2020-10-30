@@ -415,7 +415,7 @@ extern "C"
         {
             menu_dispStrBuf[_slotNum][snprintf(menu_dispStrBuf[_slotNum], MENU_DISP_STRBUF_COL, " %-16.16s  ->", _item->nameStr)] = ' ';
         }
-        else if ((!(_item->pptFlag & menuItem_disp_forceSci)) && ((*handle->data < 10000 && *handle->data > 0.1f) || (*handle->data > -10000 && *handle->data < -0.1f)))
+        else if ((!(_item->pptFlag & menuItem_disp_forceSci)) && ((*handle->data < 10000 && *handle->data > 0.001f) || (*handle->data > -10000 && *handle->data < -0.001f) || (*handle->data == 0.0f)))
         {
             menu_dispStrBuf[_slotNum][snprintf(menu_dispStrBuf[_slotNum], MENU_DISP_STRBUF_COL, " %-12.12s %+-7f", _item->nameStr, *(handle->data))] = ' ';
         }
