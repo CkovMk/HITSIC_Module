@@ -10,7 +10,7 @@
  * @{
  */
 
-#include <app_menu_port.hpp>
+#include "app_menu_port.hpp"
 #include "drv_disp_ssd1306.hpp"
 #include "lib_list.h"
 #include "sys_pitmgr.hpp"

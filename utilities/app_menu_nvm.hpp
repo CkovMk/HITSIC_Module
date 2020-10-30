@@ -1,7 +1,7 @@
 #ifndef _APP_MENU_NVM_H_
 #define _APP_MENU_NVM_H_
 
-#include <app_menu_def.hpp>
+#include "app_menu_def.hpp"
 
 #if defined(HITSIC_MENU_USE_NVM) && (HITSIC_MENU_USE_NVM > 0)
 

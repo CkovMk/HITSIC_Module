@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-#include <drv_button.hpp>
+#include "drv_button.hpp"
 
 #if defined(HITSIC_USE_DRV_BUTTON) && (HITSIC_USE_DRV_BUTTON > 0)
 

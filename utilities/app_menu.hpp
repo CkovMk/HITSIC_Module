@@ -31,10 +31,10 @@
 #ifndef _APP_MENU_H_
 #define _APP_MENU_H_
 
-#include <app_menu_button.hpp>
-#include <app_menu_def.hpp>
-#include <app_menu_nvm.hpp>
-#include <app_menu_type.hpp>
+#include "app_menu_button.hpp"
+#include "app_menu_def.hpp"
+#include "app_menu_nvm.hpp"
+#include "app_menu_type.hpp"
 
  /*!
   * @addtogroup menu
@@ -183,8 +183,16 @@ void MENU_SetNvmStatus(int32_t _status);
  */
 void MENU_PitIsr(void* userData);
 
+/**
+ * @brief 挂起菜单。这将暂时禁用菜单的事件处理，包括按键输入和屏幕打印。
+ *          注意：调用多次MENU_Suspend()将需要调用相同次数的MENU_Resume()才能将菜单恢复至运行状态。
+ */
 void MENU_Suspend(void);
 
+/**
+ * @brief 恢复菜单。这将启用菜单的事件处理，包括按键输入和屏幕打印。
+ *          注意：调用多次MENU_Suspend()将需要调用相同次数的MENU_Resume()才能将菜单恢复至运行状态。
+ */
 void MENU_Resume(void);
 
 

@@ -1,8 +1,8 @@
 #ifndef _APP_MENU_TYPE_H_
 #define _APP_MENU_TYPE_H_
 
-#include <app_menu_button.hpp>
-#include <app_menu_def.hpp>
+#include "app_menu_button.hpp"
+#include "app_menu_def.hpp"
 
 #if defined(HITSIC_USE_APP_MENU) && (HITSIC_USE_APP_MENU > 0)
 

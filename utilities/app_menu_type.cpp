@@ -1,4 +1,4 @@
-#include <app_menu_type.hpp>
+#include "app_menu_type.hpp"
 
 #if defined(HITSIC_USE_APP_MENU) && (HITSIC_USE_APP_MENU > 0)
 
