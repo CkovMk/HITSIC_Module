@@ -1,5 +1,5 @@
 /**
- * Copyright 2018 - 2019 HITSIC
+ * Copyright 2018 - 2020 HITSIC
  * All rights reserved.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,17 +21,27 @@
  * @version v1.0
  * @date 2020-10-16
  */
+/**
+ * @file    :   drv_imu_invensense.hpp
+ * @author  :   beforelight/肖日涛(qq:1761690868)
+ * @version :   v0.1.0
+ *
+ * @date    :   v0.1-beta.0 2019.10.16 肖日涛
+ *
+ * @brief   :   陀螺仪驱动，适用于mpu6050,mpu9250,icm20602
+ */
 
 #ifndef UTILITIES_DRV_IMU_INVENSENSE_HPP
 #define UTILITIES_DRV_IMU_INVENSENSE_HPP
 #include "hitsic_common.h"
-//#include <memory>
-
 #include "inc_stdlib.h"
 
 #if (defined(HITSIC_USE_DRV_IMU_INV) && (HITSIC_USE_DRV_IMU_INV > 0U))
 #include "drv_imu_invensense_port.hpp"
 #include "drv_imu_invensense_def.hpp"
+
+/** @brief : 软件版本 */
+#define DRV_IMU_INVENSENSE_VERSION (HITSIC_MAKE_VERSION(0U, 1U, 0U))
 
 #ifdef INV_PRINTF
 

@@ -5,7 +5,13 @@
 #include "inc_stdlib.h"
 #include "lib_graphic_font.hpp"
 
-//#include "lib_graphic_font.hpp"
+/*!
+ * @addtogroup graphic
+ * @{
+ */
+
+/** @brief : 软件版本 */
+#define LIB_GRAPHIC_VERSION (HITSIC_MAKE_VERSION(0U, 1U, 0U))
 
 namespace graphic{
 
@@ -153,6 +159,6 @@ public:
 
 } // ! namespace graphic
 
-
+/* @} */
 
 #endif // ! UTILITIES_LIB_GRAPHIC_HPP

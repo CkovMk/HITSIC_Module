@@ -1,5 +1,5 @@
 /**
- * Copyright 2018 - 2019 HITSIC
+ * Copyright 2018 - 2020 HITSIC
  * All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -31,6 +31,7 @@
 #define UTILITIES_SYS_PITMGR_HPP_
 #include "inc_stdlib.h"
 #include "hitsic_common.h"
+//#include "list"
 
 #if defined(HITSIC_USE_PITMGR) && (HITSIC_USE_PITMGR > 0)
 #include "sys_pitmgr_port.hpp"
@@ -40,11 +41,8 @@
  * @{
  */
 
-//CPU Selection
-#if defined(D_RT1052_SYS_PITMGR_PORT_HPP_) || defined (D_MK66F18_SYS_PITMGR_PORT_HPP_) || defined (D_KV10Z7_SYS_PITMGR_PORT_HPP_)
-
-
-#include "list"
+/** @brief : 软件版本 */
+#define SYS_PITMGR_VERSION (HITSIC_MAKE_VERSION(0U, 1U, 0U))
 
 class pitMgr_t
 {
@@ -137,12 +135,6 @@ private:
 #define PITMGR_HandleSetEnable(_h, b)		_h->setEnable(b)
 #define PITMGR_HandleRemove(_h)				pitMgr_t::remove(_h)
 #define PITMGR_Isr()						pitMgr_t::isr()
-
-#else	//CPU Selection
-
-#error "C++ API does NOT support this CPU!"
-
-#endif // CPU Selection
 
 /* @} */
 

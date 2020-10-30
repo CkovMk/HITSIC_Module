@@ -2,6 +2,11 @@
 
 #if defined(HITSIC_MENU_USE_NVM) && (HITSIC_MENU_USE_NVM > 0)
 
+/*!
+ * @addtogroup menu_nvm
+ * @{
+ */
+
 #ifdef __cplusplus
 extern "C"
 {
@@ -153,5 +158,7 @@ extern "C"
 #ifdef __cplusplus
 }
 #endif
+
+/* @} */
 
 #endif // ! HITSIC_MENU_USE_NVM

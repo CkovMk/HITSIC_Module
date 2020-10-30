@@ -1,5 +1,5 @@
 /**
- * Copyright 2018 - 2019 HITSIC
+ * Copyright 2018 - 2020 HITSIC
  * All rights reserved.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,7 +17,7 @@
 /**
  * @file 	:	app_menu.h
  * @author  :	Chekhov Mark/马奇科(qq:905497173)
- * @version :	v0.1.1
+ * @version :	v0.1.4
  * 
  * @date 	:	v0.1-beta.0 2019.10.28
  * @date 	:	v0.1.1		2019.11.02
@@ -36,13 +36,13 @@
 #include "app_menu_nvm.h"
 #include "app_menu_type.h"
 
-/*! @addtogroup app_menu */
-/*! @{ */
-
-/*! @file */
+ /*!
+  * @addtogroup menu
+  * @{
+  */
 
 /** @brief : 软件版本 */
-#define APP_MENU_VERSION (HITSIC_MAKE_VERSION(0u, 1u, 1u))
+#define APP_MENU_VERSION (HITSIC_MAKE_VERSION(0U, 1U, 4U))
 
 #if defined(HITSIC_USE_APP_MENU) && (HITSIC_USE_APP_MENU > 0)
 

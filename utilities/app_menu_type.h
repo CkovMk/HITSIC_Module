@@ -6,6 +6,11 @@
 
 #if defined(HITSIC_USE_APP_MENU) && (HITSIC_USE_APP_MENU > 0)
 
+/*!
+ * @addtogroup menu_type
+ * @{
+ */
+
 /**
  * @brief : 菜单项类别函数命名宏定义
  */
@@ -263,6 +268,8 @@ void MENU_ListKeyOp(menu_list_t *_list, menu_keyOp_t *const _op);
 #ifdef __cplusplus
 }
 #endif
+
+/* @} */
 
 #endif // ! HITSIC_USE_APP_MENU
 

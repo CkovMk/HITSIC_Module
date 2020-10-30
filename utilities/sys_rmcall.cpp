@@ -1,5 +1,10 @@
 #include "sys_rmcall.hpp"
 
+/*!
+ * @addtogroup rmcall
+ * @{
+ */
+
 #if defined(HITSIC_USE_RMCALL) && (HITSIC_USE_RMCALL > 0)
 
 rmCall_target_t::rmCall_target_t(uartMgr& _uart) : uart(_uart)
@@ -156,6 +161,6 @@ void rmCall_target_t::rmCall_uartCallBack(UART_Type* base, uart_handle_t* handle
 }
 
 
-
+/* @} */
 
 #endif // HITSIC_USE_RMCALL

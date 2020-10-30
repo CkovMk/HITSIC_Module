@@ -1,5 +1,5 @@
 /**
- * Copyright 2018 - 2019 HITSIC
+ * Copyright 2018 - 2020 HITSIC
  * All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -40,9 +40,8 @@
  * @{
  */
 
-//TODO: delete this
-//CPU Selection
-#if defined(D_RT1052_SYS_EXTINT_PORT_HPP_) || defined (D_MK66F18_SYS_EXTINT_PORT_HPP_) || defined (D_KV10Z7_SYS_EXTINT_PORT_HPP_)
+/** @brief : 软件版本 */
+#define DRV_IMU_INVENSENSE_VERSION (HITSIC_MAKE_VERSION(1U, 0U, 0U))
 
 class extInt_t
 {
@@ -89,12 +88,6 @@ private:
 #define EXTINT_PortRemove(_gpio, _pin) 		extInt_t::remove(_gpio, _pin)
 #define PORTX_IRQHandler(_gpio, _list)		extInt_t::isr(_gpio)
 
-
-#else	//CPU Selection
-
-#error "C++ API does NOT support this CPU!"
-
-#endif // CPU Selection
 
 /* @} */
 

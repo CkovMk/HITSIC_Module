@@ -5,6 +5,11 @@
 
 #if defined(HITSIC_MENU_USE_NVM) && (HITSIC_MENU_USE_NVM > 0)
 
+/*!
+ * @addtogroup menu_nvm
+ * @{
+ */
+
 #ifdef __cplusplus
 extern "C"
 {
@@ -100,6 +105,8 @@ status_t MENU_NvmUpdateCache(void);
 #ifdef __cplusplus
 }
 #endif
+
+/* @} */
 
 #endif // ! HITSIC_MENU_USE_NVM
 

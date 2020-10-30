@@ -15,7 +15,7 @@ typedef struct _ADC
 } Adc_t;
 
 void AD_Init(void);
-uint32_t ADC_Get(ADC_Type *base, uint8_t channelGroup, uint8_t channel);
+uint32_t SCADC_GetSample(ADC_Type *base, uint8_t channelGroup, uint8_t channel);
 #ifdef __cplusplus
 }
 #endif

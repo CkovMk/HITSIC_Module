@@ -14,17 +14,8 @@
 /*********************************************************************************************************************
 宏定义
 *********************************************************************************************************************/
-//#define OLED_SSD1306_XLevelL 0x00
-//#define OLED_SSD1306_XLevelH 0x10
-//#define OLED_SSD1306_XLevel ((OLED_SSD1306_XLevelH & 0x0F) * 16 + OLED_SSD1306_XLevelL)
-//#define OLED_SSD1306_Column 128
-//#define OLED_SSD1306_Row 64
-//#define OLED_SSD1306_Brightness 0xCF
-#define OLED_SSD1306_X_WIDTH 128
-#define OLED_SSD1306_Y_WIDTH 64
 
-//extern const uint8_t DISP_font_6x8[][6];
-//extern const uint8_t DISP_font_8x16[][16];
+//#define OLED_SSD1306_Brightness 0xCF
 
 void DISP_SSD1306_WriteDat(uint8_t data)
 {
@@ -39,14 +30,7 @@ void DISP_SSD1306_WriteCmd(uint8_t cmd)
 
 
 
-//-------------------------------------------------------------------------------------------------------------------
-//  @brief      OLED显示坐标设置
-//  @param      x			x轴坐标设置
-//  @param      y			y轴坐标设置
-//  @return     void
-//  @since      v1.0
-//  Sample usage:
-//-------------------------------------------------------------------------------------------------------------------
+
 void DISP_SSD1306_SetPos(uint8_t x, uint8_t y)
 {
 	DISP_SSD1306_WriteCmd(0xb0 + y);
@@ -54,13 +38,7 @@ void DISP_SSD1306_SetPos(uint8_t x, uint8_t y)
 	DISP_SSD1306_WriteCmd((x & 0x0f) | 0x01);
 }
 
-//-------------------------------------------------------------------------------------------------------------------
-//  @brief      OLED清屏函数
-//  @param      bmp_data	填充颜色选着(0x00 or 0xff)
-//  @return     void
-//  @since      v1.0
-//  Sample usage:
-//-------------------------------------------------------------------------------------------------------------------
+
 void DISP_SSD1306_Fill(uint8_t bmp_data)
 {
 	uint8_t y, x;
@@ -70,18 +48,12 @@ void DISP_SSD1306_Fill(uint8_t bmp_data)
 		DISP_SSD1306_WriteCmd(0xb0 + y);
 		DISP_SSD1306_WriteCmd(0x01);
 		DISP_SSD1306_WriteCmd(0x10);
-		for (x = 0; x < OLED_SSD1306_X_WIDTH; x++)
+		for (x = 0; x < 128; x++)
 			DISP_SSD1306_WriteDat(bmp_data);
 	}
 }
 
-//-------------------------------------------------------------------------------------------------------------------
-//  @brief      OLED初始化函数
-//  @param      NULL
-//  @return     void
-//  @since      v1.0
-//  Sample usage:
-//-------------------------------------------------------------------------------------------------------------------
+
 void DISP_SSD1306_Init(void)
 {
 	DISP_SSD1306_gpioSetRST(1);
@@ -132,55 +104,26 @@ void DISP_SSD1306_Init(void)
 }
 
 
-//-------------------------------------------------------------------------------------------------------------------
-//  @brief      OLED点亮一个点
-//  @param      x			x轴坐标设置
-//  @param      y           y轴坐标设置
-//  @return     void
-//  @since      v1.0
-//  Sample usage:
-//-------------------------------------------------------------------------------------------------------------------
-void DISP_SSD1306_PutPixel(uint8_t x, uint8_t y)
+void DISP_SSD1306_SetPixel(uint8_t x, uint8_t y, bool value)
 {
 	uint8_t data1; //data1当前点的数据
 
 	DISP_SSD1306_SetPos(x, y);
-	data1 = 0x01 << (y % 8);
+	if (value)
+	{
+		data1 = 0x01 << (y % 8);
+	}
+	else
+	{
+		data1 = 0x00 << (y % 8);
+	}
 	DISP_SSD1306_WriteCmd(0xb0 + (y >> 3));
 	DISP_SSD1306_WriteCmd(((x & 0xf0) >> 4) | 0x10);
 	DISP_SSD1306_WriteCmd((x & 0x0f) | 0x00);
 	DISP_SSD1306_WriteDat(data1);
 }
 
-//-------------------------------------------------------------------------------------------------------------------
-//  @brief      OLED清除一个点
-//  @param      x			x轴坐标设置
-//  @param      y           y轴坐标设置
-//  @return     void
-//  @since      v1.0
-//  Sample usage:
-//-------------------------------------------------------------------------------------------------------------------
-void DISP_SSD1306_ClrPixel(uint8_t x, uint8_t y)
-{
-	uint8_t data1; //data1当前点的数据
 
-	DISP_SSD1306_SetPos(x, y);
-	data1 = 0x00 << (y % 8);
-	DISP_SSD1306_WriteCmd(0xb0 + (y >> 3));
-	DISP_SSD1306_WriteCmd(((x & 0xf0) >> 4) | 0x10);
-	DISP_SSD1306_WriteCmd((x & 0x0f) | 0x00);
-	DISP_SSD1306_WriteDat(data1);
-}
-
-//-------------------------------------------------------------------------------------------------------------------
-//  @brief      OLED显示字符串(6*8字体)
-//  @param      x			x轴坐标设置
-//  @param      y           y轴坐标设置
-//  @param      ch[]        字符串
-//  @return     void
-//  @since      v1.0
-//  Sample usage:
-//-------------------------------------------------------------------------------------------------------------------
 void DISP_SSD1306_Print_F6x8(uint8_t x,uint8_t y,const char* str)
 {
 	uint8_t c = 0, i = 0, j = 0;
@@ -207,15 +150,7 @@ void DISP_SSD1306_Print_F6x8(uint8_t x,uint8_t y,const char* str)
 	}
 }
 
-//-------------------------------------------------------------------------------------------------------------------
-//  @brief      OLED显示字符串(8*16字体)
-//  @param      x			x轴坐标设置
-//  @param      y           y轴坐标设置
-//  @param      ch[]        字符串
-//  @return     void
-//  @since      v1.0
-//  Sample usage:
-//-------------------------------------------------------------------------------------------------------------------
+
 void DISP_SSD1306_Print_F8x16(uint8_t x,uint8_t y,const char* str)
 {
 	uint8_t c = 0, i = 0, j = 0;

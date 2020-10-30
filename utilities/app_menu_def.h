@@ -5,6 +5,11 @@
 
 #if defined(HITSIC_USE_APP_MENU) && (HITSIC_USE_APP_MENU > 0)
 
+/*!
+ * @addtogroup menu_def
+ * @{
+ */
+
 #include "app_menu_port.h"
 #include "drv_disp_ssd1306.hpp"
 #include "lib_list.h"
@@ -375,6 +380,8 @@ typedef struct _menu_nvmData_t
 #ifdef __cplusplus
 }
 #endif
+
+/* @} */
 
 #endif // ! HITSIC_USE_APP_MENU
 

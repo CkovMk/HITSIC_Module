@@ -5,6 +5,11 @@
 
 #if defined(HITSIC_MENU_USE_BUTTON) && (HITSIC_MENU_USE_BUTTON > 0)
 
+/*!
+ * @addtogroup menu_button
+ * @{
+ */
+
 /**
  * @brief 按键处理部分 函数调用宏定义
  */
@@ -60,6 +65,8 @@ void MENU_ButtonCallback(button_t *_inst);
 #ifdef __cplusplus
 }
 #endif
+
+/* @} */
 
 #endif // ! HITSIC_MENU_USE_BUTTON
 

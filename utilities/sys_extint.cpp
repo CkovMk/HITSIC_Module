@@ -7,9 +7,6 @@
  * @{
  */
 
-//CPU Selection
-#if defined(D_RT1052_SYS_EXTINT_PORT_HPP_) || defined (D_MK66F18_SYS_EXTINT_PORT_HPP_) || defined (D_KV10Z7_SYS_EXTINT_PORT_HPP_)
-
 std::map<INTC_Type*, std::map<uint32_t, extInt_t>> extInt_t::isrSet;
 
 //std::map<uint32_t, extInt_t> extInt_t::isrSet[FSL_FEATURE_SOC_PORT_COUNT]; // TODO: this is not portable.
@@ -86,7 +83,6 @@ void extInt_t::setup(INTC_Type *_gpio, uint32_t _pin, handler_t _handler)
     HAL_ExitCritical();
 }
 
-#endif // ! CPU Selection
 
 /* @} */
 

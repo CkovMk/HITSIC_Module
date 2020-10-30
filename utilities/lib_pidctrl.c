@@ -1,5 +1,9 @@
 #include "lib_pidctrl.h"
 
+/*!
+ * @addtogroup pidctrl
+ * @{
+ */
 
 #ifdef __cplusplus
 extern "C"{
@@ -220,6 +224,8 @@ extern "C"{
 #ifdef __cplusplus
 }
 #endif
+
+/* @} */
 
 
 

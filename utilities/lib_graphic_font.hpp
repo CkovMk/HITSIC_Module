@@ -1,4 +1,13 @@
 #include "hitsic_common.h"
+
+/*!
+ * @addtogroup graphic_font
+ * @{
+ */
+
+ /** @brief : 软件版本 */
+#define LIB_GRAPHIC_FONT_VERSION (HITSIC_MAKE_VERSION(0U, 1U, 0U))
+
 // begin is the first , endin is the one after the last.
 extern uint8_t graphic_asciiBegin;
 extern uint8_t graphic_asciiEndin;
@@ -30,3 +39,5 @@ extern const uint8_t graphic_font0608_defaultType[][6];
 
 
 //#define GRAPHIC_GET_FONT0608(type,ch) (graphic_font0608_##type##[((uint8_t)ch) - graphic_asciiBegin])
+
+/* @} */

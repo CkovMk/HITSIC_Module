@@ -1,5 +1,5 @@
 /**
- * Copyright 2018 - 2019 HITSIC
+ * Copyright 2018 - 2020 HITSIC
  * All rights reserved.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -31,7 +31,10 @@
 
 #if defined(HITSIC_USE_APP_MENU) && (HITSIC_USE_APP_MENU > 0)
 
-
+ /*!
+  * @addtogroup menu
+  * @{
+  */
 
 	/**
 	 * 菜单定义
@@ -509,6 +512,6 @@ extern "C"
 		}
 	}
 
-
+/* @} */
 
 #endif // ! HITSIC_USE_APP_MENU

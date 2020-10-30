@@ -1,5 +1,5 @@
 /**
- * Copyright 2018 - 2019 HITSIC
+ * Copyright 2018 - 2020 HITSIC
  * All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -34,6 +34,14 @@
 
 #if defined(HITSIC_USE_RMCALL) && (HITSIC_USE_RMCALL > 0)
 #include "sys_rmcall_port.hpp"
+
+ /*!
+  * @addtogroup rmcall
+  * @{
+  */
+
+/** @brief : 软件版本 */
+#define SYS_RMCALL_VERSION (HITSIC_MAKE_VERSION(0U, 1U, 0U))
 
 
 class rmCall_item_t
@@ -137,6 +145,8 @@ public:
 private:
     rmCall_target_t();
 };
+
+/* @} */
 
 #endif // HITSIC_USE_RMCALL
 

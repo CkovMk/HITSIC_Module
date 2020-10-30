@@ -1,5 +1,5 @@
 /**
- * Copyright 2018 - 2019 HITSIC
+ * Copyright 2018 - 2020 HITSIC
  * All rights reserved.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -35,11 +35,16 @@
 #include "sys_pitmgr.hpp"
 #include "drv_button_port.h"
 
+/*!
+ * @addtogroup button
+ * @{
+ */
 
 #ifdef __cplusplus
 extern "C"{
 #endif
 
+/** @brief : 软件版本 */
 #define DRV_BUTTON_VERSION (HITSIC_MAKE_VERSION(0u, 1u, 1u))
 
     typedef enum 
@@ -89,6 +94,8 @@ extern "C"{
 #ifdef __cplusplus
 }
 #endif
+
+/* @} */
 
 #endif // ! HITSIC_USE_DRV_BUTTON
 

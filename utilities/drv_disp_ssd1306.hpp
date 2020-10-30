@@ -1,5 +1,5 @@
 /**
- * Copyright 2018 - 2019 HITSIC
+ * Copyright 2018 - 2020 HITSIC
  * All rights reserved.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,8 +20,9 @@
  * @author  :   CkovMk/马奇科(qq:905497173)
  * @version :	v0.1.1
  *
- * @date 	:	v0.1-beta.0 2018.08.12 马奇科
- * @date 	:	v0.1.1		2019.09.22 肖日涛
+ * @date 	:	v0.1-beta.0 2018.08.12 CkovMk
+ * @date 	:	v0.1.1		2019.09.22 beforelight
+ * @date    :   v0.2.0      2020.10.29 CkovMk
  *
  * @brief   :   SSD1306 OLED屏幕驱动组件
  */
@@ -33,8 +34,10 @@
 #include "hitsic_common.h"
 
 #if defined(HITSIC_USE_DISP_SSD1306) && (HITSIC_USE_DISP_SSD1306 > 0)
-
 #include "drv_disp_ssd1306_port.hpp"
+
+/** @brief : 软件版本 */
+#define DRV_DISP_SSD1306_VERSION (HITSIC_MAKE_VERSION(0U, 2U, 0U))
 
 extern const uint8_t DISP_font_6x8[][6];
 extern const uint8_t DISP_font_8x16[][16];
@@ -56,15 +59,69 @@ public:
     }
 };
 
+//-------------------------------------------------------------------------------------------------------------------
+//  @brief      OLED初始化函数
+//  @param      NULL
+//  @return     void
+//  @since      v1.0
+//  Sample usage:
+//-------------------------------------------------------------------------------------------------------------------
 void DISP_SSD1306_Init(void);
+
+//-------------------------------------------------------------------------------------------------------------------
+//  @brief      OLED清屏函数
+//  @param      bmp_data	填充颜色选着(0x00 or 0xff)
+//  @return     void
+//  @since      v1.0
+//  Sample usage:
+//-------------------------------------------------------------------------------------------------------------------
 void DISP_SSD1306_Fill(uint8_t dat);
-//void DISP_SSD1306_PutPixel(uint8_t x,uint8_t y);
-//void DISP_SSD1306_ClrPixel(uint8_t x,uint8_t y);TODO del this
-void DISP_SSD1306_SetPixel(uint8_t x,uint8_t y, uint8_t value);//TODO: add this
+
+//-------------------------------------------------------------------------------------------------------------------
+//  @brief      OLED点亮或清除一个像素
+//  @param      x			x轴坐标设置
+//  @param      y           y轴坐标设置
+//  @param      value       像素状态
+//  @return     void
+//  @since      v1.0
+//  Sample usage:
+//-------------------------------------------------------------------------------------------------------------------
+void DISP_SSD1306_SetPixel(uint8_t x, uint8_t y, bool value);
+
+//-------------------------------------------------------------------------------------------------------------------
+//  @brief      OLED显示坐标设置
+//  @param      x			x轴坐标设置
+//  @param      y			y轴坐标设置
+//  @return     void
+//  @since      v1.0
+//  Sample usage:
+//-------------------------------------------------------------------------------------------------------------------
 void DISP_SSD1306_SetPos(uint8_t x, uint8_t y);
+
+//-------------------------------------------------------------------------------------------------------------------
+//  @brief      OLED显示字符串(6*8字体)
+//  @param      x			x轴坐标设置
+//  @param      y           y轴坐标设置
+//  @param      str         字符串
+//  @return     void
+//  @since      v1.0
+//  Sample usage:
+//-------------------------------------------------------------------------------------------------------------------
 void DISP_SSD1306_Print_F6x8(uint8_t x,uint8_t y,const char* str);
+
+//-------------------------------------------------------------------------------------------------------------------
+//  @brief      OLED显示字符串(8*16字体)
+//  @param      x			x轴坐标设置
+//  @param      y           y轴坐标设置
+//  @param      str         字符串
+//  @return     void
+//  @since      v1.0
+//  Sample usage:
+//-------------------------------------------------------------------------------------------------------------------
 void DISP_SSD1306_Print_F8x16(uint8_t x,uint8_t y,const char* str);
+
 void DISP_SSD1306_Printf_F6x8(uint8_t x,uint8_t y,const char* fmt, ...);
+
 void DISP_SSD1306_Printf_F8x16(uint8_t x,uint8_t y,const char* fmt, ...);
 
 void DISP_SSD1306_BufferUpload(uint8_t *buffer);

@@ -1,5 +1,5 @@
 /**
- * Copyright 2018 - 2019 HITSIC
+ * Copyright 2018 - 2020 HITSIC
  * All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,13 +15,13 @@
  * limitations under the License.
  */
 /**
- * @file 	:	sys_rmcall.hpp
+ * @file 	:	sys_uartmgr.hpp
  * @author  :	Chekhov Mark/马奇科(qq:905497173)
  * @version :	v0.1-beta.0
  *
  * @date 	:	v0.1-beta.0 2020.08.08
  *
- * @brief   :   远程调用组件
+ * @brief   :   串口管理器
  */
 
 #ifndef _UARTMGR_HPP_
@@ -33,8 +33,13 @@
 #if defined(HITSIC_USE_UARTMGR) && (HITSIC_USE_UARTMGR > 0)
 #include "sys_uartmgr_port.hpp"
 
-//CPU Selection
-#if defined(D_RT1052_SYS_UARTMGR_PORT_HPP_) || defined (D_MK66F18_SYS_UARTMGR_PORT_HPP_) || defined (D_KV10Z7_SYS_UARTMGR_PORT_HPP_)
+ /*!
+  * @addtogroup uartmgr
+  * @{
+  */
+
+/** @brief : 软件版本 */
+#define SYS_UARTMGR_VERSION (HITSIC_MAKE_VERSION(0U, 1U, 0U))
 
 class uartMgr_t
 {
@@ -116,7 +121,7 @@ private:
 	}
 };
 
-#endif // ! CPU Selection
+/* @} */
 
 #endif // ! HITSIC_USE_UARTMGR
 

@@ -2,6 +2,11 @@
 
 #if defined(HITSIC_MENU_USE_BUTTON) && (HITSIC_MENU_USE_BUTTON > 0)
 
+/*!
+ * @addtogroup menu_button
+ * @{
+ */
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -79,5 +84,7 @@ void MENU_ButtonCallback(button_t *_inst) {
 #ifdef __cplusplus
 }
 #endif
+
+/* @} */
 
 #endif // ! HITSIC_MENU_USE_BUTTON

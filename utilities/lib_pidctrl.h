@@ -1,5 +1,5 @@
 /**
- * Copyright 2018 - 2019 HITSIC
+ * Copyright 2018 - 2020 HITSIC
  * All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -29,6 +29,14 @@
 
 #include "inc_stdlib.h"
 #include "hitsic_common.h"
+
+ /*!
+  * @addtogroup pidctrl
+  * @{
+  */
+
+/** @brief : 软件版本 */
+#define LIB_PIDCTRL_VERSION (HITSIC_MAKE_VERSION(0U, 1U, 0U))
 
 //#define assert(...)
 
@@ -189,5 +197,7 @@ extern "C"
 #ifdef __cplusplus
 }
 #endif
+
+/* @} */
 
 #endif // ! _LIB_PIDCTRL_H_

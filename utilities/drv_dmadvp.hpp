@@ -1,5 +1,5 @@
  /**
- * Copyright 2018 - 2019 HITSIC
+ * Copyright 2018 - 2020 HITSIC
  * All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -27,10 +27,13 @@
 #define UTILITIES_DRV_DMADVP_HPP_
 #include "inc_stdlib.h"
 #include "hitsic_common.h"
+#include "sys_extint.hpp"
 
 #if defined(HITSIC_USE_DMADVP) && (HITSIC_USE_DMADVP > 0)
 #include "drv_dmadvp_port.hpp"
-#include "sys_extint.hpp"
+
+/** @brief : 软件版本 */
+#define DRV_DMADVP_VERSION (HITSIC_MAKE_VERSION(0U, 1U, 0U))
 
 /*!
  * @addtogroup dmadvp

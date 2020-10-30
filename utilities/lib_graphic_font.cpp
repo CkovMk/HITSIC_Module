@@ -1,4 +1,10 @@
 #include "hitsic_common.h"
+
+/*!
+ * @addtogroup graphic_font
+ * @{
+ */
+
 // begin is the first , endin is the one after the last.
 constexpr uint8_t graphic_asciiBegin = 32;
 constexpr uint8_t graphic_asciiEndin = 127;
@@ -227,3 +233,5 @@ inline uint8_t GRAPHIC_FONT0816_DummyFunction0(void)
     //dummy = DISP_image_100thAnniversary[0][0];
     return dummy;
 }
+
+/* @} */

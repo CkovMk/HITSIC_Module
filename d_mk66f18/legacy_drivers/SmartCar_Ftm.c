@@ -109,7 +109,7 @@ void Ftm_PWM_Init(FTM_Type *base, ftm_chnl_t chnlNumber, uint32_t dutyFre, float
 *  @since      v1.0
 *  Sample usage:          Ftm_PWM_change(FTM0,kFTM_Chnl_1,20000,10.5);
 **********************************************************************************************************************/
-void Ftm_PWM_Change(FTM_Type *base, ftm_chnl_t chnlNumber, uint32_t dutyFre, float dutyCycle)
+void SCFTM_PWM_Change(FTM_Type *base, ftm_chnl_t chnlNumber, uint32_t dutyFre, float dutyCycle)
 {
       /* Disable channel output before updating the dutycycle */
       //FTM_UpdateChnlEdgeLevelSelect(base, chnlNumber, 0U);
@@ -168,7 +168,7 @@ void Ftm_QuadDecode_Init(FTM_Type *base)
 *  @since      v1.0
 *  Sample usage:          Ftm_QuadDecode_Init(FTM1);
 **********************************************************************************************************************/
-int16_t Ftm_GetSpeed(FTM_Type *base)
+int16_t SCFTM_GetSpeed(FTM_Type *base)
 {
     return (int16_t)FTM_GetQuadDecoderCounterValue(base);
 }
@@ -178,9 +178,9 @@ int16_t Ftm_GetSpeed(FTM_Type *base)
 *  @param      base	           ftmÄ£¿éÑ¡Ôñ
 *  @return     void
 *  @since      v1.0
-*  Sample usage:          Ftm_ClearSpeed(FTM1);
+*  Sample usage:          SCFTM_ClearSpeed(FTM1);
 **********************************************************************************************************************/
-void Ftm_ClearSpeed(FTM_Type *base)
+void SCFTM_ClearSpeed(FTM_Type *base)
 {
     FTM_ClearQuadDecoderCounterValue(base);
 }
