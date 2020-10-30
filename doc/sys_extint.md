@@ -11,23 +11,60 @@
 
 ## 版本说明
 
+### v1.0.1
+
+by CkovMk @hitsic 2020.10.30
+
+**改动说明**
+
+- 仿照PITMGR添加`HITSIC_USE_EXTINT`，可以快速禁用EXTINT模块。
+- 修改了服务函数接口，新增了用户参数，添加了`setUserData`方法。
+
+**开发计划**
+
+- 优化查询速度。
+
+**已知问题**
+
+- 暂无
+
+
+
 ### v1.0-beta.0
 
-by CkovMk @hitsic 2019.07.25
+by CkovMk @hitsic 2020.07.25
 
-改动说明：
+**改动说明**
 
 - 全新C++ API
 - 使用std::map作为存储容器，查询速度更快。
 - 增加了对`d_kv10z7`单片机的支持
 
-开发计划：
+**开发计划**
 
 - 仿照PITMGR添加`HITSIC_USE_EXTINT`，可以快速禁用EXTINT模块。
 
-已知问题：
+**已知问题**
 
 - 暂无
+
+
+
+### v0.2.1
+
+by CkovMk @hitsic 2019.11.05
+
+
+
+### v0.2-beta.0
+
+by CkovMk @hitsic 2019.10.20
+
+### ......
+
+### v0.1.0
+
+by CkovMk @hitsic 2018.12.23
 
 
 
@@ -55,9 +92,15 @@ by CkovMk @hitsic 2019.07.25
 
 - **设置任务 `void extInt_t::setup(INTC_Type* _gpio, uint32_t _pin, handler_t _handler);`**
 
+  设置/重设某一引脚上的服务函数。
+
 - **设置中断方式 `void extInt_t::setMode(interrupt_mode_t _mode);`**
 
+  提供一种平台无关的设置中断方式的方法 。
+
 - **设置传递参数`void extInt_t::setUserData(void *_userData);`**
+
+  该函数用于设置任务触发时传递给服务函数的用户变量指针。对于不处理参数的服务函数，忽略即可。
 
 
 
@@ -67,7 +110,11 @@ by CkovMk @hitsic 2019.07.25
 
 ## 设计文档
 
+
+
 ## 应用指南
+
+
 
 ## 移植指南
 

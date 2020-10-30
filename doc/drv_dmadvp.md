@@ -23,6 +23,26 @@
 
 ## 版本说明
 
+### v0.1-beta.1
+
+by CkovMk @hitsic 2020.10.30
+
+改进双缓存操作
+
+**改动说明**
+
+- 图像接收缓存改为缓存队列。
+
+**开发计划**
+
+- 继续改进双缓存，提供config配置项来控制是否自动进行下一帧传输。
+
+**已知问题**
+
+- 图像接收的帧率只有设定值的一半。
+
+
+
 ### v0.1-beta.0
 
 by CkovMk @hitsic 2020.10.20
@@ -53,7 +73,9 @@ by CkovMk @hitsic 2020.10.20
 
 ## 设计文档
 
-DMADVP组件在设计上模仿了I.MX RTyyyy系列单片机SDK中CSI外设的Transactional API。为了尽可能贴近CSI的使用体验，降低切换单片机的难度，我把DMADVP写成了虚拟外设的形式，代码如下：
+### 虚拟设备（DMADVP_Type）
+
+DMADVP组件在设计上模仿了I.MX RTyyyy系列单片机SDK中CSI外设的Transactional API。为了尽可能贴近CSI的使用体验，降低切换单片机的难度，DMADVP被写成了虚拟外设的形式，代码如下：
 
 ```c++
 struct DMADVP_Type
@@ -92,13 +114,68 @@ extern DMADVP_Type __DMADVP0;
 
 
 
+### 传输句柄（dmadvp_handle_t）
+
+同样是为了模仿I.MX RTyyyy系列单片机SDK中CSI外设的Transactional API，DMADVP具有功能类似的传输句柄。
+
+```c++
+/*! @brief DMADVP句柄 */
+struct dmadvp_handle_t
+{
+    DMADVP_Type* base;              /*!< DMADVP虚拟设备地址 */
+    edma_handle_t dmaHandle;        /*!< DMA传输句柄 */
+    edma_transfer_config_t xferCfg; /*!< DMA传输配置 */
+    extInt_t* extIntHandle;         /*!< 外部中断句柄 */
+    volatile bool transferStarted;  /*!< 传输中标志位，true：正在进行传输 */
+    std::queue<uint8_t*> emptyBuffer, fullBuffer;
+};
+```
+
+
+
 ## 应用指南
 
+### 初始化
 
+- 获取配置数据`dmadvp_config_t`。您可以手动配置，也可以在使用摄像头配置器配置完成摄像头后，调用摄像头配置器的相关API产生此数据。
+- 调用`status_t DMADVP_Init(DMADVP_Type *base, const dmadvp_config_t *config);`函数，初始化DMADVP虚拟设备。
+- 调用`void DMADVP_TransferCreateHandle(dmadvp_handle_t *handle, DMADVP_Type *base, edma_callback callback);`函数，初始化传输句柄。
+
+
+
+### 基础用法：单缓存
+
+- 为缓存区分配足够的内存
+
+- 调用`status_t DMADVP_TransferSubmitEmptyBuffer(DMADVP_Type *base, dmadvp_handle_t *handle, uint8_t *buffer);`提交空缓存区。
+
+- 调用`status_t DMADVP_TransferStart(DMADVP_Type *base, dmadvp_handle_t *handle);`启动传输。传输完成时DMA中断会自动调用您在初始化时注册的`callback`回调函数。
+
+- 在回调函数中，首先调用`void DMADVP_EdmaCallbackService(dmadvp_handle_t *handle, bool transferDone);`进行基础维护。
+
+  随后判断`transferDone`标志：
+
+  - 如果为真，调用`status_t DMADVP_TransferGetFullBuffer(DMADVP_Type *base, dmadvp_handle_t *handle, uint8_t **buffer);` 获取传输完毕的缓存区；
+  - 如果为假，说明传输过程出现了错误，进行错误处理。
+
+
+
+### 进阶用法：缓存队列
+
+- 开始过程与单缓存基本相同，不同之处在于开始传输之前应至少提交两个空缓存区。
+
+- 在回调函数中，进行基础维护之后：
+
+  首先调用`status_t DMADVP_TransferStart(DMADVP_Type *base, dmadvp_handle_t *handle);`再次启动传输。
+
+  - 如果此时空缓存队列不为空，则自动使用其中的缓存区进行下一次传输。
+  - 如果此时空缓存队列已空，上述函数将返回`kStatus_DMADVP_NoEmptyBuffer`。
+
+  随后继续按单缓存中的方法获取传输完毕的缓存区。
 
 
 
 ## 移植指南
 
-
+（待续）
 

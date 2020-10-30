@@ -39,7 +39,7 @@
 /** @brief : 软件版本 */
 #define DRV_CAM_ZF9V034_VERSION (HITSIC_MAKE_VERSION(0U, 1U, 0U))
 
-//摄像头命令枚举
+/** @brief : 摄像头命令枚举 */
 enum class cam_zf9v034_cmd_t : uint16_t
 {
     INIT = 0,               ///> 摄像头初始化命令
@@ -62,6 +62,7 @@ enum class cam_zf9v034_cmd_t : uint16_t
     SET_DATA                ///> 寄存器数据命令
 };
 
+/** @brief : 摄像头命令传输结构体 */
 __PACKED
 struct cam_zf9v034_configPacket_t
 {
@@ -76,19 +77,71 @@ struct cam_zf9v034_configPacket_t
     uint16_t imageGainCmd, imageGain;                   ///> 图像增益          范围16-64     增益可以在曝光时间固定的情况下改变图像亮暗程度
     uint16_t initCmd, dummyData0;                       ///> 摄像头开始初始化
 };
+
+/**
+ * @brief 获取摄像头的默认配置。
+ * 
+ * @param config 要获取的配置信息的地址
+ */
 void CAM_ZF9V034_GetDefaultConfig(cam_zf9v034_configPacket_t *config);
+
+/**
+ * @brief 配置摄像头内部配置信息
+ * 
+ * @param config 要发送的配置信息的地址
+ */
 void CAM_ZF9V034_CfgWrite(const cam_zf9v034_configPacket_t *config);
+
+/**
+ * @brief 获取摄像头内部配置信息
+ * 
+ * @param config 要接收的配置信息的地址
+ */
 void CAM_ZF9V034_CfgRead(cam_zf9v034_configPacket_t *config);
-uint16_t CAM_ZF9V034_GetVersion(void);//TODO: use struct
+
+/**
+ * @brief 获取摄像头固件版本
+ * 
+ * @return uint16_t 接收到的版本数据 //FIXME: 接受失败怎么办？
+ */
+uint16_t CAM_ZF9V034_GetVersion(void);
+
+/**
+ * @brief 单独设置摄像头曝光时间
+ * 
+ * @param light 设置曝光时间越大图像越亮，摄像头收到后会根据分辨率及FPS计算最大曝光时间。
+ *                  如果设置的数据过大，那么摄像头将会设置这个最大值
+ * @return uint16_t 当前曝光值，用于确认是否正确写入
+ * 
+ * @note 该数据不会保存到摄像头的EEPROM，下次上电此配置将会丢失，需要重新配置。
+ */
 uint16_t CAM_ZF9V034_SetExposeTime(uint16_t light);
+
 
 // Receiver Config
 #if (defined(ZF9V034_USE_DMADVP) && (ZF9V034_USE_DMADVP > 0U))
 #include "drv_dmadvp.hpp"
-void CAM_ZF9V034_GetReceiverConfig(dmadvp_config_t* config, const cam_zf9v034_configPacket_t *camConfig);
+typedef dmadvp_config_t receiver_config_type;
+
+/**
+ * @brief 获取摄像头接受器的配置信息，用于DMADVP库。
+ * 
+ * @param config 要写入的DMADVP配置结构体
+ * @param camConfig 要读取的ZF9V034摄像头配置结构体
+ */
+void CAM_ZF9V034_GetReceiverConfig(receiver_config_type *config, const cam_zf9v034_configPacket_t *camConfig);
+
 #elif(defined(ZF9V034_USE_RTCSI) && (ZF9V034_USE_RTCSI > 0U))
 #include "drv_rtdvp.hpp"
-void CAM_ZF9V034_GetReceiverConfig(csi_config_t* config, const cam_zf9v034_configPacket_t *camConfig); //FIXME
+typedef csi_config_t receiver_config_type;
+/**
+ * @brief 获取摄像头接受器的配置信息，用于RTCSI库。
+ * 
+ * @param config 要写入的DCSIP配置结构体
+ * @param camConfig 要读取的ZF9V034摄像头配置结构体
+ */
+void CAM_ZF9V034_GetReceiverConfig(receiver_config_type *config, const cam_zf9v034_configPacket_t *camConfig); //FIXME
+
 #endif // ! Receiver Config
 
 /* @} */

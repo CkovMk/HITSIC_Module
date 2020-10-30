@@ -10,6 +10,13 @@
 inline void CAM_ZF9V034_UnitTestDmaCallback(edma_handle_t *handle, void *userData, bool transferDone, uint32_t tcds)
 {
     DMADVP_EdmaCallbackService((dmadvp_handle_t*)userData, transferDone);
+
+    //PRINTF("new full buffer: 0x%-8.8x = 0x%-8.8x\n", handle->fullBuffer.front(), handle->xferCfg.destAddr);
+    if(kStatus_Success != DMADVP_TransferStart(handle->base, handle))
+    {
+        DMADVP_TransferStop(handle->base, handle);
+        PRINTF("transfer stop! insufficent buffer\n");
+    }
 }
 
 inline void CAM_ZF9V034_UnitTest(void)

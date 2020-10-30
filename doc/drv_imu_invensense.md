@@ -25,16 +25,16 @@ InvenSense惯性导航驱动库（DRV_IMU_INVENSENSE，简称DRV_IMU_INV），�
 ### v1.0-beta.0
 
 by [beforelight](https://github.com/beforelight/RemoteIIC)（网瘾少年） @hitsic 2020-10-16 
-改动说明：
+**改动说明**
 
 - 本驱动重构了在k66工程上的c语言版本的IMU驱动，同样支持了3款MPU6050,MPU9250,ICM20602，把I2C作为主要接口，并且添加了自检函数，增加使用的可靠性。
 
-开发计划
+**开发计划**
 
 - 进行进一步测试，验证其稳定性。
 - 提供对ICM20948的支持。
 
-已知问题
+**已知问题**
 - 暂无
 
 

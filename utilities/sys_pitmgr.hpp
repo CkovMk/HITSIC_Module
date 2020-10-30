@@ -19,8 +19,9 @@
  * @author  :	Chekhov Mark/马奇科(qq:905497173)
  * @version :	v1.0.0
  *
- * @date 	:	v0.1-beta.0 2019.10.28
- * @date 	:	v0.1.1		2019.11.02
+ * @date 	:	v0.4-beta.0 2018.12.20
+ * @date 	:	v0.4-beta.0 2019.10.28
+ * @date 	:	v0.4.1		2019.11.02
  * @date	:	v1.0.0		2020.07.25
  *
  * @brief   :   定时中断管理器
@@ -42,7 +43,7 @@
  */
 
 /** @brief : 软件版本 */
-#define SYS_PITMGR_VERSION (HITSIC_MAKE_VERSION(0U, 1U, 0U))
+#define SYS_PITMGR_VERSION (HITSIC_MAKE_VERSION(1U, 0U, 0U))
 
 class pitMgr_t
 {

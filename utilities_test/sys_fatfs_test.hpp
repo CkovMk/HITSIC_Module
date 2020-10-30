@@ -50,6 +50,8 @@ inline void FATFS_BasicTest(void)
         PRINTF("Mount SDCard Success.\r\n");
         PRINTF("SDCard Size = %ld MB.\r\n", (g_sd.blockCount) >> 11);
     }
+//    std::unique_ptr<FATFS, void(*)(FATFS)>
+//                fatfsGuard(&fatfs, [](FATFS* p){ f_mount(0, "2:", 0); });
     result = f_chdrive("2:");
     if (result)
     {
@@ -96,6 +98,8 @@ inline void FATFS_BasicTest(void)
     {
         PRINTF("Open file Success.\r\n");
     }
+    std::unique_ptr<FIL, void(*)(FIL*)>
+            fileGuard(&g_fileObject, [](FIL* p){ f_close(p); });
 
     result = f_write(&g_fileObject, g_bufferWrite, sizeof(g_bufferWrite),
             (UINT*)&bytesWritten);
