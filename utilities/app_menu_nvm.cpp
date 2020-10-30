@@ -1,4 +1,4 @@
-#include "app_menu_nvm.h"
+#include <app_menu_nvm.hpp>
 
 #if defined(HITSIC_MENU_USE_NVM) && (HITSIC_MENU_USE_NVM > 0)
 

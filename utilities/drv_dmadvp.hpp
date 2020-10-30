@@ -25,7 +25,7 @@
  */
 #ifndef UTILITIES_DRV_DMADVP_HPP_
 #define UTILITIES_DRV_DMADVP_HPP_
-#include "inc_stdlib.h"
+#include "inc_stdlib.hpp"
 #include "hitsic_common.h"
 #include "sys_extint.hpp"
 
@@ -79,7 +79,7 @@ struct dmadvp_handle_t
     edma_transfer_config_t xferCfg; /*!< DMA传输配置 */
     extInt_t* extIntHandle;
     volatile bool transferStarted;  /*!< 传输中标志位，true：正在进行传输 */
-    volatile std::queue<uint8_t*> emptyBuffer, fullBuffer;
+    std::queue<uint8_t*> emptyBuffer, fullBuffer;
 };
 
 /**

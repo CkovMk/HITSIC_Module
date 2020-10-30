@@ -31,10 +31,10 @@
 #ifndef _APP_MENU_H_
 #define _APP_MENU_H_
 
-#include "app_menu_def.h"
-#include "app_menu_button.h"
-#include "app_menu_nvm.h"
-#include "app_menu_type.h"
+#include <app_menu_button.hpp>
+#include <app_menu_def.hpp>
+#include <app_menu_nvm.hpp>
+#include <app_menu_type.hpp>
 
  /*!
   * @addtogroup menu
@@ -175,13 +175,13 @@ int32_t MENU_GetNvmStatus(void);
  */
 void MENU_SetNvmStatus(int32_t _status);
 
+#endif // ! HITSIC_MENU_USE_NVM
+
 /**
  * @brief : 定时中断管理器句柄。
  *
  */
-void MENU_PitIsr(void);
-
-#endif // ! HITSIC_MENU_USE_NVM
+void MENU_PitIsr(void* userData);
 
 void MENU_Suspend(void);
 

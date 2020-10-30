@@ -34,9 +34,10 @@ inline void CAM_ZF9V034_UnitTest(void)
     DMADVP_TransferCreateHandle(&dmadvpHandle, DMADVP0, CAM_ZF9V034_UnitTestDmaCallback);
 
     PRINTF("[D] DMADVP: Allocating image buffer.\n");
-    volatile uint8_t *imageBuffer0 = new uint8_t[DMADVP0->imgSize];
-    volatile uint8_t *imageBuffer1 = new uint8_t[DMADVP0->imgSize];
-    volatile uint8_t *fullBuffer = NULL;
+    uint8_t *imageBuffer0 = new uint8_t[DMADVP0->imgSize];
+    uint8_t *imageBuffer1 = new uint8_t[DMADVP0->imgSize];
+    uint8_t *fullBuffer = NULL;
+    //FIXME: do cache operation HERE!
     disp_ssd1306_frameBuffer_t* dispBuffer = new disp_ssd1306_frameBuffer_t;
 
     DMADVP_TransferSubmitEmptyBuffer(DMADVP0, &dmadvpHandle, imageBuffer0);

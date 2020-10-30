@@ -1,8 +1,8 @@
 #ifndef D_MK66F18_SVBMP_PORT_HPP
 #define D_MK66F18_SVBMP_PORT_HPP
 
+#include "inc_stdlib.hpp"
 #include "hitsic_common.h"
-#include "inc_stdlib.h"
 
 #if (defined(HITSIC_USE_APP_SVBMP) && (HITSIC_USE_APP_SVBMP > 0))
 #include "ff.h"

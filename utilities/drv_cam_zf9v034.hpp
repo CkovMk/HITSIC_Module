@@ -62,7 +62,7 @@ enum class cam_zf9v034_cmd_t : uint16_t
     SET_DATA                ///> 寄存器数据命令
 };
 
-__attribute__ ((__packed__))
+__PACKED
 struct cam_zf9v034_configPacket_t
 {
     uint16_t autoExpSetCmd, autoExpSet;                 ///> 自动曝光设置      范围1-63 0为关闭 如果自动曝光开启  EXP_TIME命令设置的数据将会变为最大曝光时间，也就是自动曝光时间的上限

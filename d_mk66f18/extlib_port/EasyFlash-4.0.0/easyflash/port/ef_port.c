@@ -30,7 +30,7 @@
 #include <stdarg.h>
 
 #include "hitsic_common.h"
-#include "drv_ftfx_flash.h"
+#include "drv_ftfx_flash.hpp"
      
 int status = (0x50 << 24);
 
@@ -105,7 +105,7 @@ EfErrCode ef_port_erase(uint32_t addr, size_t size)
 	/* You can add your code under here. */
 	EF_ASSERT(size % EF_ERASE_MIN_SIZE == 0);
 	uint32_t sectorNum = size / EF_ERASE_MIN_SIZE;
-	for (int32_t i = 0; i < sectorNum; ++i)
+	for (uint32_t i = 0; i < sectorNum; ++i)
 	{
 		EF_INFO("Verbose: Erase Addr 0x%8.8x, Size %4.4d bytes\n", addr, size);
 		if (kStatus_FTFx_Success != FLASH_SectorErase(addr / EF_ERASE_MIN_SIZE + i))

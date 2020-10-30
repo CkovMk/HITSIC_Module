@@ -1,7 +1,7 @@
 #ifndef UTILITIES_TEST_SYS_FATFS_TEST_HPP
 #define UTILITIES_TEST_SYS_FATFS_TEST_HPP
 #include "hitsic_common.h"
-#include "inc_stdlib.h"
+#include "inc_stdlib.hpp"
 
 extern sd_card_t g_sd;
 
@@ -98,7 +98,7 @@ inline void FATFS_BasicTest(void)
     }
 
     result = f_write(&g_fileObject, g_bufferWrite, sizeof(g_bufferWrite),
-            &bytesWritten);
+            (UINT*)&bytesWritten);
     if (result)
     {
         PRINTF("\r\nWrite file failed.\r\n");

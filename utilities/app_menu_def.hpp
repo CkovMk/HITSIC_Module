@@ -1,7 +1,7 @@
 #ifndef _APP_MENU_DEF_H_
 #define _APP_MENU_DEF_H_
+#include "inc_stdlib.hpp"
 #include "hitsic_common.h"
-#include "inc_stdlib.h"
 
 #if defined(HITSIC_USE_APP_MENU) && (HITSIC_USE_APP_MENU > 0)
 
@@ -10,7 +10,7 @@
  * @{
  */
 
-#include "app_menu_port.h"
+#include <app_menu_port.hpp>
 #include "drv_disp_ssd1306.hpp"
 #include "lib_list.h"
 #include "sys_pitmgr.hpp"
@@ -290,13 +290,13 @@ typedef struct _menu_itemIfce_t
 extern uint32_t menu_itemCnt;
 extern uint32_t menu_listCnt;
 
-extern volatile menu_list_t *menu_currList;
-extern volatile menu_itemIfce_t *menu_currItem;
+extern menu_list_t *menu_currList;
+extern menu_itemIfce_t *menu_currItem;
 extern menu_list_t *menu_menuRoot;
-extern volatile int32_t &menu_currRegionNum;
+extern int32_t &menu_currRegionNum;
 extern int32_t menu_statusFlag;
 extern uint32_t menu_nvm_statusFlagAddr;
-extern volatile int32_t &menu_nvmCopySrc, &menu_nvmCopyDst;
+extern int32_t &menu_nvmCopySrc, &menu_nvmCopyDst;
 
 extern char menu_dispStrBuf[MENU_DISP_STRBUF_ROW][MENU_DISP_STRBUF_COL];
 

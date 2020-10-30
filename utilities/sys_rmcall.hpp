@@ -29,8 +29,8 @@
 
 #ifndef _SYS_RMCALL_HPP_
 #define _SYS_RMCALL_HPP_
+#include "inc_stdlib.hpp"
 #include "hitsic_common.h"
-#include "inc_stdlib.h"
 
 #if defined(HITSIC_USE_RMCALL) && (HITSIC_USE_RMCALL > 0)
 #include "sys_rmcall_port.hpp"

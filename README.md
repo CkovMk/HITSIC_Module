@@ -21,19 +21,20 @@ HITSIC_Module是哈工大智能车创新俱乐部各MCU平台共用的程序模�
 | **SYS / 系统**                          |                                                           |
 | [EXTINT](doc/sys_extint.md)             | 外部中断管理器组件                                        |
 | [PITMGR](doc/sys_pitmgr.md)             | 定时中断管理器组件                                        |
-| [WIP:RMCALL](doc/sys_rmcall.md)         | 远程调用组件                                              |
+| [UARTMGR](doc/sys_uartmgr.md) |  |
+| [RMCALL](doc/sys_rmcall.md)         | 远程调用组件                                              |
 | **DRV / 驱动**                          |                                                           |
 | [FTFX_FLASH](doc/drv_ftfx_flash.md)     | Kinetis系列单片机内部Flash驱动组件                        |
 | [BUTTON](doc/drv_button.md)             | 按钮事件识别组件                                          |
 | DISP_FONT                               | 显示字体组件                                              |
 | [DISP_SSD1306](doc/drv_disp_ssd1306.md) | OLED屏幕SSD1306驱动组件                                   |
-| WIP:：IMU_INVENSENSE                    | Invensense公司IMU惯导模块统一驱动组件                     |
+| [IMU_INVENSENSE](doc/drv_imu_invensense.md) | Invensense公司IMU惯导模块统一驱动组件                     |
 | WIP：TCS34725                           | I2C颜色传感器                                             |
 | WIP：TFMINI                             | TFmini激光测距雷达                                        |
 | WIP：TOF_VL53L0x                        | ST VL53L0x激光测距传感器                                  |
 | WIP：TOF_VL53L1x                        | ST VL53L1x激光测距传感器                                  |
-| [WIP：DMADVP](doc/drv_dmadvp.md)    | DVP摄像头DMA接收器模组，用于Kinetis系列单片机             |
-| [WIP：CAM_ZF9V034](doc/drv_cam_zf9v034.md) | 逐飞总钻风（CMOS：MT9V034）摄像头配置模组                 |
+| [DMADVP](doc/drv_dmadvp.md)    | DVP摄像头DMA接收器模组，用于Kinetis系列单片机             |
+| [CAM_ZF9V034](doc/drv_cam_zf9v034.md) | 逐飞总钻风（CMOS：MT9V034）摄像头配置模组                 |
 | **LIB / 工具**                          |                                                           |
 | LIST                                    | 轻量级链表组件                                            |
 | PIDCTRL                                 | PID控制组件                                               |

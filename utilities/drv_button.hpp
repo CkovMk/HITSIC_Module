@@ -27,7 +27,7 @@
 
 #ifndef _DRV_BUTTON_H_
 #define _DRV_BUTTON_H_
-#include "inc_stdlib.h"
+#include "inc_stdlib.hpp"
 #include "hitsic_common.h"
 
 #if defined(HITSIC_USE_DRV_BUTTON) && (HITSIC_USE_DRV_BUTTON > 0)

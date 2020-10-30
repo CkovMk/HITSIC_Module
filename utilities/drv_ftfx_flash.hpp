@@ -30,7 +30,7 @@
 #pragma once
 #ifndef _DRV_FTFX_FLASH_H_
 #define _DRV_FTFX_FLASH_H_
-#include "inc_stdlib.h"
+#include "inc_stdlib.hpp"
 #include "hitsic_common.h"
 
 #if defined(HITSIC_USE_FTFX_FLASH) && (HITSIC_USE_FTFX_FLASH > 0)

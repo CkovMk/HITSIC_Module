@@ -5,7 +5,7 @@
  *	@owner:		C.M.@SJMC
  *	@modified:	C.M.@SJMC 2019.01.15 04:48
  */
-#include "inc_stdlib.h"
+#include "inc_stdlib.hpp"
 #include "hitsic_common.h"
 
 extern const uint8_t DISP_font_6x8[][6] =

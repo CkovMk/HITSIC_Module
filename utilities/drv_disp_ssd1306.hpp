@@ -30,7 +30,7 @@
 #pragma once
 #ifndef _DISP_SSD1306_H_
 #define _DISP_SSD1306_H_
-#include "inc_stdlib.h"
+#include "inc_stdlib.hpp"
 #include "hitsic_common.h"
 
 #if defined(HITSIC_USE_DISP_SSD1306) && (HITSIC_USE_DISP_SSD1306 > 0)

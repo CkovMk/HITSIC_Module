@@ -1,8 +1,8 @@
 #ifndef UTILITIES_LIB_GRAPHIC_HPP
 #define UTILITIES_LIB_GRAPHIC_HPP
 
+#include "inc_stdlib.hpp"
 #include "hitsic_common.h"
-#include "inc_stdlib.h"
 #include "lib_graphic_font.hpp"
 
 /*!

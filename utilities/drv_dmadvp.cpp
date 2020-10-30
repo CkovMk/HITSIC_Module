@@ -127,7 +127,7 @@ void DMADVP_TransferStop(DMADVP_Type *base, dmadvp_handle_t *handle)
     PORT_SetPinInterruptConfig(handle->base->pclk_intc, handle->base->pclk_pin,
                 kPORT_InterruptOrDMADisabled);
     EDMA_AbortTransfer(&handle->dmaHandle);
-    DMADVP_TransferSubmitEmptyBuffer(base, handle, handle->xferCfg.destAddr);
+    DMADVP_TransferSubmitEmptyBuffer(base, handle, (uint8_t*)handle->xferCfg.destAddr);
     handle->transferStarted = false;
 }
 

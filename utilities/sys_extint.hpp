@@ -29,7 +29,7 @@
 #pragma once
 #ifndef UTILITIES_SYS_EXTINT_HPP_
 #define UTILITIES_SYS_EXTINT_HPP_
-#include "inc_stdlib.h"
+#include "inc_stdlib.hpp"
 #include "hitsic_common.h"
 
 #if defined(HITSIC_USE_EXTINT) && (HITSIC_USE_EXTINT > 0)
@@ -41,7 +41,7 @@
  */
 
 /** @brief : 软件版本 */
-#define DRV_IMU_INVENSENSE_VERSION (HITSIC_MAKE_VERSION(1U, 0U, 0U))
+#define SYS_EXTINT_VERSION (HITSIC_MAKE_VERSION(1U, 0U, 0U))
 
 class extInt_t
 {

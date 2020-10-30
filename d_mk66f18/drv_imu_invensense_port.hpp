@@ -26,7 +26,7 @@ inline int IMU_INV_I2cRxBlocking(void *userData,
     return HAL_I2C_Mem_ReadBlocking(I2C0, addr, reg, 1U, val, len);
 }
 inline int IMU_INV_I2cTxBlocking(void *userData,
-                     uint8_t addr, uint8_t reg, const uint8_t *val, unsigned int len)
+                     uint8_t addr, uint8_t reg, uint8_t *val, unsigned int len)
 {
     return HAL_I2C_Mem_WriteBlocking(I2C0, addr, reg, 1U, val, len);
 }

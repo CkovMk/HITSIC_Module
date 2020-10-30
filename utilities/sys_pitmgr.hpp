@@ -29,7 +29,7 @@
 #pragma once
 #ifndef UTILITIES_SYS_PITMGR_HPP_
 #define UTILITIES_SYS_PITMGR_HPP_
-#include "inc_stdlib.h"
+#include "inc_stdlib.hpp"
 #include "hitsic_common.h"
 //#include "list"
 

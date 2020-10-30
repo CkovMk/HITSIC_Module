@@ -23,7 +23,7 @@
  */
 
 
-#include "drv_ftfx_flash.h"
+#include <drv_ftfx_flash.hpp>
 
 #if defined(HITSIC_USE_FTFX_FLASH) && (HITSIC_USE_FTFX_FLASH > 0)
 

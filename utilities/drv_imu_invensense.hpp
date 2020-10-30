@@ -33,8 +33,8 @@
 
 #ifndef UTILITIES_DRV_IMU_INVENSENSE_HPP
 #define UTILITIES_DRV_IMU_INVENSENSE_HPP
+#include "inc_stdlib.hpp"
 #include "hitsic_common.h"
-#include "inc_stdlib.h"
 
 #if (defined(HITSIC_USE_DRV_IMU_INV) && (HITSIC_USE_DRV_IMU_INV > 0U))
 #include "drv_imu_invensense_port.hpp"
@@ -296,7 +296,7 @@ namespace inv {
          * 
          * @param  {i2cInterface_t &} _i2c : 用哪个iic和传感器通讯啊？
          */
-        imu_t(i2cInterface_t &_i2c) : i2c(_i2c), isOpen(false), addr(0), cfg(config_t()) {}
+        imu_t(i2cInterface_t &_i2c) : i2c(_i2c), addr(0), isOpen(false), cfg(config_t()) {}
 
         i2cInterface_t &i2c;
 

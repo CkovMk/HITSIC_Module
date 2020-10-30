@@ -25,8 +25,8 @@
 
 #ifndef UTILITIES_APP_SVBMP_HPP
 #define UTILITIES_APP_SVBMP_HPP
+#include "inc_stdlib.hpp"
 #include "hitsic_common.h"
-#include "inc_stdlib.h"
 
 #if (defined(HITSIC_USE_APP_SVBMP) && (HITSIC_USE_APP_SVBMP > 0))
 #include "app_svbmp_port.hpp"

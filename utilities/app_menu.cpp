@@ -27,7 +27,7 @@
  * @note 	:	预发布版本，代码不完整，仅供学习。
  */
 
-#include "app_menu.h"
+#include "app_menu.hpp"
 
 #if defined(HITSIC_USE_APP_MENU) && (HITSIC_USE_APP_MENU > 0)
 
@@ -41,25 +41,25 @@
 	 */
 
 	//menu_t menuInst;
-	volatile menu_list_t *menu_currList;
-	volatile menu_itemIfce_t *menu_currItem;
+	menu_list_t *menu_currList;
+	menu_itemIfce_t *menu_currItem;
 	menu_list_t *menu_menuRoot;
 	menu_list_t *menu_manageList;
-	volatile int32_t menu_currRegionNumAdj[3] = { 0, 0, HITSIC_MENU_NVM_REGION_CNT - 1 };
-	volatile int32_t &menu_currRegionNum = menu_currRegionNumAdj[0];
+	int32_t menu_currRegionNumAdj[3] = { 0, 0, HITSIC_MENU_NVM_REGION_CNT - 1 };
+	int32_t &menu_currRegionNum = menu_currRegionNumAdj[0];
 	int32_t menu_statusFlag;
 	uint32_t menu_nvm_statusFlagAddr;
 
-	volatile int32_t menu_nvmCopySrcAdj[3] = { 0, 0, HITSIC_MENU_NVM_REGION_CNT - 1 };
-	volatile int32_t menu_nvmCopyDstAdj[3] = { 0, 0, HITSIC_MENU_NVM_REGION_CNT - 1 };
-	volatile int32_t &menu_nvmCopySrc = menu_nvmCopySrcAdj[0], &menu_nvmCopyDst = menu_nvmCopyDstAdj[0];
+	int32_t menu_nvmCopySrcAdj[3] = { 0, 0, HITSIC_MENU_NVM_REGION_CNT - 1 };
+	int32_t menu_nvmCopyDstAdj[3] = { 0, 0, HITSIC_MENU_NVM_REGION_CNT - 1 };
+	int32_t &menu_nvmCopySrc = menu_nvmCopySrcAdj[0], &menu_nvmCopyDst = menu_nvmCopyDstAdj[0];
 
 	char menu_dispStrBuf[MENU_DISP_STRBUF_ROW][MENU_DISP_STRBUF_COL];
 
 	menu_keyOp_t menu_keyOpBuff;
 
 	pitMgr_t* menu_pitHandle = NULL;
-	volatile int32_t menu_suspendCnt = 0U;
+	volatile uint32_t menu_suspendCnt = 0U;
 
 	/**
 	 * ********** 菜单顶层操作接口 **********
@@ -213,7 +213,7 @@
 	void MENU_Data_NvmSave(int32_t _region)
 	{
 	    ++menu_nvm_eraseCnt;
-		if(_region < 0 || _region >= HITSIC_MENU_NVM_REGION_CNT) { return; }
+		if(_region < 0 || (uint32_t)_region >= HITSIC_MENU_NVM_REGION_CNT) { return; }
 		MENU_NVM_LOG_I("Data Save Begin.");
 		menu_list_t **listQue = (menu_list_t**)calloc(menu_listCnt, sizeof(menu_list_t *));
 		listQue[0] = menu_manageList;
@@ -221,18 +221,18 @@
 		MENU_NVM_LOG_D("Global Data.");
 		MENU_NVM_LOG_D("Add list [%s].", menu_manageList->nameStr);
 		MENU_NVM_LOG_D("Add list [%s].", menu_menuRoot->nameStr);
-		for (int listNum = 0; listNum < menu_listCnt; ++listNum)
+		for (uint32_t listNum = 0; listNum < menu_listCnt; ++listNum)
 		{
 		    MENU_NVM_LOG_D("In List [%s]:", listQue[listNum]->nameStr);
 			assert(listQue[listNum]);
 			static_assert(sizeof(menu_nvmData_t) == 32, "sizeof menu_nvmData_t error !");
-			for (int i = 0; i < listQue[listNum]->listNum; ++i)
+			for (uint32_t i = 0; i < listQue[listNum]->listNum; ++i)
 			{
 				menu_nvmData_t dataBuf;
 				menu_itemIfce_t *thisItem = listQue[listNum]->menu[i];
 				if (thisItem->type == menuType)
 				{
-					for (int j = 0; j < menu_listCnt; ++j)
+					for (uint32_t j = 0; j < menu_listCnt; ++j)
 					{
 						if (listQue[j] == thisItem->handle.p_menuType->data)
 						{
@@ -268,10 +268,10 @@
 			return;
 		}
 		MENU_NVM_LOG_D("Nvm Region%d Data.", menu_currRegionNum);
-		for (int listNum = 0; listNum < menu_listCnt; ++listNum)
+		for (uint32_t listNum = 0; listNum < menu_listCnt; ++listNum)
 		{
 		    MENU_NVM_LOG_D("In List [%s].", listQue[listNum]->nameStr);
-			for (int i = 0; i < listQue[listNum]->listNum; ++i)
+			for (uint32_t i = 0; i < listQue[listNum]->listNum; ++i)
 			{
 				menu_nvmData_t dataBuf;
 				menu_itemIfce_t *thisItem = listQue[listNum]->menu[i];
@@ -302,7 +302,7 @@
 
 	void MENU_Data_NvmRead(int32_t _region)
 	{
-		if(_region < 0 || _region >= HITSIC_MENU_NVM_REGION_CNT) { return; }
+		if(_region < 0 || (uint32_t)_region >= HITSIC_MENU_NVM_REGION_CNT) { return; }
 		MENU_NVM_LOG_I("Read Begin.");
 		menu_list_t **listQue = (menu_list_t**)calloc(menu_listCnt, sizeof(menu_list_t *));
 		listQue[0] = menu_manageList;
@@ -310,18 +310,18 @@
 		MENU_NVM_LOG_D("Global Data.");
 		MENU_NVM_LOG_D("Add list [%s].", menu_manageList->nameStr);
 		MENU_NVM_LOG_D("Add list [%s].", menu_menuRoot->nameStr);
-		for (int listNum = 0; listNum < menu_listCnt; ++listNum)
+		for (uint32_t listNum = 0; listNum < menu_listCnt; ++listNum)
 		{
 		    MENU_NVM_LOG_D("In List [%s]:", listQue[listNum]->nameStr);
 			assert(listQue[listNum]);
 			static_assert(sizeof(menu_nvmData_t) == 32, "sizeof menu_nvmData_t error !");
-			for (int i = 0; i < listQue[listNum]->listNum; ++i)
+			for (uint32_t i = 0; i < listQue[listNum]->listNum; ++i)
 			{
 				menu_nvmData_t dataBuf;
 				menu_itemIfce_t *thisItem = listQue[listNum]->menu[i];
 				if (thisItem->type == menuType)
 				{
-					for (int j = 0; j < menu_listCnt; ++j)
+					for (uint32_t j = 0; j < menu_listCnt; ++j)
 					{
 						if (listQue[j] == thisItem->handle.p_menuType->data)
 						{
@@ -352,9 +352,9 @@
 			return;
 		}
 		MENU_NVM_LOG_D("Region%d Data.", menu_currRegionNum);
-		for (int listNum = 0; listNum < menu_listCnt; ++listNum)
+		for (uint32_t listNum = 0; listNum < menu_listCnt; ++listNum)
 		{
-			for (int i = 0; i < listQue[listNum]->listNum; ++i)
+			for (uint32_t i = 0; i < listQue[listNum]->listNum; ++i)
 			{
 				menu_nvmData_t dataBuf;
 				menu_itemIfce_t *thisItem = listQue[listNum]->menu[i];
@@ -415,7 +415,7 @@
 
 	void MENU_Data_NvmCopy(int32_t _srcRegion, int32_t _dstRegion)
 	{
-		if ((_srcRegion == _dstRegion) || (_srcRegion < 0 || _srcRegion >= HITSIC_MENU_NVM_REGION_CNT) || (_dstRegion < 0 || _dstRegion >= HITSIC_MENU_NVM_REGION_CNT))
+		if ((_srcRegion == _dstRegion) || (_srcRegion < 0 || (uint32_t)_srcRegion >= HITSIC_MENU_NVM_REGION_CNT) || (_dstRegion < 0 || (uint32_t)_dstRegion >= HITSIC_MENU_NVM_REGION_CNT))
 		{
 			return;
 		}
@@ -424,7 +424,7 @@
 		{
 			MENU_NvmUpdateCache();
 		}
-		for (int i = 0; i < HITSIC_MENU_NVM_REGION_SECT_SIZE; ++i)
+		for (uint32_t i = 0; i < HITSIC_MENU_NVM_REGION_SECT_SIZE; ++i)
 		{
 			MENU_NvmCacheSector(menu_nvm_rgSectOffset[_srcRegion] + i);
 			menu_nvm_cachedSector = menu_nvm_rgSectOffset[_dstRegion] + i;
@@ -455,7 +455,7 @@
 
 #endif // ! HITSIC_MENU_USE_NVM
 
-	void MENU_PitIsr(void)
+	void MENU_PitIsr(void* userData)
 	{
 		menu_statusFlag |= menu_message_printDisp;
 		NVIC_SetPendingIRQ(HITSIC_MENU_SERVICE_IRQn);
@@ -500,11 +500,10 @@ extern "C"
 	void MENU_Resume(void)
 	{
 		assert(menu_pitHandle);
-		--menu_suspendCnt;
+		menu_suspendCnt = menu_suspendCnt == 0 ? menu_suspendCnt : menu_suspendCnt - 1;
 		MENU_LOG_D("SuspendCnt = %d", menu_suspendCnt);
-		if (0U <= menu_suspendCnt)
+		if (0U == menu_suspendCnt)
 		{
-			menu_suspendCnt = 0;
 			menu_statusFlag = 0;
 			menu_pitHandle->setEnable(true);
 			NVIC_EnableIRQ(HITSIC_MENU_SERVICE_IRQn);

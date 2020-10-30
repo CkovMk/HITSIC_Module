@@ -1,4 +1,4 @@
-#include "app_menu_type.h"
+#include <app_menu_type.hpp>
 
 #if defined(HITSIC_USE_APP_MENU) && (HITSIC_USE_APP_MENU > 0)
 
@@ -133,11 +133,11 @@ extern "C"
         }
         else if ((!(_item->pptFlag & menuItem_disp_forceSci)) && *handle->data < 1000000 && *handle->data > -1000000)
         {
-            menu_dispStrBuf[_slotNum][snprintf(menu_dispStrBuf[_slotNum], MENU_DISP_STRBUF_COL, " %-12.12s %+-7d", _item->nameStr, *(handle->data))] = ' ';
+            menu_dispStrBuf[_slotNum][snprintf(menu_dispStrBuf[_slotNum], MENU_DISP_STRBUF_COL, " %-12.12s %+-7ld", _item->nameStr, *(handle->data))] = ' ';
         }
         else
         {
-            menu_dispStrBuf[_slotNum][snprintf(menu_dispStrBuf[_slotNum], MENU_DISP_STRBUF_COL, " %-12.12s %+4.4d%+1.1d", _item->nameStr, handle->v, handle->e)] = ' ';
+            menu_dispStrBuf[_slotNum][snprintf(menu_dispStrBuf[_slotNum], MENU_DISP_STRBUF_COL, " %-12.12s %+4.4ld%+1.1ld", _item->nameStr, handle->v, handle->e)] = ' ';
         }
     }
     void MENU_ItemDirectKeyOp_variType(menu_itemIfce_t *_item, menu_keyOp_t *const _op)
@@ -209,7 +209,7 @@ extern "C"
         menu_item_variHandle_t *handle = _item->handle.p_variType;
         MENU_ItemSetContent_variType(&handle->bData, handle->v, handle->e);
         menu_dispStrBuf[0][snprintf(menu_dispStrBuf[0], MENU_DISP_STRBUF_COL, "##%-15.15s *", _item->nameStr)] = ' ';
-        menu_dispStrBuf[2][snprintf(menu_dispStrBuf[2], MENU_DISP_STRBUF_COL, "  Cur: %+-10d", *handle->data)] = ' ';
+        menu_dispStrBuf[2][snprintf(menu_dispStrBuf[2], MENU_DISP_STRBUF_COL, "  Cur: %+-10ld", *handle->data)] = ' ';
 
         if (_item->pptFlag & menuItem_data_ROFlag)
         {
@@ -217,8 +217,8 @@ extern "C"
         }
         else
         {
-            menu_dispStrBuf[3][snprintf(menu_dispStrBuf[3], MENU_DISP_STRBUF_COL, "  Adj: %+-10d", handle->bData)] = ' ';
-            menu_dispStrBuf[4][snprintf(menu_dispStrBuf[4], MENU_DISP_STRBUF_COL, "  Mod: %+4.4de%+1.1d", handle->v, handle->e)] = ' ';
+            menu_dispStrBuf[3][snprintf(menu_dispStrBuf[3], MENU_DISP_STRBUF_COL, "  Adj: %+-10ld", handle->bData)] = ' ';
+            menu_dispStrBuf[4][snprintf(menu_dispStrBuf[4], MENU_DISP_STRBUF_COL, "  Mod: %+4.4lde%+1.1ld", handle->v, handle->e)] = ' ';
             int32_t pos = handle->cur < 0 ? 12 - handle->cur : 11 - handle->cur;
             menu_dispStrBuf[5][pos] = '^';
             menu_dispStrBuf[7][snprintf(menu_dispStrBuf[7], MENU_DISP_STRBUF_COL, "    SOK>AC LOK>WA    ")] = ' ';
@@ -421,7 +421,7 @@ extern "C"
         }
         else
         {
-            menu_dispStrBuf[_slotNum][snprintf(menu_dispStrBuf[_slotNum], MENU_DISP_STRBUF_COL, " %-12.12s %+4.4d%+1.1d", _item->nameStr, handle->v, handle->e)] = ' ';
+            menu_dispStrBuf[_slotNum][snprintf(menu_dispStrBuf[_slotNum], MENU_DISP_STRBUF_COL, " %-12.12s %+4.4ld%+1.1ld", _item->nameStr, handle->v, handle->e)] = ' ';
         }
     }
     void MENU_ItemDirectKeyOp_varfType(menu_itemIfce_t *_item, menu_keyOp_t *const _op)
@@ -488,7 +488,7 @@ extern "C"
         else
         {
             menu_dispStrBuf[3][snprintf(menu_dispStrBuf[3], MENU_DISP_STRBUF_COL, "  Adj: %+-10.4f", handle->bData)] = ' ';
-            menu_dispStrBuf[4][snprintf(menu_dispStrBuf[4], MENU_DISP_STRBUF_COL, "  Mod: %+3.3de%+1.1d", handle->v, handle->e)] = ' ';
+            menu_dispStrBuf[4][snprintf(menu_dispStrBuf[4], MENU_DISP_STRBUF_COL, "  Mod: %+3.3lde%+1.1ld", handle->v, handle->e)] = ' ';
             int32_t pos = handle->cur < 0 ? 12 - handle->cur : 11 - handle->cur;
             menu_dispStrBuf[5][pos] = '^';
             menu_dispStrBuf[7][snprintf(menu_dispStrBuf[7], MENU_DISP_STRBUF_COL, "    SOK>AC LOK>WA    ")] = ' ';
@@ -647,7 +647,7 @@ extern "C"
     void MENU_ItemConstruct_procType(menu_itemIfce_t *_item, void *_data)
     {
         _item->handle.p_procType = (menu_item_procHandle_t*)malloc(sizeof(menu_item_procHandle_t));
-        _item->handle.p_procType->data = (void (*)(void))_data;
+        _item->handle.p_procType->data = (menu_itemProcHandler_t)_data;
     }
     void MENU_ItemGetData_procType(menu_itemIfce_t *_item, void *_data)
     {
@@ -864,7 +864,7 @@ extern "C"
 
     void MENU_ListPrintDisp(menu_list_t *_list)
     {
-        menu_dispStrBuf[0][snprintf(menu_dispStrBuf[0], MENU_DISP_STRBUF_COL, "##%-13.13s*%2.2d/%2.2d", _list->nameStr, _list->slct_p + 1, _list->listNum)] = ' ';
+        menu_dispStrBuf[0][snprintf(menu_dispStrBuf[0], MENU_DISP_STRBUF_COL, "##%-13.13s*%2.2ld/%2.2ld", _list->nameStr, _list->slct_p + 1, _list->listNum)] = ' ';
         uint32_t printCnt = _list->listNum < MENU_DISP_STRBUF_ROW - 1 ? _list->listNum : MENU_DISP_STRBUF_ROW - 1;
         for (uint8_t i = 0; i < printCnt; ++i)
         {

@@ -25,7 +25,7 @@
 #pragma once
 #ifndef D_MK66F18_DRVOLED_H_
 #define D_MK66F18_DRVOLED_H_
-#include "inc_stdlib.h"
+#include "inc_stdlib.hpp"
 #include "hitsic_common.h"
 #include "sys_pitmgr.hpp"
 #include "pin_mux.h"
@@ -52,7 +52,7 @@ inline void DISP_SSD1306_gpioSetD_C(uint8_t x)
 
 inline void DISP_SSD1306_delay_ms(uint32_t ms)
 {
-	for(int i = 0; i < ms; ++i)
+	for(uint32_t i = 0; i < ms; ++i)
 	{
         SDK_DelayAtLeastUs(1000,CLOCK_GetFreq(kCLOCK_CoreSysClk));
 	}

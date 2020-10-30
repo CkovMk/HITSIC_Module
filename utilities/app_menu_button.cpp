@@ -1,4 +1,4 @@
-#include "app_menu_button.h"
+#include <app_menu_button.hpp>
 
 #if defined(HITSIC_MENU_USE_BUTTON) && (HITSIC_MENU_USE_BUTTON > 0)
 
@@ -74,6 +74,8 @@ void MENU_ButtonCallback(button_t *_inst) {
         break;
     case BUTTON_LRPT_PRES:
         menu_keyOpBuff |= menuOpType_lrpt;
+        break;
+    default:
         break;
     }
 

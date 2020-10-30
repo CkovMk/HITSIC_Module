@@ -8,7 +8,7 @@
  * @{
  */
 
-static DMADVP_Type __DMADVP0 =
+DMADVP_Type __DMADVP0 =
 {
     .vsnc_intc = RTEPIN_DIGITAL_CAM_VSNC_PORT,
     .vsnc_pin = RTEPIN_DIGITAL_CAM_VSNC_PIN,

@@ -1,7 +1,7 @@
 #ifndef UTILITIES_TEST_APP_MENU_TEST_HPP
 #define UTILITIES_TEST_APP_MENU_TEST_HPP
 #include "hitsic_common.h"
-#include "app_menu.h"
+#include "app_menu.hpp"
 
 inline void MENU_SuspendAndResumeTest(void)
 {
