@@ -51,7 +51,7 @@ enum
 };
 
 /*! @brief CSI signal polarity. */
-enum _dmadvp_polarity_flags    //TODO: fix this
+enum dmadvp_polarity_flags
 {
     DMADVP_HsyncActiveLow         = 0U,                        /*!< HSYNC is active low. No Use HERE*/
     DMADVP_HsyncActiveHigh        = 1U,                        /*!< HSYNC is active high. No Use HERE*/
@@ -105,7 +105,6 @@ status_t DMADVP_Init(DMADVP_Type *base, const dmadvp_config_t *config);
  * @param handle DMADVP传输句柄
  * @param base DMADVP虚拟设备地址
  * @param callback 要使用的DMA回调函数
- * @param userData 要传递的用户数据 //FIXME这里似乎有问题
  */
 void DMADVP_TransferCreateHandle(dmadvp_handle_t *handle, DMADVP_Type *base, edma_callback callback);
 

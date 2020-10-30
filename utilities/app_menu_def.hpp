@@ -258,7 +258,6 @@ typedef struct
 typedef struct
 {
     menu_list_t *data;
-    // void *data; //TODO: fix this.
 } menu_item_menuHandle_t;
 
 /** @brief : 菜单项接口结构体。 */

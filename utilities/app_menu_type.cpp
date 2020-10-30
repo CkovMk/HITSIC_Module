@@ -773,7 +773,7 @@ extern "C"
 
     void MENU_itemDestruct(menu_itemIfce_t *_item)
     {
-        free(_item->handle.p_void); //TODO: fix this!
+        free(_item->handle.p_void);
         free(_item);
         _item = NULL;
         --menu_itemCnt;
