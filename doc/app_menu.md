@@ -842,16 +842,16 @@ by：CkovMk @hitsic 2019.11.02
 
   - NVM缓存管理
 
-    ```c
-    /**
-    	 * @brief : 菜单项写入缓存。
-    	 * 当改写第N个扇区时，menu_nvm_cachedSector = N, menu_nvm_cache分配4KB缓存
-    	 * 并读入第N扇区的所有内容。此时能且仅能修改第N扇区的内容。对第N扇区内容的修改
-    	 * 将缓存至上述内存。
-    	 */
-    	extern uint8_t *menu_nvm_cache;
-    	extern uint32_t menu_nvm_cachedSector;
-    ```
+		```c
+		/**
+		 * @brief : 菜单项写入缓存。
+		 * 当改写第N个扇区时，menu_nvm_cachedSector = N, menu_nvm_cache分配4KB缓存
+		 * 并读入第N扇区的所有内容。此时能且仅能修改第N扇区的内容。对第N扇区内容的修改
+		 * 将缓存至上述内存。
+		 */
+		extern uint8_t *menu_nvm_cache;
+		extern uint32_t menu_nvm_cachedSector;
+		```
 
     
 
@@ -893,17 +893,20 @@ by：CkovMk @hitsic 2019.11.02
       menuItem_data_getPos = menuItem_data_global | menuItem_data_region,
       menuItem_data_ROFlag = 1 << 2, ///< 该菜单项为只读。只读菜单项不允许在菜单内修改。
       menuItem_data_NoSave = 1 << 3, ///< 该菜单项默认不保存到NVM。
-    menuItem_data_getCfg = menuItem_data_global | menuItem_data_region | menuItem_data_ROFlag/* | menuItem_data_prioRW*/,
+      menuItem_data_NoLoad = 1 << 4, ///< 该菜单项默认不从NVM读取。
+      menuItem_data_getCfg = menuItem_data_global | menuItem_data_region
+              | menuItem_data_ROFlag | menuItem_data_NoSave
+              | menuItem_data_NoLoad,
+      menuItem_dataExt_HasMinMax = 1 << 5, ///< 数据属性扩展：最小/最大值限制。该属性使用data指针偏移+1和+2的地址。
   
       /** display config */
-      menuItem_disp_forceSci = 1 << 8,  ///< 该菜单项强制使用科学计数法，适用于variType和varfType。
-      //menuItem_disp_bitFlag = 1 << 9,   ///< 该菜单项为按位标志位，仅适用于variType。此时数据指针将被视为uint32_t*。
+      menuItem_disp_forceSci = 1 << 8, ///< 该菜单项强制使用科学计数法，适用于variType和varfType。
       menuItem_disp_noPreview = 1 << 10, ///< 该菜单项不会在菜单列表中显示数据。数据区将显示占位字符。注意此选项对标记为按位标志位的variType无效，因为这类菜单项从不在菜单列表显示数据。
-  	
+  
       menuItem_proc_runOnce = 1 << 11, ///< 该菜单项只会运行一次。仅适用于procType。
       menuItem_proc_uiDisplay = 1 << 12, ///< 该菜单项会自行打印屏幕。仅适用于procType。
   
-      /** error mask */
+  	/** error mask */
   } menu_itemPropety_t;
   ```
   
