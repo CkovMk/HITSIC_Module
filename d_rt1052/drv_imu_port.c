@@ -1,6 +1,6 @@
 #include "drv_imu_port.h"
 
-#if defined(HITSIC_USE_DRV_IMU) && (HITSIC_USE_DRV_IMU > 0)
+#if defined(HITSIC_USE_DRV_IMU_INV) && (HITSIC_USE_DRV_IMU_INV > 0)
 
 #ifdef __cplusplus
 extern "C"{
@@ -28,4 +28,4 @@ extern "C"{
 }
 #endif
 
-#endif // HITSIC_USE_DRV_IMU
+#endif // HITSIC_USE_DRV_IMU_INV

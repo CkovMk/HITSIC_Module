@@ -5,55 +5,102 @@
 
 ## 简介
 
-外部中断管理器（EXTINT，External Interrupt Manager），是用于响应外部中断请求的模块。相较于常规的外部中断时常常是一个PORT对应一个中断服务函数，甚至多个PORT对应一个中断服务函数的情况，EXTINT通过二次判断中断标志位，实现精确到每个PIN的中断路由管理。这为多个模块共用一个PORT上的中断、一个模块使用多个PORT上的中断等复杂情况提供了极大的方便。
+外部中断管理器（EXTINT，External Interrupt Manager），是用于响应外部中断请求的模块。相较于常规的外部中断时常常是一个PORT对应一个中断服务函数，甚至多个PORT对应一个中断服务函数的情况，EXTINT通过二次判断中断标志位，实现精确到每个PIN的中断路由管理。这为多个模块共用一个PORT上的中断、一个模块使用多个PORT上的中断等复杂情况提供了极大的便利。
 
 
 
 ## 版本说明
 
-### v1.0-beta0
+### v1.0.1
 
-改动说明：
+by CkovMk @hitsic 2020.10.30
 
-- 全新C++ API
-- 使用std::map作为存储容器，查询速度更快。
-- 增加了对`d_kv10z7`单片机的支持
-
-开发计划：
+**改动说明**
 
 - 仿照PITMGR添加`HITSIC_USE_EXTINT`，可以快速禁用EXTINT模块。
+- 修改了服务函数接口，新增了用户参数，添加了`setUserData`方法。
 
-已知问题：
+**开发计划**
+
+- 优化查询速度。
+
+**已知问题**
 
 - 暂无
 
 
 
+### v1.0-beta.0
+
+by CkovMk @hitsic 2020.07.25
+
+**改动说明**
+
+- 全新C++ API
+- 使用std::map作为存储容器，查询速度更快。
+- 增加了对`d_kv10z7`单片机的支持
+
+**开发计划**
+
+- 仿照PITMGR添加`HITSIC_USE_EXTINT`，可以快速禁用EXTINT模块。
+
+**已知问题**
+
+- 暂无
+
+
+
+### v0.2.1
+
+by CkovMk @hitsic 2019.11.05
+
+
+
+### v0.2-beta.0
+
+by CkovMk @hitsic 2019.10.20
+
+### ......
+
+### v0.1.0
+
+by CkovMk @hitsic 2018.12.23
+
+
+
 ## API文档
 
-- **初始化 `static status_t init(void);`**
+- **初始化 `static status_t extInt_t::init(void);`**
 
   该函数用于初始化EXTINT。
 
-- **插入任务`static extInt_t* insert(INTC_Type* _gpio, uint32_t _pin, handler_t _handler);`**
+- **插入任务`static extInt_t* extInt_t::insert(INTC_Type* _gpio, uint32_t _pin, handler_t _handler);`**
 
   该函数用于向任务列表插入指定GPIO引脚上的触发任务。
 
-- **移除任务`static status_t remove(INTC_Type* _gpio, uint32_t _pin);`**
+- **移除任务`static status_t extInt_t::remove(INTC_Type* _gpio, uint32_t _pin);`**
 
   该函数用于移除指定GPIO引脚上的触发任务。
 
-- **移除任务 `static status_t remove(extInt_t* _inst);`**
+- **移除任务 `static status_t extInt_t::remove(extInt_t* _inst);`**
 
   该函数用于移除指针指向的触发任务。移除成功后返回`kStatus_Success`，且指针将变为野指针，您需要手动将其置为NULL。
 
-- **服务接口 `static void isr(INTC_Type* _gpio);`**
+- **服务接口 `static void extInt_t::isr(INTC_Type* _gpio);`**
 
   该函数用于为某一个端口提供中断服务。参数类型`INTC_Type*`是指本MCU上用于管理外部中断的外设类型，应在`sys_extint_port.hpp`中定义。例如，对于K66、KV58等单片机，`#define INTC_Type PORT_Type`，而对于RT1052等单片机，`#define INTC_Type GPIO_Type`。您也可以使用`typedef`关键字。
 
-- **设置任务 `void setup(INTC_Type* _gpio, uint32_t _pin, handler_t _handler);`**
+- **设置任务 `void extInt_t::setup(INTC_Type* _gpio, uint32_t _pin, handler_t _handler);`**
 
-- **设置任务 `void setMode(interrupt_mode_t _mode);`**
+  设置/重设某一引脚上的服务函数。
+
+- **设置中断方式 `void extInt_t::setMode(interrupt_mode_t _mode);`**
+
+  提供一种平台无关的设置中断方式的方法 。
+
+- **设置传递参数`void extInt_t::setUserData(void *_userData);`**
+
+  该函数用于设置任务触发时传递给服务函数的用户变量指针。对于不处理参数的服务函数，忽略即可。
 
 
 
@@ -63,7 +110,11 @@
 
 ## 设计文档
 
+
+
 ## 应用指南
+
+
 
 ## 移植指南
 
@@ -152,9 +203,8 @@
   }
   #endif
   ```
-```
+
   
   您需要在这里实现每个外部中断对应的中断服务函数。在这些中断服务函数中，只需调用`static void pitMgr_t::isr(INTC_Type* _gpio);`，传入当前中断的外设地址即可。如果有多个外设的中断被绑定到了同一个中断服务函数，如上例所示，则需要在该中断服务函数中调用多次`static void isr(INTC_Type* _gpio);`，依次传入所有外设地址。还有一种情况是一个外设的中断被绑定到了多个中断服务函数（例如RT052系列GPIOx 0~15号引脚和16~31号引脚各对应一个中断服务函数），则需要在所有属于该外设的中断服务函数内调用`static void isr(INTC_Type* _gpio);`，并传入对应外设地址。
   
   如果不希望对特定外设启用EXTINT，也可以在这里略过。
-```

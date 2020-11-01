@@ -1,6 +1,6 @@
 #include "sys_extint.hpp"
 
-
+#if defined(HITSIC_USE_EXTINT) && (HITSIC_USE_EXTINT > 0)
 
 #ifdef __cplusplus
 extern "C"{
@@ -18,3 +18,4 @@ void PORTE_IRQHandler(void){extInt_t::isr(PORTE);}
 }
 #endif
 
+#endif // ! HITSIC_USE_EXTINT

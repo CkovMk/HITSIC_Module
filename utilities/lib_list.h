@@ -1,5 +1,5 @@
 /**
- * Copyright 2018 - 2019 HITSIC
+ * Copyright 2018 - 2020 HITSIC
  * All rights reserved.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,7 +21,7 @@
  * All rights reserved.
  *
  * @brief           单向链表
- * @file       		list.h
+ * @file       		lib_list.h
  * @company	        哈工大智能车创新俱乐部
  * @author     		肖日涛 (QQ:1761690868); C.M. (QQ:905497173)
  * @version    		v1.1
@@ -36,10 +36,16 @@
 #pragma once
 #ifndef LIB_LIST_H
 #define LIB_LIST_H
-#include "inc_stdlib.h"
+#include "inc_stdlib.hpp"
 #include "hitsic_common.h"
-//TODO: remove stdafx.h
 
+/*!
+ * @addtogroup clist
+ * @{
+ */
+
+/** @brief : 软件版本 */
+#define LIB_LIST_VERSION (HITSIC_MAKE_VERSION(0U, 1U, 1U))
 
 #ifdef __cplusplus
 extern "C" {
@@ -214,4 +220,7 @@ list_node_t* List_ItEnd(list_t *p);
 #ifdef __cplusplus
 }
 #endif
+
+/* @} */
+
 #endif //LIB_LIST_H

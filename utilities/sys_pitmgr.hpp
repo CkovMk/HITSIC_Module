@@ -1,5 +1,5 @@
 /**
- * Copyright 2018 - 2019 HITSIC
+ * Copyright 2018 - 2020 HITSIC
  * All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,8 +19,9 @@
  * @author  :	Chekhov Mark/马奇科(qq:905497173)
  * @version :	v1.0.0
  *
- * @date 	:	v0.1-beta.0 2019.10.28
- * @date 	:	v0.1.1		2019.11.02
+ * @date 	:	v0.4-beta.0 2018.12.20
+ * @date 	:	v0.4-beta.0 2019.10.28
+ * @date 	:	v0.4.1		2019.11.02
  * @date	:	v1.0.0		2020.07.25
  *
  * @brief   :   定时中断管理器
@@ -29,24 +30,27 @@
 #pragma once
 #ifndef UTILITIES_SYS_PITMGR_HPP_
 #define UTILITIES_SYS_PITMGR_HPP_
-#include "inc_stdlib.h"
+#include "inc_stdlib.hpp"
 #include "hitsic_common.h"
+//#include "list"
 
 #if defined(HITSIC_USE_PITMGR) && (HITSIC_USE_PITMGR > 0)
 #include "sys_pitmgr_port.hpp"
 
-//CPU Selection
-#if defined(D_RT1052_SYS_PITMGR_PORT_HPP_) || defined (D_MK66F18_SYS_PITMGR_PORT_HPP_) || defined (D_KV10Z7_SYS_PITMGR_PORT_HPP_)
+/*!
+ * @addtogroup pitmgr
+ * @{
+ */
 
-
-#include "list"
+/** @brief : 软件版本 */
+#define SYS_PITMGR_VERSION (HITSIC_MAKE_VERSION(1U, 0U, 0U))
 
 class pitMgr_t
 {
 public:
 
 	//isr service manager
-	typedef void (*handler_t)(void);
+	typedef void (*handler_t)(void *userData);
 	enum pptFlag_t : uint32_t
 	{
 		enable = 1 << 0, runOnce = 1 << 1,
@@ -81,6 +85,9 @@ public:
 	handler_t handler;
 	uint32_t pptFlag;
 	uint64_t prevTime_ms;
+	void *userData;
+
+	
 
 	void setup(uint32_t _ms, uint32_t _mso, handler_t _handler, uint32_t _ppt);
 	void setEnable(bool _b)
@@ -93,6 +100,11 @@ public:
 		{
 			pptFlag &= (~enable);
 		}
+	}
+	
+	void setUserData(void *_userData)
+	{
+		userData = _userData;
 	}
 
 	pitMgr_t(void);
@@ -125,11 +137,7 @@ private:
 #define PITMGR_HandleRemove(_h)				pitMgr_t::remove(_h)
 #define PITMGR_Isr()						pitMgr_t::isr()
 
-#else	//CPU Selection
-
-#error "C++ API does NOT support this CPU!"
-
-#endif // CPU Selection
+/* @} */
 
 #endif // ! HITSIC_USE_PITMGR
 

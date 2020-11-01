@@ -12,18 +12,32 @@ FTFX_FLASH组件是NXP单片机内部Flash的读写库，适用于具有FTFX控�
 
 ### v0.2.0
 
-改动说明：
+by CkovMk @hitsic 2019.10.08
+
+**改动说明**
 
 - 支持所有FTFX_FLASH单片机。
 - 出于性能考虑，删除了`status_t FLASH_Ram2Flash(uint32_t dst, void\* src, uint32_t size);`和`status_t FLASH_Flash2Ram(void\* dst, uint32_t src, uint32_t size);`两个API。
 
-开发计划：
+**开发计划**
 
 - 暂无
 
-已知问题：
+**已知问题**
 
 - 在KV1x系列单片机上未经过测试。
+
+
+
+### v0.1.1
+
+by beforelight @ 2019.09.22
+
+
+
+### v0.1-beta.0
+
+by beforelight @ 2019.07.25
 
 
 
@@ -31,7 +45,11 @@ FTFX_FLASH组件是NXP单片机内部Flash的读写库，适用于具有FTFX控�
 
 详见`drv_ftfx_flash.h`内的doxygen风格注释。
 
+
+
 ## 设计文档
+
+无
 
 
 
