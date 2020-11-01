@@ -69,7 +69,7 @@ inline void DISP_SSD1306_delay_ms(uint32_t ms)
 {
 	for(uint32_t i = 0; i < ms; ++i)
 	{
-        SDK_DelayAtLeastUs(1000,CLOCK_GetFreq(kCLOCK_CoreSysClk));
+        SDK_DelayAtLeastUs(1000, CLOCK_GetFreq(kCLOCK_CoreSysClk));
 	}
 }
 
