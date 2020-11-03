@@ -20,7 +20,7 @@ DMADVP_Type __DMADVP0 =
     .dmauxChannel = 0U,
     .dmamuxRequestSrc = kDmaRequestMux0PortC,
     .dmaIrqn = DMA0_DMA16_IRQn,
-    .dmaIrqPrio = 2U,
+    .dmaIrqPrio = 8U,
 
     .imgSize = 0U,
 
