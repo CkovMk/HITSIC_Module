@@ -41,8 +41,9 @@ typedef port_interrupt_t extInt_interruptMode_t;
 
 
 
-
+#ifndef HITSIC_EXTMGR_INITLIZE
 #define HITSIC_EXTMGR_INITLIZE 		(1U)
+#endif // ! HITSIC_EXTMGR_INITLIZE
 
 #if defined(HITSIC_EXTMGR_INITLIZE) && (HITSIC_EXTMGR_INITLIZE > 0)
 inline void EXTINT_PlatformInit(void)

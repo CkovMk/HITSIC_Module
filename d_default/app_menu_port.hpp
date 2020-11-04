@@ -18,7 +18,7 @@
 #ifndef D_DEFAULT_APP_MENU_PORT_H_
 #define D_DEFAULT_APP_MENU_PORT_H_
 
-#include "inc_stdlib.h"
+#include "inc_stdlib.hpp"
 #include "hitsic_common.h"
 
 #ifdef __cplusplus
@@ -26,9 +26,7 @@ extern "C"
 {
 #endif
 
-#ifndef HITSIC_USE_APP_MENU
 #define HITSIC_USE_APP_MENU (1U)
-#endif // ! HITSIC_USE_APP_MENU
 
 #if defined(HITSIC_USE_APP_MENU) && (HITSIC_USE_APP_MENU > 0)
 
@@ -36,28 +34,18 @@ extern "C"
  * @brief : 菜单调试输出开关
  * 编译选项为release时无效。
  */
- #ifndef HITSIC_MENU_PRINT_ENABLE
- #define HITSIC_MENU_PRINT_ENABLE (1u)
- #endif // ! HITSIC_MENU_PRINT_ENABLE
- 
- #ifndef HITSIC_MENU_PRINT_VERBOSE_ENABLE
- #define HITSIC_MENU_PRINT_VERBOSE_ENABLE (1u)
- #endif // ! HITSIC_MENU_PRINT_VERBOSE_ENABLE
- 
-#ifndef HITSIC_MENU_PRINT_VERBOSE_ENABLE
+#define HITSIC_MENU_PRINT_ENABLE (1u)
+#define HITSIC_MENU_PRINT_VERBOSE_ENABLE (1u)
 #define HITSIC_MENU_PRINT_WARNING_ENABLE (1u)
-#endif // ! HITSIC_MENU_PRINT_VERBOSE_ENABLE
-
-
 
 /**
  * @brief : 菜单调试输出语句定义。
  * 编译选项为release时始终为空。
  */
 #if defined(DEBUG) && defined(HITSIC_MENU_PRINT_ENABLE) && (HITSIC_MENU_PRINT_ENABLE != 0u)
-#define HITSIC_MENU_PRINTF(...) (printf(__VA_ARGS__))
+#define HITSIC_MENU_PRINTF(...) (PRINTF(__VA_ARGS__))
 #else
-#define HITSIC_MENU_PRINTF(...)
+#define HITSIC_MENU_PRINTF(...) (0)
 #endif // ! DEBUG
 
 /** @brief : 根菜单最大容量 */
@@ -66,51 +54,49 @@ extern "C"
 /*! @name 启用自带的按键处理 */
 /*@{*/
 /** @brief : 是否使用菜单自带的按键事件管理 */
-#ifndef HITSIC_MENU_USE_BUTTON
 #define HITSIC_MENU_USE_BUTTON (1U)
-#endif // ! HITSIC_MENU_USE_BUTTON
 /*@}*/
 
 #if defined(HITSIC_MENU_USE_BUTTON) && (HITSIC_MENU_USE_BUTTON > 0)
-
+#include <drv_button.hpp>
 /** @brief : 菜单使用的五向按键初始化。每组数据前两个是GPIO和Pin，其余数据为0。 */
 #define HITSIC_MENU_BUTTON_5DIR_BSP_INIT  \
     {                                     \
         {                                 \
-            RTEPIN_BOARD_BUTTON_OK_GPIO,  \
-            RTEPIN_BOARD_BUTTON_OK_PIN,   \
+            RTEPIN_DIGITAL_BUTTON_OK_GPIO, \
+            RTEPIN_DIGITAL_BUTTON_OK_PIN,   \
             kPORT_InterruptOrDMADisabled, \
             0,                            \
             BUTTON_STAT_NONE,             \
             NULL,                         \
         },                                \
         {                                 \
-            RTEPIN_BOARD_BUTTON_UP_GPIO,  \
-            RTEPIN_BOARD_BUTTON_UP_PIN,   \
+        	RTEPIN_DIGITAL_BUTTON_UP_GPIO,  \
+			RTEPIN_DIGITAL_BUTTON_UP_PIN,   \
             kPORT_InterruptOrDMADisabled, \
             0,                            \
             BUTTON_STAT_NONE,             \
             NULL,                         \
         },                                \
         {                                 \
-            RTEPIN_BOARD_BUTTON_DN_GPIO,  \
-            RTEPIN_BOARD_BUTTON_DN_PIN,   \
+        	RTEPIN_DIGITAL_BUTTON_DN_GPIO,  \
+			RTEPIN_DIGITAL_BUTTON_DN_PIN,   \
             kPORT_InterruptOrDMADisabled, \
             0,                            \
             BUTTON_STAT_NONE,             \
             NULL,                         \
         },                                \
         {                                 \
-            RTEPIN_BOARD_BUTTON_LF_GPIO,  \
-            RTEPIN_BOARD_BUTTON_LF_PIN,   \
+        	RTEPIN_DIGITAL_BUTTON_LF_GPIO,  \
+			RTEPIN_DIGITAL_BUTTON_LF_PIN,   \
             kPORT_InterruptOrDMADisabled, \
             0,                            \
             BUTTON_STAT_NONE,             \
             NULL,                         \
         },                                \
         {                                 \
-            RTEPIN_BOARD_BUTTON_RT_GPIO,  \
-            RTEPIN_BOARD_BUTTON_RT_PIN,   \
+        	RTEPIN_DIGITAL_BUTTON_RT_GPIO,  \
+			RTEPIN_DIGITAL_BUTTON_RT_PIN,   \
             kPORT_InterruptOrDMADisabled, \
             0,                            \
             BUTTON_STAT_NONE,             \
@@ -125,8 +111,8 @@ extern "C"
  * 可以使用任何当前工程中未使用的中断。注意中断号和中断服务函数
  * 必须对应。优先级不可过高。
  */
-#define HITSIC_MENU_SERVICE_IRQHandler (Reserved25_IRQHandler)
-#define HITSIC_MENU_SERVICE_IRQn (Reserved25_IRQn)
+#define HITSIC_MENU_SERVICE_IRQHandler (Reserved85_IRQHandler)
+#define HITSIC_MENU_SERVICE_IRQn (Reserved85_IRQn)
 #define HITSIC_MENU_SERVICE_IRQPrio (10u)
 
 /**
@@ -145,14 +131,12 @@ extern "C"
 /*! @name 启用非易失性存储支持 */
 /*@{*/
 /*! @brief 是否启用非易失性存储支持。目前仅支持块级存储接口。将于未来添加文件存储接口 */
-#ifndef HITSIC_MENU_USE_NVM
 #define HITSIC_MENU_USE_NVM (1U)
-#endif // ! HITSIC_MENU_USE_NVM
 /*@}*/
 
 #if defined(HITSIC_MENU_USE_NVM) && (HITSIC_MENU_USE_NVM > 0)
 
-#include "drv_ftfx_flash.h"
+#include <drv_ftfx_flash.hpp>
 
 /**
  * ********** NVM存储变量定义 **********

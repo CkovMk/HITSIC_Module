@@ -1,5 +1,5 @@
-#ifndef D_DEFAULT_SYS_RMCALL_PORT_HPP_
-#define D_DEFAULT_SYS_RMCALL_PORT_HPP_
+#ifndef D_MK66F18_SYS_RMCALL_PORT_HPP_
+#define D_MK66F18_SYS_RMCALL_PORT_HPP_
 #include "hitsic_common.h"
 #include "inc_stdlib.h"
 
@@ -22,4 +22,4 @@
 
 #endif // HITSIC_USE_RMCALL
 
-#endif // ! D_DEFAULT_SYS_RMCALL_PORT_HPP_
+#endif // ! D_MK66F18_SYS_RMCALL_PORT_HPP_

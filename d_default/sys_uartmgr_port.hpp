@@ -10,10 +10,6 @@
 
 #include "hitsic_common.h"
 
-#ifndef HITSIC_USE_UARTMGR
-#define HITSIC_USE_UARTMGR 		(0U)
-#endif // ! HITSIC_USE_UARTMGR
-
 #if defined(HITSIC_USE_UARTMGR) && (HITSIC_USE_UARTMGR > 0)
 
 
