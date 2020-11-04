@@ -8,7 +8,6 @@
 #include "sys_uartmgr.hpp"
 
 
-
 #if defined(HITSIC_USE_UARTMGR) && (HITSIC_USE_UARTMGR > 0)
 
 

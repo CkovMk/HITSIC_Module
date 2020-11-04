@@ -22,6 +22,7 @@ extern "C"{
 #endif
 
 uint32_t hal_criticalCnt = 0;
+uint32_t hal_regPrimask = 0;
 
 
 status_t HAL_I2C_Mem_ReadBlocking(HAL_I2C_Type *_i2c, uint8_t _addr, uint32_t _reg, uint8_t _regSize, uint8_t* _data, uint32_t _dataSize)

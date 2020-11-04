@@ -25,30 +25,51 @@
 #pragma once
 #ifndef D_DEFAULT_DRVOLED_H_
 #define D_DEFAULT_DRVOLED_H_
-#include "inc_stdlib.h"
+#include "inc_stdlib.hpp"
 #include "hitsic_common.h"
+#include "sys_pitmgr.hpp"
+#include "pin_mux.h"
 
-#ifndef HITSIC_USE_DISP_SSD1306
-#define HITSIC_USE_DISP_SSD1306 (0U)
-#endif // ! HITSIC_USE_DISP_SSD1306
+#define HITSIC_DISP_SSD1306_FLIP_X (0U)	///< 屏幕左右翻转
+#define HITSIC_DISP_SSD1306_FLIP_Y (0U)	///< 屏幕上下翻转
 
+
+/**
+ * @brief 设置RST脚电平。
+ * 
+ * @param x RST脚的电平状态，正逻辑。
+ */
 inline void DISP_SSD1306_gpioSetRST(uint8_t x)
 {
 
 }
 
+/**
+ * @brief 设置D/C脚电平。
+ * 
+ * @param x D/C脚的电平状态，正逻辑。
+ */
 inline void DISP_SSD1306_gpioSetD_C(uint8_t x)
 {
 
 }
 
+/**
+ * @brief 毫秒级阻塞延迟函数。
+ * 
+ * @param ms 延迟的毫秒数。
+ */
 inline void DISP_SSD1306_delay_ms(uint32_t ms)
 {
 
 }
 
 
-
+/**
+ * @brief SPI接口发送一个字节。
+ * 
+ * @param data 要发送的数据
+ */
 inline void DISP_SSD1306_spiWrite(uint8_t data)
 {
 
