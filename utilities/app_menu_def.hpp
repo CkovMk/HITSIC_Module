@@ -283,18 +283,30 @@ typedef struct _menu_itemIfce_t
 
 /**
  * @brief : 菜单项和菜单列表的计数器。
+ * @ {
  */
-extern uint32_t menu_itemCnt;
-extern uint32_t menu_listCnt;
+extern uint32_t menu_itemCnt;               ///< 菜单项计数器
+extern uint32_t menu_listCnt;               ///< 菜单列表计数器
+/**
+ * @ }
+ */
 
-extern menu_list_t *menu_currList;
-extern menu_itemIfce_t *menu_currItem;
-extern menu_list_t *menu_menuRoot;
-extern int32_t &menu_currRegionNum;
-extern int32_t menu_statusFlag;
-extern uint32_t menu_nvm_statusFlagAddr;
+/**
+ * @brief : 菜单状态机。
+ * @ {
+ */
+extern menu_list_t *menu_currList;          ///< 状态变量：指向当前所在的菜单列表
+extern menu_itemIfce_t *menu_currItem;      ///< 状态变量：指向当前所在的菜单项，仅位于菜单项
+extern menu_list_t *menu_menuRoot;          ///< 根菜单指针。
+extern int32_t &menu_currRegionNum;         ///< 当前局部存储区号
+extern int32_t menu_statusFlag;             ///< 状态标志位
+extern uint32_t menu_nvm_statusFlagAddr;    ///< 存储状态标志位的NVM存储地址
 extern int32_t &menu_nvmCopySrc, &menu_nvmCopyDst;
+/**
+ * @ }
+ */
 
+/** 字符缓存 */
 extern char menu_dispStrBuf[MENU_DISP_STRBUF_ROW][MENU_DISP_STRBUF_COL];
 
 /*************************************
