@@ -117,9 +117,18 @@ status_t DMADVP_TransferStart(DMADVP_Type *base, dmadvp_handle_t *handle)
     {
         return result;
     }
-    PORT_SetPinInterruptConfig(base->vsnc_intc, base->vsnc_pin,
-            base->vsncInterruptCfg);
-    handle->transferStarted = true;
+    if(handle->transferStarted)
+    {   //repeated start: 启动传输
+        PORT_SetPinInterruptConfig(handle->base->pclk_intc, handle->base->pclk_pin,
+                    handle->base->pclkInterruptCfg);
+        EDMA_StartTransfer(&handle->dmaHandle);
+    }
+    else
+    {   //first start: 使能VSNC中断
+        PORT_SetPinInterruptConfig(base->vsnc_intc, base->vsnc_pin,
+                base->vsncInterruptCfg);
+        handle->transferStarted = true;
+    }
     return kStatus_Success;
 }
 
@@ -130,7 +139,6 @@ void DMADVP_TransferStop(DMADVP_Type *base, dmadvp_handle_t *handle)
     PORT_SetPinInterruptConfig(handle->base->pclk_intc, handle->base->pclk_pin,
                 kPORT_InterruptOrDMADisabled);
     EDMA_AbortTransfer(&handle->dmaHandle);
-    // DMADVP_TransferSubmitEmptyBuffer(base, handle, (uint8_t*)handle->xferCfg.destAddr);
     handle->transferStarted = false;
 }
 
@@ -151,7 +159,8 @@ void DMADVP_EdmaCallbackService(dmadvp_handle_t *handle, bool transferDone)
     {
         handle->fullBuffer.push((uint8_t*)(handle->xferCfg.destAddr)); 
     }
-    DMADVP_TransferStop(handle->base, handle);
+    PORT_SetPinInterruptConfig(handle->base->pclk_intc, handle->base->pclk_pin,
+                 kPORT_InterruptOrDMADisabled);
 }
 
 /* @} */
