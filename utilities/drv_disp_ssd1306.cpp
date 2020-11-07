@@ -78,7 +78,6 @@ void DISP_SSD1306_Init(void)
 #else // ! HITSIC_DISP_SSD1306_FLIP_Y
 	DISP_SSD1306_WriteCmd(0xc8); //Set COM/Row Scan Direction   0xc0上下反置 0xc8正常
 #endif// ! HITSIC_DISP_SSD1306_FLIP_Y
-
 	DISP_SSD1306_WriteCmd(0xa6); //--set normal display
 	DISP_SSD1306_WriteCmd(0xa8); //--set multiplex ratio(1 to 64)
 	DISP_SSD1306_WriteCmd(0x3f); //--1/64 duty
@@ -93,7 +92,8 @@ void DISP_SSD1306_Init(void)
 	DISP_SSD1306_WriteCmd(0xdb); //--set vcomh
 	DISP_SSD1306_WriteCmd(0x40); //Set VCOM Deselect Level
 	DISP_SSD1306_WriteCmd(0x20); //-Set Page Addressing Mode (0x00/0x01/0x02)
-	DISP_SSD1306_WriteCmd(0x02); //
+	//DISP_SSD1306_WriteCmd(0x02); //
+	DISP_SSD1306_WriteCmd(0x00);//@ C.M. change to page address mode. enable frame buffer.
 	DISP_SSD1306_WriteCmd(0x8d); //--set Charge Pump enable/disable
 	DISP_SSD1306_WriteCmd(0x14); //--set(0x10) disable
 	DISP_SSD1306_WriteCmd(0xa4); // Disable Entire Display On (0xa4/0xa5)
@@ -207,13 +207,18 @@ void DISP_SSD1306_BufferUpload(uint8_t *buffer)
     uint8_t *ptr = buffer;
     for (uint16_t y = 0; y < 8; ++y)
     {
-        DISP_SSD1306_WriteCmd(0xb0 + y);
-        DISP_SSD1306_WriteCmd(0x01);
-        DISP_SSD1306_WriteCmd(0x10);
+        //DISP_SSD1306_WriteCmd(0xb0 + y);
+        //DISP_SSD1306_WriteCmd(0x01);
+        //DISP_SSD1306_WriteCmd(0x10);
 
         for (uint16_t x = 0; x < 128; x++)
             DISP_SSD1306_WriteDat(*(ptr++)); //aka (y * 128 + x)
     }
+}
+
+void DISP_SSD1306_BufferUploadDMA(uint8_t *buffer)
+{
+    DISP_SSD1306_spiDmaWrite(buffer, sizeof(disp_ssd1306_frameBuffer_t));
 }
 
 

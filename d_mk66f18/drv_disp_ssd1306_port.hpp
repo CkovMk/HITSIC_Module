@@ -40,6 +40,12 @@
 #define OLED_SPI_Ctarn			kDSPI_Ctar0
 #define OLED_SPI_MasterCtarn	kDSPI_MasterCtar0
 
+#define OLED_SPI_DMA_RX_Chnl    (5U)
+#define OLED_SPI_DMA_IM_Chnl    (6U)
+#define OLED_SPI_DMA_TX_Chnl    (7U)
+#define OLED_SPI_DMA_RX_REQSRC kDmaRequestMux0SPI0Rx
+#define OLED_SPI_DMA_TX_REQSRC  kDmaRequestMux0SPI2Tx
+
 /**
  * @brief 设置RST脚电平。
  * 
@@ -73,6 +79,15 @@ inline void DISP_SSD1306_delay_ms(uint32_t ms)
 	}
 }
 
+extern dspi_transfer_t oled_spi_xfer;
+
+extern dspi_master_edma_handle_t g_dspi_edma_m_handle;
+extern edma_handle_t dspiEdmaMasterRxRegToRxDataHandle;
+#if (!(defined(FSL_FEATURE_DSPI_HAS_GASKET) && FSL_FEATURE_DSPI_HAS_GASKET))
+extern edma_handle_t dspiEdmaMasterTxDataToIntermediaryHandle;
+#endif
+extern edma_handle_t dspiEdmaMasterIntermediaryToTxRegHandle;
+
 /**
  * @brief SPI接口发送一个字节。
  * 
@@ -80,15 +95,67 @@ inline void DISP_SSD1306_delay_ms(uint32_t ms)
  */
 inline void DISP_SSD1306_spiWrite(uint8_t data)
 {
-	static dspi_transfer_t oled_spi_xfer =
-		{
-			.txData = NULL,
-			.rxData = NULL,
-			.dataSize = 1,
-			.configFlags = OLED_SPI_MasterCtarn | OLED_SPI_MasterPcsn | kDSPI_MasterPcsContinuous,
-		};
+
 	oled_spi_xfer.txData = &data;
+	oled_spi_xfer.dataSize = 1;
 	DSPI_MasterTransferBlocking(OLED_SPI_BASE, &oled_spi_xfer);
+}
+
+
+inline void DISP_SSD1306_spiDmaWriteCallback(SPI_Type *base, dspi_master_edma_handle_t *handle, status_t status, void *userData)
+{
+    if (status == kStatus_Success)
+    {
+        PRINTF("This is DSPI master edma transfer completed callback. \r\n\r\n");
+    }
+    //isTransferCompleted = true;
+}
+
+inline void DISP_SSD1306_spiDmaInit(void)
+{
+    DMAMUX_SetSource(DMAMUX, OLED_SPI_DMA_RX_Chnl,
+                         (uint8_t)OLED_SPI_DMA_RX_REQSRC);
+    DMAMUX_EnableChannel(DMAMUX, OLED_SPI_DMA_RX_Chnl);
+    DMAMUX_SetSource(DMAMUX, OLED_SPI_DMA_TX_Chnl,
+                         (uint8_t)OLED_SPI_DMA_TX_REQSRC);
+    DMAMUX_EnableChannel(DMAMUX, OLED_SPI_DMA_TX_Chnl);
+
+    /* Set up dspi master */
+        memset(&(dspiEdmaMasterRxRegToRxDataHandle), 0, sizeof(dspiEdmaMasterRxRegToRxDataHandle));
+    #if (!(defined(FSL_FEATURE_DSPI_HAS_GASKET) && FSL_FEATURE_DSPI_HAS_GASKET))
+        memset(&(dspiEdmaMasterTxDataToIntermediaryHandle), 0, sizeof(dspiEdmaMasterTxDataToIntermediaryHandle));
+    #endif
+        memset(&(dspiEdmaMasterIntermediaryToTxRegHandle), 0, sizeof(dspiEdmaMasterIntermediaryToTxRegHandle));
+
+        EDMA_CreateHandle(&(dspiEdmaMasterRxRegToRxDataHandle), DMA0, OLED_SPI_DMA_RX_Chnl);
+    #if (!(defined(FSL_FEATURE_DSPI_HAS_GASKET) && FSL_FEATURE_DSPI_HAS_GASKET))
+        EDMA_CreateHandle(&(dspiEdmaMasterTxDataToIntermediaryHandle), DMA0, OLED_SPI_DMA_IM_Chnl);
+    #endif
+        EDMA_CreateHandle(&(dspiEdmaMasterIntermediaryToTxRegHandle), DMA0, OLED_SPI_DMA_TX_Chnl);
+    #if (defined(FSL_FEATURE_DSPI_HAS_GASKET) && FSL_FEATURE_DSPI_HAS_GASKET)
+        DSPI_MasterTransferCreateHandleEDMA(OLED_SPI_BASE, &g_dspi_edma_m_handle, DISP_SSD1306_spiDmaWriteCallback,
+                                            NULL, &dspiEdmaMasterRxRegToRxDataHandle, NULL,
+                                            &dspiEdmaMasterIntermediaryToTxRegHandle);
+    #else
+        DSPI_MasterTransferCreateHandleEDMA(OLED_SPI_BASE, &g_dspi_edma_m_handle, DISP_SSD1306_spiDmaWriteCallback,
+                                            NULL, &dspiEdmaMasterRxRegToRxDataHandle,
+                                            &dspiEdmaMasterTxDataToIntermediaryHandle,
+                                            &dspiEdmaMasterIntermediaryToTxRegHandle);
+    #endif
+}
+
+
+/**
+ * @brief SPI接口DMA发送。
+ *
+ * @param data 要发送的数据
+ * @param size 数据长度
+ */
+inline void DISP_SSD1306_spiDmaWrite(uint8_t* data, uint32_t size)
+{
+    oled_spi_xfer.txData = data;
+    oled_spi_xfer.dataSize = size;
+    DSPI_MasterTransferEDMA(OLED_SPI_BASE, &g_dspi_edma_m_handle, &oled_spi_xfer);
 }
 
 

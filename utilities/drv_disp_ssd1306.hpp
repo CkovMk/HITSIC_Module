@@ -127,6 +127,8 @@ void DISP_SSD1306_Printf_F8x16(uint8_t x,uint8_t y,const char* fmt, ...);
 
 void DISP_SSD1306_BufferUpload(uint8_t *buffer);
 
+void DISP_SSD1306_BufferUploadDMA(uint8_t *buffer);
+
 
 #endif // ! HITSIC_USE_DISP_SSD1306
 
