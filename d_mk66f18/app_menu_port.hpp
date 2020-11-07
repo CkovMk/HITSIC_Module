@@ -58,7 +58,7 @@ extern "C"
 /*@}*/
 
 #if defined(HITSIC_MENU_USE_BUTTON) && (HITSIC_MENU_USE_BUTTON > 0)
-#include <drv_button.hpp>
+#include "drv_button.hpp"
 /** @brief : 菜单使用的五向按键初始化。每组数据前两个是GPIO和Pin，其余数据为0。 */
 #define HITSIC_MENU_BUTTON_5DIR_BSP_INIT  \
     {                                     \
