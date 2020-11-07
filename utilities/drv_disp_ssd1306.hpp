@@ -45,6 +45,7 @@ extern const uint8_t DISP_font_8x16[][16];
 class disp_ssd1306_frameBuffer_t
 {
 public:
+    typedef bool pixel_t;
     static const uint16_t row = 64, col = 128;
     uint8_t frame[8][128];
 
@@ -53,7 +54,7 @@ public:
         static_assert(sizeof(disp_ssd1306_frameBuffer_t) == 8U * 128U);
         memset(&frame, 0U, sizeof(disp_ssd1306_frameBuffer_t));
     }
-    void SetPixelColor(uint16_t x, uint16_t y, bool color)
+    void SetPixelColor(uint16_t x, uint16_t y, pixel_t color)
     {
         color ? (frame[y >> 3][x] |= (1U << (y & 7U))) : (frame[y >> 3][x] &= ~(1U << (y & 7U)));
     }

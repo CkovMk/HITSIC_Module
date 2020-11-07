@@ -21,11 +21,6 @@
 #include "inc_stdlib.hpp"
 #include "hitsic_common.h"
 
-#ifdef __cplusplus
-extern "C"
-{
-#endif
-
 #define HITSIC_USE_APP_MENU (1U)
 
 #if defined(HITSIC_USE_APP_MENU) && (HITSIC_USE_APP_MENU > 0)
@@ -113,20 +108,37 @@ extern "C"
  */
 #define HITSIC_MENU_SERVICE_IRQHandler (Reserved85_IRQHandler)
 #define HITSIC_MENU_SERVICE_IRQn (Reserved85_IRQn)
-#define HITSIC_MENU_SERVICE_IRQPrio (10u)
+#define HITSIC_MENU_SERVICE_IRQPrio (12u)
+
+
+/**
+ * @brief 启用帧缓存接口
+ */
+#define HITSIC_MENU_USE_FRAME_BUFFER (1U)
 
 /**
  * @brief 屏幕打印接口
  */
+#if defined(HITSIC_MENU_USE_FRAME_BUFFER) && (HITSIC_MENU_USE_FRAME_BUFFER > 0)
+#include "drv_disp_ssd1306.hpp"
+#include "lib_graphic.hpp"
+#define HITSIC_MENU_DISPLAY_BUFFER_CLEAR() (MENU_FrameBufferClear())
+#define HITSIC_MENU_DISPLAY_PRINT(row, col, str) (MENU_FrameBufferPrint(row, col, str))
+#define HITSIC_MENU_DISPLAY_BUFFER_UPDATE() (MENU_FrameBufferUpdate())
+
+void MENU_FrameBufferClear(void);
+
+void MENU_FrameBufferPrint(uint16_t x, uint16_t y, char *str);
+
+void MENU_FrameBufferUpdate(void);
+
+
+#else // HITSIC_MENU_USE_FRAME_BUFFER
+#define HITSIC_MENU_DISPLAY_BUFFER_CLEAR() (0)
 #define HITSIC_MENU_DISPLAY_PRINT(row, col, str) (DISP_SSD1306_Print_F6x8(row, col, str))
-//#define HITSIC_MENU_DISPLAY_PRINTF(row, col, fmt, ...) (OLED_Printf(row, col, fmt, __VA_ARGS__))
-// #define HITSIC_MENU_DISPLAY_PRINTF(row,col,fmt,...)		\
-    // 	{													\
-    // 		char* buf = malloc(24*sizeof(char));			\
-    // 		vsnprintf(buf,24,fmt,__VA_ARGS__);				\
-    // 		HITSIC_MENU_DISPLAY_PRINT(row,col,buf);			\
-    // 		free(buf);										\
-    // 	}
+#define HITSIC_MENU_DISPLAY_BUFFER_UPDATE() (0)
+#endif // ! HITSIC_MENU_USE_FRAME_BUFFER
+
 
 /*! @name 启用非易失性存储支持 */
 /*@{*/
@@ -136,7 +148,7 @@ extern "C"
 
 #if defined(HITSIC_MENU_USE_NVM) && (HITSIC_MENU_USE_NVM > 0)
 
-#include <drv_ftfx_flash.hpp>
+#include "drv_ftfx_flash.hpp"
 
 /**
  * ********** NVM存储变量定义 **********
@@ -170,9 +182,6 @@ extern "C"
 
 #endif // ! HITSIC_USE_APP_MENU
 
-#ifdef __cplusplus
-}
-#endif
 
 #endif // ! D_MK66F18_APP_MENU_PORT_H_
 
