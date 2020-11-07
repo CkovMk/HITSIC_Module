@@ -9,7 +9,15 @@
 
 inline void CAM_ZF9V034_UnitTestDmaCallback(edma_handle_t *handle, void *userData, bool transferDone, uint32_t tcds)
 {
-    DMADVP_EdmaCallbackService((dmadvp_handle_t*)userData, transferDone);
+    dmadvp_handle_t *dmadvpHandle = (dmadvp_handle_t*)userData;
+
+    DMADVP_EdmaCallbackService(dmadvpHandle, transferDone);
+    //PRINTF("new full buffer: 0x%-8.8x = 0x%-8.8x\n", handle->fullBuffer.front(), handle->xferCfg.destAddr);
+    if(kStatus_Success != DMADVP_TransferStart(dmadvpHandle->base, dmadvpHandle))
+    {
+        DMADVP_TransferStop(dmadvpHandle->base, dmadvpHandle);
+        PRINTF("transfer stop! insufficent buffer\n");
+    }
 }
 
 inline void CAM_ZF9V034_UnitTest(void)
@@ -19,7 +27,7 @@ inline void CAM_ZF9V034_UnitTest(void)
     cam_zf9v034_configPacket_t cameraCfg;
     CAM_ZF9V034_GetDefaultConfig(&cameraCfg);
     PRINTF("[D] ZF9V034: Writing config data.\n");
-    //CAM_ZF9V034_CfgWrite(&cameraCfg);
+    CAM_ZF9V034_CfgWrite(&cameraCfg);
     //CAM_ZF9V034_CfgRead(&cameraCfg);
 
     dmadvp_config_t dmadvpCfg;

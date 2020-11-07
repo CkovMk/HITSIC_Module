@@ -15,13 +15,6 @@
  * limitations under the License.
  */
 /**
- * @brief 陀螺仪驱动，适用于mpu6050,mpu9250,icm20602
- * @author xiao qq1761690868
- * @doc drv_imu_invensense.md
- * @version v1.0
- * @date 2020-10-16
- */
-/**
  * @file    :   drv_imu_invensense.hpp
  * @author  :   beforelight/肖日涛(qq:1761690868)
  * @version :   v0.1.0

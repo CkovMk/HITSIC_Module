@@ -14,7 +14,7 @@ void CAM_ZF9V034_GetDefaultConfig(cam_zf9v034_configPacket_t *config)
 	config->autoExpSetCmd = (uint16_t)cam_zf9v034_cmd_t::AUTO_EXP;
 	config->autoExpSet = 0;
     config->autoExpTimeCmd = (uint16_t)cam_zf9v034_cmd_t::EXP_TIME;
-	config->autoExpTime = 32222;//FIXME: check this value
+	config->autoExpTime = 32222;
     config->FrameRateCmd = (uint16_t)cam_zf9v034_cmd_t::FPS;
 	config->FrameRate = 50;
     config->imageColCmd = (uint16_t)cam_zf9v034_cmd_t::SET_COL;
@@ -107,7 +107,7 @@ uint16_t CAM_ZF9V034_SetExposeTime(uint16_t light)
 
 // Receiver Config
 #if (defined(ZF9V034_USE_DMADVP) && (ZF9V034_USE_DMADVP > 0U))
-void CAM_ZF9V034_GetReceiverConfig(dmadvp_config_t* config, const cam_zf9v034_configPacket_t *camConfig)
+void CAM_ZF9V034_GetReceiverConfig(receiver_config_type *config, const cam_zf9v034_configPacket_t *camConfig)
 {
 	config->width = camConfig->imageCol;
 	config->height = camConfig->imageRow;
@@ -115,7 +115,7 @@ void CAM_ZF9V034_GetReceiverConfig(dmadvp_config_t* config, const cam_zf9v034_co
 	config->polarityFlags = DMADVP_HsyncActiveHigh/*FIXME*/ | DMADVP_VsyncActiveLow | DMADVP_DataLatchOnRisingEdge;
 }
 #elif(defined(ZF9V034_USE_RTCSI) && (ZF9V034_USE_RTCSI > 0U))
-void CAM_ZF9V034_GetReceiverConfig(csi_config_t* config, const cam_zf9v034_configPacket_t *camConfig); //FIXME
+void CAM_ZF9V034_GetReceiverConfig(receiver_config_type *config, const cam_zf9v034_configPacket_t *camConfig); //FIXME
 #endif // ! Receiver Config
 
 /* @} */

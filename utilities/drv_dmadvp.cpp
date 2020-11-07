@@ -130,7 +130,7 @@ void DMADVP_TransferStop(DMADVP_Type *base, dmadvp_handle_t *handle)
     PORT_SetPinInterruptConfig(handle->base->pclk_intc, handle->base->pclk_pin,
                 kPORT_InterruptOrDMADisabled);
     EDMA_AbortTransfer(&handle->dmaHandle);
-    DMADVP_TransferSubmitEmptyBuffer(base, handle, (uint8_t*)handle->xferCfg.destAddr);
+    // DMADVP_TransferSubmitEmptyBuffer(base, handle, (uint8_t*)handle->xferCfg.destAddr);
     handle->transferStarted = false;
 }
 
@@ -149,19 +149,9 @@ void DMADVP_EdmaCallbackService(dmadvp_handle_t *handle, bool transferDone)
 {
     if (transferDone)
     {
-        handle->fullBuffer.push((uint8_t*)(handle->xferCfg.destAddr));
-        //PRINTF("new full buffer: 0x%-8.8x = 0x%-8.8x\n", handle->fullBuffer.front(), handle->xferCfg.destAddr);
-        if(kStatus_Success != DMADVP_TransferStart(handle->base, handle))
-        {
-            DMADVP_TransferStop(handle->base, handle);
-            PRINTF("transfer stop! insufficent buffer\n");
-        }
+        handle->fullBuffer.push((uint8_t*)(handle->xferCfg.destAddr)); 
     }
-    else
-    {
-        DMADVP_TransferStop(handle->base, handle);
-        //while(1);//TODO: do something here to report error.
-    }
+    DMADVP_TransferStop(handle->base, handle);
 }
 
 /* @} */

@@ -1,5 +1,5 @@
-#ifndef D_MK66F18_DRV_CAM_ZF9V034_PORT_HPP
-#define D_MK66F18_DRV_CAM_ZF9V034_PORT_HPP
+#ifndef D_DEFAULT_DRV_CAM_ZF9V034_PORT_HPP
+#define D_DEFAULT_DRV_CAM_ZF9V034_PORT_HPP
 
 #include "hitsic_common.h"
 
@@ -55,4 +55,4 @@ inline void CAM_ZF9V034_Delay_ms(uint32_t ms)
 
 #endif // ! HITSIC_USE_CAM_ZF9V034
 
-#endif // ! D_MK66F18_DRV_CAM_ZF9V034_PORT_HPP
+#endif // ! D_DEFAULT_DRV_CAM_ZF9V034_PORT_HPP

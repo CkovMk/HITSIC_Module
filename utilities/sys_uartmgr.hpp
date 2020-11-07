@@ -19,7 +19,8 @@
  * @author  :	Chekhov Mark/马奇科(qq:905497173)
  * @version :	v0.1-beta.0
  *
- * @date 	:	v0.1-beta.0 2020.08.08
+ * @date 	:	v0.1-beta.0 2019.11.24
+ * @date 	:	v0.1.1		2020.08.08
  *
  * @brief   :   串口管理器
  */
@@ -39,7 +40,7 @@
   */
 
 /** @brief : 软件版本 */
-#define SYS_UARTMGR_VERSION (HITSIC_MAKE_VERSION(0U, 1U, 0U))
+#define SYS_UARTMGR_VERSION (HITSIC_MAKE_VERSION(0U, 1U, 1U))
 
 class uartMgr_t
 {

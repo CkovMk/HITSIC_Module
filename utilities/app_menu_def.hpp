@@ -182,14 +182,12 @@ typedef enum
 
     /** display config */
     menuItem_disp_forceSci = 1 << 8, ///< 该菜单项强制使用科学计数法，适用于variType和varfType。
-    //menuItem_disp_bitFlag = 1 << 9,   ///<
-    // 该菜单项为按位标志位，仅适用于variType。此时数据指针将被视为uint32_t*。
     menuItem_disp_noPreview = 1 << 10, ///< 该菜单项不会在菜单列表中显示数据。数据区将显示占位字符。注意此选项对标记为按位标志位的variType无效，因为这类菜单项从不在菜单列表显示数据。
 
     menuItem_proc_runOnce = 1 << 11, ///< 该菜单项只会运行一次。仅适用于procType。
     menuItem_proc_uiDisplay = 1 << 12, ///< 该菜单项会自行打印屏幕。仅适用于procType。
 
-/** error mask */
+    /** error mask */
 } menu_itemPropety_t;
 
 /**
@@ -258,7 +256,6 @@ typedef struct
 typedef struct
 {
     menu_list_t *data;
-    // void *data; //TODO: fix this.
 } menu_item_menuHandle_t;
 
 /** @brief : 菜单项接口结构体。 */
@@ -286,18 +283,30 @@ typedef struct _menu_itemIfce_t
 
 /**
  * @brief : 菜单项和菜单列表的计数器。
+ * @ {
  */
-extern uint32_t menu_itemCnt;
-extern uint32_t menu_listCnt;
+extern uint32_t menu_itemCnt;               ///< 菜单项计数器
+extern uint32_t menu_listCnt;               ///< 菜单列表计数器
+/**
+ * @ }
+ */
 
-extern menu_list_t *menu_currList;
-extern menu_itemIfce_t *menu_currItem;
-extern menu_list_t *menu_menuRoot;
-extern int32_t &menu_currRegionNum;
-extern int32_t menu_statusFlag;
-extern uint32_t menu_nvm_statusFlagAddr;
+/**
+ * @brief : 菜单状态机。
+ * @ {
+ */
+extern menu_list_t *menu_currList;          ///< 状态变量：指向当前所在的菜单列表
+extern menu_itemIfce_t *menu_currItem;      ///< 状态变量：指向当前所在的菜单项，仅位于菜单项
+extern menu_list_t *menu_menuRoot;          ///< 根菜单指针。
+extern int32_t &menu_currRegionNum;         ///< 当前局部存储区号
+extern int32_t menu_statusFlag;             ///< 状态标志位
+extern uint32_t menu_nvm_statusFlagAddr;    ///< 存储状态标志位的NVM存储地址
 extern int32_t &menu_nvmCopySrc, &menu_nvmCopyDst;
+/**
+ * @ }
+ */
 
+/** 字符缓存 */
 extern char menu_dispStrBuf[MENU_DISP_STRBUF_ROW][MENU_DISP_STRBUF_COL];
 
 /*************************************
@@ -351,20 +360,6 @@ enum menu_status_t
     menu_param_Mask8h = 0xff00, /// 低16位中高8位掩码标志位，用于读取16位参数中的高8位。如果要返回两个参数，或参数取值小于256，可以使用两个8位参数。
     menu_param_Mask8l = 0x00ff, /// 低16位中高8位掩码标志位，用于读取16位参数中的低8位。同上。
 };
-
-/**
- * @brief 菜单控制结构体。deprecated
- */
-// typedef struct
-//{
-//	menu_list_t* menu_currList;
-//	menu_itemIfce_t* menu_currItem;
-//	menu_list_t* menu_menuRoot;
-//	int32_t menu_currRegionNum;
-//	int32_t menu_statusFlag;
-//}menu_t;
-// menu_t menuInst;
-
 
 extern char menu_dispStrBuf[MENU_DISP_STRBUF_ROW][MENU_DISP_STRBUF_COL];
 

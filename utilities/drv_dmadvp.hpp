@@ -17,11 +17,12 @@
 /**
  * @file 	:	drv_dmadvp.hpp
  * @author  :	Chekhov Mark/马奇科(qq:905497173)
- * @version :	v0.1-beta.0
+ * @version :	v0.1-beta.1
  *
  * @date 	:	v0.1-beta.0 2020.10.20
+ * @date 	:	v0.1-beta.1 2020.10.30
  *
- * @brief    :   DVP摄像头数据EDMA接收器
+ * @brief    :   数字视频接口DMA接收器
  */
 #ifndef UTILITIES_DRV_DMADVP_HPP_
 #define UTILITIES_DRV_DMADVP_HPP_
@@ -33,7 +34,7 @@
 #include "drv_dmadvp_port.hpp"
 
 /** @brief : 软件版本 */
-#define DRV_DMADVP_VERSION (HITSIC_MAKE_VERSION(0U, 1U, 0U))
+#define DRV_DMADVP_VERSION (HITSIC_MAKE_VERSION(0U, 1U, 1U))
 
 /*!
  * @addtogroup dmadvp
@@ -50,7 +51,7 @@ enum
 };
 
 /*! @brief CSI signal polarity. */
-enum _dmadvp_polarity_flags    //TODO: fix this
+enum dmadvp_polarity_flags
 {
     DMADVP_HsyncActiveLow         = 0U,                        /*!< HSYNC is active low. No Use HERE*/
     DMADVP_HsyncActiveHigh        = 1U,                        /*!< HSYNC is active high. No Use HERE*/
@@ -77,7 +78,7 @@ struct dmadvp_handle_t
     DMADVP_Type* base;              /*!< DMADVP虚拟设备地址 */
     edma_handle_t dmaHandle;        /*!< DMA传输句柄 */
     edma_transfer_config_t xferCfg; /*!< DMA传输配置 */
-    extInt_t* extIntHandle;
+    extInt_t* extIntHandle;         /*!< 外部中断句柄 */
     volatile bool transferStarted;  /*!< 传输中标志位，true：正在进行传输 */
     std::queue<uint8_t*> emptyBuffer, fullBuffer;
 };
@@ -104,7 +105,6 @@ status_t DMADVP_Init(DMADVP_Type *base, const dmadvp_config_t *config);
  * @param handle DMADVP传输句柄
  * @param base DMADVP虚拟设备地址
  * @param callback 要使用的DMA回调函数
- * @param userData 要传递的用户数据 //FIXME这里似乎有问题
  */
 void DMADVP_TransferCreateHandle(dmadvp_handle_t *handle, DMADVP_Type *base, edma_callback callback);
 
@@ -114,11 +114,18 @@ void DMADVP_TransferCreateHandle(dmadvp_handle_t *handle, DMADVP_Type *base, edm
  * @param base DMADVP虚拟设备地址
  * @param handle DMADVP传输句柄
  * @param destAddr 要提交的缓存区指针
- * @return status_t 提交成功则返回kStatus_Success.
+ * @return status_t 提交成功则返回kStatus_Success,否则返回kStatus_DMADVP_NoEmptyBuffer.
  */
 status_t DMADVP_TransferSubmitEmptyBuffer(DMADVP_Type *base, dmadvp_handle_t *handle, uint8_t *buffer);
 
-
+/**
+ * @brief 获取传输完成的缓存区。
+ * 
+ * @param base DMADVP虚拟设备地址
+ * @param handle DMADVP传输句柄
+ * @param buffer 用于接收缓存区的指针
+ * @return status_t 接收成功则返回kStatus_Success,否则返回kStatus_DMADVP_NoFullBuffer.
+ */
 status_t DMADVP_TransferGetFullBuffer(DMADVP_Type *base, dmadvp_handle_t *handle, uint8_t **buffer);
 
 /**
@@ -134,6 +141,9 @@ status_t DMADVP_TransferStart(DMADVP_Type *base, dmadvp_handle_t *handle);
  * 
  * @param base DMADVP虚拟设备地址
  * @param handle DMADVP传输句柄
+ * 
+ * @note 如果您在传输中途停止传输，正在传输的buffer会留在handle->xferCfg.destAddr中。
+ *              您需要手动将其提交到空缓存队列。
  */
 void DMADVP_TransferStop(DMADVP_Type *base, dmadvp_handle_t *handle);
 

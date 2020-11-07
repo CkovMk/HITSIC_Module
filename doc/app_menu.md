@@ -63,6 +63,7 @@ by：CkovMk @hitsic 2020.10.30
 **已知问题**
 
 - 局部数据区间的数据拷贝功能仍不可用。
+- `menuItem_dataExt_HasMinMax`扩展属性对数据初值、NVM读取无效。
 
 
 
@@ -171,12 +172,6 @@ by：CkovMk @hitsic 2019.11.02
 - 该菜单没用添加定时任务，故仅在有按键操作时刷新菜单。相关接口已经留好，后续更新中实现。
 - 菜单的Flash保存功能还在开发中，暂时无法使用。菜单内的数据在复位后会丢失，需要手动记录。
 - 删去了紫丁香LOGO的相关数据，无法显示紫丁香LOGO。
-
-
-
-### v0.1-beta.0
-
-此版本是一个预览版本，Bug很多，代码仅完成了基本的结构。
 
 
 
@@ -401,7 +396,7 @@ by：CkovMk @hitsic 2019.11.02
 	        const char *_nameStr, uint32_t _saveAddr, uint32_t _pptFlag);
 	```
 	
-	目前支持的菜单项类型有：分隔线/孔类型（`nullType`）、`int32_t`参数型（`variType`）、`float`参数型（`varfType`）、菜单跳转型（`menuType`）、运行程序型（`procType`）。
+	目前支持的菜单项类型有：分隔线/空类型（`nullType`）、`int32_t`参数型（`variType`）、`float`参数型（`varfType`）、菜单跳转型（`menuType`）、运行程序型（`procType`）。
 	
 	- `nullType`
 	
@@ -443,7 +438,7 @@ by：CkovMk @hitsic 2019.11.02
 	
 	  - `menuItem_disp_noPreview`：关闭菜单列表内的变量数值显示，这将允许显示更长的菜单项名称。
 	
-	  - `menuItem_dataExt_HasMinMax`：该（变量）具有最小/最大值扩展属性。
+	  - `menuItem_dataExt_HasMinMax`：该（变量）具有最小/最大值的扩展属性。最小值存储在`data+1`地址，最大值存储在`data+2`地址。
 	
 	- `varfType`
 	
@@ -653,7 +648,7 @@ by：CkovMk @hitsic 2019.11.02
 
 ### 核心逻辑
 
-#### 菜单项与菜单表
+#### 菜单项与菜单列表（命令模式）
 
 - 菜单项结构体
   
@@ -742,24 +737,27 @@ by：CkovMk @hitsic 2019.11.02
 
 - 菜单表操作接口
 
-#### 顶层逻辑
+#### 菜单状态变量（状态机）
 
 - 顶层变量
 
   - 顶层处理变量
 
     ```c
-    extern uint32_t menu_itemCnt;
-    extern uint32_t menu_listCnt;
-      
-    extern menu_list_t *menu_currList;
-    extern menu_itemIfce_t *menu_currItem;
-    extern menu_list_t *menu_menuRoot;
-    extern int32_t menu_currRegionNum;
-    extern int32_t menu_statusFlag;
-    extern uint32_t menu_nvm_statusFlagAddr;
-      
-    extern char menu_dispStrBuf[MENU_DISP_STRBUF_ROW][MENU_DISP_STRBUF_COL];
+    /**
+     * @brief : 菜单状态机。
+     * @ {
+     */
+    extern menu_list_t *menu_currList;          ///< 状态变量：指向当前所在的菜单列表
+    extern menu_itemIfce_t *menu_currItem;      ///< 状态变量：指向当前所在的菜单项，仅位于菜单项
+    extern menu_list_t *menu_menuRoot;          ///< 根菜单指针。
+    extern int32_t &menu_currRegionNum;         ///< 当前局部存储区号
+    extern int32_t menu_statusFlag;             ///< 状态标志位
+    extern uint32_t menu_nvm_statusFlagAddr;    ///< 存储状态标志位的NVM存储地址
+    extern int32_t &menu_nvmCopySrc, &menu_nvmCopyDst;
+    /**
+     * @ }
+     */
     ```
 
   - 菜单状态标志位定义
@@ -786,9 +784,8 @@ by：CkovMk @hitsic 2019.11.02
 
     
 
-- 顶层操作接口
 
-### 外围组件
+### 外围组件（责任链模式）
 
 #### 按键输入
 
@@ -804,6 +801,7 @@ by：CkovMk @hitsic 2019.11.02
       menuOpCode_lf,
       menuOpCode_rt,
   } menu_keyOpCode_t;
+  
   typedef enum _menu_keyOpType_t
   {
       menuOpType_shrt = 1 << 8,
@@ -821,6 +819,14 @@ by：CkovMk @hitsic 2019.11.02
 - 按键消息处理
 
   根据上述枚举定义，每条按键消息都由两部分组成：位于低八位的按键码和位于高八位的操作码。一旦有按键消息从按键处理模块产生，该按键消息将被写入缓存区 `menu_keyOpBuff`，然后置位菜单中断标志位中的按键消息位，最后置位NVIC中对应的中断有效标志。
+
+
+
+#### 屏幕输出
+
+字符缓存
+
+
 
 #### NVM存储
 
@@ -841,72 +847,24 @@ by：CkovMk @hitsic 2019.11.02
 
   - NVM缓存管理
 
-    ```c
-    /**
-    	 * @brief : 菜单项写入缓存。
-    	 * 当改写第N个扇区时，menu_nvm_cachedSector = N, menu_nvm_cache分配4KB缓存
-    	 * 并读入第N扇区的所有内容。此时能且仅能修改第N扇区的内容。对第N扇区内容的修改
-    	 * 将缓存至上述内存。
-    	 */
-    	extern uint8_t *menu_nvm_cache;
-    	extern uint32_t menu_nvm_cachedSector;
-    ```
+		```c
+		/**
+		 * @brief : 菜单项写入缓存。
+		 * 当改写第N个扇区时，menu_nvm_cachedSector = N, menu_nvm_cache分配4KB缓存
+		 * 并读入第N扇区的所有内容。此时能且仅能修改第N扇区的内容。对第N扇区内容的修改
+		 * 将缓存至上述内存。
+		 */
+		extern uint8_t *menu_nvm_cache;
+		extern uint32_t menu_nvm_cachedSector;
+		```
 
     
 
-- NVM存储接口
+- NVM存储接口（惰性缓存）
 
   每个保存的菜单项都占用32个字节的Flash空间。在保存菜单数据时，为了节约NVM（一般是Flash存储器）的寿命，采用惰性缓存的方法：开辟一块与扇区大小相同的内存作为缓存，并开辟一个整型变量用于存储所缓存的扇区号。如要将数据写入地址 `Addr`，分三种情况：1. 如果 `Addr` 所在扇区已被缓存，则直接修改缓存区中对应位置的值。 2. 若 `Addr` 所在扇区未被缓存，且当前未缓存任何扇区，则缓存 `Addr` 所在扇区，执行情况1。 3. 若 `Addr` 所在扇区未被缓存，且当前已缓存其他扇区，则擦除已缓存扇区后将缓存写回该扇区，执行情况2。**注意：最后一次写NVM操作结束后，需要手动将已缓存扇区写回NVM。**
 
-### 附录1：符号说明
 
-- 菜单项类型
-
-  目前支持的数据类型有：
-
-  ```c
-  typedef enum
-  {
-      nullType,
-      variType, //整数类型，data应传入（int*）或(int32_t*)。
-      varfType, //浮点类型，data应传入(float*)。
-      procType, //函数类型，可以运行函数，data应传入(void*)(void(*)(void))。
-      menuType, //菜单类型，用于跳转菜单列表。data应传入(menu_list_t*)。
-  } menu_itemType_t;
-  ```
-
-- 属性Flag
-
-  目前支持的属性Flag有：
-
-  ```c
-  /**
-   * @brief : 菜单项属性枚举类型。
-   * 标志位枚举。
-   */
-  typedef enum
-  {
-      /** data config */
-      menuItem_data_global = 1 << 0, ///< 该菜单项存储在全局数据区。
-      menuItem_data_region = 1 << 1, ///< 该菜单项存储在局部数据区。
-      menuItem_data_getPos = menuItem_data_global | menuItem_data_region,
-      menuItem_data_ROFlag = 1 << 2, ///< 该菜单项为只读。只读菜单项不允许在菜单内修改。
-      menuItem_data_NoSave = 1 << 3, ///< 该菜单项默认不保存到NVM。
-    menuItem_data_getCfg = menuItem_data_global | menuItem_data_region | menuItem_data_ROFlag/* | menuItem_data_prioRW*/,
-  
-      /** display config */
-      menuItem_disp_forceSci = 1 << 8,  ///< 该菜单项强制使用科学计数法，适用于variType和varfType。
-      //menuItem_disp_bitFlag = 1 << 9,   ///< 该菜单项为按位标志位，仅适用于variType。此时数据指针将被视为uint32_t*。
-      menuItem_disp_noPreview = 1 << 10, ///< 该菜单项不会在菜单列表中显示数据。数据区将显示占位字符。注意此选项对标记为按位标志位的variType无效，因为这类菜单项从不在菜单列表显示数据。
-  	
-      menuItem_proc_runOnce = 1 << 11, ///< 该菜单项只会运行一次。仅适用于procType。
-      menuItem_proc_uiDisplay = 1 << 12, ///< 该菜单项会自行打印屏幕。仅适用于procType。
-  
-      /** error mask */
-  } menu_itemPropety_t;
-  ```
-  
-  互不冲突的属性Flag之间用按位或运算符"|"连接。例如`(menuItem_data_ROFlag | menuItem_disp_forceSci)`表示该数据属性为”该数据为只读，且 强制使用科学计数法显示“。
 
 ## 应用指南
 

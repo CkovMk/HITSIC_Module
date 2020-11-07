@@ -17,25 +17,62 @@
 
 ## 版本说明
 
-### v1.0.0
+### v1.0.1
 
-by CkovMk @hitsic 2019.07.25
+by CkovMk @hitsic 2020.10.30
 
-改动说明：
+**改动说明**
 
-- PITMGR从此版本起不再支持LTC。为了更好的兼容性，删除了64-bit LTC相关的功能。如果需要LTC，您仍可以自行调用系统底层函数。
-- 增加了`D_KV10Z7`单片机的支持。
-- 调整了代码的包含关系。
 - 增加了`HITSIC_USE_PITMGR`宏，可以方便地启用或禁用本模块。
+- 修改了服务函数接口，新增了用户参数，添加了`setUserData`方法。
 
-开发计划：
+**开发计划**
 
 - 调度器增加任务超时时自动延迟至下一周期运行的功能，并可由`pptFlag`控制。
 - 增加根据服务函数查找、编辑和删除任务的功能。这将使得中断列表支持插入等操作，也无需再手动保存任务指针。
 
-已知问题：
+**已知问题**
 
 - 暂无
+
+
+
+### v1.0.0
+
+by CkovMk @hitsic 2020.07.25
+
+**改动说明**
+
+- PITMGR从此版本起不再支持LTC。为了更好的兼容性，删除了64-bit LTC相关的功能。如果需要LTC，您仍可以自行调用系统底层函数。
+- 增加了`D_KV10Z7`单片机的支持。
+- 调整了代码的包含关系。
+
+**开发计划**
+
+- 调度器增加任务超时时自动延迟至下一周期运行的功能，并可由`pptFlag`控制。
+- 增加根据服务函数查找、编辑和删除任务的功能。这将使得中断列表支持插入等操作，也无需再手动保存任务指针。
+
+**已知问题**
+
+- 暂无
+
+
+
+### v0.4.1
+
+by CkovMk @hitsic 2019.11.02
+
+
+
+### v0.4-beta.0
+
+by CkovMk @hitsic 2019.10.28
+
+### ......
+
+### v0.1.0
+
+by CkovMk @hitsic 2018.12.20
 
 
 
@@ -81,11 +118,13 @@ by CkovMk @hitsic 2019.07.25
 
 - **设置传递参数`void pitMgr_t::setUserData(void *_userData);`**
 
+  该函数用于设置任务触发时传递给服务函数的用户变量指针。对于不处理参数的服务函数，忽略即可。
+
 - **服务接口 `static void pitMgr_t::isr(void);`**
 
   该函数无需用户调用，是由系统自动在定时器中断服务函数中调用的。
 
-  注意：该函数仅包含PITMGR的内部逻辑，不负责具体的硬件操作。定时器中断服务函数中除调用此函数外，还应包含清楚中断标志位等必须的操作。
+  注意：该函数仅包含PITMGR的内部逻辑，不负责具体的硬件操作。定时器中断服务函数中除调用此函数外，还应包含清除中断标志位等必需的操作。
 
 
 
@@ -97,7 +136,47 @@ by CkovMk @hitsic 2019.07.25
 
 
 
+
+
 ## 应用指南
+
+### 初始化
+
+- 调用`static status_t pitMgr_t::init(void);`即可
+
+
+
+### 基础使用
+
+- 创建服务函数
+
+  创建一个符合`typedef void (*pitMgr_t::handler_t)(void *userData);`定义的服务函数。
+
+- 将服务函数注册至列表
+
+  调用`static pitMgr_t* pitMgr_t::insert(uint32_t _ms, uint32_t _mso, handler_t _handler, uint32_t _ppt);`函数，并接收返回的指针。
+
+  如果返回的是空指针，说明注册失败。
+
+- 从列表中删除服务函数
+
+  调用`static status_t pitMgr_t::remove(pitMgr_t &_handle);`函数，传入注册任务时保存的`pitMgr_t`对象引用，即可取消注册该服务函数。
+
+
+
+### 变更属性、使用用户参数
+
+使用注册任务时保存的`pitMgr_t`对象指针：
+
+- 调用成员函数 `void pitMgr_t::setup(uint32_t _ms, uint32_t _mso, handler_t _handler, uint32_t _ppt);`重设所有属性。
+- 调用成员函数 `void pitMgr_t::setEnable(bool _b);`单独设置启用/禁用属性。
+- 调用成员函数 `void pitMgr_t::setUserData(void *_userData);`设置用户参数。
+
+
+
+### 注意事项
+
+暂无
 
 
 

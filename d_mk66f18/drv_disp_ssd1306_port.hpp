@@ -30,8 +30,8 @@
 #include "sys_pitmgr.hpp"
 #include "pin_mux.h"
 
-#define HITSIC_DISP_SSD1306_FLIP_X (0U)
-#define HITSIC_DISP_SSD1306_FLIP_Y (0U)
+#define HITSIC_DISP_SSD1306_FLIP_X (0U)	///< 屏幕左右翻转
+#define HITSIC_DISP_SSD1306_FLIP_Y (0U)	///< 屏幕上下翻转
 
 #define OLED_SPI_BASE			SPI2
 #define OLED_SPI_CLKFREQ 		CLOCK_GetFreq(DSPI0_CLK_SRC)
@@ -40,49 +40,44 @@
 #define OLED_SPI_Ctarn			kDSPI_Ctar0
 #define OLED_SPI_MasterCtarn	kDSPI_MasterCtar0
 
+/**
+ * @brief 设置RST脚电平。
+ * 
+ * @param x RST脚的电平状态，正逻辑。
+ */
 inline void DISP_SSD1306_gpioSetRST(uint8_t x)
 {
 	GPIO_PinWrite(RTEPIN_DIGITAL_OLED_RST_GPIO, RTEPIN_DIGITAL_OLED_RST_PIN, x);
 }
 
+/**
+ * @brief 设置D/C脚电平。
+ * 
+ * @param x D/C脚的电平状态，正逻辑。
+ */
 inline void DISP_SSD1306_gpioSetD_C(uint8_t x)
 {
 	GPIO_PinWrite(RTEPIN_DIGITAL_OLED_D_C_GPIO, RTEPIN_DIGITAL_OLED_D_C_PIN, x);
 }
 
+/**
+ * @brief 毫秒级阻塞延迟函数。
+ * 
+ * @param ms 延迟的毫秒数。
+ */
 inline void DISP_SSD1306_delay_ms(uint32_t ms)
 {
 	for(uint32_t i = 0; i < ms; ++i)
 	{
-        SDK_DelayAtLeastUs(1000,CLOCK_GetFreq(kCLOCK_CoreSysClk));
+        SDK_DelayAtLeastUs(1000, CLOCK_GetFreq(kCLOCK_CoreSysClk));
 	}
 }
 
-
-//extern dspi_master_config_t spi_m_cfg;
-//inline void DISP_SSD1306_spiInit(void)
-//{
-//	const dspi_master_config_t oled_spi_cfg = {
-//  		.whichCtar = OLED_SPI_Ctarn,
-//  		.ctarConfig = {
-//		.baudRate = 20000000,
-//		.bitsPerFrame = 8,
-//		.cpol = kDSPI_ClockPolarityActiveHigh,
-//		.cpha = kDSPI_ClockPhaseFirstEdge,
-//		.direction = kDSPI_MsbFirst,
-//		.pcsToSckDelayInNanoSec = 1000,
-//		.lastSckToPcsDelayInNanoSec = 1000,
-//		.betweenTransferDelayInNanoSec = 1000
-//  		},
-//  	.whichPcs = OLED_SPI_Pcsn,
-//  	.pcsActiveHighOrLow = kDSPI_PcsActiveLow,
-//  	.enableContinuousSCK = false,
-//  	.enableRxFifoOverWrite = false,
-//  	.enableModifiedTimingFormat = false,
-//  	.samplePoint = kDSPI_SckToSin0Clock,
-//	};
-//	DSPI_MasterInit(OLED_SPI_BASE, &oled_spi_cfg, OLED_SPI_CLKFREQ);
-//}
+/**
+ * @brief SPI接口发送一个字节。
+ * 
+ * @param data 要发送的数据
+ */
 inline void DISP_SSD1306_spiWrite(uint8_t data)
 {
 	static dspi_transfer_t oled_spi_xfer =
@@ -95,10 +90,6 @@ inline void DISP_SSD1306_spiWrite(uint8_t data)
 	oled_spi_xfer.txData = &data;
 	DSPI_MasterTransferBlocking(OLED_SPI_BASE, &oled_spi_xfer);
 }
-
-
-
-
 
 
 #endif // ! D_MK66F18_DRVOLED_H_
