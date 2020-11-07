@@ -658,13 +658,12 @@ by：CkovMk @hitsic 2019.11.02
   /** @brief : 菜单项接口结构体。 */
   typedef struct _menu_itemIfce_t
   {
-      menu_itemType_t type;           /// 此菜单项的类型。
-      //menu_list_t *myList;          /// 此菜单项所属的菜单列表（暂时没用）。
-      uint32_t pptFlag;               /// 此菜单项的属性标志位。
-      uint32_t list_id, unique_id;    /// 此菜单项在本列表内的序号（从0开始）、全局唯一序号（从0开始）
-      uint32_t saveAddr;              /// 此菜单在本区域内的偏移地址。从0开始，以1步进。注意，全局数据区和局部数据区的地址分开来算。
-      char nameStr[menu_nameStrSize]; /// 此菜单项的名称字符串。最大长度为 menu_nameStrSize - 1 字节。
-      union menu_itemIfce_handle_t    /// 菜单项操作句柄的共用体。使用时根据此菜单项的类型调取对应项访问。
+      menu_itemType_t type; ///< 此菜单项的类型。
+      uint32_t pptFlag; ///< 此菜单项的属性标志位。
+      uint32_t list_id, unique_id; ///< 此菜单项在本列表内的序号（从0开始）、全局唯一序号（从0开始）
+      uint32_t saveAddr; ///< 此菜单在本区域内的偏移地址。从0开始，以1步进。注意，全局数据区和局部数据区的地址分开来算。
+      char nameStr[menu_nameStrSize]; ///< 此菜单项的名称字符串。最大长度为menu_nameStrSize - 1 字节。
+      union menu_itemIfce_handle_t ///< 菜单项操作句柄的共用体。使用时根据此菜单项的类型调取对应项访问。
       {
           void *p_void;
           menu_item_nullHandle_t *p_nullType;
@@ -674,7 +673,7 @@ by：CkovMk @hitsic 2019.11.02
           menu_item_procHandle_t *p_procType;
           menu_item_menuHandle_t *p_menuType;
       } handle;
-      //void* pHandle;
+      const menu_itemAdapter_t* adapter; ///< 指向存放菜单项命令函数指针的结构体。参考C++虚表
   } menu_itemIfce_t;
   ```
   
@@ -705,6 +704,16 @@ by：CkovMk @hitsic 2019.11.02
   
   ```c
   /** @brief : 整数类型菜单项操作函数。 */
+  const menu_itemAdapter_t menu_itemAdapter_variType =
+  {
+      .ItemConstruct = MENU_ItemConstruct_variType,
+      .ItemGetData = MENU_ItemGetData_variType,
+      .ItemSetData = MENU_ItemSetData_variType,
+      .ItemPrintSlot = MENU_ItemPrintSlot_variType,
+      .ItemDirectKeyOp = MENU_ItemDirectKeyOp_variType,
+      .ItemPrintDisp = MENU_ItemPrintDisp_variType,
+      .ItemKeyOp = MENU_ItemKeyOp_variType,
+  };
   void MENU_ItemConstruct_variType(menu_itemIfce_t *_item, void *_data);
   void MENU_ItemGetData_variType(menu_itemIfce_t *_item, void *_data);
   void MENU_ItemSetData_variType(menu_itemIfce_t *_item, void *_data);
@@ -716,7 +725,7 @@ by：CkovMk @hitsic 2019.11.02
   void MENU_ItemKeyOp_variType(menu_itemIfce_t *_item, menu_keyOp_t * const _op);
   ```
   
-  每个菜单类型都应包含上述7个函数，并应完全按照此格式命名。
+  每个菜单类型都应包含上述7个命令函数。这些函数建议完全按照此格式命名。菜单项中的`adapter`将会指向由这些函数的函数指针构成的结构体`menu_itemAdapter_variType`。在调用一个特定的`menuItem_t`的命令函数时，将会根据其中存储的`adapter`调用这些命令函数。
   
 - 菜单表结构体
 
@@ -1026,34 +1035,144 @@ by CkovMk @hitsic 2020.10.30
 
 
 
-## 移植指南（待更新）
+## 移植指南
 
-修改`hitsic_def.h`文件。前面的数字表示行号，仅供参考。
+### 顶层移配置
 
-073：宏`HITSIC_MENU_DEBUG_ENABLE`：是否开启调试信息输出。为避免浪费打印输出的时间，将其置0。
+- MENU组件
 
-080：打印输出语句的名称。如要使用调试输出功能，根据自己的平台适配一个printf格式的函数。
+  启用/禁用：由宏`HITSIC_USE_APP_MENU`控制。0为禁用。
 
-086：根菜单的容量。为了简化代码，菜单内存采用一次性动态分配的方式，因此创建菜单时需要指定菜单大小。如果需要在根菜单插入大量菜单项，可适当将其改大，够用即可。推荐在根菜单插入几个子菜单，在子菜单中插入菜单项。
+- 调试输出
 
-089：菜单按键所使用GPIO定义。每组只需修改前两个，第一个是GPIO实例，第二个是GPIO编号。例如A15端口，对应{GPIOA, 15, ... } 。五组定义的顺序为：确认键、上方向、下方向、左方向、右方向。**不要修改每组中的其他定义！**
+  启用/禁用：由宏`HITSIC_MENU_PRINT_ENABLE`控制。
 
-137：这三行是菜单所使用的中断服务定义，一般不需要修改。如有必要，合理设置中断优先级即可。菜单优先级一般较低。
+  输出语句：由宏`HITSIC_MENU_PRINTF`配置。
 
-144：这是OLED打印函数的接口定义。如果不使用MENU中自带的OLED驱动，需要将名称改为`SmartCar_OLED`中的函数名称`OLED_P6x8Str`（都是学嘉的代码，MENU这个改了改名，其实大同小异）。
+- 根菜单最大容量
 
+  由于本组件中的菜单列表需要在初始化时指定其大小，根菜单的大小由宏`HITSIC_MENU_ROOT_SIZE`决定。
 
+- 事件任务接口
 
-### 屏幕显示接口
+  本组件目前利用未使用的中断服务来模拟事件处理。需要配置的项有：
+
+  ```c++
+  /**
+   * @brief : 菜单消息调用所使用的中断信息。
+   * 可以使用任何当前工程中未使用的中断。注意中断号和中断服务函数
+   * 必须对应。优先级不可过高。
+   */
+  #define HITSIC_MENU_SERVICE_IRQHandler (Reserved85_IRQHandler)	///< 要使用的中断服务函数
+  #define HITSIC_MENU_SERVICE_IRQn (Reserved85_IRQn) 				///< 要使用的中断号
+  #define HITSIC_MENU_SERVICE_IRQPrio (12u) 						///< 中断优先级，需要设置一个较低的值，以免打断重要任务。
+  ```
 
 
 
 ### 按键输入接口
 
+- 启用/禁用
+
+  由宏`HITSIC_MENU_USE_BUTTON`控制。如果不使用菜单自带的按键处理，您也可以调用顶层API`void MENU_KeyOp(menu_keyOp_t *const _op);`手动传入按键操作。**菜单自带的按键处理依赖于BUTTON组件。**
+
+- GPIO配置
+
+  由宏`HITSIC_MENU_BUTTON_5DIR_BSP_INIT`配置。该宏定义了一个长度为5的`button_t`结构体数组，该结构体的定义详见BUTTON组件。
+
+  在MENU的移植文件中，每一个结构体仅需修改前两项：第一项为按键所在的GPIO外设，第二项为按键所在的GPIO编号。其他项保持默认即可。
+
+  五个结构体按顺序依次为：确定、向上、向下、向左、向右。
+
+  > 示例：
+  >
+  > ```c++
+  > /** @brief : 菜单使用的五向按键初始化。每组数据前两个是GPIO和Pin，其余数据为0。 */
+  > #define HITSIC_MENU_BUTTON_5DIR_BSP_INIT  \
+  >     {                                     \
+  >         {                                 \
+  >             RTEPIN_DIGITAL_BUTTON_OK_GPIO, \
+  >             RTEPIN_DIGITAL_BUTTON_OK_PIN,   \
+  >             kPORT_InterruptOrDMADisabled, \
+  >             0,                            \
+  >             BUTTON_STAT_NONE,             \
+  >             NULL,                         \
+  >         },                                \
+  >         {                                 \
+  >         	RTEPIN_DIGITAL_BUTTON_UP_GPIO,  \
+  > 			RTEPIN_DIGITAL_BUTTON_UP_PIN,   \
+  >             kPORT_InterruptOrDMADisabled, \
+  >             0,                            \
+  >             BUTTON_STAT_NONE,             \
+  >             NULL,                         \
+  >         },                                \
+  >         {                                 \
+  >         	RTEPIN_DIGITAL_BUTTON_DN_GPIO,  \
+  > 			RTEPIN_DIGITAL_BUTTON_DN_PIN,   \
+  >             kPORT_InterruptOrDMADisabled, \
+  >             0,                            \
+  >             BUTTON_STAT_NONE,             \
+  >             NULL,                         \
+  >         },                                \
+  >         {                                 \
+  >         	RTEPIN_DIGITAL_BUTTON_LF_GPIO,  \
+  > 			RTEPIN_DIGITAL_BUTTON_LF_PIN,   \
+  >             kPORT_InterruptOrDMADisabled, \
+  >             0,                            \
+  >             BUTTON_STAT_NONE,             \
+  >             NULL,                         \
+  >         },                                \
+  >         {                                 \
+  >         	RTEPIN_DIGITAL_BUTTON_RT_GPIO,  \
+  > 			RTEPIN_DIGITAL_BUTTON_RT_PIN,   \
+  >             kPORT_InterruptOrDMADisabled, \
+  >             0,                            \
+  >             BUTTON_STAT_NONE,             \
+  >             NULL,                         \
+  >         },                                \
+  >     }
+  > ```
+
+
+
+### 屏幕显示接口
+
+- 帧缓存
+
+  启用/禁用：由宏`HITSIC_MENU_USE_FRAME_BUFFER`控制。
+
+#### 帧缓存模式
+
+首先需要在这里包含所需头文件,然后将三个宏函数连接到三个函数适配器。
+
+```c++
+#include "drv_disp_ssd1306.hpp"
+#include "lib_graphic.hpp"
+#define HITSIC_MENU_DISPLAY_BUFFER_CLEAR() (MENU_FrameBufferClear())
+#define HITSIC_MENU_DISPLAY_PRINT(row, col, str) (MENU_FrameBufferPrint(row, col, str))
+#define HITSIC_MENU_DISPLAY_BUFFER_UPDATE() (MENU_FrameBufferUpdate())
+```
+
+随后在`app_menu_port.hpp`内实现这三个函数。
+
+`void MENU_FrameBufferClear(void);`用于清除缓存区。
+
+`void MENU_FrameBufferPrint(uint16_t x, uint16_t y, char *str);`用于向缓存区打印字符串。
+
+`void MENU_FrameBufferUpdate(void);`用于将缓存区上传到屏幕。
+
+#### 无缓存模式
+
+只需要适配宏`HITSIC_MENU_DISPLAY_PRINT`。该接口用于将字符打印至屏幕。
+
+其他两个宏定义`HITSIC_MENU_DISPLAY_BUFFER_CLEAR`和`HITSIC_MENU_DISPLAY_BUFFER_UPDATE`置为`(0)`即可。
+
 
 
 ### NVM存储接口
 
+- NVM存储
 
+  启用/禁用：由宏`HITSIC_MENU_USE_NVM`控制。
 
-### 日志输出接口
+- NVM接口正在施工中，文档暂缓更新...

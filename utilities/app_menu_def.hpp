@@ -265,14 +265,12 @@ typedef struct
 /** @brief : 菜单项接口结构体。 */
 typedef struct _menu_itemIfce_t
 {
-    menu_itemType_t type; /// 此菜单项的类型。
-    // menu_list_t *myList;			/// 此菜单项所属的菜单列表（暂时没用）。
-    uint32_t pptFlag; /// 此菜单项的属性标志位。
-    uint32_t list_id, unique_id; /// 此菜单项在本列表内的序号（从0开始）、全局唯一序号（从0开始）
-    uint32_t saveAddr; /// 此菜单在本区域内的偏移地址。从0开始，以1步进。注意，全局数据区和局部数据区的地址分开来算。
-    char nameStr[menu_nameStrSize]; /// 此菜单项的名称字符串。最大长度为
-                                    /// menu_nameStrSize - 1 字节。
-    union menu_itemIfce_handle_t /// 菜单项操作句柄的共用体。使用时根据此菜单项的类型调取对应项访问。
+    menu_itemType_t type;               ///< 此菜单项的类型。
+    uint32_t pptFlag;                   ///< 此菜单项的属性标志位。
+    uint32_t list_id, unique_id;        ///< 此菜单项在本列表内的序号（从0开始）、全局唯一序号（从0开始）
+    uint32_t saveAddr;                  ///< 此菜单在本区域内的偏移地址。从0开始，以1步进。注意，全局数据区和局部数据区的地址分开来算。
+    char nameStr[menu_nameStrSize];     ///< 此菜单项的名称字符串。最大长度为menu_nameStrSize - 1 字节。
+    union menu_itemIfce_handle_t        ///< 菜单项操作句柄的共用体。使用时根据此菜单项的类型调取对应项访问。
     {
         void *p_void;
         menu_item_nullHandle_t *p_nullType;
@@ -282,7 +280,7 @@ typedef struct _menu_itemIfce_t
         menu_item_procHandle_t *p_procType;
         menu_item_menuHandle_t *p_menuType;
     } handle;
-    const menu_itemAdapter_t* adapter;
+    const menu_itemAdapter_t* adapter;  ///< 指向存放菜单项命令函数指针的结构体。参考C++虚表
 } menu_itemIfce_t;
 
 struct menu_itemAdapter_t
