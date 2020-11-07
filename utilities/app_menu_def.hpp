@@ -203,6 +203,8 @@ typedef enum
     menuType, // jump to another menu
 } menu_itemType_t;
 
+
+
 /**
  * @brief : 函数类型菜单项的响应句柄。
  * 函数类型菜单项激活时会调用一个没有参数和返回值的函数。
@@ -211,6 +213,8 @@ typedef void (*menu_itemProcHandler_t)(menu_keyOp_t *const _op);
 
 /** 菜单列表结构体 前置定义 */
 typedef struct _menu_list_t menu_list_t;
+
+struct menu_itemAdapter_t;
 
 /******************************************
  ************菜单项类型及变量声明 **********
@@ -278,8 +282,19 @@ typedef struct _menu_itemIfce_t
         menu_item_procHandle_t *p_procType;
         menu_item_menuHandle_t *p_menuType;
     } handle;
-    // void* pHandle;
+    const menu_itemAdapter_t* adapter;
 } menu_itemIfce_t;
+
+struct menu_itemAdapter_t
+{
+    void (*ItemConstruct)(menu_itemIfce_t *_item, void *_data);
+    void (*ItemGetData)(menu_itemIfce_t *_item, void *_data);
+    void (*ItemSetData)(menu_itemIfce_t *_item, void *_data);
+    void (*ItemPrintSlot)(menu_itemIfce_t *_item, uint32_t _slotNum);
+    void (*ItemDirectKeyOp)(menu_itemIfce_t *_item, menu_keyOp_t *const _op);
+    void (*ItemPrintDisp)(menu_itemIfce_t *_item);
+    void (*ItemKeyOp)(menu_itemIfce_t *_item, menu_keyOp_t *const _op);
+};
 
 /**
  * @brief : 菜单项和菜单列表的计数器。
