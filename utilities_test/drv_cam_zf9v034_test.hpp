@@ -76,7 +76,8 @@ inline void CAM_ZF9V034_UnitTest(void)
         }
     }
     DMADVP_TransferSubmitEmptyBuffer(DMADVP0, &dmadvpHandle, fullBuffer);
-    DISP_SSD1306_BufferUpload((uint8_t*)dispBuffer);
+    //DISP_SSD1306_BufferUpload((uint8_t*)dispBuffer);
+    DISP_SSD1306_BufferUploadDMA((uint8_t*)dispBuffer);
     }
     DMADVP_TransferStop(DMADVP0, &dmadvpHandle);
     PRINTF("[D] DMADVP: End time: %d ms.\n", pitMgr_t::timer_ms);

@@ -20,12 +20,12 @@
 void DISP_SSD1306_WriteDat(uint8_t data)
 {
 	DISP_SSD1306_gpioSetD_C(1);
-	DISP_SSD1306_spiWrite(data);
+	DISP_SSD1306_spiWrite(&data, 1U);
 }
 void DISP_SSD1306_WriteCmd(uint8_t cmd)
 {
 	DISP_SSD1306_gpioSetD_C(0);
-	DISP_SSD1306_spiWrite(cmd);
+	DISP_SSD1306_spiWrite(&cmd, 1U);
 }
 
 
@@ -204,20 +204,23 @@ void DISP_SSD1306_Printf_F8x16(uint8_t x,uint8_t y,const char* fmt, ...)
 
 void DISP_SSD1306_BufferUpload(uint8_t *buffer)
 {
-    uint8_t *ptr = buffer;
-    for (uint16_t y = 0; y < 8; ++y)
-    {
-        //DISP_SSD1306_WriteCmd(0xb0 + y);
-        //DISP_SSD1306_WriteCmd(0x01);
-        //DISP_SSD1306_WriteCmd(0x10);
-
-        for (uint16_t x = 0; x < 128; x++)
-            DISP_SSD1306_WriteDat(*(ptr++)); //aka (y * 128 + x)
-    }
+//    uint8_t *ptr = buffer;
+//    for (uint16_t y = 0; y < 8; ++y)
+//    {
+//        //DISP_SSD1306_WriteCmd(0xb0 + y);
+//        //DISP_SSD1306_WriteCmd(0x01);
+//        //DISP_SSD1306_WriteCmd(0x10);
+//
+//        for (uint16_t x = 0; x < 128; x++)
+//            DISP_SSD1306_WriteDat(*(ptr++)); //aka (y * 128 + x)
+//    }
+    DISP_SSD1306_gpioSetD_C(1);
+    DISP_SSD1306_spiWrite(buffer, sizeof(disp_ssd1306_frameBuffer_t));
 }
 
 void DISP_SSD1306_BufferUploadDMA(uint8_t *buffer)
 {
+    DISP_SSD1306_gpioSetD_C(1);
     DISP_SSD1306_spiDmaWrite(buffer, sizeof(disp_ssd1306_frameBuffer_t));
 }
 
