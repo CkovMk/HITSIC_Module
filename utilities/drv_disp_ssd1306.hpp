@@ -45,6 +45,7 @@ extern const uint8_t DISP_font_8x16[][16];
 class disp_ssd1306_frameBuffer_t
 {
 public:
+    typedef bool pixel_t;
     static const uint16_t row = 64, col = 128;
     uint8_t frame[8][128];
 
@@ -53,7 +54,7 @@ public:
         static_assert(sizeof(disp_ssd1306_frameBuffer_t) == 8U * 128U);
         memset(&frame, 0U, sizeof(disp_ssd1306_frameBuffer_t));
     }
-    void SetPixelColor(uint16_t x, uint16_t y, bool color)
+    void SetPixelColor(uint16_t x, uint16_t y, pixel_t color)
     {
         color ? (frame[y >> 3][x] |= (1U << (y & 7U))) : (frame[y >> 3][x] &= ~(1U << (y & 7U)));
     }
@@ -125,6 +126,8 @@ void DISP_SSD1306_Printf_F6x8(uint8_t x,uint8_t y,const char* fmt, ...);
 void DISP_SSD1306_Printf_F8x16(uint8_t x,uint8_t y,const char* fmt, ...);
 
 void DISP_SSD1306_BufferUpload(uint8_t *buffer);
+
+void DISP_SSD1306_BufferUploadDMA(uint8_t *buffer);
 
 
 #endif // ! HITSIC_USE_DISP_SSD1306

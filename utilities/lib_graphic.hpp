@@ -15,10 +15,12 @@
 
 namespace graphic{
 
-template<typename buffer_t,typename pixel_t>
+template<typename buffer_t>
 class bufPrint0608_t
 {
 public:
+    typedef typename buffer_t::pixel_t pixel_t;
+
     buffer_t& buffer;
 
     bufPrint0608_t(buffer_t& _buffer)
@@ -27,10 +29,10 @@ public:
 
     }
     
-    void DrawChar(uint16_t r, uint16_t c, pixel_t f_color, pixel_t b_color, uint8_t* font, char ch)
+    void DrawChar(uint16_t r, uint16_t c, pixel_t f_color, pixel_t b_color, char ch)
     {
-        if (r <= buffer_t::row - 8) { return; }
-        if (c <= buffer_t::col - 6) { return; }
+        if (r > buffer_t::row - 8) { return; }
+        if (c > buffer_t::col - 6) { return; }
         assert(graphic_asciiBegin <= ch && ch < graphic_asciiEndin);
 
         for (uint8_t cell : graphic_font0608_defaultType[ch - ' '])
@@ -39,17 +41,17 @@ public:
             {
                 if (bitRd(cell, i))
                 {
-                    buffer.SetPixelColor(r + i, c, f_color);
+                    buffer.SetPixelColor(c, r + i, f_color);
                 }
                 else
                 {
-                    buffer.SetPixelColor(r + i, c, b_color);
+                    buffer.SetPixelColor(c, r + i, b_color);
                 }
             }
             ++c;
         }
     }
-    void Print(uint16_t r, uint16_t c, pixel_t f_color, pixel_t b_color, uint8_t* font, const char* str)
+    void Print(uint16_t r, uint16_t c, pixel_t f_color, pixel_t b_color, const char* str)
     {
         for (const char* p = str; (*p) != '\0'; ++p)
         {
@@ -61,7 +63,7 @@ public:
             }
             if (graphic_asciiBegin <= (*p) && (*p) < graphic_asciiEndin)
             {
-                dispPutchar(r, c, f_color, b_color, *p);
+                DrawChar(r, c, f_color, b_color, *p);
             }
             //Attention: if you send an unprintable char, no printing will be done. the char will remain as what it was.
             c += 6;
@@ -76,13 +78,13 @@ public:
             }
         }
     }
-    void RowPrint(uint16_t r, uint16_t c, pixel_t f_color, pixel_t b_color, uint8_t* font, const char* str)
+    void RowPrint(uint16_t r, uint16_t c, pixel_t f_color, pixel_t b_color, const char* str)
     {
         for (const char* p = str; (*p) != '\0'; ++p)
         {
             if (graphic_asciiBegin <= (*p) && (*p) < graphic_asciiEndin)
             {
-                dispPutchar(r, c, f_color, b_color, *p);
+                DrawChar(r, c, f_color, b_color, *p);
             }
             //Attention: if you send an unprintable char, no printing will be done. the char will remain as what it was.
             c += 6;
@@ -93,10 +95,10 @@ public:
         }
     }
 
-    void DrawChar(uint16_t r, uint16_t c, pixel_t f_color, uint8_t* font, char ch)
+    void DrawChar(uint16_t r, uint16_t c, pixel_t f_color, char ch)
     {
-        if (r <= buffer_t::row - 8) { return; }
-        if (c <= buffer_t::col - 6) { return; }
+        if (r > buffer_t::row - 8) { return; }
+        if (c > buffer_t::col - 6) { return; }
         assert(graphic_asciiBegin <= ch && ch < graphic_asciiEndin);
 
         for (uint8_t cell : graphic_font0608_defaultType[ch - ' '])
@@ -105,13 +107,13 @@ public:
             {
                 if (bitRd(cell, i))
                 {
-                    buffer.SetPixelColor(r + i, c, f_color);
+                    buffer.SetPixelColor(c, r + i, f_color);
                 }
             }
             ++c;
         }
     }
-    void Print(uint16_t r, uint16_t c, pixel_t f_color, uint8_t* font, const char* str)
+    void Print(uint16_t r, uint16_t c, pixel_t f_color, const char* str)
     {
         for (const char* p = str; (*p) != '\0'; ++p)
         {
@@ -123,7 +125,7 @@ public:
             }
             if (graphic_asciiBegin <= (*p) && (*p) < graphic_asciiEndin)
             {
-                dispPutchar(r, c, f_color, *p);
+                DrawChar(r, c, f_color, *p);
             }
             //Attention: if you send an unprintable char, no printing will be done. the char will remain as what it was.
             c += 6;
@@ -138,13 +140,13 @@ public:
             }
         }
     }
-    void RowPrint(uint16_t r, uint16_t c, pixel_t f_color, uint8_t* font, const char* str)
+    void RowPrint(uint16_t r, uint16_t c, pixel_t f_color, const char* str)
     {
         for (const char* p = str; (*p) != '\0'; ++p)
         {
             if (graphic_asciiBegin <= (*p) && (*p) < graphic_asciiEndin)
             {
-                dispPutchar(r, c, f_color, *p);
+                DrawChar(r, c, f_color, *p);
             }
             //Attention: if you send an unprintable char, no printing will be done. the char will remain as what it was.
             c += 6;
