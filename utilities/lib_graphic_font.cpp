@@ -6,9 +6,9 @@
  */
 
 // begin is the first , endin is the one after the last.
-constexpr uint8_t graphic_asciiBegin = 32;
-constexpr uint8_t graphic_asciiEndin = 127;
-constexpr uint8_t graphic_asciiCnt = 95;
+extern const uint8_t graphic_asciiBegin = 32;
+extern const uint8_t graphic_asciiEndin = 127;
+extern const uint8_t graphic_asciiCnt = 95;
 
 
 /** ---------- FONT0816 ---------- **/
@@ -224,14 +224,5 @@ extern const uint8_t graphic_font0608_defaultType[graphic_asciiCnt][6] =
 	{0x14, 0x14, 0x14, 0x14, 0x14, 0x14}, // } , incorrect
 	{0x14, 0x14, 0x14, 0x14, 0x14, 0x14}, // ~
 };
-
-
-inline uint8_t GRAPHIC_FONT0816_DummyFunction0(void)
-{
-    uint8_t dummy = graphic_font0816_newSongType[0][0];
-    dummy = graphic_font0608_defaultType[0][0];
-    //dummy = DISP_image_100thAnniversary[0][0];
-    return dummy;
-}
 
 /* @} */

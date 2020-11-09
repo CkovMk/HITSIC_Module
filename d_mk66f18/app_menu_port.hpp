@@ -21,14 +21,12 @@
 #include "inc_stdlib.hpp"
 #include "hitsic_common.h"
 
-#ifdef __cplusplus
-extern "C"
-{
-#endif
-
-#define HITSIC_USE_APP_MENU (1U)
-
 #if defined(HITSIC_USE_APP_MENU) && (HITSIC_USE_APP_MENU > 0)
+
+/**
+ * @name 调试输出
+ * @ {
+ */
 
 /**
  * @brief : 菜单调试输出开关
@@ -48,14 +46,31 @@ extern "C"
 #define HITSIC_MENU_PRINTF(...) (0)
 #endif // ! DEBUG
 
+/* @ } */
+
 /** @brief : 根菜单最大容量 */
 #define HITSIC_MENU_ROOT_SIZE 35 //maxium size of Root Menu
 
-/*! @name 启用自带的按键处理 */
-/*@{*/
-/** @brief : 是否使用菜单自带的按键事件管理 */
+/**
+ * @name 事件任务接口
+ * @brief : 菜单消息调用所使用的中断信息。
+ * 可以使用任何当前工程中未使用的中断。注意中断号和中断服务函数
+ * 必须对应。优先级不可过高。
+ * @ {
+ */
+#define HITSIC_MENU_SERVICE_IRQHandler (Reserved85_IRQHandler)  ///< 要使用的中断服务函数
+#define HITSIC_MENU_SERVICE_IRQn (Reserved85_IRQn)              ///< 要使用的中断号
+#define HITSIC_MENU_SERVICE_IRQPrio (12u)                       ///< 中断优先级，需要设置一个较低的值，以免打断重要任务。
+//TODO: 改成RTOS式的事件接口。
+/* @ } */
+
+/**
+ * @name 按键输入接口
+ * @brief : 是否使用菜单自带的按键事件管理
+ * @ {
+ */
 #define HITSIC_MENU_USE_BUTTON (1U)
-/*@}*/
+
 
 #if defined(HITSIC_MENU_USE_BUTTON) && (HITSIC_MENU_USE_BUTTON > 0)
 #include "drv_button.hpp"
@@ -106,37 +121,59 @@ extern "C"
 
 #endif // ! HITSIC_MENU_USE_BUTTON
 
+/* @ } */
+
 /**
- * @brief : 菜单消息调用所使用的中断信息。
- * 可以使用任何当前工程中未使用的中断。注意中断号和中断服务函数
- * 必须对应。优先级不可过高。
+ * @brief 启用帧缓存接口
  */
-#define HITSIC_MENU_SERVICE_IRQHandler (Reserved85_IRQHandler)
-#define HITSIC_MENU_SERVICE_IRQn (Reserved85_IRQn)
-#define HITSIC_MENU_SERVICE_IRQPrio (10u)
+#define HITSIC_MENU_USE_FRAME_BUFFER (1U)
 
 /**
  * @brief 屏幕打印接口
+ * @ {
  */
-#define HITSIC_MENU_DISPLAY_PRINT(row, col, str) (DISP_SSD1306_Print_F6x8(row, col, str))
-//#define HITSIC_MENU_DISPLAY_PRINTF(row, col, fmt, ...) (OLED_Printf(row, col, fmt, __VA_ARGS__))
-// #define HITSIC_MENU_DISPLAY_PRINTF(row,col,fmt,...)		\
-    // 	{													\
-    // 		char* buf = malloc(24*sizeof(char));			\
-    // 		vsnprintf(buf,24,fmt,__VA_ARGS__);				\
-    // 		HITSIC_MENU_DISPLAY_PRINT(row,col,buf);			\
-    // 		free(buf);										\
-    // 	}
+#if defined(HITSIC_MENU_USE_FRAME_BUFFER) && (HITSIC_MENU_USE_FRAME_BUFFER > 0)
+#include "drv_disp_ssd1306.hpp"
+#include "lib_graphic.hpp"
+#define HITSIC_MENU_DISPLAY_BUFFER_CLEAR() (MENU_FrameBufferClear())
+#define HITSIC_MENU_DISPLAY_PRINT(row, col, str) (MENU_FrameBufferPrint(row, col, str))
+#define HITSIC_MENU_DISPLAY_BUFFER_UPDATE() (MENU_FrameBufferUpdate())
 
-/*! @name 启用非易失性存储支持 */
-/*@{*/
+/**
+ * @brief 清除缓存区。
+ */
+void MENU_FrameBufferClear(void);
+
+/**
+ * @brief 向缓存区打印字符串。
+ */
+void MENU_FrameBufferPrint(uint16_t x, uint16_t y, char *str);
+
+/**
+ * @brief 将缓存区上传到屏幕。
+ */
+void MENU_FrameBufferUpdate(void);
+
+
+#else // HITSIC_MENU_USE_FRAME_BUFFER
+#define HITSIC_MENU_DISPLAY_BUFFER_CLEAR() (0)
+#define HITSIC_MENU_DISPLAY_PRINT(row, col, str) (DISP_SSD1306_Print_F6x8(row, col, str))
+#define HITSIC_MENU_DISPLAY_BUFFER_UPDATE() (0)
+#endif // ! HITSIC_MENU_USE_FRAME_BUFFER
+
+/* @ } */
+
+/**
+ *  @name 非易失性存储
+ *  @ {
+ */
 /*! @brief 是否启用非易失性存储支持。目前仅支持块级存储接口。将于未来添加文件存储接口 */
 #define HITSIC_MENU_USE_NVM (1U)
-/*@}*/
+
 
 #if defined(HITSIC_MENU_USE_NVM) && (HITSIC_MENU_USE_NVM > 0)
 
-#include <drv_ftfx_flash.hpp>
+#include "drv_ftfx_flash.hpp"
 
 /**
  * ********** NVM存储变量定义 **********
@@ -168,11 +205,10 @@ extern "C"
 
 #endif // ! HITSIC_MENU_USE_NVM
 
+/* @ } */
+
 #endif // ! HITSIC_USE_APP_MENU
 
-#ifdef __cplusplus
-}
-#endif
 
 #endif // ! D_MK66F18_APP_MENU_PORT_H_
 

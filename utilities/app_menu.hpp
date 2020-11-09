@@ -24,6 +24,8 @@
  * @date    :   v0.1.2      2019.11.22
  * @date    :   v0.1.3      2020.07.31
  * @date    :   v0.1.4      2020.10.09
+ * @date    :   v0.1.5      2020.10.30
+ * @date    :   v0.1.6      2020.11.09
  * 
  */
 
@@ -42,7 +44,7 @@
   */
 
 /** @brief : 软件版本 */
-#define APP_MENU_VERSION (HITSIC_MAKE_VERSION(0U, 1U, 4U))
+#define APP_MENU_VERSION (HITSIC_MAKE_VERSION(0U, 1U, 6U))
 
 #if defined(HITSIC_USE_APP_MENU) && (HITSIC_USE_APP_MENU > 0)
 

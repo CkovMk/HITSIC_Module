@@ -10,11 +10,49 @@ OLED显示屏组件（DRV_DISP_SSD1306）是用于包含SSD1306驱动芯片的OL
 
 ## 版本说明
 
+### v0.2.1
+
+by CkovMk @hitsic 2019.09.22
+
+**改动说明**
+
+- 废弃了格式化打印函数。
+- 修改了屏幕寻址方式，更好地支持帧缓存。
+- 新增了DMA帧缓存API和DMA接口。
+- 优化了普通帧缓存API的性能（10.8ms -> 3.3ms）
+
+**开发计划**
+
+- 暂无
+
+**已知问题**
+
+- K66单片机使用DMA传输速度极慢（约188ms），目前来看属于硬件限制，无法改善。
+
+
+
+### v0.2.0
+
+by CkovMk @hitsic 2019.09.22
+
+**改动说明**
+
+- 新增帧缓存类，可以方便地绘制帧缓存。
+- 新增了帧缓存API。
+
+**开发计划**
+
+- 改善帧缓存性能，尝试DMA传输。
+
+**已知问题**
+
+- 帧缓存性能不佳（传输耗时约15ms）。
+
+
+
 ### v0.1.1
 
 by beforelight @hitsic 2019.09.22
-
-
 
 
 
@@ -140,4 +178,40 @@ inline void DISP_SSD1306_delay_ms(uint32_t ms);
  */
 inline void DISP_SSD1306_spiWrite(uint8_t data);
 ```
+
+
+
+### DMA传输
+
+```c++
+/**
+ * @name DMA传输
+ * @ {
+ */
+/// 启用DMA传输API
+#ifndef HITSIC_DISP_SSD1306_DMA
+#define HITSIC_DISP_SSD1306_DMA (0U)
+#endif // ! HITSIC_DISP_SSD1306_DMA
+
+#if defined(HITSIC_DISP_SSD1306_DMA) && (HITSIC_DISP_SSD1306_DMA > 0U)
+/**
+ * @brief 初始化SPI DMA传输
+ */
+void DISP_SSD1306_spiDmaInit(void);
+
+
+/**
+ * @brief SPI接口DMA发送。
+ *
+ * @param data 要发送的数据
+ * @param size 数据长度
+ */
+void DISP_SSD1306_spiDmaWrite(uint8_t* data, uint32_t size);
+
+#endif // ! HITSIC_DISP_SSD1306_DMA
+
+/* @ } */
+```
+
+
 

@@ -6,6 +6,8 @@
 
 串行接口管理器（UARTMGR，Universal Asynchronous Receiver/Transmitter Manager），是管理系统串口的系统组件，为其他上层应用提供完整的串口收发支持。目前支持3套完整的API：阻塞API（Polling）、中断API（Interrupt）、数传协议（Transfer Protocal）。另有类printf函数可以使用。
 
+**该组件可能即将废弃。**
+
 
 
 ## 版本说明
@@ -96,7 +98,7 @@ by CkovMk @hitsic 2019.11.24
 	> `typedef void (*tpDataHandler_t)(uint8_t* dataBuf, int32_t size);`：
 	>
 > 当数据传输完成后，将调用注册的回调函数处理数据。该回调函数运行于串口中断服务函数的中断优先级。
-	
+
 	`void uartMgr_t::tp_defaultcallback(UART_Type* base, uart_handle_t* handle, status_t status, void* userData);`
 	传输协议的串口中断默认回调函数。无需用户调用。
 	

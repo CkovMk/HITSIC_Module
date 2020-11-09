@@ -40,6 +40,12 @@
 #define OLED_SPI_Ctarn			kDSPI_Ctar0
 #define OLED_SPI_MasterCtarn	kDSPI_MasterCtar0
 
+#define OLED_SPI_DMA_RX_Chnl    (5U)
+#define OLED_SPI_DMA_IM_Chnl    (6U)
+#define OLED_SPI_DMA_TX_Chnl    (7U)
+#define OLED_SPI_DMA_RX_REQSRC kDmaRequestMux0SPI0Rx
+#define OLED_SPI_DMA_TX_REQSRC  kDmaRequestMux0SPI2Tx
+
 /**
  * @brief 设置RST脚电平。
  * 
@@ -74,22 +80,39 @@ inline void DISP_SSD1306_delay_ms(uint32_t ms)
 }
 
 /**
- * @brief SPI接口发送一个字节。
+ * @brief SPI接口发送多个字节。
  * 
  * @param data 要发送的数据
+ * @param size 数据大小
  */
-inline void DISP_SSD1306_spiWrite(uint8_t data)
-{
-	static dspi_transfer_t oled_spi_xfer =
-		{
-			.txData = NULL,
-			.rxData = NULL,
-			.dataSize = 1,
-			.configFlags = OLED_SPI_MasterCtarn | OLED_SPI_MasterPcsn | kDSPI_MasterPcsContinuous,
-		};
-	oled_spi_xfer.txData = &data;
-	DSPI_MasterTransferBlocking(OLED_SPI_BASE, &oled_spi_xfer);
-}
+status_t DISP_SSD1306_spiWrite(uint8_t *data, uint32_t size);
 
+/**
+ * @name DMA传输
+ * @ {
+ */
+/// 启用DMA传输API
+#ifndef HITSIC_DISP_SSD1306_DMA
+#define HITSIC_DISP_SSD1306_DMA (0U)
+#endif // ! HITSIC_DISP_SSD1306_DMA
+
+#if defined(HITSIC_DISP_SSD1306_DMA) && (HITSIC_DISP_SSD1306_DMA > 0U)
+/**
+ * @brief 初始化SPI DMA传输
+ */
+status_t DISP_SSD1306_spiDmaInit(void);
+
+
+/**
+ * @brief SPI接口DMA发送。
+ *
+ * @param data 要发送的数据
+ * @param size 数据长度
+ */
+status_t DISP_SSD1306_spiDmaWrite(uint8_t* data, uint32_t size);
+
+#endif // ! HITSIC_DISP_SSD1306_DMA
+
+/* @ } */
 
 #endif // ! D_MK66F18_DRVOLED_H_

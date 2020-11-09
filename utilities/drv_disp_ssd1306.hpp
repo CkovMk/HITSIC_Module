@@ -23,6 +23,7 @@
  * @date 	:	v0.1-beta.0 2018.08.12 CkovMk
  * @date 	:	v0.1.1		2019.09.22 beforelight
  * @date    :   v0.2.0      2020.10.29 CkovMk
+ * @date    :   v0.2.1      2020.11.09 CkovMk
  *
  * @brief   :   SSD1306 OLED屏幕驱动组件
  */
@@ -37,7 +38,7 @@
 #include "drv_disp_ssd1306_port.hpp"
 
 /** @brief : 软件版本 */
-#define DRV_DISP_SSD1306_VERSION (HITSIC_MAKE_VERSION(0U, 2U, 0U))
+#define DRV_DISP_SSD1306_VERSION (HITSIC_MAKE_VERSION(0U, 2U, 1U))
 
 extern const uint8_t DISP_font_6x8[][6];
 extern const uint8_t DISP_font_8x16[][16];
@@ -45,6 +46,7 @@ extern const uint8_t DISP_font_8x16[][16];
 class disp_ssd1306_frameBuffer_t
 {
 public:
+    typedef bool pixel_t;
     static const uint16_t row = 64, col = 128;
     uint8_t frame[8][128];
 
@@ -53,7 +55,7 @@ public:
         static_assert(sizeof(disp_ssd1306_frameBuffer_t) == 8U * 128U);
         memset(&frame, 0U, sizeof(disp_ssd1306_frameBuffer_t));
     }
-    void SetPixelColor(uint16_t x, uint16_t y, bool color)
+    void SetPixelColor(uint16_t x, uint16_t y, pixel_t color)
     {
         color ? (frame[y >> 3][x] |= (1U << (y & 7U))) : (frame[y >> 3][x] &= ~(1U << (y & 7U)));
     }
@@ -120,12 +122,27 @@ void DISP_SSD1306_Print_F6x8(uint8_t x,uint8_t y,const char* str);
 //-------------------------------------------------------------------------------------------------------------------
 void DISP_SSD1306_Print_F8x16(uint8_t x,uint8_t y,const char* str);
 
-void DISP_SSD1306_Printf_F6x8(uint8_t x,uint8_t y,const char* fmt, ...);
+//void DISP_SSD1306_Printf_F6x8(uint8_t x,uint8_t y,const char* fmt, ...);
+//
+//void DISP_SSD1306_Printf_F8x16(uint8_t x,uint8_t y,const char* fmt, ...);
 
-void DISP_SSD1306_Printf_F8x16(uint8_t x,uint8_t y,const char* fmt, ...);
-
+/**
+ * @brief 将帧缓存上传至屏幕显示
+ *
+ * @param buffer 指向帧缓存的指针
+ */
 void DISP_SSD1306_BufferUpload(uint8_t *buffer);
 
+#if defined(HITSIC_DISP_SSD1306_DMA) && (HITSIC_DISP_SSD1306_DMA > 0U)
+
+/**
+ * @brief 将帧缓存上传至屏幕显示,DMA方式
+ *
+ * @param buffer 指向帧缓存的指针
+ */
+void DISP_SSD1306_BufferUploadDMA(uint8_t *buffer);
+
+#endif // ! HITSIC_DISP_SSD1306_DMA
 
 #endif // ! HITSIC_USE_DISP_SSD1306
 
