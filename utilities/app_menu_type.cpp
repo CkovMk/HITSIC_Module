@@ -24,8 +24,19 @@ extern "C"
     /**
      * @brief : 占位类型菜单项的操作句柄及操作函数。
      */
+    const menu_itemAdapter_t menu_itemAdapter_nullType =
+    {
+        .ItemConstruct = MENU_ItemConstruct_nullType,
+        .ItemGetData = MENU_ItemGetData_nullType,
+        .ItemSetData = MENU_ItemSetData_nullType,
+        .ItemPrintSlot = MENU_ItemPrintSlot_nullType,
+        .ItemDirectKeyOp = MENU_ItemDirectKeyOp_nullType,
+        .ItemPrintDisp = MENU_ItemPrintDisp_nullType,
+        .ItemKeyOp = MENU_ItemKeyOp_nullType,
+    };
     void MENU_ItemConstruct_nullType(menu_itemIfce_t *_item, void *_data)
     {
+        _item->adapter = &menu_itemAdapter_nullType;
         _item->handle.p_nullType = (menu_item_nullHandle_t*)malloc(sizeof(menu_item_nullHandle_t));
         _item->handle.p_nullType->data = _data;
     }
@@ -57,9 +68,21 @@ extern "C"
         assert(0); //should never end up here.
     }
 
+
     /**
      * @brief : 整数类型菜单项的操作句柄及操作函数。
      */
+    const menu_itemAdapter_t menu_itemAdapter_variType =
+    {
+        .ItemConstruct = MENU_ItemConstruct_variType,
+        .ItemGetData = MENU_ItemGetData_variType,
+        .ItemSetData = MENU_ItemSetData_variType,
+        .ItemPrintSlot = MENU_ItemPrintSlot_variType,
+        .ItemDirectKeyOp = MENU_ItemDirectKeyOp_variType,
+        .ItemPrintDisp = MENU_ItemPrintDisp_variType,
+        .ItemKeyOp = MENU_ItemKeyOp_variType,
+    };
+
     void MENU_ItemGetContent_variType(int32_t *const v, int32_t *const e, int32_t data)
     {
         *v = data;
@@ -105,6 +128,7 @@ extern "C"
 
     void MENU_ItemConstruct_variType(menu_itemIfce_t *_item, void *_data)
     {
+        _item->adapter = &menu_itemAdapter_variType;
         _item->handle.p_variType = (menu_item_variHandle_t*)malloc(sizeof(menu_item_variHandle_t));
         _item->handle.p_variType->data = (int32_t*)_data;
         _item->handle.p_variType->cur = 0;
@@ -116,11 +140,14 @@ extern "C"
     }
     void MENU_ItemSetData_variType(menu_itemIfce_t *_item, void *_data)
     {
-        //if (!(_item->pptFlag & menuItem_data_NoLoad))
+        menu_item_variHandle_t *handle = _item->handle.p_variType;
+        if (_item->pptFlag & menuItem_dataExt_HasMinMax)
         {
-            *(_item->handle.p_variType->data) = *(int32_t *)_data;
-            MENU_ITEM_LOG_V("variType Data Updated %12.12d", *(_item->handle.p_variType->data));
+            *(int32_t *)_data = (*(int32_t *)_data > *(handle->data + 1)) ? (*(int32_t *)_data) : *(handle->data + 1);
+            *(int32_t *)_data = (*(int32_t *)_data < *(handle->data + 2)) ? (*(int32_t *)_data) : *(handle->data + 2);
         }
+        *(handle->data) = *(int32_t *)_data;
+        MENU_ITEM_LOG_V("variType Data Updated %12.12d", *(_item->handle.p_variType->data));
     }
     //used when in menuList
     void MENU_ItemPrintSlot_variType(menu_itemIfce_t *_item, uint32_t _slotNum)
@@ -328,9 +355,20 @@ extern "C"
         }
     }
 
+
     /**
      * @brief : 浮点类型菜单项的操作句柄及操作函数。
      */
+    const menu_itemAdapter_t menu_itemAdapter_varfType =
+    {
+        .ItemConstruct = MENU_ItemConstruct_varfType,
+        .ItemGetData = MENU_ItemGetData_varfType,
+        .ItemSetData = MENU_ItemSetData_varfType,
+        .ItemPrintSlot = MENU_ItemPrintSlot_varfType,
+        .ItemDirectKeyOp = MENU_ItemDirectKeyOp_varfType,
+        .ItemPrintDisp = MENU_ItemPrintDisp_varfType,
+        .ItemKeyOp = MENU_ItemKeyOp_varfType,
+    };
 
     void MENU_ItemGetContent_varfType(int32_t *const v, int32_t *const e, float data)
     {
@@ -389,6 +427,7 @@ extern "C"
 
     void MENU_ItemConstruct_varfType(menu_itemIfce_t *_item, void *_data)
     {
+        _item->adapter = &menu_itemAdapter_varfType;
         _item->handle.p_varfType = (menu_item_varfHandle_t*)malloc(sizeof(menu_item_varfHandle_t));
         _item->handle.p_varfType->data = (float*)_data;
         _item->handle.p_varfType->cur = 0;
@@ -400,11 +439,14 @@ extern "C"
     }
     void MENU_ItemSetData_varfType(menu_itemIfce_t *_item, void *_data)
     {
-        //if (!(_item->pptFlag & menuItem_data_NoLoad))
+        menu_item_varfHandle_t *handle = _item->handle.p_varfType;
+        if (_item->pptFlag & menuItem_dataExt_HasMinMax)
         {
-            *(_item->handle.p_varfType->data) = *(float *)_data;
-            MENU_ITEM_LOG_V("varfType Data Updated %12.4f", *(_item->handle.p_varfType->data));
+            *(float *)_data = (*(float *)_data > *(handle->data + 1)) ? (*(float *)_data) : *(handle->data + 1);
+            *(float *)_data = (*(float *)_data < *(handle->data + 2)) ? (*(float *)_data) : *(handle->data + 2);
         }
+        *(handle->data) = *(float *)_data;
+        MENU_ITEM_LOG_V("varfType Data Updated %12.4f", *(_item->handle.p_varfType->data));
     }
     //used when in menuList
     void MENU_ItemPrintSlot_varfType(menu_itemIfce_t *_item, uint32_t _slotNum)
@@ -609,11 +651,24 @@ extern "C"
         }
     }
 
+
     /**
      * @brief : 布尔类型菜单项的操作句柄及操作函数。
      */
+    const menu_itemAdapter_t menu_itemAdapter_boolType =
+    {
+        .ItemConstruct = MENU_ItemConstruct_boolType,
+        .ItemGetData = MENU_ItemGetData_boolType,
+        .ItemSetData = MENU_ItemSetData_boolType,
+        .ItemPrintSlot = MENU_ItemPrintSlot_boolType,
+        .ItemDirectKeyOp = MENU_ItemDirectKeyOp_boolType,
+        .ItemPrintDisp = MENU_ItemPrintDisp_boolType,
+        .ItemKeyOp = MENU_ItemKeyOp_boolType,
+    };
+
     void MENU_ItemConstruct_boolType(menu_itemIfce_t *_item, void *_data)
     {
+        _item->adapter = &menu_itemAdapter_boolType;
         _item->handle.p_boolType = (menu_item_boolHandle_t*)malloc(sizeof(menu_item_boolHandle_t));
         _item->handle.p_boolType->data = (bool*)_data;
     }
@@ -641,11 +696,24 @@ extern "C"
         assert(0); //should never end up here.
     }
 
+
     /**
      * @brief : 函数类型菜单项的操作句柄及操作函数。
      */
+    const menu_itemAdapter_t menu_itemAdapter_procType =
+    {
+        .ItemConstruct = MENU_ItemConstruct_procType,
+        .ItemGetData = MENU_ItemGetData_procType,
+        .ItemSetData = MENU_ItemSetData_procType,
+        .ItemPrintSlot = MENU_ItemPrintSlot_procType,
+        .ItemDirectKeyOp = MENU_ItemDirectKeyOp_procType,
+        .ItemPrintDisp = MENU_ItemPrintDisp_procType,
+        .ItemKeyOp = MENU_ItemKeyOp_procType,
+    };
+
     void MENU_ItemConstruct_procType(menu_itemIfce_t *_item, void *_data)
     {
+        _item->adapter = &menu_itemAdapter_procType;
         _item->handle.p_procType = (menu_item_procHandle_t*)malloc(sizeof(menu_item_procHandle_t));
         _item->handle.p_procType->data = (menu_itemProcHandler_t)_data;
     }
@@ -708,11 +776,24 @@ extern "C"
         }
     }
 
+
     /**
      * @brief : 跳转类型菜单项的操作句柄及操作函数。
      */
+    const menu_itemAdapter_t menu_itemAdapter_menuType =
+    {
+        .ItemConstruct = MENU_ItemConstruct_menuType,
+        .ItemGetData = MENU_ItemGetData_menuType,
+        .ItemSetData = MENU_ItemSetData_menuType,
+        .ItemPrintSlot = MENU_ItemPrintSlot_menuType,
+        .ItemDirectKeyOp = MENU_ItemDirectKeyOp_menuType,
+        .ItemPrintDisp = MENU_ItemPrintDisp_menuType,
+        .ItemKeyOp = MENU_ItemKeyOp_menuType,
+    };
+
     void MENU_ItemConstruct_menuType(menu_itemIfce_t *_item, void *_data)
     {
+        _item->adapter = &menu_itemAdapter_menuType;
         _item->handle.p_menuType = (menu_item_menuHandle_t*)malloc(sizeof(menu_item_menuHandle_t));
         _item->handle.p_menuType->data = (menu_list_t*)_data;
     }
@@ -750,6 +831,7 @@ extern "C"
         assert(0); //should never end up here.
     }
 
+
     /**
      * ********** 菜单项操作接口 **********
      */
@@ -783,14 +865,16 @@ extern "C"
     {
         memcpy(_data->nameStr, _item->nameStr, menu_nameStrSize);
         _data->type = _item->type;
-        MENU_ITEM_SWITCH_CASE(MENU_ItemGetData, _item, &_data->data);
+        //MENU_ITEM_SWITCH_CASE(MENU_ItemGetData, _item, &_data->data);
+        _item->adapter->ItemGetData(_item, &_data->data);
     }
 
     void MENU_ItemSetData(menu_itemIfce_t *_item, menu_nvmData_t *_data)
     {
         if (0 == strncmp(_data->nameStr, _item->nameStr, menu_nameStrSize) && _data->type == (uint32_t)_item->type)
         {
-            MENU_ITEM_SWITCH_CASE(MENU_ItemSetData, _item, &_data->data);
+            //MENU_ITEM_SWITCH_CASE(MENU_ItemSetData, _item, &_data->data);
+            _item->adapter->ItemSetData(_item, &_data->data);
         }
         else
         {
@@ -802,21 +886,25 @@ extern "C"
     {
         //HITSIC_MENU_PRINTF("-Verbose MENU: printing slot menu %s, type=%d, slot=%d.", _item->nameStr, _item->type, _slotNum);
         MENU_ITEM_SWITCH_CASE(MENU_ItemPrintSlot, _item, _slotNum);
+        _item->adapter->ItemPrintSlot(_item, _slotNum);
     }
 
     void MENU_ItemDirectKeyOp(menu_itemIfce_t *_item, menu_keyOp_t *const _op)
     {
-        MENU_ITEM_SWITCH_CASE(MENU_ItemDirectKeyOp, _item, _op);
+        //MENU_ITEM_SWITCH_CASE(MENU_ItemDirectKeyOp, _item, _op);
+        _item->adapter->ItemDirectKeyOp(_item, _op);
     }
 
     void MENU_ItemPrintDisp(menu_itemIfce_t *_item)
     {
-        MENU_ITEM_SWITCH_CASE(MENU_ItemPrintDisp, _item);
+        //MENU_ITEM_SWITCH_CASE(MENU_ItemPrintDisp, _item);
+        _item->adapter->ItemPrintDisp(_item);
     }
 
     void MENU_ItemKeyOp(menu_itemIfce_t *_item, menu_keyOp_t *const _op)
     {
-        MENU_ITEM_SWITCH_CASE(MENU_ItemKeyOp, _item, _op);
+        //MENU_ITEM_SWITCH_CASE(MENU_ItemKeyOp, _item, _op);
+        _item->adapter->ItemKeyOp(_item, _op);
     }
 
     /**

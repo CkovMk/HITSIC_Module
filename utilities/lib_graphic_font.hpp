@@ -9,9 +9,9 @@
 #define LIB_GRAPHIC_FONT_VERSION (HITSIC_MAKE_VERSION(0U, 1U, 0U))
 
 // begin is the first , endin is the one after the last.
-extern uint8_t graphic_asciiBegin;
-extern uint8_t graphic_asciiEndin;
-extern uint8_t graphic_asciiCnt;
+extern const uint8_t graphic_asciiBegin;
+extern const uint8_t graphic_asciiEndin;
+extern const uint8_t graphic_asciiCnt;
 
 
 /** ---------- FONT0816 ---------- **/

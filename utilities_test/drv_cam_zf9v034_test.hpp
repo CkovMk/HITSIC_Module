@@ -10,10 +10,13 @@
 inline void CAM_ZF9V034_UnitTestDmaCallback(edma_handle_t *handle, void *userData, bool transferDone, uint32_t tcds)
 {
     dmadvp_handle_t *dmadvpHandle = (dmadvp_handle_t*)userData;
+    status_t result = 0;
 
     DMADVP_EdmaCallbackService(dmadvpHandle, transferDone);
+
+    result = DMADVP_TransferStart(dmadvpHandle->base, dmadvpHandle);
     //PRINTF("new full buffer: 0x%-8.8x = 0x%-8.8x\n", handle->fullBuffer.front(), handle->xferCfg.destAddr);
-    if(kStatus_Success != DMADVP_TransferStart(dmadvpHandle->base, dmadvpHandle))
+    if(kStatus_Success != result)
     {
         DMADVP_TransferStop(dmadvpHandle->base, dmadvpHandle);
         PRINTF("transfer stop! insufficent buffer\n");
@@ -52,7 +55,7 @@ inline void CAM_ZF9V034_UnitTest(void)
     DMADVP_TransferSubmitEmptyBuffer(DMADVP0, &dmadvpHandle, imageBuffer1);
     DMADVP_TransferStart(DMADVP0, &dmadvpHandle);
     PRINTF("[D] DMADVP: Begin time: %d ms.\n", pitMgr_t::timer_ms);
-    for(int time = 0; time < 128; ++time){
+    for(int time = 0; time < 512; ++time){
     PRINTF("[D] DMADVP: Transfer %4.4d.\n", time);
     while(kStatus_Success != DMADVP_TransferGetFullBuffer(DMADVP0, &dmadvpHandle, &fullBuffer));
 

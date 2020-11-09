@@ -21,6 +21,7 @@
  *
  * @date 	:	v0.1-beta.0 2020.10.20
  * @date 	:	v0.1-beta.1 2020.10.30
+ * @date    :   v0.1.2      2020.11.09
  *
  * @brief    :   数字视频接口DMA接收器
  */
@@ -34,7 +35,7 @@
 #include "drv_dmadvp_port.hpp"
 
 /** @brief : 软件版本 */
-#define DRV_DMADVP_VERSION (HITSIC_MAKE_VERSION(0U, 1U, 1U))
+#define DRV_DMADVP_VERSION (HITSIC_MAKE_VERSION(0U, 1U, 2U))
 
 /*!
  * @addtogroup dmadvp
@@ -50,7 +51,7 @@ enum
     kStatus_DMADVP_FrameDone = MAKE_STATUS(kStatusGroup_DMADVP, 3), /*!< New frame received and saved to queue. */
 };
 
-/*! @brief CSI signal polarity. */
+/*! @brief DMADVP signal polarity. */
 enum dmadvp_polarity_flags
 {
     DMADVP_HsyncActiveLow         = 0U,                        /*!< HSYNC is active low. No Use HERE*/
@@ -84,55 +85,63 @@ struct dmadvp_handle_t
 };
 
 /**
- * @brief DMADVP虚拟设备初始化
+ * @brief DMADVP虚拟设备初始化。
  * 
- * @param base DMADVP虚拟设备地址
- * @param config DMADVP配置结构体。可由摄像头配置组件产生
- * @return status_t 初始化结果，成功返回kStatus_Success.
+ * @param base DMADVP虚拟设备地址。
+ * @param config DMADVP配置结构体。可由摄像头配置组件产生。
+ * @retval kStatus_Success 初始化成功。
  */
 status_t DMADVP_Init(DMADVP_Type *base, const dmadvp_config_t *config);
 
 /**
- * @brief DMADVP虚拟设备取消初始化
+ * @brief DMADVP虚拟设备取消初始化。
  * 
- * @param base DMADVP虚拟设备地址
+ * @param base DMADVP虚拟设备地址。
  */
 //void DMADVP_Deinit(DMADVP_Type *base);
 
 /**
- * @brief 
+ * @brief 初始化DMADVP传输句柄。一般只需在初始化时调用一次。
  * 
- * @param handle DMADVP传输句柄
- * @param base DMADVP虚拟设备地址
- * @param callback 要使用的DMA回调函数
+ * @param handle DMADVP传输句柄。
+ * @param base DMADVP虚拟设备地址。
+ * @param callback 要使用的DMA回调函数。
  */
 void DMADVP_TransferCreateHandle(dmadvp_handle_t *handle, DMADVP_Type *base, edma_callback callback);
 
 /**
- * @brief 将缓存区提交至DMADVP句柄
+ * @brief 将缓存区提交至DMADVP句柄。
  * 
- * @param base DMADVP虚拟设备地址
- * @param handle DMADVP传输句柄
- * @param destAddr 要提交的缓存区指针
- * @return status_t 提交成功则返回kStatus_Success,否则返回kStatus_DMADVP_NoEmptyBuffer.
+ * @param base DMADVP虚拟设备地址。
+ * @param handle DMADVP传输句柄。
+ * @param destAddr 要提交的缓存区指针。
+ * @retval kStatus_Success 提交成功。
  */
 status_t DMADVP_TransferSubmitEmptyBuffer(DMADVP_Type *base, dmadvp_handle_t *handle, uint8_t *buffer);
 
 /**
  * @brief 获取传输完成的缓存区。
  * 
- * @param base DMADVP虚拟设备地址
- * @param handle DMADVP传输句柄
- * @param buffer 用于接收缓存区的指针
- * @return status_t 接收成功则返回kStatus_Success,否则返回kStatus_DMADVP_NoFullBuffer.
+ * @param base DMADVP虚拟设备地址。
+ * @param handle DMADVP传输句柄。
+ * @param buffer 用于接收缓存区的指针。
+ * @retval kStatus_Success 成功获取到了传输完成的缓存区。
+ * @retval kStatus_DMADVP_NoFullBuffer 没有可供获取的传输完成的缓存区。
  */
 status_t DMADVP_TransferGetFullBuffer(DMADVP_Type *base, dmadvp_handle_t *handle, uint8_t **buffer);
 
 /**
  * @brief 启动当前传输。
  * 
- * @param base DMADVP虚拟设备地址
- * @param handle DMADVP传输句柄
+ * 从空缓存队列中取出一个空缓存并启动下一帧图像的传输。
+ * 在启动第一帧传输时，本函数将使能VSNC中断进行帧同步。
+ * 在一帧传输结束时，如果立即启动下一帧传输，将不再进行帧同步。
+ *
+ * @param base DMADVP虚拟设备地址。
+ * @param handle DMADVP传输句柄。
+ * @retval kStatus_Success 成功启动传输。
+ * @retval kStatus_EDMA_Busy 启动失败，传输进行中。
+ * @retval kStatus_DMADVP_NoEmptyBuffer 启动失败，没有空缓存可供使用。
  */
 status_t DMADVP_TransferStart(DMADVP_Type *base, dmadvp_handle_t *handle);
 
@@ -144,6 +153,7 @@ status_t DMADVP_TransferStart(DMADVP_Type *base, dmadvp_handle_t *handle);
  * 
  * @note 如果您在传输中途停止传输，正在传输的buffer会留在handle->xferCfg.destAddr中。
  *              您需要手动将其提交到空缓存队列。
+ * @note 在一帧传输结束时，如果想要终止传输，必须调用此函数。
  */
 void DMADVP_TransferStop(DMADVP_Type *base, dmadvp_handle_t *handle);
 
@@ -155,7 +165,7 @@ void DMADVP_TransferStop(DMADVP_Type *base, dmadvp_handle_t *handle);
 void DMADVP_VsncExtIntHandler(void *userData);
 
 /**
- * @brief DMA回调预处理函数。必须在EDMA回调函数中调用。
+ * @brief DMA回调预处理函数。必须在DMA回调函数中最先调用。
  * 
  * @param handle DMADVP句柄指针，应由回调函数中的userData经类型转换得到。
  * @param transferDone 标志位，标志是否传输完成。

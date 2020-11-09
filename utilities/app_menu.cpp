@@ -182,11 +182,13 @@
 			MENU_ItemPrintDisp(menu_currItem);
 		}
 		//update display
+		HITSIC_MENU_DISPLAY_BUFFER_CLEAR();
 		for (uint8_t i = 0; i < MENU_DISP_STRBUF_ROW; ++i)
 		{
 			menu_dispStrBuf[i][MENU_DISP_STRBUF_COL - 1] = '\0';
 			HITSIC_MENU_DISPLAY_PRINT(1, i, menu_dispStrBuf[i]);
 		}
+		HITSIC_MENU_DISPLAY_BUFFER_UPDATE();
 		menu_statusFlag &= ~menu_message_printDisp;
 	}
 

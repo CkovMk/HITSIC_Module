@@ -6,8 +6,8 @@
  * @date 2020-10-16
  */
 
-#ifndef D_DEFAULT_DRV_IMU_INVENSENSE_PORT_HPP
-#define D_DEFAULT_DRV_IMU_INVENSENSE_PORT_HPP
+#ifndef D_MK66F18_DRV_IMU_INVENSENSE_PORT_HPP
+#define D_MK66F18_DRV_IMU_INVENSENSE_PORT_HPP
 
 
 #include "hitsic_common.h"
@@ -43,4 +43,4 @@ inline void IMU_DelayUs(uint32_t delay_ms)
 }
 #endif // ! HITSIC_USE_DRV_IMU_INV
 
-#endif //D_DEFAULT_DRV_IMU_INVENSENSE_PORT_HPP
+#endif //! D_MK66F18_DRV_IMU_INVENSENSE_PORT_HPP
