@@ -29,8 +29,6 @@ void DISP_SSD1306_WriteCmd(uint8_t cmd)
 }
 
 
-
-
 void DISP_SSD1306_SetPos(uint8_t x, uint8_t y)
 {
 	DISP_SSD1306_WriteCmd(0xb0 + y);
@@ -101,6 +99,10 @@ void DISP_SSD1306_Init(void)
 	DISP_SSD1306_WriteCmd(0xaf); //--turn on oled panel
 	DISP_SSD1306_Fill(0x00);  //初始清屏
 	DISP_SSD1306_SetPos(0, 0);
+
+#if defined(HITSIC_DISP_SSD1306_DMA) && (HITSIC_DISP_SSD1306_DMA > 0U)
+	DISP_SSD1306_spiDmaInit();
+#endif // ! HITSIC_DISP_SSD1306_DMA
 }
 
 
@@ -184,47 +186,43 @@ void DISP_SSD1306_Print_F8x16(uint8_t x,uint8_t y,const char* str)
 }
 
 
-void DISP_SSD1306_Printf_F6x8(uint8_t x,uint8_t y,const char* fmt, ...)
-{
-	va_list args;
-	va_start(args, fmt);
-	static char* buf = new char[64];
-	vsnprintf(buf, 64, fmt, args);
-	DISP_SSD1306_Print_F6x8(x, y, buf);
-}
+//void DISP_SSD1306_Printf_F6x8(uint8_t x,uint8_t y,const char* fmt, ...)
+//{
+//	va_list args;
+//	va_start(args, fmt);
+//	static char* buf = new char[64];
+//	vsnprintf(buf, 64, fmt, args);
+//	DISP_SSD1306_Print_F6x8(x, y, buf);
+//}
+//
+//void DISP_SSD1306_Printf_F8x16(uint8_t x,uint8_t y,const char* fmt, ...)
+//{
+//	va_list args;
+//	va_start(args, fmt);
+//	static char* buf = new char[64];
+//	vsnprintf(buf, 64, fmt, args);
+//	DISP_SSD1306_Print_F8x16(x, y, buf);
+//}
 
-void DISP_SSD1306_Printf_F8x16(uint8_t x,uint8_t y,const char* fmt, ...)
-{
-	va_list args;
-	va_start(args, fmt);
-	static char* buf = new char[64];
-	vsnprintf(buf, 64, fmt, args);
-	DISP_SSD1306_Print_F8x16(x, y, buf);
-}
 
 void DISP_SSD1306_BufferUpload(uint8_t *buffer)
 {
-//    uint8_t *ptr = buffer;
-//    for (uint16_t y = 0; y < 8; ++y)
-//    {
-//        //DISP_SSD1306_WriteCmd(0xb0 + y);
-//        //DISP_SSD1306_WriteCmd(0x01);
-//        //DISP_SSD1306_WriteCmd(0x10);
-//
-//        for (uint16_t x = 0; x < 128; x++)
-//            DISP_SSD1306_WriteDat(*(ptr++)); //aka (y * 128 + x)
-//    }
+    DISP_SSD1306_SetPos(0, 0);
     DISP_SSD1306_gpioSetD_C(1);
     DISP_SSD1306_spiWrite(buffer, sizeof(disp_ssd1306_frameBuffer_t));
 }
 
+
+#if defined(HITSIC_DISP_SSD1306_DMA) && (HITSIC_DISP_SSD1306_DMA > 0U)
+
 void DISP_SSD1306_BufferUploadDMA(uint8_t *buffer)
 {
+    DISP_SSD1306_SetPos(0, 0);
     DISP_SSD1306_gpioSetD_C(1);
     DISP_SSD1306_spiDmaWrite(buffer, sizeof(disp_ssd1306_frameBuffer_t));
 }
 
-
+#endif // ! HITSIC_DISP_SSD1306_DMA
 
 #endif // ! HITSIC_USE_DISP_SSD1306
 

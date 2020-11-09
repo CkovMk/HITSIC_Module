@@ -36,6 +36,8 @@
 #if defined(HITSIC_PITMGR_INITLIZE) && (HITSIC_PITMGR_INITLIZE > 0)
 inline void PITMGR_PlatformInit(void)
 {
+    NVIC_SetPriority(LPTMR0_IRQn, 4);
+    EnableIRQ(LPTMR0_IRQn);
 	LPTMR_StartTimer(LPTMR0);
 }
 #endif // ! HITSIC_PITMGR_INITLIZE
