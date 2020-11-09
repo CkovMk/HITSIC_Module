@@ -48,11 +48,11 @@ typedef port_interrupt_t extInt_interruptMode_t;
 #if defined(HITSIC_EXTMGR_INITLIZE) && (HITSIC_EXTMGR_INITLIZE > 0)
 inline void EXTINT_PlatformInit(void)
 {
-	NVIC_SetPriority(PORTA_IRQn, 6);
-	NVIC_SetPriority(PORTB_IRQn, 6);
-	NVIC_SetPriority(PORTC_IRQn, 6);
-	NVIC_SetPriority(PORTD_IRQn, 6);
-	NVIC_SetPriority(PORTE_IRQn, 6);
+	NVIC_SetPriority(PORTA_IRQn, 2);
+	NVIC_SetPriority(PORTB_IRQn, 2);
+	NVIC_SetPriority(PORTC_IRQn, 2);
+	NVIC_SetPriority(PORTD_IRQn, 2);
+	NVIC_SetPriority(PORTE_IRQn, 2);
 	EnableIRQ(PORTA_IRQn);
 	EnableIRQ(PORTB_IRQn);
 	EnableIRQ(PORTC_IRQn);
@@ -64,6 +64,13 @@ inline void EXTINT_PlatformInit(void)
 
 #define HTISIC_EXTINT_DEFAULT_IRQ 	(1U)
 
+
+#define EXTINT_INST_NUM             (5U)
+
+inline uint32_t EXTINT_GetInst(INTC_Type *base)
+{
+    return ((uint32_t)base - PORTA_BASE) / (PORTB_BASE - PORTA_BASE);
+}
 
 inline INTC_Type *EXTINT_GetPortInst(GPIO_Type *gpio)
 {
