@@ -140,11 +140,14 @@ extern "C"
     }
     void MENU_ItemSetData_variType(menu_itemIfce_t *_item, void *_data)
     {
-        //if (!(_item->pptFlag & menuItem_data_NoLoad))
+        menu_item_variHandle_t *handle = _item->handle.p_variType;
+        if (_item->pptFlag & menuItem_dataExt_HasMinMax)
         {
-            *(_item->handle.p_variType->data) = *(int32_t *)_data;
-            MENU_ITEM_LOG_V("variType Data Updated %12.12d", *(_item->handle.p_variType->data));
+            *(int32_t *)_data = (*(int32_t *)_data > *(handle->data + 1)) ? (*(int32_t *)_data) : *(handle->data + 1);
+            *(int32_t *)_data = (*(int32_t *)_data < *(handle->data + 2)) ? (*(int32_t *)_data) : *(handle->data + 2);
         }
+        *(handle->data) = *(int32_t *)_data;
+        MENU_ITEM_LOG_V("variType Data Updated %12.12d", *(_item->handle.p_variType->data));
     }
     //used when in menuList
     void MENU_ItemPrintSlot_variType(menu_itemIfce_t *_item, uint32_t _slotNum)
@@ -436,11 +439,14 @@ extern "C"
     }
     void MENU_ItemSetData_varfType(menu_itemIfce_t *_item, void *_data)
     {
-        //if (!(_item->pptFlag & menuItem_data_NoLoad))
+        menu_item_varfHandle_t *handle = _item->handle.p_varfType;
+        if (_item->pptFlag & menuItem_dataExt_HasMinMax)
         {
-            *(_item->handle.p_varfType->data) = *(float *)_data;
-            MENU_ITEM_LOG_V("varfType Data Updated %12.4f", *(_item->handle.p_varfType->data));
+            *(float *)_data = (*(float *)_data > *(handle->data + 1)) ? (*(float *)_data) : *(handle->data + 1);
+            *(float *)_data = (*(float *)_data < *(handle->data + 2)) ? (*(float *)_data) : *(handle->data + 2);
         }
+        *(handle->data) = *(float *)_data;
+        MENU_ITEM_LOG_V("varfType Data Updated %12.4f", *(_item->handle.p_varfType->data));
     }
     //used when in menuList
     void MENU_ItemPrintSlot_varfType(menu_itemIfce_t *_item, uint32_t _slotNum)
