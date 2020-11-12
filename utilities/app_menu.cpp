@@ -115,20 +115,21 @@
 		{
 #if defined(HITSIC_MENU_USE_NVM) && (HITSIC_MENU_USE_NVM > 0)
 		    menu_itemIfce_t *p = NULL;
+		    MENU_ListInsert(menu_manageList, MENU_ItemConstruct(variType, &menu_statusFlag, "StatusFlag", 0, menuItem_data_global | menuItem_data_NoSave | menuItem_data_NoLoad | menuItem_data_ROFlag));
 			MENU_ListInsert(menu_manageList, MENU_ItemConstruct(nullType, NULL, "SAVE", 0, 0));
-			MENU_ListInsert(menu_manageList, p = MENU_ItemConstruct(variType, &menu_currRegionNum, "RegnSel(0-N)", 0, menuItem_data_global | menuItem_data_NoSave | menuItem_data_NoLoad | menuItem_dataExt_HasMinMax));
+			MENU_ListInsert(menu_manageList, p = MENU_ItemConstruct(variType, &menu_currRegionNum, "RegnSel(0-N)", 1, menuItem_data_global | menuItem_data_NoSave | menuItem_data_NoLoad | menuItem_dataExt_HasMinMax));
 			p->nameStr[10] = '0' + HITSIC_MENU_NVM_REGION_CNT - 1;
 			MENU_ListInsert(menu_manageList, MENU_ItemConstruct(procType, (void *)MENU_Data_NvmSave_Boxed, "Save Data", 0, menuItem_proc_runOnce));
 			MENU_ListInsert(menu_manageList, MENU_ItemConstruct(procType, (void *)MENU_Data_NvmRead_Boxed, "Load Data", 0, menuItem_proc_runOnce));
 			MENU_ListInsert(menu_manageList, MENU_ItemConstruct(procType, (void *)MENU_Data_NvmSaveRegionConfig_Boxed, "RegnSave", 0, menuItem_proc_runOnce));
 			MENU_ListInsert(menu_manageList, MENU_ItemConstruct(nullType, NULL, "COPY", 0, 0));
-			MENU_ListInsert(menu_manageList, p = MENU_ItemConstruct(variType, &menu_nvmCopySrc, "CopySrc(0-N)", 1, menuItem_data_global | menuItem_data_NoSave | menuItem_data_NoLoad | menuItem_dataExt_HasMinMax));
+			MENU_ListInsert(menu_manageList, p = MENU_ItemConstruct(variType, &menu_nvmCopySrc, "CopySrc(0-N)", 0, menuItem_data_NoSave | menuItem_data_NoLoad | menuItem_dataExt_HasMinMax));
 			p->nameStr[10] = '0' + HITSIC_MENU_NVM_REGION_CNT - 1;
-			MENU_ListInsert(menu_manageList, p = MENU_ItemConstruct(variType, &menu_nvmCopyDst, "CopyDst(0-N)", 2, menuItem_data_global | menuItem_data_NoSave | menuItem_data_NoLoad | menuItem_dataExt_HasMinMax));
+			MENU_ListInsert(menu_manageList, p = MENU_ItemConstruct(variType, &menu_nvmCopyDst, "CopyDst(0-N)", 0, menuItem_data_NoSave | menuItem_data_NoLoad | menuItem_dataExt_HasMinMax));
 			p->nameStr[10] = '0' + HITSIC_MENU_NVM_REGION_CNT - 1;
 			MENU_ListInsert(menu_manageList, MENU_ItemConstruct(procType, (void *)MENU_Data_NvmCopy_Boxed, "CopyData(S>D)", 0, menuItem_proc_runOnce));
 			MENU_ListInsert(menu_manageList, MENU_ItemConstruct(nullType, NULL, "INFO", 0, 0));
-			MENU_ListInsert(menu_manageList, MENU_ItemConstruct(variType, &menu_nvm_eraseCnt, "EraseCnt", 3, menuItem_data_global |menuItem_data_ROFlag));
+			MENU_ListInsert(menu_manageList, MENU_ItemConstruct(variType, &menu_nvm_eraseCnt, "EraseCnt", 3, menuItem_data_global | menuItem_data_ROFlag));
 
 #endif // ! HITSIC_MENU_USE_NVM
 		}
@@ -171,8 +172,10 @@
 
 	void MENU_PrintDisp(void)
 	{
-		//update disp strbuf
+	    /** 清空缓存，准备打印 */
+        HITSIC_MENU_DISPLAY_BUFFER_CLEAR();
 		memset(menu_dispStrBuf, ' ', MENU_DISP_STRBUF_ROW * MENU_DISP_STRBUF_COL);
+		/** 根据责任链打印缓存 */
 		if (menu_currItem == NULL)
 		{
 			MENU_ListPrintDisp(menu_currList);
@@ -181,12 +184,18 @@
 		{
 			MENU_ItemPrintDisp(menu_currItem);
 		}
-		//update display
-		HITSIC_MENU_DISPLAY_BUFFER_CLEAR();
-		for (uint8_t i = 0; i < MENU_DISP_STRBUF_ROW; ++i)
+		/** 处理字符缓存超控标志位 */
+		if(menu_statusFlag & menu_message_strBufOverride)
 		{
-			menu_dispStrBuf[i][MENU_DISP_STRBUF_COL - 1] = '\0';
-			HITSIC_MENU_DISPLAY_PRINT(1, i, menu_dispStrBuf[i]);
+		    menu_statusFlag |= (~menu_message_strBufOverride);
+		}
+		else
+		{
+		    for (uint8_t i = 0; i < MENU_DISP_STRBUF_ROW; ++i)
+		    {
+		        menu_dispStrBuf[i][MENU_DISP_STRBUF_COL - 1] = '\0';
+		        HITSIC_MENU_DISPLAY_PRINT(1, i, menu_dispStrBuf[i]);
+		    }
 		}
 		HITSIC_MENU_DISPLAY_BUFFER_UPDATE();
 		menu_statusFlag &= ~menu_message_printDisp;
@@ -209,6 +218,65 @@
 		menu_statusFlag &= ~menu_message_buttonOp;
 		menu_statusFlag |= menu_message_printDisp;
 	}
+
+	menu_list_t *MENU_DirGetList(const char *str)
+	{
+	    assert(str);
+	    /** 识别路径首字符 */
+	    if(str[0] != '/')
+	    {
+	        return nullptr;
+	    }
+	    /** 字符串长度保护 */
+	    uint32_t str_length = strlen(str);
+	    if(str_length > 256)
+	    {
+	        return nullptr;
+	    }
+	    /** 启动识别 */
+	    char *str_copy = new char[str_length];
+	    strncpy(str_copy, str, str_length);
+	    char *pch = strtok(str_copy, "/");
+	    menu_list_t *currDirList = menu_menuRoot;
+	    while(pch != nullptr)
+	    {
+	        bool isFound = false;
+	        for(uint32_t i = 0; i < currDirList->listNum; ++i)
+	        {
+	            menu_itemIfce_t *it = currDirList->menu[i];
+	            if(it->type == menuType && 0 == strcmp(it->nameStr, pch))
+	            {
+	                isFound = true;
+	                currDirList = it->handle.p_menuType->data;
+	                break;
+	            }
+	        }
+	        if(false == isFound)
+	        {
+	            return nullptr;
+	        }
+	        pch = strtok(nullptr, "/");
+	    }
+	    /** 释放内存，返回 */
+	    delete[] str_copy;
+	    return currDirList;
+	}
+
+	menu_itemIfce_t *MENU_DirGetItem(const menu_list_t *dir, const char *str)
+    {
+	    assert(dir);
+	    assert(str);
+
+	    for(uint32_t i = 0; i < dir->listNum; ++i)
+	    {
+	        menu_itemIfce_t *it = dir->menu[i];
+	        if(0 == strcmp(it->nameStr, str))
+	        {
+	            return it;
+	        }
+	    }
+	    return nullptr;
+    }
 
 #if defined(HITSIC_MENU_USE_NVM) && (HITSIC_MENU_USE_NVM > 0)
 

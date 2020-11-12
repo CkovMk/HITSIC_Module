@@ -235,6 +235,7 @@ extern "C"
     {
         menu_item_variHandle_t *handle = _item->handle.p_variType;
         MENU_ItemSetContent_variType(&handle->bData, handle->v, handle->e);
+
         menu_dispStrBuf[0][snprintf(menu_dispStrBuf[0], MENU_DISP_STRBUF_COL, "##%-15.15s *", _item->nameStr)] = ' ';
         menu_dispStrBuf[2][snprintf(menu_dispStrBuf[2], MENU_DISP_STRBUF_COL, "  Cur: %+-10ld", *handle->data)] = ' ';
 
@@ -265,6 +266,7 @@ extern "C"
             menu_dispStrBuf[0][19] = 'N';
             menu_dispStrBuf[0][20] = 'O';
         }
+
     }
     void MENU_ItemKeyOp_variType(menu_itemIfce_t *_item, menu_keyOp_t *const _op)
     {
@@ -520,6 +522,7 @@ extern "C"
     {
         menu_item_varfHandle_t *handle = _item->handle.p_varfType;
         MENU_ItemSetContent_varfType(&handle->bData, handle->v, handle->e);
+
         menu_dispStrBuf[0][snprintf(menu_dispStrBuf[0], MENU_DISP_STRBUF_COL, "##%-15.15s *", _item->nameStr)] = ' ';
         menu_dispStrBuf[2][snprintf(menu_dispStrBuf[2], MENU_DISP_STRBUF_COL, "  Cur: %+-10.4f", *handle->data)] = ' ';
 
@@ -754,8 +757,11 @@ extern "C"
             handle->data(&op_temp);
             return;
         }
-        menu_dispStrBuf[0][snprintf(menu_dispStrBuf[0], MENU_DISP_STRBUF_COL, "##%-15.15s *", _item->nameStr)] = ' ';
-        menu_dispStrBuf[7][snprintf(menu_dispStrBuf[7], MENU_DISP_STRBUF_COL, "    SOK>AC LOK>WA    ")] = ' ';
+        else
+        {
+            menu_dispStrBuf[0][snprintf(menu_dispStrBuf[0], MENU_DISP_STRBUF_COL, "##%-15.15s *", _item->nameStr)] = ' ';
+            menu_dispStrBuf[7][snprintf(menu_dispStrBuf[7], MENU_DISP_STRBUF_COL, "    SOK>AC LOK>WA    ")] = ' ';
+        }
     }
     void MENU_ItemKeyOp_procType(menu_itemIfce_t *_item, menu_keyOp_t *const _op)
     {
@@ -952,6 +958,7 @@ extern "C"
 
     void MENU_ListPrintDisp(menu_list_t *_list)
     {
+        memset(menu_dispStrBuf, ' ', MENU_DISP_STRBUF_ROW * MENU_DISP_STRBUF_COL);
         menu_dispStrBuf[0][snprintf(menu_dispStrBuf[0], MENU_DISP_STRBUF_COL, "##%-13.13s*%2.2ld/%2.2ld", _list->nameStr, _list->slct_p + 1, _list->listNum)] = ' ';
         uint32_t printCnt = _list->listNum < MENU_DISP_STRBUF_ROW - 1 ? _list->listNum : MENU_DISP_STRBUF_ROW - 1;
         for (uint8_t i = 0; i < printCnt; ++i)
