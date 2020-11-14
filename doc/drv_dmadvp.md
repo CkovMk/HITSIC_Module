@@ -173,7 +173,7 @@ struct dmadvp_handle_t
 
 - 调用`status_t DMADVP_TransferStart(DMADVP_Type *base, dmadvp_handle_t *handle);`启动传输。传输完成时DMA中断会自动调用您在初始化时注册的`callback`回调函数。
 
-- 在回调函数中，首先调用`void DMADVP_EdmaCallbackService(dmadvp_handle_t *handle, bool transferDone);`进行基础维护。
+- 在回调函数中，首先调用`void DMADVP_EdmaCallbackService(dmadvp_handle_t *handle, bool transferDone);`进行基础维护，然后调用`status_t DMADVP_TransferStart(DMADVP_Type *base, dmadvp_handle_t *handle);`停止本次传输。
 
   随后判断`transferDone`标志：
 
@@ -188,7 +188,7 @@ struct dmadvp_handle_t
 
 - 在回调函数中，进行基础维护之后：
 
-  首先调用`status_t DMADVP_TransferStart(DMADVP_Type *base, dmadvp_handle_t *handle);`再次启动传输。
+  不要调用`status_t DMADVP_TransferStart(DMADVP_Type *base, dmadvp_handle_t *handle);`，直接调用`status_t DMADVP_TransferStart(DMADVP_Type *base, dmadvp_handle_t *handle);`再次启动传输。
 
   - 如果此时空缓存队列不为空，则自动使用其中的缓存区进行下一次传输。
   - 如果此时空缓存队列已空，上述函数将返回`kStatus_DMADVP_NoEmptyBuffer`。

@@ -40,6 +40,21 @@ Flash读写驱动（FTFX_FLASH），可选，用于保存和读取菜单；
 
 ## 版本说明
 
+### v0.1.7
+
+~~by：CkovMk @hitsic 2020.11.14~~
+
+**改动说明**
+
+- 新增全局状态标志位`menu_message_strBufOverride`（字符缓存超控标志位），支持菜单项直接打印帧缓存。
+- 新增函数`menu_list_t *MENU_DirGetList(const char *str);`和`menu_itemIfce_t *MENU_DirGetItem(const menu_list_t *dir, const char *str);`，用于按路径查找菜单列表和菜单项。
+
+**开发计划**
+
+**已知问题**
+
+
+
 ### v0.1.6
 
 by：CkovMk @hitsic 2020.11.09
@@ -263,6 +278,30 @@ by：CkovMk @hitsic 2019.11.02
   ```
 
   用于解析按键操作并根据菜单逻辑给出响应。如果执行按键操作后需要刷新屏幕，其将自动产生一次屏幕刷新事件，但可能不会立即进行屏幕刷新。在使用本模组自带的按键处理函数时，您无需手动调用该函数。反之，如果您自行编写了按键识别代码，您可以通过调用此函数向菜单传输指令。
+
+  
+
+- 路径查询
+  ```c
+  /**
+   * @brief : 根据字符串路径查找菜单列表。
+   *
+   * @param str : 字符串路径，以"/"分隔。注意：路径名应与跳转类型的菜单项
+   *              名称一致，而不是与菜单列表名称一致。事实上，建议将菜单列表
+   *              的名称与跳转类型菜单项的名称设为相同。
+   * @retval 返回找到的菜单列表的指针。如果未找到则返回nullptr。
+   */
+  menu_list_t *MENU_DirGetList(const char *str);
+
+  /**
+   * @brief : 在菜单列表中搜索给定名称的菜单项。
+   *
+   * @param dir : 菜单项所在的菜单列表指针。
+   * @param str : 菜单项名称字符串。
+   * @retval 返回找到的菜单列表的指针。如果未找到则返回nullptr。
+   */
+  menu_itemIfce_t *MENU_DirGetItem(const menu_list_t *dir, const char *str);
+  ```
 
   
 
@@ -799,18 +838,18 @@ by：CkovMk @hitsic 2019.11.02
     {
         menu_data_valid = menu_dataValid_flag << menu_dataValid_mask, /// 菜单状态标志
     
-        menu_error_fatalError = 1 << 23,  ///> 关键故障标志位。
-        menu_warning_itemLost = 1 << 22,  ///> 数据缺失标志位。读取数据时发现数据缺失时置位，须手动清除。该标志位使用16位参数，表示数据缺失的总个数。
-        menu_datalog_cmbPrint = 1 << 21,  ///> cm_backtrace错误打印标志位。发生cmb打印时设置，须手动清除。该标志位（目前）不使用参数。
-        menu_datalog_usrPrint = 1 << 20,  ///> 用户错误信息打印标志位，发生用户错误信息打印时设置，须手动清除。该标志位的参数由用户定义。
-        menu_message_buttonOp = 1 << 19,  ///> 按键操作消息
-        menu_message_printDisp = 1 << 18, ///> 屏幕打印消息
+        menu_error_fatalError = 1 << 23,        ///> 关键故障标志位。
+        menu_warning_itemLost = 1 << 22,        ///> 数据缺失标志位。读取数据时发现数据缺失时置位，须手动清除。该标志位使用16位参数，表示数据缺失的总个数。
+        menu_noUse2 = 1 << 21,                  ///> cm_backtrace错误打印标志位。发生cmb打印时设置，须手动清除。该标志位使用16位参数，表示数据的大小（字节数）。
+        menu_message_strBufOverride = 1 << 20,  ///> 字符串缓存超控标志位。该标志位置位时，菜单顶层逻辑将忽略字符串缓存，直接打印全缓存。进行一帧打印后自动清除。
+        menu_message_buttonOp = 1 << 19,        ///> 按键操作消息。置位时将进行按键处理，处理完成后自动清除，并自动产生屏幕打印消息。
+        menu_message_printDisp = 1 << 18,       ///> 屏幕打印消息。置位时将进行屏幕打印，处理完成后自动清除。
         menu_noUse6 = 1 << 17,
         menu_noUse7 = 1 << 16,
     
-        menu_param_Mask16 = 0xffff, /// 低16位全16位掩码标志位，用于读取低16位参数。如果传一个参数且取值大于255，应使用16位参数。
-        menu_param_Mask8h = 0xff00, /// 低16位中高8位掩码标志位，用于读取16位参数中的高8位。如果要返回两个参数，或参数取值小于256，可以使用两个8位参数。
-        menu_param_Mask8l = 0x00ff, /// 低16位中高8位掩码标志位，用于读取16位参数中的低8位。同上。
+        menu_param_Mask16 = 0xffff, ///> 低16位全16位掩码标志位，用于读取低16位参数。如果传一个参数且取值大于255，应使用16位参数。
+        menu_param_Mask8h = 0xff00, ///> 低16位中高8位掩码标志位，用于读取16位参数中的高8位。如果要返回两个参数，或参数取值小于256，可以使用两个8位参数。
+        menu_param_Mask8l = 0x00ff, ///> 低16位中高8位掩码标志位，用于读取16位参数中的低8位。同上。
     };
     ```
 

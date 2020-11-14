@@ -753,7 +753,7 @@ extern "C"
         menu_item_procHandle_t *handle = _item->handle.p_procType;
         if(_item->pptFlag & menuItem_proc_uiDisplay)
         {
-            menu_keyOp_t op_temp = 0;
+            menu_keyOp_t op_temp = MENU_BUTTON_MAKE_OP(nl, disp);
             handle->data(&op_temp);
             return;
         }
@@ -768,11 +768,11 @@ extern "C"
         menu_item_procHandle_t *handle = _item->handle.p_procType;
         switch (*_op)
         {
-            case MENU_BUTTON_MAKE_OP(ok, long):
+        case MENU_BUTTON_MAKE_OP(ok, long):
             menu_currItem = NULL;
-            *_op = 0;
+            *_op = 0U;
             break;
-            default:
+        default:
             handle->data(_op);
             if(_item->pptFlag & menuItem_proc_runOnce)
             {
