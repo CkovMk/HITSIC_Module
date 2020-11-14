@@ -57,6 +57,7 @@ typedef enum _menu_keyOpCode_t
 typedef enum _menu_keyOpType_t
 {
     menuOpType_shrt = 1 << 8, menuOpType_long = 2 << 8, menuOpType_lrpt = 3 << 8,
+    menuOpType_disp = 4 << 8,
 } menu_keyOpType_t;
 
 typedef uint32_t menu_keyOp_t;

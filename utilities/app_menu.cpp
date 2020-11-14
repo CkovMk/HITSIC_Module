@@ -190,7 +190,7 @@
 		/** 处理字符缓存超控标志位 */
 		if(menu_statusFlag & menu_message_strBufOverride)
 		{
-		    menu_statusFlag |= (~menu_message_strBufOverride);
+		    menu_statusFlag &= (~menu_message_strBufOverride);
 		}
 		else
 		{
