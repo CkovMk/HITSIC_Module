@@ -29,9 +29,15 @@
 #include <easyflash.h>
 #include <stdarg.h>
 
+#include "hitsic_common.h"
+#include "drv_ftfx_flash.hpp"
+
+int status = (0x50 << 24);
+
 /* default environment variables set for user */
 static const ef_env default_env_set[] = {
-
+    //{"board_name", "hitsic_mk66f18", 0},
+    {"ef_status", &status, sizeof(int32_t)},
 };
 
 /**
@@ -42,7 +48,8 @@ static const ef_env default_env_set[] = {
  *
  * @return result
  */
-EfErrCode ef_port_init(ef_env const **default_env, size_t *default_env_size) {
+EfErrCode ef_port_init(ef_env const **default_env, size_t *default_env_size)
+{
     EfErrCode result = EF_NO_ERR;
 
     *default_env = default_env_set;
@@ -61,10 +68,19 @@ EfErrCode ef_port_init(ef_env const **default_env, size_t *default_env_size) {
  *
  * @return result
  */
-EfErrCode ef_port_read(uint32_t addr, uint32_t *buf, size_t size) {
+EfErrCode ef_port_read(uint32_t addr, uint32_t *buf, size_t size)
+{
     EfErrCode result = EF_NO_ERR;
 
+    EF_ASSERT(size % (4) == 0);
+
     /* You can add your code under here. */
+    EF_INFO("Verbose: Read Addr 0x%8.8x, Size %4.4d bytes\n", addr, size);
+    if (kStatus_FTFx_Success != FLASH_AddressRead(addr, (uint8_t *)buf, size))
+    {
+        result = EF_READ_ERR;
+        EF_INFO("Warning: Read Failed !\n");
+    }
 
     return result;
 }
@@ -79,13 +95,25 @@ EfErrCode ef_port_read(uint32_t addr, uint32_t *buf, size_t size) {
  *
  * @return result
  */
-EfErrCode ef_port_erase(uint32_t addr, size_t size) {
+EfErrCode ef_port_erase(uint32_t addr, size_t size)
+{
     EfErrCode result = EF_NO_ERR;
 
     /* make sure the start address is a multiple of EF_ERASE_MIN_SIZE */
     EF_ASSERT(addr % EF_ERASE_MIN_SIZE == 0);
 
     /* You can add your code under here. */
+    EF_ASSERT(size % EF_ERASE_MIN_SIZE == 0);
+    uint32_t sectorNum = size / EF_ERASE_MIN_SIZE;
+    for (uint32_t i = 0; i < sectorNum; ++i)
+    {
+        EF_INFO("Verbose: Erase Addr 0x%8.8x, Size %4.4d bytes\n", addr, size);
+        if (kStatus_FTFx_Success != FLASH_SectorErase(addr / EF_ERASE_MIN_SIZE + i))
+        {
+            result = EF_ERASE_ERR;
+            EF_INFO("Warning: Erase Failed !\n");
+        }
+    }
 
     return result;
 }
@@ -100,10 +128,19 @@ EfErrCode ef_port_erase(uint32_t addr, size_t size) {
  *
  * @return result
  */
-EfErrCode ef_port_write(uint32_t addr, const uint32_t *buf, size_t size) {
+EfErrCode ef_port_write(uint32_t addr, const uint32_t *buf, size_t size)
+{
     EfErrCode result = EF_NO_ERR;
-    
+
+    EF_ASSERT(size % (EF_WRITE_GRAN/8) == 0);
+
     /* You can add your code under here. */
+    EF_INFO("Verbose: Write Addr 0x%8.8x, Size %4.4d bytes\n", addr, size);
+    if (kStatus_FTFx_Success != FLASH_AddressProgram(addr, (uint8_t *)buf, size))
+    {
+        result = EF_WRITE_ERR;
+        EF_INFO("Warning: Write Failed !\n");
+    }
 
     return result;
 }
@@ -111,21 +148,22 @@ EfErrCode ef_port_write(uint32_t addr, const uint32_t *buf, size_t size) {
 /**
  * lock the ENV ram cache
  */
-void ef_port_env_lock(void) {
-    
+void ef_port_env_lock(void)
+{
+
     /* You can add your code under here. */
-    
+    HAL_EnterCritical();
 }
 
 /**
  * unlock the ENV ram cache
  */
-void ef_port_env_unlock(void) {
-    
-    /* You can add your code under here. */
-    
-}
+void ef_port_env_unlock(void)
+{
 
+    /* You can add your code under here. */
+    HAL_ExitCritical();
+}
 
 /**
  * This function is print flash debug info.
@@ -136,7 +174,8 @@ void ef_port_env_unlock(void) {
  * @param ... args
  *
  */
-void ef_log_debug(const char *file, const long line, const char *format, ...) {
+void ef_log_debug(const char *file, const long line, const char *format, ...)
+{
 
 #ifdef PRINT_DEBUG
 
@@ -146,11 +185,11 @@ void ef_log_debug(const char *file, const long line, const char *format, ...) {
     va_start(args, format);
 
     /* You can add your code under here. */
-    
+    vprintf(format, args);
+
     va_end(args);
 
 #endif
-
 }
 
 /**
@@ -159,14 +198,16 @@ void ef_log_debug(const char *file, const long line, const char *format, ...) {
  * @param format output format
  * @param ... args
  */
-void ef_log_info(const char *format, ...) {
+void ef_log_info(const char *format, ...)
+{
     va_list args;
 
     /* args point to the first variable parameter */
     va_start(args, format);
 
     /* You can add your code under here. */
-    
+    vprintf(format, args);
+
     va_end(args);
 }
 /**
@@ -175,13 +216,15 @@ void ef_log_info(const char *format, ...) {
  * @param format output format
  * @param ... args
  */
-void ef_print(const char *format, ...) {
+void ef_print(const char *format, ...)
+{
     va_list args;
 
     /* args point to the first variable parameter */
     va_start(args, format);
 
     /* You can add your code under here. */
-    
+    vprintf(format, args);
+
     va_end(args);
 }

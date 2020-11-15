@@ -29,6 +29,7 @@
 #ifndef EF_CFG_H_
 #define EF_CFG_H_
 
+#include "cmsis_compiler.h"
 /* using ENV function, default is NG (Next Generation) mode start from V4.0 */
 #define EF_USING_ENV
 
@@ -86,6 +87,6 @@
 #define LOG_AREA_SIZE             (4096u * 4u)/* @note you must define it for a value if you used log */
 
 /* print debug information of flash */
-#define PRINT_DEBUG				(printf)
+#define PRINT_DEBUG				(PRINTF)
 
 #endif /* EF_CFG_H_ */
