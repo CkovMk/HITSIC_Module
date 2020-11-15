@@ -51,10 +51,10 @@ static const ef_env default_env_set[] = {
 EfErrCode ef_port_init(ef_env const **default_env, size_t *default_env_size)
 {
     EfErrCode result = EF_NO_ERR;
-
+    //static_assert((EF_WRITE_GRAN/8) == sizeof(sector_hdr_data));
     *default_env = default_env_set;
     *default_env_size = sizeof(default_env_set) / sizeof(default_env_set[0]);
-
+    result = FLASH_SimpleInit();
     return result;
 }
 
@@ -75,11 +75,11 @@ EfErrCode ef_port_read(uint32_t addr, uint32_t *buf, size_t size)
     EF_ASSERT(size % (4) == 0);
 
     /* You can add your code under here. */
-    EF_INFO("Verbose: Read Addr 0x%8.8x, Size %4.4d bytes\n", addr, size);
+    EF_DEBUG("Read Addr 0x%8.8x, Size %4.4d bytes\n", addr, size);
     if (kStatus_FTFx_Success != FLASH_AddressRead(addr, (uint8_t *)buf, size))
     {
         result = EF_READ_ERR;
-        EF_INFO("Warning: Read Failed !\n");
+        EF_DEBUG("Read Failed !\n");
     }
 
     return result;
@@ -107,11 +107,11 @@ EfErrCode ef_port_erase(uint32_t addr, size_t size)
     uint32_t sectorNum = size / EF_ERASE_MIN_SIZE;
     for (uint32_t i = 0; i < sectorNum; ++i)
     {
-        EF_INFO("Verbose: Erase Addr 0x%8.8x, Size %4.4d bytes\n", addr, size);
+        EF_DEBUG("Erase Addr 0x%8.8x, Size %4.4d bytes\n", addr, size);
         if (kStatus_FTFx_Success != FLASH_SectorErase(addr / EF_ERASE_MIN_SIZE + i))
         {
             result = EF_ERASE_ERR;
-            EF_INFO("Warning: Erase Failed !\n");
+            EF_DEBUG("Erase Failed !\n");
         }
     }
 
@@ -133,13 +133,14 @@ EfErrCode ef_port_write(uint32_t addr, const uint32_t *buf, size_t size)
     EfErrCode result = EF_NO_ERR;
 
     EF_ASSERT(size % (EF_WRITE_GRAN/8) == 0);
+    if(0 == size){return result;}
 
     /* You can add your code under here. */
-    EF_INFO("Verbose: Write Addr 0x%8.8x, Size %4.4d bytes\n", addr, size);
+    EF_DEBUG("Write Addr 0x%8.8x, Size %4.4d bytes\n", addr, size);
     if (kStatus_FTFx_Success != FLASH_AddressProgram(addr, (uint8_t *)buf, size))
     {
         result = EF_WRITE_ERR;
-        EF_INFO("Warning: Write Failed !\n");
+        EF_DEBUG("Write Failed !\n");
     }
 
     return result;
@@ -185,6 +186,7 @@ void ef_log_debug(const char *file, const long line, const char *format, ...)
     va_start(args, format);
 
     /* You can add your code under here. */
+    printf("[D] EasyFlash: ");
     vprintf(format, args);
 
     va_end(args);
@@ -206,6 +208,7 @@ void ef_log_info(const char *format, ...)
     va_start(args, format);
 
     /* You can add your code under here. */
+    printf("[I] EasyFlash: ");
     vprintf(format, args);
 
     va_end(args);

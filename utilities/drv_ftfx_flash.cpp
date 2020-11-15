@@ -64,9 +64,9 @@ extern "C" {
 		FLASH_GetProperty(&flash_config, kFLASH_PropertyPflash0SectorSize, &flash_sectorSize);
 
 		/* Print flash information - PFlash. */
-		PRINTF("[D] FTFX_FLASH: Flash Information:\n");
-		PRINTF("[D] FTFX_FLASH: Total Flash Size:\t%d KB, Hex: (0x%x)\n", (flash_totalSize / 1024), flash_totalSize);
-		PRINTF("[D] FTFX_FLASH: Flash Sector Size:\t%d KB, Hex: (0x%x)\n", (flash_sectorSize / 1024), flash_sectorSize);
+		FTFX_FLASH_LOG_D("Flash Information:");
+		FTFX_FLASH_LOG_D("Total Flash Size:\t%d KB, Hex: (0x%x)", (flash_totalSize / 1024), flash_totalSize);
+		FTFX_FLASH_LOG_D("Flash Sector Size:\t%d KB, Hex: (0x%x)", (flash_sectorSize / 1024), flash_sectorSize);
 		/* Check security status. */
 		result = FLASH_GetSecurityState(&flash_config, &flash_securityStatus);
 
@@ -85,7 +85,7 @@ extern "C" {
 		default:
 			break;
 		}
-		PRINTF("[I] FTFX_FLASH: Init Complete.\n\n");
+		FTFX_FLASH_LOG_I("Init Complete.\n");
 		return result;
 	}
 

@@ -149,7 +149,7 @@ enum sector_dirty_status {
 };
 typedef enum sector_dirty_status sector_dirty_status_t;
 
-__ALIGNED(EF_WRITE_GRAN/8)
+//__ALIGNED(EF_WRITE_GRAN/8)
 struct sector_hdr_data {
     struct {
         uint8_t store[STORE_STATUS_TABLE_SIZE];  /**< sector store status @see sector_store_status_t */
@@ -158,7 +158,10 @@ struct sector_hdr_data {
     uint32_t magic;                              /**< magic word(`E`, `F`, `4`, `0`) */
     uint32_t combined;                           /**< the combined next sector number, 0xFFFFFFFF: not combined */
     uint32_t reserved;
+    uint32_t dummy; //TODO: fix this! 由于GCC忽略了align，我在这里进行64字节手动对齐。by CkovMk @2020.11.15
 };
+
+
 typedef struct sector_hdr_data *sector_hdr_data_t;
 
 struct sector_meta_data {
@@ -175,6 +178,7 @@ struct sector_meta_data {
 };
 typedef struct sector_meta_data *sector_meta_data_t;
 
+//__ALIGNED((EF_WRITE_GRAN/8))
 struct env_hdr_data {
     uint8_t status_table[ENV_STATUS_TABLE_SIZE]; /**< ENV node status, @see node_status_t */
     uint32_t magic;                              /**< magic word(`K`, `V`, `4`, `0`) */
@@ -182,6 +186,7 @@ struct env_hdr_data {
     uint32_t crc32;                              /**< ENV node crc32(name_len + data_len + name + value) */
     uint8_t name_len;                            /**< name length */
     uint32_t value_len;                          /**< value length */
+    uint32_t dummy; //TODO: fix this! 由于GCC忽略了align，我在这里进行64字节手动对齐。by CkovMk @2020.11.15
 };
 typedef struct env_hdr_data *env_hdr_data_t;
 
