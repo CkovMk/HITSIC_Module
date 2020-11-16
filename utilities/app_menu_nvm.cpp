@@ -6,6 +6,9 @@
  * @addtogroup menu_nvm
  * @{
  */
+#define SYSLOG_TAG  ("MENU.KVDB")
+#define SYSLOG_LVL  (HITSIC_MENU_KVDB_LOG_LVL)
+#include "inc_syslog.hpp"
 
 #ifdef __cplusplus
 extern "C"
@@ -65,7 +68,7 @@ extern "C"
 
     status_t MENU_NvmRead(uint32_t _addr, void *_buf, uint32_t _byteCnt)
     {
-        MENU_NVM_LOG_V("Rx Addr = 0x%8.8x, Size = %4.4d", _addr, _byteCnt);
+        SYSLOG_V("Rx Addr = 0x%8.8x, Size = %4.4d", _addr, _byteCnt);
         if (HITSIC_MENU_NVM_RETVAL_SUCCESS ==
                 HITSIC_MENU_NVM_AddressRead(_addr, _buf, _byteCnt))
         {
@@ -99,7 +102,7 @@ extern "C"
         menu_nvm_cache = (uint8_t *)malloc(flash_sectorSize);
         if (menu_nvm_cache == NULL)
         {
-            MENU_NVM_LOG_E("Cached Sector %2.2d\n Failed! [-MemMalloc]",
+            SYSLOG_E("Cached Sector %2.2d\n Failed! [-MemMalloc]",
                     menu_nvm_cachedSector);
             return kStatus_Fail;
         }
@@ -109,12 +112,12 @@ extern "C"
         {
             free(menu_nvm_cache);
             menu_nvm_cache = NULL;
-            MENU_NVM_LOG_E("Cached Sector %2.2d\n Failed! [-FlashRead]",
+            SYSLOG_E("Cached Sector %2.2d\n Failed! [-FlashRead]",
                     menu_nvm_cachedSector);
             return kStatus_Fail;
         }
         menu_nvm_cachedSector = _sect;
-        MENU_NVM_LOG_V("Cached Sector %2.2d", menu_nvm_cachedSector);
+        SYSLOG_V("Cached Sector %2.2d", menu_nvm_cachedSector);
         return kStatus_Success;
     }
 
@@ -129,7 +132,7 @@ extern "C"
             }
         }
         memcpy(menu_nvm_cache + _addr % flash_sectorSize, _buf, _byteCnt);
-        MENU_NVM_LOG_V("Tx Addr = 0x%8.8x, Size = %4.4d", _addr, _byteCnt);
+        SYSLOG_V("Tx Addr = 0x%8.8x, Size = %4.4d", _addr, _byteCnt);
         return kStatus_Success;
     }
 
@@ -142,7 +145,7 @@ extern "C"
         }
         // void* readBuf = malloc(flash_sectorSize);
         // FLASH_SectorRead(menu_nvm_cachedSector, readBuf);
-        MENU_NVM_LOG_V("Update Cached Sector %2.2d", menu_nvm_cachedSector);
+        SYSLOG_V("Update Cached Sector %2.2d", menu_nvm_cachedSector);
         //		if(memcmp(readBuf, menu_nvm_cache, flash_sectorSize) != 0)
         //		{
         //			HITSIC_MENU_PRINTF("Warning: MENU: Nvm Update Cache Fail.\n");
@@ -158,6 +161,37 @@ extern "C"
 #ifdef __cplusplus
 }
 #endif
+
+namespace menu{
+
+class kvdb_t
+{
+public:
+    status_t GetKeyData();
+    status_t SetKeyData();
+};
+
+template <typename kvdb_t>
+class databaseAdapter_t
+{
+    __PACKED struct allocateTableItem_t
+    {
+        uint16_t saveAddr;
+        uint16_t dummy;
+    };
+
+    __PACKED struct storageItem_t
+    {
+
+        char nameStr[menu_nameStrSize];
+        menu_itemType_t dataType;
+        uint8_t dummy;
+        uint32_t itemData;
+    };
+};
+
+
+} // ! namespace menu
 
 /* @} */
 

@@ -7,6 +7,10 @@
  * @{
  */
 
+#define SYSLOG_TAG  ("MENU.TYPE")
+#define SYSLOG_LVL  (HITSIC_MENU_TYPE_LOG_LVL)
+#include "inc_syslog.hpp"
+
 #ifdef __cplusplus
 extern "C"
 {
@@ -147,7 +151,7 @@ extern "C"
             *(int32_t *)_data = (*(int32_t *)_data < *(handle->data + 2)) ? (*(int32_t *)_data) : *(handle->data + 2);
         }
         *(handle->data) = *(int32_t *)_data;
-        MENU_ITEM_LOG_V("variType Data Updated %12.12d", *(_item->handle.p_variType->data));
+        SYSLOG_V("variType Data Updated %12.12d", *(_item->handle.p_variType->data));
     }
     //used when in menuList
     void MENU_ItemPrintSlot_variType(menu_itemIfce_t *_item, uint32_t _slotNum)
@@ -446,7 +450,7 @@ extern "C"
             *(float *)_data = (*(float *)_data < *(handle->data + 2)) ? (*(float *)_data) : *(handle->data + 2);
         }
         *(handle->data) = *(float *)_data;
-        MENU_ITEM_LOG_V("varfType Data Updated %12.4f", *(_item->handle.p_varfType->data));
+        SYSLOG_V("varfType Data Updated %12.4f", *(_item->handle.p_varfType->data));
     }
     //used when in menuList
     void MENU_ItemPrintSlot_varfType(menu_itemIfce_t *_item, uint32_t _slotNum)

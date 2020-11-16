@@ -7,6 +7,10 @@
  * @{
  */
 
+#define SYSLOG_TAG  ("MENU.BUTN")
+#define SYSLOG_LVL  (HITSIC_MENU_BUTN_LOG_LVL)
+#include "inc_syslog.hpp"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -80,6 +84,8 @@ void MENU_ButtonCallback(button_t *_inst) {
     }
 
     menu_statusFlag |= menu_message_buttonOp;
+
+    SYSLOG_V("Button message: %ld", menu_keyOpBuff);
     NVIC_SetPendingIRQ(HITSIC_MENU_SERVICE_IRQn);
 }
 

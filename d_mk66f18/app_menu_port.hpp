@@ -36,6 +36,12 @@
 #define HITSIC_MENU_PRINT_VERBOSE_ENABLE (1u)
 #define HITSIC_MENU_PRINT_WARNING_ENABLE (1u)
 
+
+#define HITSIC_MENU_MAIN_LOG_LVL    (5U)
+#define HITSIC_MENU_KVDB_LOG_LVL    (5U)
+#define HITSIC_MENU_BUTN_LOG_LVL    (5U)
+#define HITSIC_MENU_TYPE_LOG_LVL    (5U)
+
 /**
  * @brief : 菜单调试输出语句定义。
  * 编译选项为release时始终为空。

@@ -16,21 +16,6 @@
 #include "sys_pitmgr.hpp"
 
 // @formatter:off
-
-#define MENU_LOG_A(...)         (HITSIC_MENU_PRINTF("[A] MENU: ") + HITSIC_MENU_PRINTF(__VA_ARGS__) + HITSIC_MENU_PRINTF("\n"))
-#define MENU_LOG_E(...)         (HITSIC_MENU_PRINTF("[E] MENU: ") + HITSIC_MENU_PRINTF(__VA_ARGS__) + HITSIC_MENU_PRINTF("\n"))
-#define MENU_LOG_W(...)         (HITSIC_MENU_PRINTF("[W] MENU: ") + HITSIC_MENU_PRINTF(__VA_ARGS__) + HITSIC_MENU_PRINTF("\n"))
-#define MENU_LOG_I(...)         (HITSIC_MENU_PRINTF("[I] MENU: ") + HITSIC_MENU_PRINTF(__VA_ARGS__) + HITSIC_MENU_PRINTF("\n"))
-#define MENU_LOG_D(...)         //(HITSIC_MENU_PRINTF("[D] MENU: ") + HITSIC_MENU_PRINTF(__VA_ARGS__) + HITSIC_MENU_PRINTF("\n"))
-#define MENU_LOG_V(...)         //(HITSIC_MENU_PRINTF("[V] MENU: ") + HITSIC_MENU_PRINTF(__VA_ARGS__) + HITSIC_MENU_PRINTF("\n"))
-
-#define MENU_NVM_LOG_A(...)     (HITSIC_MENU_PRINTF("[A] MENU.NVM : ") + HITSIC_MENU_PRINTF(__VA_ARGS__) + HITSIC_MENU_PRINTF("\n"))
-#define MENU_NVM_LOG_E(...)     (HITSIC_MENU_PRINTF("[E] MENU.NVM : ") + HITSIC_MENU_PRINTF(__VA_ARGS__) + HITSIC_MENU_PRINTF("\n"))
-#define MENU_NVM_LOG_W(...)     (HITSIC_MENU_PRINTF("[W] MENU.NVM : ") + HITSIC_MENU_PRINTF(__VA_ARGS__) + HITSIC_MENU_PRINTF("\n"))
-#define MENU_NVM_LOG_I(...)     (HITSIC_MENU_PRINTF("[I] MENU.NVM : ") + HITSIC_MENU_PRINTF(__VA_ARGS__) + HITSIC_MENU_PRINTF("\n"))
-#define MENU_NVM_LOG_D(...)     //(HITSIC_MENU_PRINTF("[D] MENU.NVM : ") + HITSIC_MENU_PRINTF(__VA_ARGS__) + HITSIC_MENU_PRINTF("\n"))
-#define MENU_NVM_LOG_V(...)     //(HITSIC_MENU_PRINTF("[V] MENU.NVM : ") + HITSIC_MENU_PRINTF(__VA_ARGS__) + HITSIC_MENU_PRINTF("\n"))
-
 #define MENU_ITEM_LOG_A(...)    (HITSIC_MENU_PRINTF("[A] MENU.ITEM: ") + HITSIC_MENU_PRINTF(__VA_ARGS__) + HITSIC_MENU_PRINTF("\n"))
 #define MENU_ITEM_LOG_E(...)    (HITSIC_MENU_PRINTF("[E] MENU.ITEM: ") + HITSIC_MENU_PRINTF(__VA_ARGS__) + HITSIC_MENU_PRINTF("\n"))
 #define MENU_ITEM_LOG_W(...)    (HITSIC_MENU_PRINTF("[W] MENU.ITEM: ") + HITSIC_MENU_PRINTF(__VA_ARGS__) + HITSIC_MENU_PRINTF("\n"))
@@ -44,13 +29,6 @@
 #define MENU_LIST_LOG_I(...)    (HITSIC_MENU_PRINTF("[I] MENU.LIST: ") + HITSIC_MENU_PRINTF(__VA_ARGS__) + HITSIC_MENU_PRINTF("\n"))
 #define MENU_LIST_LOG_D(...)    //(HITSIC_MENU_PRINTF("[D] MENU.LIST: ") + HITSIC_MENU_PRINTF(__VA_ARGS__) + HITSIC_MENU_PRINTF("\n"))
 #define MENU_LIST_LOG_V(...)    //(HITSIC_MENU_PRINTF("[V] MENU.LIST: ") + HITSIC_MENU_PRINTF(__VA_ARGS__) + HITSIC_MENU_PRINTF("\n"))
-
-#define MENU_BUTN_LOG_A(...)    (HITSIC_MENU_PRINTF("[A] MENU.BUTN: ") + HITSIC_MENU_PRINTF(__VA_ARGS__) + HITSIC_MENU_PRINTF("\n"))
-#define MENU_BUTN_LOG_E(...)    (HITSIC_MENU_PRINTF("[E] MENU.BUTN: ") + HITSIC_MENU_PRINTF(__VA_ARGS__) + HITSIC_MENU_PRINTF("\n"))
-#define MENU_BUTN_LOG_W(...)    (HITSIC_MENU_PRINTF("[W] MENU.BUTN: ") + HITSIC_MENU_PRINTF(__VA_ARGS__) + HITSIC_MENU_PRINTF("\n"))
-#define MENU_BUTN_LOG_I(...)    (HITSIC_MENU_PRINTF("[I] MENU.BUTN: ") + HITSIC_MENU_PRINTF(__VA_ARGS__) + HITSIC_MENU_PRINTF("\n"))
-#define MENU_BUTN_LOG_D(...)    //(HITSIC_MENU_PRINTF("[D] MENU.BUTN: ") + HITSIC_MENU_PRINTF(__VA_ARGS__) + HITSIC_MENU_PRINTF("\n"))
-#define MENU_BUTN_LOG_V(...)    //(HITSIC_MENU_PRINTF("[V] MENU.BUTN: ") + HITSIC_MENU_PRINTF(__VA_ARGS__) + HITSIC_MENU_PRINTF("\n"))
 
 // @formatter:on
 
@@ -93,7 +71,7 @@ extern menu_keyOp_t menu_keyOpBuff;
 /**
  * @brief : 菜单项和菜单列表名称的最大长度为16个字符。用于定义缓存区大小。
  */
-#define menu_nameStrSize (16u)
+#define menu_nameStrSize (16u) //TODO: rename this
 
 /** string buffer size defnition */
 #define MENU_DISP_STRBUF_ROW (8u)
@@ -137,7 +115,7 @@ typedef enum
 /**
  * @brief : 菜单项所支持的内容类型。
  */
-typedef enum
+typedef enum : uint8_t
 {
     nullType, // null type
     variType, // watch or set integer varibles
@@ -211,8 +189,8 @@ typedef struct _menu_itemIfce_t
 {
     menu_itemType_t type;               ///< 此菜单项的类型。
     uint32_t pptFlag;                   ///< 此菜单项的属性标志位。
-    uint32_t list_id, unique_id;        ///< 此菜单项在本列表内的序号（从0开始）、全局唯一序号（从0开始）
-    uint32_t saveAddr;                  ///< 此菜单在本区域内的偏移地址。从0开始，以1步进。注意，全局数据区和局部数据区的地址分开来算。
+    uint16_t list_id, unique_id;        ///< 此菜单项在本列表内的序号（从0开始）、全局唯一序号（从0开始）
+    uint16_t saveAddr;                  ///< 此菜单在本区域内的偏移地址。从0开始，以1步进。注意，全局数据区和局部数据区的地址分开来算。
     char nameStr[menu_nameStrSize];     ///< 此菜单项的名称字符串。最大长度为menu_nameStrSize - 1 字节。
     union menu_itemIfce_handle_t        ///< 菜单项操作句柄的共用体。使用时根据此菜单项的类型调取对应项访问。
     {
