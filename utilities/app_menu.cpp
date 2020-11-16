@@ -216,7 +216,7 @@
 		}
 		if (*_op != 0)
 		{
-			MENU_LOG_W("KeyOp remained unclear. OP = %d", *_op);
+			SYSLOG_W("KeyOp remained unclear. OP = %d", *_op);
 		}
 		menu_statusFlag &= ~menu_message_buttonOp;
 		menu_statusFlag |= menu_message_printDisp;
@@ -583,23 +583,23 @@ extern "C"
 		{
 			menu_pitHandle->setEnable(false);
 			NVIC_DisableIRQ(HITSIC_MENU_SERVICE_IRQn);
-			MENU_LOG_I("Suspended.");
+			SYSLOG_I("Suspended.");
 		}
 		++menu_suspendCnt;
-		MENU_LOG_D("SuspendCnt = %d", menu_suspendCnt);
+		SYSLOG_D("SuspendCnt = %d", menu_suspendCnt);
 	}
 
 	void MENU_Resume(void)
 	{
 		assert(menu_pitHandle);
 		menu_suspendCnt = menu_suspendCnt == 0 ? menu_suspendCnt : menu_suspendCnt - 1;
-		MENU_LOG_D("SuspendCnt = %d", menu_suspendCnt);
+		SYSLOG_D("SuspendCnt = %d", menu_suspendCnt);
 		if (0U == menu_suspendCnt)
 		{
 			menu_statusFlag = 0;
 			menu_pitHandle->setEnable(true);
 			NVIC_EnableIRQ(HITSIC_MENU_SERVICE_IRQn);
-			MENU_LOG_I("Resumed.");
+			SYSLOG_I("Resumed.");
 		}
 	}
 
