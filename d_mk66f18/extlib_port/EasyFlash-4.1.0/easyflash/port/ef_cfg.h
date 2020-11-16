@@ -40,7 +40,7 @@
  */
 #define EF_ENV_VER_NUM              (0U)/* @note you must define it for a value, such as 0 */
 
-/* MCU Endian Configuration, default is Little Endian Order.
+/* MCU Endian Configuration, default is Little Endian Order. */
 /* #define EF_BIG_ENDIAN  */
 
 #endif /* EF_USING_ENV */
@@ -89,6 +89,6 @@
 #define LOG_AREA_SIZE               (4096u * 4u)/* @note you must define it for a value if you used log */
 
 /* print debug information of flash */
-//#define PRINT_DEBUG                 (PRINTF)
+//#define PRINT_DEBUG
 
 #endif /* EF_CFG_H_ */

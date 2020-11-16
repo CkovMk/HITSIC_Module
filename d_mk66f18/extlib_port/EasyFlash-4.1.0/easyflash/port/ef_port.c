@@ -40,6 +40,10 @@ static const ef_env default_env_set[] = {
     {"ef_status", &status, sizeof(int32_t)},
 };
 
+#define SYSLOG_TAG  ("EF_Port")
+#define SYSLOG_LVL  (3U)
+#include "inc_syslog.hpp"
+
 /**
  * Flash port for hardware initialize.
  *
@@ -75,11 +79,11 @@ EfErrCode ef_port_read(uint32_t addr, uint32_t *buf, size_t size)
     EF_ASSERT(size % (4) == 0);
 
     /* You can add your code under here. */
-    EF_DEBUG("Read Addr 0x%8.8x, Size %4.4d bytes\n", addr, size);
+    SYSLOG_V("Read Addr 0x%8.8x, Size %4.4d bytes", addr, size);
     if (kStatus_FTFx_Success != FLASH_AddressRead(addr, (uint8_t *)buf, size))
     {
         result = EF_READ_ERR;
-        EF_DEBUG("Read Failed !\n");
+        SYSLOG_E("Read Failed !\n");
     }
 
     return result;
@@ -107,11 +111,11 @@ EfErrCode ef_port_erase(uint32_t addr, size_t size)
     uint32_t sectorNum = size / EF_ERASE_MIN_SIZE;
     for (uint32_t i = 0; i < sectorNum; ++i)
     {
-        EF_DEBUG("Erase Addr 0x%8.8x, Size %4.4d bytes\n", addr, size);
+        SYSLOG_V("Erase Addr 0x%8.8x, Size %4.4d bytes", addr, size);
         if (kStatus_FTFx_Success != FLASH_SectorErase(addr / EF_ERASE_MIN_SIZE + i))
         {
             result = EF_ERASE_ERR;
-            EF_DEBUG("Erase Failed !\n");
+            SYSLOG_E("Erase Failed !\n");
         }
     }
 
@@ -136,11 +140,11 @@ EfErrCode ef_port_write(uint32_t addr, const uint32_t *buf, size_t size)
     if(0 == size){return result;}
 
     /* You can add your code under here. */
-    EF_DEBUG("Write Addr 0x%8.8x, Size %4.4d bytes\n", addr, size);
+    SYSLOG_V("Write Addr 0x%8.8x, Size %4.4d bytes\n", addr, size);
     if (kStatus_FTFx_Success != FLASH_AddressProgram(addr, (uint8_t *)buf, size))
     {
         result = EF_WRITE_ERR;
-        EF_DEBUG("Write Failed !\n");
+        SYSLOG_E("Write Failed !");
     }
 
     return result;
@@ -186,8 +190,9 @@ void ef_log_debug(const char *file, const long line, const char *format, ...)
     va_start(args, format);
 
     /* You can add your code under here. */
-    printf("[D] EasyFlash: ");
+    printf("[A] EasyFlash: ");
     vprintf(format, args);
+    printf(" file: %s, line: %d\n", file, line);
 
     va_end(args);
 
@@ -202,16 +207,18 @@ void ef_log_debug(const char *file, const long line, const char *format, ...)
  */
 void ef_log_info(const char *format, ...)
 {
+#if (SYSLOG_LVL >= 3U)
     va_list args;
 
     /* args point to the first variable parameter */
     va_start(args, format);
 
     /* You can add your code under here. */
-    printf("[I] EasyFlash: ");
+    printf("[I]EasyFlash: ");
     vprintf(format, args);
 
     va_end(args);
+#endif
 }
 /**
  * This function is print flash non-package info.
