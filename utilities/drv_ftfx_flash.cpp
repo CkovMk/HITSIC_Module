@@ -27,6 +27,10 @@
 
 #if defined(HITSIC_USE_FTFX_FLASH) && (HITSIC_USE_FTFX_FLASH > 0)
 
+#define SYSLOG_TAG  ("FTFX_FLASH")
+#define SYSLOG_LVL  (3U)
+#include "inc_syslog.hpp"
+
 #if defined(__cplusplus)
 extern "C" {
 #endif
@@ -44,7 +48,8 @@ extern "C" {
 
 	status_t FLASH_SimpleInit(void)
 	{
-	    PRINTF("\n[I] FTFX_FLASH: Init Begin.\n");
+	    SYSLOG_I("v%d.%d.%d Init Begin.",HITSIC_VERSION_MAJOR(DRV_FTFX_FLASH_VERSION),
+	            HITSIC_VERSION_MINOR(DRV_FTFX_FLASH_VERSION), HITSIC_VERSION_PATCH(DRV_FTFX_FLASH_VERSION));
 		/* Return code from each flash driver function */
 		status_t result;
 		flash_securityStatus = kFTFx_SecurityStateNotSecure;
@@ -64,9 +69,9 @@ extern "C" {
 		FLASH_GetProperty(&flash_config, kFLASH_PropertyPflash0SectorSize, &flash_sectorSize);
 
 		/* Print flash information - PFlash. */
-		FTFX_FLASH_LOG_D("Flash Information:");
-		FTFX_FLASH_LOG_D("Total Flash Size:\t%d KB, Hex: (0x%x)", (flash_totalSize / 1024), flash_totalSize);
-		FTFX_FLASH_LOG_D("Flash Sector Size:\t%d KB, Hex: (0x%x)", (flash_sectorSize / 1024), flash_sectorSize);
+		SYSLOG_D("Flash Information:");
+		SYSLOG_D("Flash Size:\t%d KB, Hex: (0x%x)", (flash_totalSize / 1024), flash_totalSize);
+		SYSLOG_D("Sector Size:\t%d KB, Hex: (0x%x)", (flash_sectorSize / 1024), flash_sectorSize);
 		/* Check security status. */
 		result = FLASH_GetSecurityState(&flash_config, &flash_securityStatus);
 
@@ -74,18 +79,18 @@ extern "C" {
 		switch (flash_securityStatus)
 		{
 		case kFTFx_SecurityStateNotSecure:
-			PRINTF("[D] FTFX_FLASH: Flash is UNSECURE!\n");
+		    SYSLOG_D("Flash is UNSECURE!");
 			break;
 		case kFTFx_SecurityStateBackdoorEnabled:
-			PRINTF("[D] FTFX_FLASH: Flash is SECURE, BACKDOOR is ENABLED!\n");
+		    SYSLOG_D("Flash is SECURE, BACKDOOR is ENABLED!");
 			break;
 		case kFTFx_SecurityStateBackdoorDisabled:
-			PRINTF("[D] FTFX_FLASH: Flash is SECURE, BACKDOOR is DISABLED!\n");
+		    SYSLOG_D("Flash is SECURE, BACKDOOR is DISABLED!");
 			break;
 		default:
 			break;
 		}
-		FTFX_FLASH_LOG_I("Init Complete.\n");
+		SYSLOG_I("Init Complete.");
 		return result;
 	}
 

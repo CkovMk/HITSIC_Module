@@ -9,6 +9,10 @@
 
 #if defined(HITSIC_USE_DISP_SSD1306) && (HITSIC_USE_DISP_SSD1306 > 0)
 
+#define SYSLOG_TAG  ("DISP_1306")
+#define SYSLOG_LVL  (3U)
+#include "inc_syslog.hpp"
+
 //#include "drv_disp_font.cpp"
 
 /*********************************************************************************************************************
@@ -54,6 +58,8 @@ void DISP_SSD1306_Fill(uint8_t bmp_data)
 
 void DISP_SSD1306_Init(void)
 {
+    SYSLOG_I("v%d.%d.%d Init Begin.",HITSIC_VERSION_MAJOR(DRV_DISP_SSD1306_VERSION),
+                HITSIC_VERSION_MINOR(DRV_DISP_SSD1306_VERSION), HITSIC_VERSION_PATCH(DRV_DISP_SSD1306_VERSION));
 	DISP_SSD1306_gpioSetRST(1);
 	DISP_SSD1306_delay_ms(1);
 	DISP_SSD1306_gpioSetRST(0);
@@ -68,13 +74,17 @@ void DISP_SSD1306_Init(void)
 	DISP_SSD1306_WriteCmd(0xcf); // Set SEG Output Current OLED_SSD1306_Brightness
 #if defined(HITSIC_DISP_SSD1306_FLIP_X) && (HITSIC_DISP_SSD1306_FLIP_X > 0)
 	DISP_SSD1306_WriteCmd(0xa0); //--Set SEG/Column Mapping     0xa0左右反置 0xa1正常
+	SYSLOG_D("X axis flipped.");
 #else // ! HITSIC_DISP_SSD1306_FLIP_X
 	DISP_SSD1306_WriteCmd(0xa1); //--Set SEG/Column Mapping     0xa0左右反置 0xa1正常
+	SYSLOG_D("X axis normal.");
 #endif// ! HITSIC_DISP_SSD1306_FLIP_X
 #if defined(HITSIC_DISP_SSD1306_FLIP_Y) && (HITSIC_DISP_SSD1306_FLIP_Y > 0)
 	DISP_SSD1306_WriteCmd(0xc0); //Set COM/Row Scan Direction   0xc0上下反置 0xc8正常
+	SYSLOG_D("Y axis flipped.");
 #else // ! HITSIC_DISP_SSD1306_FLIP_Y
 	DISP_SSD1306_WriteCmd(0xc8); //Set COM/Row Scan Direction   0xc0上下反置 0xc8正常
+	SYSLOG_D("Y axis normal.");
 #endif// ! HITSIC_DISP_SSD1306_FLIP_Y
 	DISP_SSD1306_WriteCmd(0xa6); //--set normal display
 	DISP_SSD1306_WriteCmd(0xa8); //--set multiplex ratio(1 to 64)
@@ -102,7 +112,12 @@ void DISP_SSD1306_Init(void)
 
 #if defined(HITSIC_DISP_SSD1306_DMA) && (HITSIC_DISP_SSD1306_DMA > 0U)
 	DISP_SSD1306_spiDmaInit();
+	SYSLOG_D("DMA API enabled.");
+#else
+	SYSLOG_D("DMA API disbled.");
 #endif // ! HITSIC_DISP_SSD1306_DMA
+
+	SYSLOG_I("v%d.%d.%d Init Comlpete.");
 }
 
 

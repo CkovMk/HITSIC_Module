@@ -38,13 +38,6 @@
 /** @brief : 软件版本 */
 #define DRV_FTFX_FLASH_VERSION (HITSIC_MAKE_VERSION(0U, 2U, 0U))
 
-#define FTFX_FLASH_LOG_A(...) (PRINTF("[A] MENU: ") + PRINTF(__VA_ARGS__) + PRINTF("\n"))
-#define FTFX_FLASH_LOG_E(...) (PRINTF("[E] MENU: ") + PRINTF(__VA_ARGS__) + PRINTF("\n"))
-#define FTFX_FLASH_LOG_W(...) (PRINTF("[W] MENU: ") + PRINTF(__VA_ARGS__) + PRINTF("\n"))
-#define FTFX_FLASH_LOG_I(...) (PRINTF("[I] MENU: ") + PRINTF(__VA_ARGS__) + PRINTF("\n"))
-#define FTFX_FLASH_LOG_D(...) //(PRINTF("[D] MENU: ") + PRINTF(__VA_ARGS__) + PRINTF("\n"))
-#define FTFX_FLASH_LOG_V(...) //(PRINTF("[V] MENU: ") + PRINTF(__VA_ARGS__) + PRINTF("\n"))
-
 #if defined(FSL_FEATURE_HAS_L1CACHE) && FSL_FEATURE_HAS_L1CACHE
 #include "fsl_cache.h"
 #endif

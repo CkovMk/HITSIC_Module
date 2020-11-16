@@ -7,6 +7,10 @@
  * @{
  */
 
+#define SYSLOG_TAG  ("ZF9V034")
+#define SYSLOG_LVL  (3U)
+#include "inc_syslog.hpp"
+
 uint16_t camera_version;
 
 void CAM_ZF9V034_GetDefaultConfig(cam_zf9v034_configPacket_t *config)
@@ -33,6 +37,7 @@ void CAM_ZF9V034_GetDefaultConfig(cam_zf9v034_configPacket_t *config)
 
 void CAM_ZF9V034_CfgWrite(const cam_zf9v034_configPacket_t *config)
 {
+    SYSLOG_I("Config write begin.");
 	uint8_t camera_uartTxBuf[8];
 	uint16_t* configData = (uint16_t*)config;
 	//CAM_ZF9V034_Delay_ms(200);        //等待摄像头上电初始化成功
@@ -46,17 +51,23 @@ void CAM_ZF9V034_CfgWrite(const cam_zf9v034_configPacket_t *config)
 		CAM_ZF9V034_UartTxBlocking(camera_uartTxBuf, 4);
 		CAM_ZF9V034_Delay_ms(2);
 	}
-
+	SYSLOG_D("Config write end. Waiting target ready.");
 	do {
+	    SYSLOG_D("Attempt to get response.");
 	    camera_uartTxBuf[0] = 0;
-		CAM_ZF9V034_UartRxBlocking(camera_uartTxBuf, 1);
+		if(kStatus_Success != CAM_ZF9V034_UartRxBlocking(camera_uartTxBuf, 1))
+		{
+		    SYSLOG_W("Failed to get response.");
+		}
 	} while ((0xff != camera_uartTxBuf[0]));//TODO: 增加次数限制
 	//以上部分对摄像头配置的数据全部都会保存在摄像头上51单片机的eeprom中
 	//利用camera_setEpTime函数单独配置的曝光数据不存储在eeprom中
+	SYSLOG_I("Config write complete.");
 }
 
 void CAM_ZF9V034_CfgRead(cam_zf9v034_configPacket_t *config)
 {
+    SYSLOG_I("Config Read begin.");
 	uint8_t camera_uartTxBuf[8];
 	uint16_t* configData = (uint16_t*)config;
 
@@ -71,6 +82,7 @@ void CAM_ZF9V034_CfgRead(cam_zf9v034_configPacket_t *config)
 		CAM_ZF9V034_UartRxBlocking(camera_uartTxBuf, 3);
 		configData[(i << 1) + 1] = camera_uartTxBuf[1] << 8 | camera_uartTxBuf[2];
 	}
+	SYSLOG_I("Config Read complete.");
 }
 
 //get camera hardware version
