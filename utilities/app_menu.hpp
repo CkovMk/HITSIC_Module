@@ -218,6 +218,25 @@ void MENU_Resume(void);
 
 
 
+namespace menu{
+
+class iterator : public std::iterator<std::forward_iterator_tag, menu_itemIfce_t>
+{
+private:
+
+public:
+    bool HasNext(void);
+
+};
+
+
+
+
+
+} // ! namespace menu
+
+
+
 #endif // ! HITSIC_USE_APP_MENU
 
 /*! @} */

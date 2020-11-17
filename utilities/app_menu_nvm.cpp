@@ -172,22 +172,78 @@ public:
 };
 
 template <typename kvdb_t>
-class databaseAdapter_t
+class kvdbManager_t//FIXME
 {
-    __PACKED struct allocateTableItem_t
+private:
+    static const char registryKey = "menu.registry";
+    // key: menu.reg
+    __PACKED struct registry_t
     {
-        uint16_t saveAddr;
+        uint16_t uid;
+        menu_itemType_t type;
+        uint8_t region;
+        uint16_t dataOffset;
         uint16_t dummy;
     };
 
     __PACKED struct storageItem_t
     {
-
         char nameStr[menu_nameStrSize];
-        menu_itemType_t dataType;
-        uint8_t dummy;
         uint32_t itemData;
     };
+
+    std::unique_ptr<registry_t> registry;
+    kvdb_t &kvdb;
+
+    void ConvertRegistry(registry_t *reg, const menu_itemIfce_t * const item)
+    {
+        reg->uid = item->saveAddr;
+        reg->type = item->type;
+        reg->region = menu_currRegionNum;
+    }
+    void ConvertDataKV(char *keyStr, uint16_t keyStrSize, storageItem_t *data, const menu_itemIfce_t * const item)
+    {
+        assert(keyStr);
+        assert(data);
+        assert(item);
+
+        int32_t regionNum = 9;
+        if(item->pptFlag | menuItem_data_global)
+            { regionNum = 9; }
+        if(item->pptFlag | menuItem_data_region)
+            { regionNum = menu_currRegionNum; }
+        else { assert(0); }
+        snprintf(keyStr, keyStrSize, "menu.item%4.4d%2.2d1.1d", item->saveAddr, item->type, regionNum);
+        memcpy(&data->nameStr, item->nameStr, menu_nameStrSize);
+        MENU_ItemGetData(item, &data->itemData);
+    }
+
+public:
+    kvdbManager_t(kvdb_t &_kvdb)
+        : kvdb(_kvdb)
+    {
+        registry = nullptr;
+    }
+
+    status_t Init(void)
+    {
+        uint32_t result= 0U;
+        result = kvdb.GetSize(registryKey);
+        if(0U == result)
+        {
+            SYSLOG_I("Registry not found. Creating new registry first.");
+        }
+        else
+        {
+            registry = new registry_t[result];
+        }
+    }
+
+    status_t SaveItem(const menu_itemIfce_t * const item)
+    {
+
+    }
+
 };
 
 
