@@ -64,13 +64,14 @@ uint32_t menu_nvm_eraseCnt = 0;
 status_t MENU_NvmRead(uint32_t _addr, void *_buf, uint32_t _byteCnt)
 {
     SYSLOG_V("Rx Addr = 0x%8.8x, Size = %4.4d", _addr, _byteCnt);
-    if (HITSIC_MENU_NVM_RETVAL_SUCCESS ==
-            HITSIC_MENU_NVM_AddressRead(_addr, _buf, _byteCnt))
+    uint32_t result = HITSIC_MENU_NVM_AddressRead(_addr, _buf, _byteCnt);
+    if (HITSIC_MENU_NVM_RETVAL_SUCCESS == result)
     {
         return kStatus_Success;
     }
     else
     {
+        SYSLOG_E("Read failed ! Err code: %d", result);
         return kStatus_Fail;
     }
 }
@@ -92,13 +93,13 @@ status_t MENU_NvmCacheSector(uint32_t _sect)
 {
     if (menu_nvm_cache != NULL)
     {
+        SYSLOG_E("Cached Sector %2.2d\n Failed ! [-Existing]", _sect);
         return kStatus_Fail;
     }
     menu_nvm_cache = (uint8_t *)malloc(flash_sectorSize);
     if (menu_nvm_cache == NULL)
     {
-        SYSLOG_E("Cached Sector %2.2d\n Failed! [-MemMalloc]",
-                menu_nvm_cachedSector);
+        SYSLOG_E("Cached Sector %2.2d\n Failed ! [-MemMalloc]", _sect);
         return kStatus_Fail;
     }
     if (HITSIC_MENU_NVM_RETVAL_SUCCESS !=
@@ -107,8 +108,7 @@ status_t MENU_NvmCacheSector(uint32_t _sect)
     {
         free(menu_nvm_cache);
         menu_nvm_cache = NULL;
-        SYSLOG_E("Cached Sector %2.2d\n Failed! [-FlashRead]",
-                menu_nvm_cachedSector);
+        SYSLOG_E("Cached Sector %2.2d\n Failed ! [-FlashRead]", _sect);
         return kStatus_Fail;
     }
     menu_nvm_cachedSector = _sect;
@@ -136,20 +136,20 @@ status_t MENU_NvmUpdateCache(void)
     if (HITSIC_MENU_NVM_RETVAL_SUCCESS !=
             HITSIC_MENU_NVM_SectorWrite(menu_nvm_cachedSector, menu_nvm_cache))
     {
+        SYSLOG_E("Update cache Failed ! [-FlashWrite]");
         return kStatus_Fail;
     }
     // void* readBuf = malloc(flash_sectorSize);
     // FLASH_SectorRead(menu_nvm_cachedSector, readBuf);
-    SYSLOG_V("Update Cached Sector %2.2d", menu_nvm_cachedSector);
     //		if(memcmp(readBuf, menu_nvm_cache, flash_sectorSize) != 0)
     //		{
     //			HITSIC_MENU_PRINTF("Warning: MENU: Nvm Update Cache Fail.\n");
     //		}
     //		free(readBuf);
     //		readBuf = NULL;
-
     free(menu_nvm_cache);
     menu_nvm_cache = NULL;
+    SYSLOG_V("Update Cached Sector %2.2d", menu_nvm_cachedSector);
     return kStatus_Success;
 }
 
