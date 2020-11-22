@@ -20,6 +20,7 @@
 
 #include "inc_stdlib.hpp"
 #include "hitsic_common.h"
+#include "app_menu_def.hpp"
 
 #if defined(HITSIC_USE_APP_MENU) && (HITSIC_USE_APP_MENU > 0)
 

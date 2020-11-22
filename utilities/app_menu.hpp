@@ -206,6 +206,12 @@ void MENU_SetNvmStatus(int32_t _status);
 void MENU_PitIsr(void* userData);
 
 /**
+ * @brief : 菜单事件处理函数。
+ *      在事件处理任务中调用此函数。
+ */
+void MENU_EventService(void);
+
+/**
  * @brief 挂起菜单。这将暂时禁用菜单的事件处理，包括按键输入和屏幕打印。
  *          注意：调用多次MENU_Suspend()将需要调用相同次数的MENU_Resume()才能将菜单恢复至运行状态。
  */

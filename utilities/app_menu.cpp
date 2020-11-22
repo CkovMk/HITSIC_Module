@@ -553,14 +553,8 @@
 		NVIC_SetPendingIRQ(HITSIC_MENU_SERVICE_IRQn);
 	}
 
-#ifdef __cplusplus
-extern "C"
-{
-#endif
-
-	void HITSIC_MENU_SERVICE_IRQHandler(void)
+	void MENU_EventService(void)
 	{
-		NVIC_ClearPendingIRQ(HITSIC_MENU_SERVICE_IRQn);
 		if (menu_statusFlag & menu_message_buttonOp)
 		{
 			//HITSIC_MENU_PRINTF("Verbose: MENU: Key %d pressed.\n", menu_keyOpBuff);
@@ -571,10 +565,6 @@ extern "C"
 			MENU_PrintDisp();
 		}
 	}
-
-#ifdef __cplusplus
-}
-#endif
 
 	void MENU_Suspend(void)
 	{

@@ -24,4 +24,21 @@ void MENU_FrameBufferUpdate(void)
 // nothing here.
 #endif // ! HITSIC_MENU_USE_FRAME_BUFFER
 
+void MENU_EventService(void);
+
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
+void HITSIC_MENU_SERVICE_IRQHandler(void)
+{
+    NVIC_ClearPendingIRQ(HITSIC_MENU_SERVICE_IRQn);
+    MENU_EventService();
+}
+
+#ifdef __cplusplus
+}
+#endif
+
 
