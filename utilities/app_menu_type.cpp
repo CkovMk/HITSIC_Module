@@ -8,7 +8,7 @@
  */
 
 #define SYSLOG_TAG  ("MENU.ITEM")
-#define SYSLOG_LVL  (HITSIC_MENU_TYPE_LOG_LVL)
+#define SYSLOG_LVL  (HITSIC_MENU_ITEM_LOG_LVL)
 #include "inc_syslog.hpp"
 
 /**
@@ -919,7 +919,7 @@ void MENU_ItemKeyOp(menu_itemIfce_t *_item, menu_keyOp_t *const _op)
 #undef SYSLOG_TAG
 #undef SYSLOG_LVL
 #define SYSLOG_TAG  ("MENU.LIST")
-#define SYSLOG_LVL  (HITSIC_MENU_TYPE_LOG_LVL)
+#define SYSLOG_LVL  (HITSIC_MENU_LIST_LOG_LVL)
 #include "inc_syslog.hpp"
 
 menu_list_t *MENU_ListConstruct(const char *_nameStr, uint32_t _size, menu_list_t *_prev)

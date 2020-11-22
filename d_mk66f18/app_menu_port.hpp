@@ -40,7 +40,8 @@
 #define HITSIC_MENU_MAIN_LOG_LVL    (5U)
 #define HITSIC_MENU_KVDB_LOG_LVL    (5U)
 #define HITSIC_MENU_BUTN_LOG_LVL    (5U)
-#define HITSIC_MENU_TYPE_LOG_LVL    (5U)
+#define HITSIC_MENU_ITEM_LOG_LVL    (5U)
+#define HITSIC_MENU_LIST_LOG_LVL    (5U)
 
 /**
  * @brief : 菜单调试输出语句定义。

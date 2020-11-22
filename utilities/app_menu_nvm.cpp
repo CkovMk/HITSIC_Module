@@ -153,37 +153,6 @@ status_t MENU_NvmUpdateCache(void)
     return kStatus_Success;
 }
 
-namespace menu{
-
-class kvdb_t
-{
-public:
-    status_t GetKeyData();
-    status_t SetKeyData();
-};
-
-template <typename kvdb_t>
-class databaseAdapter_t
-{
-    __PACKED struct allocateTableItem_t
-    {
-        uint16_t saveAddr;
-        uint16_t dummy;
-    };
-
-    __PACKED struct storageItem_t
-    {
-    
-        char nameStr[menu_nameStrSize];
-        menu_itemType_t dataType;
-        uint8_t dummy;
-        uint32_t itemData;
-    };
-};
-
-
-} // ! namespace menu
-
 /* @} */
 
 #endif // ! HITSIC_MENU_USE_NVM
