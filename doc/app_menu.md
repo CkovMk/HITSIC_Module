@@ -42,16 +42,25 @@ Flash读写驱动（FTFX_FLASH），可选，用于保存和读取菜单；
 
 ### v0.1.7
 
-~~by：CkovMk @hitsic 2020.11.14~~
+by：CkovMk @hitsic 2020.11.22
 
 **改动说明**
 
 - 新增全局状态标志位`menu_message_strBufOverride`（字符缓存超控标志位），支持菜单项直接打印帧缓存。
 - 新增函数`menu_list_t *MENU_DirGetList(const char *str);`和`menu_itemIfce_t *MENU_DirGetItem(const menu_list_t *dir, const char *str);`，用于按路径查找菜单列表和菜单项。
+- 适配SYSLOG。修改了MENU_PORT中的LOG打印接口。现在可以分别配置不同组件的LOG级别。
+- 删除了不必要的`extern "C {...}"`。
+- 新增路径查询API：`menu_list_t *MENU_DirGetList(const char *str);` 与`menu_itemIfce_t *MENU_DirGetItem(const menu_list_t *dir, const char *str);`，用于根据菜单结构（路径）查找菜单列表和菜单项。
 
 **开发计划**
 
+- C++化
+- 菜单项迭代器
+- 独立屏幕接口、独立存储接口
+
 **已知问题**
+
+- 暂无
 
 
 
@@ -1094,11 +1103,17 @@ by CkovMk @hitsic 2020.10.30
 
 
 
+### 编写交互式的可执行菜单项
+
+by CkovMk @hitsic 2020.11.22
+
+
+
 
 
 ## 移植指南
 
-### 顶层移配置
+### 顶层配置
 
 - MENU组件
 
@@ -1106,9 +1121,31 @@ by CkovMk @hitsic 2020.10.30
 
 - 调试输出
 
-  启用/禁用：由宏`HITSIC_MENU_PRINT_ENABLE`控制。
+  ```c++
+  /**
+   * @name 调试输出
+   * @ {
+   */
+  
+  /*! 核心逻辑 LOG级别定义 */
+  #define HITSIC_MENU_MAIN_LOG_LVL    (5U)
+  
+  /*! 数据存储 LOG级别定义 */
+  #define HITSIC_MENU_KVDB_LOG_LVL    (2U)
+  
+  /*! 按键处理 LOG级别定义 */
+  #define HITSIC_MENU_BUTN_LOG_LVL    (2U)
+  
+  /*! 菜单项目 LOG级别定义 */
+  #define HITSIC_MENU_ITEM_LOG_LVL    (3U)
+  
+  /*! 菜单列表 LOG级别定义 */
+  #define HITSIC_MENU_LIST_LOG_LVL    (3U)
+  
+  /* @ } */
+  ```
 
-  输出语句：由宏`HITSIC_MENU_PRINTF`配置。
+  值越小，输出内容越少。值为0时将仅输出断言（ASSERT）级别的严重错误。详见SYSLOG模组。
 
 - 根菜单最大容量
 
