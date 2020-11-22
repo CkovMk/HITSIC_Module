@@ -162,17 +162,11 @@ extern "C"
 }
 #endif
 
+#include "easyflash.h"
+
 namespace menu{
 
-class kvdb_t
-{
-public:
-    status_t GetKeyData();
-    status_t SetKeyData();
-};
-
-template <typename kvdb_t>
-class kvdbManager_t//FIXME
+class easyflashBackend_t//FIXME
 {
 private:
     static const char registryKey = "menu.registry";
@@ -182,45 +176,42 @@ private:
         uint16_t uid;
         menu_itemType_t type;
         uint8_t region;
-        uint16_t dataOffset;
-        uint16_t dummy;
+        char nameStr[menu_nameStrSize];
     };
 
-    __PACKED struct storageItem_t
-    {
-        char nameStr[menu_nameStrSize];
-        uint32_t itemData;
-    };
+//    __PACKED struct storageItem_t
+//    {
+//        uint32_t itemData;
+//    };
 
     std::unique_ptr<registry_t> registry;
-    kvdb_t &kvdb;
 
-    void ConvertRegistry(registry_t *reg, const menu_itemIfce_t * const item)
+    /**
+     * @brief 将菜单项转换为注册表项
+     *
+     * @param reg 注册表项
+     * @param item 要转换的菜单项
+     */
+    void ConvertRegistry(registry_t *reg, menu_itemIfce_t *item)
     {
         reg->uid = item->saveAddr;
         reg->type = item->type;
         reg->region = menu_currRegionNum;
+        memcpy(data->nameStr, item->nameStr, menu_nameStrSize);
     }
-    void ConvertDataKV(char *keyStr, uint16_t keyStrSize, storageItem_t *data, const menu_itemIfce_t * const item)
-    {
-        assert(keyStr);
-        assert(data);
-        assert(item);
 
-        int32_t regionNum = 9;
-        if(item->pptFlag | menuItem_data_global)
-            { regionNum = 9; }
-        if(item->pptFlag | menuItem_data_region)
-            { regionNum = menu_currRegionNum; }
-        else { assert(0); }
-        snprintf(keyStr, keyStrSize, "menu.item%4.4d%2.2d1.1d", item->saveAddr, item->type, regionNum);
-        memcpy(&data->nameStr, item->nameStr, menu_nameStrSize);
-        MENU_ItemGetData(item, &data->itemData);
+    bool MatchRegistry(registry_t *reg, menu_itemIfce_t *item)
+    {
+        bool result = true;
+        result = reg->uid == item->saveAddr;
+        result = reg->type == item->type;
+        result = reg->region == menu_currRegionNum;
+        result = memcmp(data->nameStr, item->nameStr, menu_nameStrSize);
+        return result;
     }
 
 public:
-    kvdbManager_t(kvdb_t &_kvdb)
-        : kvdb(_kvdb)
+    easyflashBackend_t(void)
     {
         registry = nullptr;
     }
@@ -228,18 +219,30 @@ public:
     status_t Init(void)
     {
         uint32_t result= 0U;
-        result = kvdb.GetSize(registryKey);
+        uint32_t size = 0U;
+        /** 获取注册表大小 */
+        result = ef_get_env_blob(registryKey, nullptr, 0, &size);
         if(0U == result)
         {
             SYSLOG_I("Registry not found. Creating new registry first.");
+            return kStatus_Fail;
         }
-        else
+        SYSLOG_I("Registry found. %6.6d byte(s), %4.4d item(s).", size, size / sizeof(registry_t));
+        registry = new registry_t[size / sizeof(registry_t)];
+        result = ef_get_env_blob(registryKey, (void*)registry, size, nullptr);
+        if(result != size)
         {
-            registry = new registry_t[result];
+            SYSLOG_W("Registry size error ! \"%s\" line %d.", __FILE__, __LINE__);
         }
+
     }
 
-    status_t SaveItem(const menu_itemIfce_t * const item)
+    status_t SaveItem(menu_itemIfce_t *item)
+    {
+
+    }
+
+    status_t LoadItem(menu_itemIfce_t *item)
     {
 
     }

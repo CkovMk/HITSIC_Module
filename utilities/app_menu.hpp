@@ -220,12 +220,15 @@ void MENU_Resume(void);
 
 namespace menu{
 
-class iterator : public std::iterator<std::forward_iterator_tag, menu_itemIfce_t>
+class iterator_t : public std::iterator<std::forward_iterator_tag, menu_itemIfce_t>
 {
 private:
 
 public:
     bool HasNext(void);
+
+    //operator *
+    //operator ++
 
 };
 

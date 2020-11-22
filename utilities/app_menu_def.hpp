@@ -254,8 +254,6 @@ typedef struct _menu_list_t
     uint32_t listSize, listNum; /// 当前菜单项指针列表的大小、当前列表内的菜单项数量。
     uint32_t disp_p, slct_p; /// 显示数组下标和选择数组下标。
     char nameStr[menu_nameStrSize]; /// 菜单列表名称字符串。
-                                    //_menu_list_t *prev;		    ///
-                                    //指向上级菜单的指针。根菜单中该指针指向自身。
 } menu_list_t;
 
 /**
@@ -308,6 +306,135 @@ typedef struct _menu_nvmData_t
 #ifdef __cplusplus
 }
 #endif
+
+namespace menu
+{
+
+const uint16_t nameStrSize; ///< 菜单项名称字符串的长度，16
+
+/**
+ * @brief : 按键操作宏定义。
+ *
+ */
+enum keyOpCode_t
+{
+    menuOpCode_nl = 0, ///< NULL
+    menuOpCode_ok = 1,
+    menuOpCode_up,
+    menuOpCode_dn,
+    menuOpCode_lf,
+    menuOpCode_rt,
+};
+enum keyOpType_t
+{
+    menuOpType_shrt = 1 << 8, menuOpType_long = 2 << 8, menuOpType_lrpt = 3 << 8,
+    menuOpType_disp = 4 << 8,
+};
+
+typedef uint32_t menu_keyOp_t;
+
+enum class event_t
+{
+    null,
+};
+
+
+/** @brief : 菜单项接口 */
+class item_t
+{
+public:
+    menu_itemType_t type;               ///< 此菜单项的类型。
+    uint32_t pptFlag;                   ///< 此菜单项的属性标志位。
+    uint16_t list_id, unique_id;        ///< 此菜单项在本列表内的序号（从0开始）、全局唯一序号（从0开始）
+    uint16_t saveAddr;                  ///< 此菜单在本区域内的偏移地址。从0开始，以1步进。注意，全局数据区和局部数据区的地址分开来算。
+    char nameStr[menu_nameStrSize];     ///< 此菜单项的名称字符串。最大长度为menu_nameStrSize - 1 字节。
+
+private:
+    item_t(void) = 0;
+    ~item_t(void) = 0;
+
+public:
+    virtual void GetData(void) = 0; //FIXME
+    virtual void SetData(void) = 0;
+
+    virtual void PrintSlot(uint32_t _slotNum) = 0;
+    virtual void DirectEvent(event_t _event) = 0;
+    virtual void PrintDisp(void) = 0;
+    virtual void SystemEvent(event_t _event) = 0;
+};
+
+/** @brief : 菜单列表 */
+class list_t
+{
+public:
+    std::list<item_t*> list; /// 菜单项指针的动态数组，用于存放指针。该数组内的指针析构时需要手动释放。
+    //uint32_t listSize, listNum; /// 当前菜单项指针列表的大小、当前列表内的菜单项数量。
+    std::list<menu_itemIfce_t*>::iterator disp_p, slct_p; /// 显示数组下标和选择数组下标。
+    char nameStr[nameStrSize]; /// 菜单列表名称字符串。
+
+    list_t(void);
+    ~list_t(void);
+
+    void Insert(item_t *_item);
+    void PrintDisp(void);
+    void SystemEvent(event_t _event);
+};
+
+/** @brief : 占位类型菜单项 */
+class item_null_t : public item_t
+{
+private:
+    void *data;
+public:
+};
+
+/** @brief : 整数类型菜单项 */
+class item_vari_t : public item_t
+{
+private:
+    int32_t *data;
+    int32_t bData;
+    int32_t v, e;
+    int32_t cur;
+public:
+};
+
+/** @brief : 浮点类型菜单项 */
+class item_varf_t : public item_t
+{
+private:
+    float *data;
+    float bData;
+    int32_t v, e;
+    int32_t cur;
+public:
+};
+
+/** @brief : 布尔类型菜单项 */
+class item_bool_t : public item_t
+{
+private:
+    bool *data;
+public:
+};
+
+/** @brief : 函数类型菜单项 */
+class item_proc_t : public item_t
+{
+private:
+    menu_itemProcHandler_t data;
+public:
+};
+
+/** @brief : 跳转类型菜单项 */
+class item_menu_t : public item_t
+{
+private:
+    menu_list_t *data;
+public:
+};
+
+}// ! namespace menu
 
 /* @} */
 
