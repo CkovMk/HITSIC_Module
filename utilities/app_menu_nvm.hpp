@@ -1,5 +1,5 @@
-#ifndef _APP_MENU_NVM_H_
-#define _APP_MENU_NVM_H_
+#ifndef UTILITIES_APP_MENU_NVM_HPP
+#define UTILITIES_APP_MENU_NVM_HPP
 
 #include "app_menu_def.hpp"
 
@@ -110,4 +110,4 @@ status_t MENU_NvmUpdateCache(void);
 
 #endif // ! HITSIC_MENU_USE_NVM
 
-#endif // ! _APP_MENU_NVM_H_
+#endif // ! UTILITIES_APP_MENU_NVM_HPP

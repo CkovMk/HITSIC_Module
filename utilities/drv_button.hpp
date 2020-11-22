@@ -25,8 +25,8 @@
                 依赖库必须先初始化。
  */
 
-#ifndef _DRV_BUTTON_H_
-#define _DRV_BUTTON_H_
+#ifndef UTILITIES_DRV_BUTTON_HPP
+#define UTILITIES_DRV_BUTTON_HPP
 #include "inc_stdlib.hpp"
 #include "hitsic_common.h"
 
@@ -99,4 +99,4 @@ extern "C"{
 
 #endif // ! HITSIC_USE_DRV_BUTTON
 
-#endif // ! _DRV_BUTTON_H_
+#endif // ! UTILITIES_DRV_BUTTON_HPP

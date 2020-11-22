@@ -1,5 +1,5 @@
-#ifndef _APP_MENU_DEF_H_
-#define _APP_MENU_DEF_H_
+#ifndef UTILITIES_APP_MENU_DEF_HPP
+#define UTILITIES_APP_MENU_DEF_HPP
 #include "inc_stdlib.hpp"
 #include "hitsic_common.h"
 
@@ -313,4 +313,4 @@ typedef struct _menu_nvmData_t
 
 #endif // ! HITSIC_USE_APP_MENU
 
-#endif // ! _APP_MENU_DEF_H_
+#endif // ! UTILITIES_APP_MENU_DEF_HPP

@@ -1,5 +1,5 @@
-#ifndef _APP_MENU_BUTTON_H_
-#define _APP_MENU_BUTTON_H_
+#ifndef UTILITIES_APP_MENU_BUTTON_HPP
+#define UTILITIES_APP_MENU_BUTTON_HPP
 
 #include "app_menu_def.hpp"
 
@@ -70,4 +70,4 @@ void MENU_ButtonCallback(button_t *_inst);
 
 #endif // ! HITSIC_MENU_USE_BUTTON
 
-#endif // ! _APP_MENU_BUTTON_H_
+#endif // ! UTILITIES_APP_MENU_BUTTON_HPP

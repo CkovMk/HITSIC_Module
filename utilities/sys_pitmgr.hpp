@@ -28,8 +28,8 @@
  */
 
 #pragma once
-#ifndef UTILITIES_SYS_PITMGR_HPP_
-#define UTILITIES_SYS_PITMGR_HPP_
+#ifndef UTILITIES_SYS_PITMGR_HPP
+#define UTILITIES_SYS_PITMGR_HPP
 #include "inc_stdlib.hpp"
 #include "hitsic_common.h"
 //#include "list"
@@ -141,4 +141,4 @@ private:
 
 #endif // ! HITSIC_USE_PITMGR
 
-#endif // ! UTILITIES_SYS_PITMGR_HPP_
+#endif // ! UTILITIES_SYS_PITMGR_HPP

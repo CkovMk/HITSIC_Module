@@ -30,8 +30,8 @@
  */
 
 #pragma once
-#ifndef _APP_MENU_H_
-#define _APP_MENU_H_
+#ifndef UTILITIES_APP_MENU_HPP
+#define UTILITIES_APP_MENU_HPP
 
 #include "app_menu_button.hpp"
 #include "app_menu_def.hpp"
@@ -222,4 +222,4 @@ void MENU_Resume(void);
 
 /*! @} */
 
-#endif // ! _APP_MENU_H_
+#endif // ! UTILITIES_APP_MENU_HPP

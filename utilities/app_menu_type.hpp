@@ -1,5 +1,5 @@
-#ifndef _APP_MENU_TYPE_H_
-#define _APP_MENU_TYPE_H_
+#ifndef UTILITIES_APP_MENU_TYPE_HPP
+#define UTILITIES_APP_MENU_TYPE_HPP
 
 #include "app_menu_button.hpp"
 #include "app_menu_def.hpp"
@@ -273,4 +273,4 @@ void MENU_ListKeyOp(menu_list_t *_list, menu_keyOp_t *const _op);
 
 #endif // ! HITSIC_USE_APP_MENU
 
-#endif // ! _APP_MENU_TYPE_H_
+#endif // ! UTILITIES_APP_MENU_TYPE_HPP
