@@ -10,11 +10,6 @@
  * @{
  */
 
-#ifdef __cplusplus
-extern "C"
-{
-#endif
-
 /**************************************
  ************ NVM存储常量定义 **********
  **************************************/
@@ -101,10 +96,6 @@ status_t MENU_NvmWriteCache(uint32_t _addr, void *_buf, uint32_t _byteCnt);
  * @return {status_t}       : 成功写回返回kStatus_Success。
  */
 status_t MENU_NvmUpdateCache(void);
-
-#ifdef __cplusplus
-}
-#endif
 
 /* @} */
 

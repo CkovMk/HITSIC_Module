@@ -25,10 +25,6 @@
 // test macro
 // MENU_BUTTON_DEF_EXT_ISR(1)
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 /**
  * ********** 按键操作定义 **********
  */
@@ -61,10 +57,6 @@ void MENU_ButtonPitIsr(void *userData);
  * @brief : 按键触发回调函数，无需外部调用。
  */
 void MENU_ButtonCallback(button_t *_inst);
-
-#ifdef __cplusplus
-}
-#endif
 
 /* @} */
 

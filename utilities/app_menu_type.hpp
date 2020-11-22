@@ -63,10 +63,6 @@
 //MENU_ITEM_CALL_FUNCTION(MENU_ItemConstruct, item, variType, &data);
 //MENU_ITEM_SWITCH_CASE(MENU_ItemKeyOp, item, &op);
 
-#ifdef __cplusplus
-extern "C"
-{
-#endif
 
 /** @brief : 占位类型菜单项操作函数。 */
 void MENU_ItemConstruct_nullType(menu_itemIfce_t *_item, void *_data);
@@ -265,9 +261,7 @@ void MENU_ListPrintDisp(menu_list_t *_list);
  */
 void MENU_ListKeyOp(menu_list_t *_list, menu_keyOp_t *const _op);
 
-#ifdef __cplusplus
-}
-#endif
+
 
 /* @} */
 
