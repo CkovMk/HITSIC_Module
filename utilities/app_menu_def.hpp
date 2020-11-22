@@ -15,28 +15,6 @@
 #include "lib_list.h"
 #include "sys_pitmgr.hpp"
 
-// @formatter:off
-#define MENU_ITEM_LOG_A(...)    (HITSIC_MENU_PRINTF("[A] MENU.ITEM: ") + HITSIC_MENU_PRINTF(__VA_ARGS__) + HITSIC_MENU_PRINTF("\n"))
-#define MENU_ITEM_LOG_E(...)    (HITSIC_MENU_PRINTF("[E] MENU.ITEM: ") + HITSIC_MENU_PRINTF(__VA_ARGS__) + HITSIC_MENU_PRINTF("\n"))
-#define MENU_ITEM_LOG_W(...)    (HITSIC_MENU_PRINTF("[W] MENU.ITEM: ") + HITSIC_MENU_PRINTF(__VA_ARGS__) + HITSIC_MENU_PRINTF("\n"))
-#define MENU_ITEM_LOG_I(...)    (HITSIC_MENU_PRINTF("[I] MENU.ITEM: ") + HITSIC_MENU_PRINTF(__VA_ARGS__) + HITSIC_MENU_PRINTF("\n"))
-#define MENU_ITEM_LOG_D(...)    //(HITSIC_MENU_PRINTF("[D] MENU.ITEM: ") + HITSIC_MENU_PRINTF(__VA_ARGS__) + HITSIC_MENU_PRINTF("\n"))
-#define MENU_ITEM_LOG_V(...)    //(HITSIC_MENU_PRINTF("[V] MENU.ITEM: ") + HITSIC_MENU_PRINTF(__VA_ARGS__) + HITSIC_MENU_PRINTF("\n"))
-
-#define MENU_LIST_LOG_A(...)    (HITSIC_MENU_PRINTF("[A] MENU.LIST: ") + HITSIC_MENU_PRINTF(__VA_ARGS__) + HITSIC_MENU_PRINTF("\n"))
-#define MENU_LIST_LOG_E(...)    (HITSIC_MENU_PRINTF("[E] MENU.LIST: ") + HITSIC_MENU_PRINTF(__VA_ARGS__) + HITSIC_MENU_PRINTF("\n"))
-#define MENU_LIST_LOG_W(...)    (HITSIC_MENU_PRINTF("[W] MENU.LIST: ") + HITSIC_MENU_PRINTF(__VA_ARGS__) + HITSIC_MENU_PRINTF("\n"))
-#define MENU_LIST_LOG_I(...)    (HITSIC_MENU_PRINTF("[I] MENU.LIST: ") + HITSIC_MENU_PRINTF(__VA_ARGS__) + HITSIC_MENU_PRINTF("\n"))
-#define MENU_LIST_LOG_D(...)    //(HITSIC_MENU_PRINTF("[D] MENU.LIST: ") + HITSIC_MENU_PRINTF(__VA_ARGS__) + HITSIC_MENU_PRINTF("\n"))
-#define MENU_LIST_LOG_V(...)    //(HITSIC_MENU_PRINTF("[V] MENU.LIST: ") + HITSIC_MENU_PRINTF(__VA_ARGS__) + HITSIC_MENU_PRINTF("\n"))
-
-// @formatter:on
-
-#ifdef __cplusplus
-extern "C"
-{
-#endif
-
 /**
  * BUTTON
  */
@@ -304,10 +282,6 @@ typedef struct _menu_nvmData_t
     uint32_t data;
     uint32_t tail;
 } menu_nvmData_t;
-
-#ifdef __cplusplus
-}
-#endif
 
 /* @} */
 
