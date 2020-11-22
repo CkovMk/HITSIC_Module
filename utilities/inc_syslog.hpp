@@ -1,3 +1,16 @@
+#ifdef UTILITIES_INC_SYSLOG_HPP
+
+#undef UTILITIES_INC_SYSLOG_HPP
+
+#undef SYSLOG_A(...)
+#undef SYSLOG_E(...)
+#undef SYSLOG_W(...)
+#undef SYSLOG_I(...)
+#undef SYSLOG_D(...)
+#undef SYSLOG_V(...)
+
+#endif // ! UTILITIES_INC_SYSLOG_HPP
+
 #ifndef UTILITIES_INC_SYSLOG_HPP
 #define UTILITIES_INC_SYSLOG_HPP
 
