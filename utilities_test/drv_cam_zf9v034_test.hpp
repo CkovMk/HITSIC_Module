@@ -19,32 +19,32 @@ inline void CAM_ZF9V034_UnitTestDmaCallback(edma_handle_t *handle, void *userDat
     if(kStatus_Success != result)
     {
         DMADVP_TransferStop(dmadvpHandle->base, dmadvpHandle);
-        PRINTF("transfer stop! insufficent buffer\n");
+        PRINTF("[E]DMADVP.TEST: transfer stop! insufficent buffer\n");
     }
 }
 
 inline void CAM_ZF9V034_UnitTest(void)
 {
-    PRINTF("\n---------- ZF9V034 Unit Test ----------\n\n");
+    PRINTF("---------- ZF9V034 Unit Test ----------\n\n");
 
     cam_zf9v034_configPacket_t cameraCfg;
     CAM_ZF9V034_GetDefaultConfig(&cameraCfg);
-    PRINTF("[D] ZF9V034: Writing config data.\n");
+    //PRINTF("[D] ZF9V034: Writing config data.\n");
     CAM_ZF9V034_CfgWrite(&cameraCfg);
     //CAM_ZF9V034_CfgRead(&cameraCfg);
 
     dmadvp_config_t dmadvpCfg;
-    PRINTF("[D] ZF9V034: Generating DMADVP config data.\n");
+    //PRINTF("[D] ZF9V034: Generating DMADVP config data.\n");
     CAM_ZF9V034_GetReceiverConfig(&dmadvpCfg, &cameraCfg);
 
-    PRINTF("[D] DMADVP: Initlize DMADVP0.\n");
+    //PRINTF("[D] DMADVP: Initlize DMADVP0.\n");
     DMADVP_Init(DMADVP0, &dmadvpCfg);
 
     dmadvp_handle_t dmadvpHandle;
-    PRINTF("[D] DMADVP: Creating handle.\n");
+    //PRINTF("[D] DMADVP: Creating handle.\n");
     DMADVP_TransferCreateHandle(&dmadvpHandle, DMADVP0, CAM_ZF9V034_UnitTestDmaCallback);
 
-    PRINTF("[D] DMADVP: Allocating image buffer.\n");
+    PRINTF("[D]DMADVP.TEST: Allocating image buffer.\n");
     uint8_t *imageBuffer0 = new uint8_t[DMADVP0->imgSize];
     uint8_t *imageBuffer1 = new uint8_t[DMADVP0->imgSize];
     uint8_t *fullBuffer = NULL;
@@ -54,9 +54,9 @@ inline void CAM_ZF9V034_UnitTest(void)
     DMADVP_TransferSubmitEmptyBuffer(DMADVP0, &dmadvpHandle, imageBuffer0);
     DMADVP_TransferSubmitEmptyBuffer(DMADVP0, &dmadvpHandle, imageBuffer1);
     DMADVP_TransferStart(DMADVP0, &dmadvpHandle);
-    PRINTF("[D] DMADVP: Begin time: %d ms.\n", pitMgr_t::timer_ms);
+    PRINTF("[D]DMADVP.TEST: Begin time: %d ms.\n", pitMgr_t::timer_ms);
     for(int time = 0; time < 512; ++time){
-    PRINTF("[D] DMADVP: Transfer %4.4d.\n", time);
+    PRINTF("[D]DMADVP.TEST: Transfer %4.4d.\n", time);
     while(kStatus_Success != DMADVP_TransferGetFullBuffer(DMADVP0, &dmadvpHandle, &fullBuffer));
 
     //memset((void*)dispBuffer, 0x00, 8 * 128);
@@ -79,15 +79,15 @@ inline void CAM_ZF9V034_UnitTest(void)
     DISP_SSD1306_BufferUpload((uint8_t*)dispBuffer);
     }
     DMADVP_TransferStop(DMADVP0, &dmadvpHandle);
-    PRINTF("[D] DMADVP: End time: %d ms.\n", pitMgr_t::timer_ms);
+    PRINTF("[D]DMADVP.TEST: End time: %d ms.\n", pitMgr_t::timer_ms);
 
 
 
-    PRINTF("[D] DMADVP: Transfer Stop. Cleaning up.\n");
+    PRINTF("[D]DMADVP.TEST: Transfer Stop. Cleaning up.\n");
     delete[] imageBuffer0;
     delete[] imageBuffer1;
     delete[] dispBuffer;
-    PRINTF("\n---------- ZF9V034 Test Done ----------\n\n");
+    PRINTF("---------- ZF9V034 Test Done ----------\n\n");
 }
 
 #endif // ! HITSIC_USE_DMADVP
