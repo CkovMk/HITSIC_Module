@@ -19,6 +19,7 @@ HITSIC_Module是哈工大智能车创新俱乐部各MCU平台共用的程序模�
 | **INC / 包含**                          |                                                           |
 | HITSIC_COMMON | 设备公共包含头文件。 |
 | INC_STDLIB                              | 包含了大多数C/C++标准库、位操作宏定义，禁用了不安全函数。 |
+| [INC_SYSLOG](doc/inc_syslog.md) | 简易日志库。 |
 | **SYS / 系统**                          |                                                           |
 | [EXTINT](doc/sys_extint.md)             | 外部中断管理器组件                                        |
 | [PITMGR](doc/sys_pitmgr.md)             | 定时中断管理器组件                                        |
