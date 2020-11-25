@@ -8,14 +8,14 @@
  */
 
 #define SYSLOG_TAG  ("DMADVP")
-#define SYSLOG_LVL  (3U)
+#define SYSLOG_LVL  (HITSIC_DMADVP_LOG_LVL)
 #include "inc_syslog.hpp"
 
 static dmadvp_handle_t *dmadvp_handleList[DMADVP_CNT];
 
 status_t DMADVP_Init(DMADVP_Type *base, const dmadvp_config_t *config)
 {
-    SYSLOG_I("DMADVP v%d.%d.%d init begin.", HITSIC_VERSION_MAJOR(DRV_DMADVP_VERSION),
+    SYSLOG_I("Init begin. v%d.%d.%d", HITSIC_VERSION_MAJOR(DRV_DMADVP_VERSION),
             HITSIC_VERSION_MINOR(DRV_DMADVP_VERSION), HITSIC_VERSION_PATCH(DRV_DMADVP_VERSION));
     assert(base);
     assert(config);
@@ -107,7 +107,7 @@ status_t DMADVP_TransferGetFullBuffer(DMADVP_Type *base,
 {
     if (handle->fullBuffer.empty())
     {
-        SYSLOG_W("No full buffer to get !");
+        SYSLOG_D("No full buffer to get !");
         return kStatus_DMADVP_NoFullBuffer;
     }
     *buffer = handle->fullBuffer.front();
@@ -121,7 +121,7 @@ status_t DMADVP_TransferStart(DMADVP_Type *base, dmadvp_handle_t *handle)
     SYSLOG_V("Try to start transfer.");
     if (handle->emptyBuffer.empty())
     {
-        SYSLOG_W("No empty buffer to use !");
+        SYSLOG_D("No empty buffer to use !");
         return kStatus_DMADVP_NoEmptyBuffer;
     }
     status_t result = 0;

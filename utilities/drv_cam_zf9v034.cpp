@@ -8,13 +8,14 @@
  */
 
 #define SYSLOG_TAG  ("ZF9V034")
-#define SYSLOG_LVL  (3U)
+#define SYSLOG_LVL  (HITSIC_ZF9V034_LOG_LVL)
 #include "inc_syslog.hpp"
 
 uint16_t camera_version;
 
 void CAM_ZF9V034_GetDefaultConfig(cam_zf9v034_configPacket_t *config)
 {
+    SYSLOG_I("Generate ZF9V034 config data.");
 	config->autoExpSetCmd = (uint16_t)cam_zf9v034_cmd_t::AUTO_EXP;
 	config->autoExpSet = 0;
     config->autoExpTimeCmd = (uint16_t)cam_zf9v034_cmd_t::EXP_TIME;
@@ -51,7 +52,7 @@ void CAM_ZF9V034_CfgWrite(const cam_zf9v034_configPacket_t *config)
 		CAM_ZF9V034_UartTxBlocking(camera_uartTxBuf, 4);
 		CAM_ZF9V034_Delay_ms(2);
 	}
-	SYSLOG_D("Config write end. Waiting target ready.");
+	SYSLOG_I("Config write end. Waiting target ready.");
 	do {
 	    SYSLOG_D("Attempt to get response.");
 	    camera_uartTxBuf[0] = 0;
@@ -121,6 +122,7 @@ uint16_t CAM_ZF9V034_SetExposeTime(uint16_t light)
 #if (defined(ZF9V034_USE_DMADVP) && (ZF9V034_USE_DMADVP > 0U))
 void CAM_ZF9V034_GetReceiverConfig(receiver_config_type *config, const cam_zf9v034_configPacket_t *camConfig)
 {
+    SYSLOG_I("Generate DMADVP config data.");
 	config->width = camConfig->imageCol;
 	config->height = camConfig->imageRow;
 	config->bytesPerPixel = 1U;

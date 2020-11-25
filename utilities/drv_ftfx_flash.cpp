@@ -48,7 +48,7 @@ extern "C" {
 
 	status_t FLASH_SimpleInit(void)
 	{
-	    SYSLOG_I("v%d.%d.%d Init Begin.",HITSIC_VERSION_MAJOR(DRV_FTFX_FLASH_VERSION),
+	    SYSLOG_I("Init Begin. v%d.%d.%d",HITSIC_VERSION_MAJOR(DRV_FTFX_FLASH_VERSION),
 	            HITSIC_VERSION_MINOR(DRV_FTFX_FLASH_VERSION), HITSIC_VERSION_PATCH(DRV_FTFX_FLASH_VERSION));
 		/* Return code from each flash driver function */
 		status_t result;

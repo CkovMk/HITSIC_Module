@@ -58,7 +58,7 @@ void DISP_SSD1306_Fill(uint8_t bmp_data)
 
 void DISP_SSD1306_Init(void)
 {
-    SYSLOG_I("v%d.%d.%d Init Begin.",HITSIC_VERSION_MAJOR(DRV_DISP_SSD1306_VERSION),
+    SYSLOG_I("Init Begin. v%d.%d.%d",HITSIC_VERSION_MAJOR(DRV_DISP_SSD1306_VERSION),
                 HITSIC_VERSION_MINOR(DRV_DISP_SSD1306_VERSION), HITSIC_VERSION_PATCH(DRV_DISP_SSD1306_VERSION));
 	DISP_SSD1306_gpioSetRST(1);
 	DISP_SSD1306_delay_ms(1);
@@ -117,7 +117,7 @@ void DISP_SSD1306_Init(void)
 	SYSLOG_D("DMA API disbled.");
 #endif // ! HITSIC_DISP_SSD1306_DMA
 
-	SYSLOG_I("v%d.%d.%d Init Comlpete.");
+	SYSLOG_I("Init Comlpete.");
 }
 
 
