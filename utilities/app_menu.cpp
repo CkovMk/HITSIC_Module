@@ -471,7 +471,7 @@
 	void MENU_Data_NvmSaveRegionConfig(void)
 	{
 		menu_nvmData_t dataBuf;
-		const char itemNameStr[] = {'/','R','e','g','n','S','e','l','(','0','-',('0' + HITSIC_MENU_NVM_REGION_CNT - 1),')','\0'};
+		const char itemNameStr[] = {'R','e','g','n','S','e','l','(','0','-',('0' + HITSIC_MENU_NVM_REGION_CNT - 1),')','\0'};
 		menu_itemIfce_t *thisItem = MENU_DirGetItem(MENU_DirGetList("/MenuManager"), itemNameStr);
 		MENU_ItemGetData(thisItem, &dataBuf);
 		uint32_t realAddr = menu_nvm_glAddrOffset + thisItem->saveAddr * sizeof(menu_nvmData_t);
@@ -492,7 +492,7 @@
 	void MENU_Data_NvmReadRegionConfig(void)
 	{
 		menu_nvmData_t dataBuf;
-		const char itemNameStr[] = {'/','R','e','g','n','S','e','l','(','0','-',('0' + HITSIC_MENU_NVM_REGION_CNT - 1),')','\0'};
+		const char itemNameStr[] = {'R','e','g','n','S','e','l','(','0','-',('0' + HITSIC_MENU_NVM_REGION_CNT - 1),')','\0'};
 		menu_itemIfce_t *thisItem = MENU_DirGetItem(MENU_DirGetList("/MenuManager"), itemNameStr);
 		uint32_t realAddr = menu_nvm_glAddrOffset + thisItem->saveAddr * sizeof(menu_nvmData_t);
 		MENU_NvmRead(realAddr, &dataBuf, sizeof(menu_nvmData_t));
