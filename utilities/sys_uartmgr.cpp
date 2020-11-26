@@ -49,7 +49,7 @@ void uartMgr_t::defaultCallback(UART_Type* base, uart_handle_t* handle, status_t
 		break;
 	default:
 #ifdef DEBUG
-		throw std::runtime_error(std::string("uart tx/rx interrupt xfer error."));
+		//throw std::runtime_error(std::string("uart tx/rx interrupt xfer error."));
 #endif
 		break;
 	}
@@ -90,7 +90,7 @@ status_t uartMgr_t::tpModeSetup(uint8_t* dataBuf, tpDataHandler_t handler)
 #ifdef DEBUG
 	if (dataBuf == NULL || handler == NULL)
 	{
-		throw std::invalid_argument(std::string("tpModeSetup pointer invalid."));
+		//throw std::invalid_argument(std::string("tpModeSetup pointer invalid."));
 	}
 #endif
 	pptFlag |= tp_enable;
@@ -129,7 +129,7 @@ void uartMgr_t::tp_defaultcallback(UART_Type* base, uart_handle_t* handle, statu
 			break;
 		default:
 	#ifdef DEBUG
-			throw std::runtime_error(std::string("uart tp tx/rx interrupt xfer error."));
+			//throw std::runtime_error(std::string("uart tp tx/rx interrupt xfer error."));
 	#endif
 			break;
 		}
@@ -137,7 +137,7 @@ void uartMgr_t::tp_defaultcallback(UART_Type* base, uart_handle_t* handle, statu
 	if (status != kStatus_Success)
 	{
 #ifdef DEBUG
-		throw std::runtime_error(std::string("tp uart rx interrupt xfer error."));
+		//throw std::runtime_error(std::string("tp uart rx interrupt xfer error."));
 #endif
 		return;
 	}
@@ -149,7 +149,7 @@ void uartMgr_t::tp_txIntr(uint8_t* data, uint32_t size)
 	if (!(pptFlag & tp_enable))
 	{
 #ifdef DEBUG
-		throw std::runtime_error(std::string("illegal use of transfer-protocal."));
+		//throw std::runtime_error(std::string("illegal use of transfer-protocal."));
 #endif
 		return;
 
@@ -157,7 +157,7 @@ void uartMgr_t::tp_txIntr(uint8_t* data, uint32_t size)
 		if (size > 255)
 		{
 #ifdef DEBUG
-			throw std::invalid_argument(std::string("tp tx dataSize out of range."));
+			//throw std::invalid_argument(std::string("tp tx dataSize out of range."));
 #endif
 			return;
 		}

@@ -73,7 +73,7 @@ void pitMgr_t::setup(uint32_t _ms, uint32_t _mso, handler_t _handler,
 #ifdef DEBUG
 	if (_mso >= _ms || _handler == NULL)
 	{
-		throw std::invalid_argument(std::string("pitMgr_t setup failure.\n"));
+		//throw std::invalid_argument(std::string("pitMgr_t setup failure.\n"));
 		return;
 	}
 #else

@@ -56,7 +56,7 @@ public:
 
 		default:
 #ifdef DEBUG
-			throw std::invalid_argument("Unspecified UART Port!");
+			//throw std::invalid_argument("Unspecified UART Port!");
 #else
 
 #endif // ! DEBUG

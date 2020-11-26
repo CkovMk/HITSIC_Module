@@ -68,7 +68,7 @@ void extInt_t::setup(INTC_Type *_gpio, uint32_t _pin, handler_t _handler)
 #ifdef DEBUG
     if (_handler == NULL)
     {
-        throw std::invalid_argument(std::string("extInt_t setup failure.\n"));
+        //throw std::invalid_argument(std::string("extInt_t setup failure.\n"));
         return;
     }
 #else
