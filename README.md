@@ -10,8 +10,6 @@ HITSIC_Module是哈工大智能车创新俱乐部各MCU平台共用的程序模�
 
 ## 2. 文档
 
-
-
 ### 2.1. 内部组件文档
 
 | 模块名                                  | 说明                                                      |
@@ -94,8 +92,6 @@ git submodule add https://github.com/CkovMk/HITSIC_Module /HITSIC_Module
 > 移植指南
 
 如何移植该组件到其他MCU平台。
-
-
 
 
 

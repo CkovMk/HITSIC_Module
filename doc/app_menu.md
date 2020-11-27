@@ -52,6 +52,7 @@ by：CkovMk @hitsic 2020.11.22
 - 删除了不必要的`extern "C {...}"`。
 - 新增路径查询API：`menu_list_t *MENU_DirGetList(const char *str);` 与`menu_itemIfce_t *MENU_DirGetItem(const menu_list_t *dir, const char *str);`，用于根据菜单结构（路径）查找菜单列表和菜单项。
 - 事件处理接口移至`app_menu_port.cpp`中。
+- 修复了菜单读取和保存时的内存泄漏问题。
 
 **开发计划**
 
