@@ -1,5 +1,5 @@
-#ifndef _APP_MENU_NVM_H_
-#define _APP_MENU_NVM_H_
+#ifndef UTILITIES_APP_MENU_NVM_HPP
+#define UTILITIES_APP_MENU_NVM_HPP
 
 #include "app_menu_def.hpp"
 
@@ -9,11 +9,6 @@
  * @addtogroup menu_nvm
  * @{
  */
-
-#ifdef __cplusplus
-extern "C"
-{
-#endif
 
 /**************************************
  ************ NVM存储常量定义 **********
@@ -102,12 +97,8 @@ status_t MENU_NvmWriteCache(uint32_t _addr, void *_buf, uint32_t _byteCnt);
  */
 status_t MENU_NvmUpdateCache(void);
 
-#ifdef __cplusplus
-}
-#endif
-
 /* @} */
 
 #endif // ! HITSIC_MENU_USE_NVM
 
-#endif // ! _APP_MENU_NVM_H_
+#endif // ! UTILITIES_APP_MENU_NVM_HPP

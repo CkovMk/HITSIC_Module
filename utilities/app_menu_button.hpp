@@ -1,5 +1,5 @@
-#ifndef _APP_MENU_BUTTON_H_
-#define _APP_MENU_BUTTON_H_
+#ifndef UTILITIES_APP_MENU_BUTTON_HPP
+#define UTILITIES_APP_MENU_BUTTON_HPP
 
 #include "app_menu_def.hpp"
 
@@ -24,10 +24,6 @@
 
 // test macro
 // MENU_BUTTON_DEF_EXT_ISR(1)
-
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 /**
  * ********** 按键操作定义 **********
@@ -62,12 +58,8 @@ void MENU_ButtonPitIsr(void *userData);
  */
 void MENU_ButtonCallback(button_t *_inst);
 
-#ifdef __cplusplus
-}
-#endif
-
 /* @} */
 
 #endif // ! HITSIC_MENU_USE_BUTTON
 
-#endif // ! _APP_MENU_BUTTON_H_
+#endif // ! UTILITIES_APP_MENU_BUTTON_HPP

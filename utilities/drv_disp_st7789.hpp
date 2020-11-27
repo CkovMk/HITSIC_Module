@@ -1,6 +1,6 @@
 #pragma once
-#ifndef _DRV_ST7789_HPP_
-#define _DRV_ST7789_HPP_
+#ifndef UTILITIES_DRV_DISP_ST7789_HPP
+#define UTILITIES_DRV_DISP_ST7789_HPP
 
 #include "hitsic_common.h"
 #include "sys_pitmgr.hpp"
@@ -55,4 +55,4 @@ private:
 
 #endif // ! HITSIC_USE_DISP_ST7789
 
-#endif // ! _DRV_ST7789_HPP_
+#endif // ! UTILITIES_DRV_DISP_ST7789_HPP

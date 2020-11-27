@@ -24,8 +24,8 @@
  * @brief   :   PID控制算法
  */
 
-#ifndef _LIB_PIDCTRL_H_
-#define _LIB_PIDCTRL_H_
+#ifndef UTILITIES_LIB_PIDCTRL_H
+#define UTILITIES_LIB_PIDCTRL_H
 
 #include "inc_stdlib.hpp"
 #include "hitsic_common.h"
@@ -192,4 +192,4 @@ float PID2CTRL_UpdateByDiffeAndCalcPID(pid2Ctrl_t *_pid, float _diff);
 
 /* @} */
 
-#endif // ! _LIB_PIDCTRL_H_
+#endif // ! UTILITIES_LIB_PIDCTRL_H

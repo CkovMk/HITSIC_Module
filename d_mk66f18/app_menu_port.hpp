@@ -20,6 +20,7 @@
 
 #include "inc_stdlib.hpp"
 #include "hitsic_common.h"
+#include "app_menu_def.hpp"
 
 #if defined(HITSIC_USE_APP_MENU) && (HITSIC_USE_APP_MENU > 0)
 
@@ -28,23 +29,20 @@
  * @ {
  */
 
-/**
- * @brief : 菜单调试输出开关
- * 编译选项为release时无效。
- */
-#define HITSIC_MENU_PRINT_ENABLE (1u)
-#define HITSIC_MENU_PRINT_VERBOSE_ENABLE (1u)
-#define HITSIC_MENU_PRINT_WARNING_ENABLE (1u)
+/*! 核心逻辑 LOG级别定义 */
+#define HITSIC_MENU_MAIN_LOG_LVL    (3U)
 
-/**
- * @brief : 菜单调试输出语句定义。
- * 编译选项为release时始终为空。
- */
-#if defined(DEBUG) && defined(HITSIC_MENU_PRINT_ENABLE) && (HITSIC_MENU_PRINT_ENABLE != 0u)
-#define HITSIC_MENU_PRINTF(...) (PRINTF(__VA_ARGS__))
-#else
-#define HITSIC_MENU_PRINTF(...) (0)
-#endif // ! DEBUG
+/*! 数据存储 LOG级别定义 */
+#define HITSIC_MENU_KVDB_LOG_LVL    (3U)
+
+/*! 按键处理 LOG级别定义 */
+#define HITSIC_MENU_BUTN_LOG_LVL    (3U)
+
+/*! 菜单项目 LOG级别定义 */
+#define HITSIC_MENU_ITEM_LOG_LVL    (3U)
+
+/*! 菜单列表 LOG级别定义 */
+#define HITSIC_MENU_LIST_LOG_LVL    (3U)
 
 /* @ } */
 
@@ -195,7 +193,7 @@ void MENU_FrameBufferUpdate(void);
 /**
  * @brief : 局部存储 Region Storage
  */
-#define HITSIC_MENU_NVM_REGION_CNT (3u) 					///< 局部存储区的数量
+#define HITSIC_MENU_NVM_REGION_CNT (3) 					///< 局部存储区的数量
 #define HITSIC_MENU_NVM_REGION_SECT_SIZE  (4u)				///< 每个局部存储区占用的扇区数
 
 #define HITSIC_MENU_NVM_AddressRead(addr, buf, byteCnt)		FLASH_AddressRead(addr, buf, byteCnt)	///< 读指定地址。必须返回表示操作是否成功的值。

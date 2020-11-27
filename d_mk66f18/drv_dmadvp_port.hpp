@@ -11,6 +11,8 @@
  * @{
  */
 
+#define HITSIC_DMADVP_LOG_LVL  (3U)
+
 #define kStatusGroup_DMADVP (200U)
 
 struct DMADVP_Type

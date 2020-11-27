@@ -1,5 +1,5 @@
-#ifndef _LIB_ADRCCTRL_H_
-#define _LIB_ADRCCTRL_H_
+#ifndef UTILITIES_LIB_ADRCCTRL_H
+#define UTILITIES_LIB_ADRCCTRL_H
 
 
 #include "inc_stdlib.hpp"
@@ -89,6 +89,6 @@ float ADRCCTRL_Nlsef(adrc_nlsef_t* nlsef_t, float e1, float e2);
 
 
 
-#endif // ! _LIB_ADRCCTRL_H_
+#endif // ! UTILITIES_LIB_ADRCCTRL_H
 
 

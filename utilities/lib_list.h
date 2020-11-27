@@ -34,8 +34,8 @@
 ***************************************************************************************************************************/
 
 #pragma once
-#ifndef LIB_LIST_H
-#define LIB_LIST_H
+#ifndef UTILITIES_LIB_LIST_H
+#define UTILITIES_LIB_LIST_H
 #include "inc_stdlib.hpp"
 #include "hitsic_common.h"
 
@@ -223,4 +223,4 @@ list_node_t* List_ItEnd(list_t *p);
 
 /* @} */
 
-#endif //LIB_LIST_H
+#endif //UTILITIES_LIB_LIST_H

@@ -15,6 +15,24 @@ inline void MENU_SuspendAndResumeTest(void)
     }
 }
 
+inline void MENU_ExampleProcHandler1(menu_keyOp_t *const _op)
+{
+    extern disp_ssd1306_frameBuffer_t dispBuffer;
+
+    if(MENU_BUTTON_MAKE_OP(nl, disp) == *_op)
+    {
+        menu_statusFlag |= menu_message_strBufOverride;
+        for(uint16_t i = 10; i < 20; ++i)
+        {
+            for(uint16_t j = 10; j < 20; ++j)
+            {
+                dispBuffer.SetPixelColor(i, j, true);
+            }
+        }
+        *_op = 0U;
+    }
+}
+
 inline void MENU_DataSetupTest(menu_list_t* menu)
 {
         static int32_t region_i = 4096, global_i = 1024, readonly_i = 1998;
@@ -35,6 +53,7 @@ inline void MENU_DataSetupTest(menu_list_t* menu)
             MENU_ListInsert(testList, MENU_ItemConstruct(variType, &forceSciData, "forceSci", 0, menuItem_data_ROFlag | menuItem_data_NoSave | menuItem_data_NoLoad | menuItem_disp_forceSci));
 
         }
+        MENU_ListInsert(menu, MENU_ItemConstruct(procType, (void*)MENU_ExampleProcHandler1, "StrBufOvrd", 0, menuItem_proc_uiDisplay));
 }
 
 #endif // ! UTILITIES_TEST_APP_MENU_TEST_HPP

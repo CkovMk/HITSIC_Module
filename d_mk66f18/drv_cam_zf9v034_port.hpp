@@ -4,7 +4,13 @@
 #include "hitsic_common.h"
 
 #if (defined(HITSIC_USE_CAM_ZF9V034) && (HITSIC_USE_CAM_ZF9V034 > 0))
-#include "drv_cam_zf9v034_port.hpp"
+
+/*!
+ * @addtogroup cam_zf9v034
+ * @{
+ */
+
+#define HITSIC_ZF9V034_LOG_LVL  (3U)
 
 #define ZF9V034_UART_INST (UART3)
 
@@ -52,6 +58,8 @@ inline void CAM_ZF9V034_Delay_ms(uint32_t ms)
 #ifndef ZF9V034_USE_RTCSI
 #define ZF9V034_USE_RTCSI (0U)
 #endif // ! ZF9V034_USE_RTCSI
+
+/* @} */
 
 #endif // ! HITSIC_USE_CAM_ZF9V034
 

@@ -28,8 +28,8 @@
  */
 
 #pragma once
-#ifndef _DRV_FTFX_FLASH_H_
-#define _DRV_FTFX_FLASH_H_
+#ifndef UTILITIES_DRV_FTFX_FLASH_HPP
+#define UTILITIES_DRV_FTFX_FLASH_HPP
 #include "inc_stdlib.hpp"
 #include "hitsic_common.h"
 
@@ -210,4 +210,4 @@ extern "C" {
 
 #endif // ! HITSIC_USE_FTFX_FLASH
 
-#endif // ! _DRV_FTFX_FLASH_H_
+#endif // ! UTILITIES_DRV_FTFX_FLASH_HPP

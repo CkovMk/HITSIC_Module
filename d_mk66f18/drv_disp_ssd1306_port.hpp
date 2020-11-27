@@ -40,12 +40,13 @@
 #define OLED_SPI_Ctarn			kDSPI_Ctar0
 #define OLED_SPI_MasterCtarn	kDSPI_MasterCtar0
 
+#if defined(HITSIC_DISP_SSD1306_DMA) && (HITSIC_DISP_SSD1306_DMA > 0U)
 #define OLED_SPI_DMA_RX_Chnl    (5U)
 #define OLED_SPI_DMA_IM_Chnl    (6U)
 #define OLED_SPI_DMA_TX_Chnl    (7U)
 #define OLED_SPI_DMA_RX_REQSRC kDmaRequestMux0SPI0Rx
 #define OLED_SPI_DMA_TX_REQSRC  kDmaRequestMux0SPI2Tx
-
+#endif // ! HITSIC_DISP_SSD1306_DMA
 /**
  * @brief 设置RST脚电平。
  * 

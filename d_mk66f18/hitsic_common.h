@@ -25,6 +25,10 @@
  * @brief : 软件版本产生方式定义
  */
 #define HITSIC_MAKE_VERSION(major, minor, patch) (((major) << 16) | ((minor) << 8) | (patch))
+#define HITSIC_VERSION_MAJOR(x) (x >> 16U)
+#define HITSIC_VERSION_MINOR(x) ((x >> 8U) & 0xffU)
+#define HITSIC_VERSION_PATCH(x) (x & 0xffU)
+
 
 
 

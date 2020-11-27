@@ -29,8 +29,8 @@
  */
 
 #pragma once
-#ifndef _DISP_SSD1306_H_
-#define _DISP_SSD1306_H_
+#ifndef UTILITIES_DRV_DISP_SSD1306_HPP
+#define UTILITIES_DRV_DISP_SSD1306_HPP
 #include "inc_stdlib.hpp"
 #include "hitsic_common.h"
 
@@ -146,4 +146,4 @@ void DISP_SSD1306_BufferUploadDMA(uint8_t *buffer);
 
 #endif // ! HITSIC_USE_DISP_SSD1306
 
-#endif // ! _DISP_SSD1306_H_
+#endif // ! UTILITIES_DRV_DISP_SSD1306_HPP

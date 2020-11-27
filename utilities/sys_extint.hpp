@@ -27,8 +27,8 @@
  */
 
 #pragma once
-#ifndef UTILITIES_SYS_EXTINT_HPP_
-#define UTILITIES_SYS_EXTINT_HPP_
+#ifndef UTILITIES_SYS_EXTINT_HPP
+#define UTILITIES_SYS_EXTINT_HPP
 #include "inc_stdlib.hpp"
 #include "hitsic_common.h"
 
@@ -93,6 +93,6 @@ private:
 
 #endif // ! HITSIC_USE_EXTINT
 
-#endif // ! UTILITIES_SYS_EXTINT_HPP_
+#endif // ! UTILITIES_SYS_EXTINT_HPP
 
 

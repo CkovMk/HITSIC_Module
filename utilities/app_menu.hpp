@@ -26,12 +26,13 @@
  * @date    :   v0.1.4      2020.10.09
  * @date    :   v0.1.5      2020.10.30
  * @date    :   v0.1.6      2020.11.09
+ * @date    :   v0.1.7      2020.11.22
  * 
  */
 
 #pragma once
-#ifndef _APP_MENU_H_
-#define _APP_MENU_H_
+#ifndef UTILITIES_APP_MENU_HPP
+#define UTILITIES_APP_MENU_HPP
 
 #include "app_menu_button.hpp"
 #include "app_menu_def.hpp"
@@ -44,7 +45,7 @@
   */
 
 /** @brief : 软件版本 */
-#define APP_MENU_VERSION (HITSIC_MAKE_VERSION(0U, 1U, 6U))
+#define APP_MENU_VERSION (HITSIC_MAKE_VERSION(0U, 1U, 7U))
 
 #if defined(HITSIC_USE_APP_MENU) && (HITSIC_USE_APP_MENU > 0)
 
@@ -84,6 +85,25 @@ void MENU_PrintDisp(void);
  * @param  {void} undefined :
  */
 void MENU_KeyOp(menu_keyOp_t *const _op);
+
+/**
+ * @brief : 根据字符串路径查找菜单列表。
+ *
+ * @param str : 字符串路径，以"/"分隔。注意：路径名应与跳转类型的菜单项
+ *              名称一致，而不是与菜单列表名称一致。事实上，建议将菜单列表
+ *              的名称与跳转类型菜单项的名称设为相同。
+ * @retval 返回找到的菜单列表的指针。如果未找到则返回nullptr。
+ */
+menu_list_t *MENU_DirGetList(const char *str);
+
+/**
+ * @brief : 在菜单列表中搜索给定名称的菜单项。
+ *
+ * @param dir : 菜单项所在的菜单列表指针。
+ * @param str : 菜单项名称字符串。
+ * @retval 返回找到的菜单列表的指针。如果未找到则返回nullptr。
+ */
+menu_itemIfce_t *MENU_DirGetItem(const menu_list_t *dir, const char *str);
 
 #if defined(HITSIC_MENU_USE_NVM) && (HITSIC_MENU_USE_NVM > 0)
 
@@ -186,6 +206,12 @@ void MENU_SetNvmStatus(int32_t _status);
 void MENU_PitIsr(void* userData);
 
 /**
+ * @brief : 菜单事件处理函数。
+ *      在事件处理任务中调用此函数。
+ */
+void MENU_EventService(void);
+
+/**
  * @brief 挂起菜单。这将暂时禁用菜单的事件处理，包括按键输入和屏幕打印。
  *          注意：调用多次MENU_Suspend()将需要调用相同次数的MENU_Resume()才能将菜单恢复至运行状态。
  */
@@ -203,4 +229,4 @@ void MENU_Resume(void);
 
 /*! @} */
 
-#endif // ! _APP_MENU_H_
+#endif // ! UTILITIES_APP_MENU_HPP

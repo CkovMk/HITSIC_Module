@@ -1,5 +1,5 @@
-#ifndef _APP_MENU_TYPE_H_
-#define _APP_MENU_TYPE_H_
+#ifndef UTILITIES_APP_MENU_TYPE_HPP
+#define UTILITIES_APP_MENU_TYPE_HPP
 
 #include "app_menu_button.hpp"
 #include "app_menu_def.hpp"
@@ -63,10 +63,6 @@
 //MENU_ITEM_CALL_FUNCTION(MENU_ItemConstruct, item, variType, &data);
 //MENU_ITEM_SWITCH_CASE(MENU_ItemKeyOp, item, &op);
 
-#ifdef __cplusplus
-extern "C"
-{
-#endif
 
 /** @brief : 占位类型菜单项操作函数。 */
 void MENU_ItemConstruct_nullType(menu_itemIfce_t *_item, void *_data);
@@ -265,12 +261,10 @@ void MENU_ListPrintDisp(menu_list_t *_list);
  */
 void MENU_ListKeyOp(menu_list_t *_list, menu_keyOp_t *const _op);
 
-#ifdef __cplusplus
-}
-#endif
+
 
 /* @} */
 
 #endif // ! HITSIC_USE_APP_MENU
 
-#endif // ! _APP_MENU_TYPE_H_
+#endif // ! UTILITIES_APP_MENU_TYPE_HPP

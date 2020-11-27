@@ -40,6 +40,31 @@ Flash读写驱动（FTFX_FLASH），可选，用于保存和读取菜单；
 
 ## 版本说明
 
+### v0.1.7
+
+by：CkovMk @hitsic 2020.11.22
+
+**改动说明**
+
+- 新增全局状态标志位`menu_message_strBufOverride`（字符缓存超控标志位），支持菜单项直接打印帧缓存。
+- 新增函数`menu_list_t *MENU_DirGetList(const char *str);`和`menu_itemIfce_t *MENU_DirGetItem(const menu_list_t *dir, const char *str);`，用于按路径查找菜单列表和菜单项。
+- 适配SYSLOG。修改了MENU_PORT中的LOG打印接口。现在可以分别配置不同组件的LOG级别。
+- 删除了不必要的`extern "C {...}"`。
+- 新增路径查询API：`menu_list_t *MENU_DirGetList(const char *str);` 与`menu_itemIfce_t *MENU_DirGetItem(const menu_list_t *dir, const char *str);`，用于根据菜单结构（路径）查找菜单列表和菜单项。
+- 事件处理接口移至`app_menu_port.cpp`中。
+
+**开发计划**
+
+- C++化
+- 菜单项迭代器
+- 独立屏幕接口、独立存储接口
+
+**已知问题**
+
+- 暂无
+
+
+
 ### v0.1.6
 
 by：CkovMk @hitsic 2020.11.09
@@ -266,6 +291,30 @@ by：CkovMk @hitsic 2019.11.02
 
   
 
+- 路径查询
+  ```c
+  /**
+   * @brief : 根据字符串路径查找菜单列表。
+   *
+   * @param str : 字符串路径，以"/"分隔。注意：路径名应与跳转类型的菜单项
+   *              名称一致，而不是与菜单列表名称一致。事实上，建议将菜单列表
+   *              的名称与跳转类型菜单项的名称设为相同。
+   * @retval 返回找到的菜单列表的指针。如果未找到则返回nullptr。
+   */
+  menu_list_t *MENU_DirGetList(const char *str);
+
+  /**
+   * @brief : 在菜单列表中搜索给定名称的菜单项。
+   *
+   * @param dir : 菜单项所在的菜单列表指针。
+   * @param str : 菜单项名称字符串。
+   * @retval 返回找到的菜单列表的指针。如果未找到则返回nullptr。
+   */
+  menu_itemIfce_t *MENU_DirGetItem(const menu_list_t *dir, const char *str);
+  ```
+
+  
+
 - 保存数据
 
   ```C
@@ -396,6 +445,24 @@ by：CkovMk @hitsic 2019.11.02
 	```
 	
 	调用这些函数以禁用和恢复菜单运行。
+	
+- 服务函数
+
+  ```c++
+  /**
+   * @brief : 定时中断管理器句柄。
+   *
+   */
+  void MENU_PitIsr(void* userData);
+  
+  /**
+   * @brief : 菜单事件处理函数。
+   *      在事件处理任务中调用此函数。
+   */
+  void MENU_EventService(void);
+  ```
+
+  
 
 
 
@@ -799,18 +866,18 @@ by：CkovMk @hitsic 2019.11.02
     {
         menu_data_valid = menu_dataValid_flag << menu_dataValid_mask, /// 菜单状态标志
     
-        menu_error_fatalError = 1 << 23,  ///> 关键故障标志位。
-        menu_warning_itemLost = 1 << 22,  ///> 数据缺失标志位。读取数据时发现数据缺失时置位，须手动清除。该标志位使用16位参数，表示数据缺失的总个数。
-        menu_datalog_cmbPrint = 1 << 21,  ///> cm_backtrace错误打印标志位。发生cmb打印时设置，须手动清除。该标志位（目前）不使用参数。
-        menu_datalog_usrPrint = 1 << 20,  ///> 用户错误信息打印标志位，发生用户错误信息打印时设置，须手动清除。该标志位的参数由用户定义。
-        menu_message_buttonOp = 1 << 19,  ///> 按键操作消息
-        menu_message_printDisp = 1 << 18, ///> 屏幕打印消息
+        menu_error_fatalError = 1 << 23,        ///> 关键故障标志位。
+        menu_warning_itemLost = 1 << 22,        ///> 数据缺失标志位。读取数据时发现数据缺失时置位，须手动清除。该标志位使用16位参数，表示数据缺失的总个数。
+        menu_noUse2 = 1 << 21,                  ///> cm_backtrace错误打印标志位。发生cmb打印时设置，须手动清除。该标志位使用16位参数，表示数据的大小（字节数）。
+        menu_message_strBufOverride = 1 << 20,  ///> 字符串缓存超控标志位。该标志位置位时，菜单顶层逻辑将忽略字符串缓存，直接打印全缓存。进行一帧打印后自动清除。
+        menu_message_buttonOp = 1 << 19,        ///> 按键操作消息。置位时将进行按键处理，处理完成后自动清除，并自动产生屏幕打印消息。
+        menu_message_printDisp = 1 << 18,       ///> 屏幕打印消息。置位时将进行屏幕打印，处理完成后自动清除。
         menu_noUse6 = 1 << 17,
         menu_noUse7 = 1 << 16,
     
-        menu_param_Mask16 = 0xffff, /// 低16位全16位掩码标志位，用于读取低16位参数。如果传一个参数且取值大于255，应使用16位参数。
-        menu_param_Mask8h = 0xff00, /// 低16位中高8位掩码标志位，用于读取16位参数中的高8位。如果要返回两个参数，或参数取值小于256，可以使用两个8位参数。
-        menu_param_Mask8l = 0x00ff, /// 低16位中高8位掩码标志位，用于读取16位参数中的低8位。同上。
+        menu_param_Mask16 = 0xffff, ///> 低16位全16位掩码标志位，用于读取低16位参数。如果传一个参数且取值大于255，应使用16位参数。
+        menu_param_Mask8h = 0xff00, ///> 低16位中高8位掩码标志位，用于读取16位参数中的高8位。如果要返回两个参数，或参数取值小于256，可以使用两个8位参数。
+        menu_param_Mask8l = 0x00ff, ///> 低16位中高8位掩码标志位，用于读取16位参数中的低8位。同上。
     };
     ```
 
@@ -856,9 +923,25 @@ by：CkovMk @hitsic 2019.11.02
 
 #### 屏幕输出
 
-字符缓存
+菜单模组的屏幕显示由两级组成：字符缓存和全缓存。大多数情况下，菜单内部逻辑都是刷新字符缓存，仅在最终输出时将字符缓存转换为帧缓存。
 
-全缓存（可选）
+##### 字符缓存
+
+```c++
+char menu_dispStrBuf[MENU_DISP_STRBUF_ROW][MENU_DISP_STRBUF_COL];
+```
+
+
+
+##### 全缓存（可选）
+
+该缓存由移植文件提供。主要包括三个接口：
+
+```c++
+#define HITSIC_MENU_DISPLAY_BUFFER_CLEAR()			///> 清除缓存
+#define HITSIC_MENU_DISPLAY_PRINT(row, col, str)	///> 打印字符
+#define HITSIC_MENU_DISPLAY_BUFFER_UPDATE()			///> 上传缓存
+```
 
 
 
@@ -1055,11 +1138,33 @@ by CkovMk @hitsic 2020.10.30
 
 
 
+### 编写交互式的可执行菜单项
+
+by CkovMk @hitsic 2020.11.22
+
+本菜单模组支持运行交互式的可执行菜单项（下简称为“交互式菜单项”）。这允许您编写一个可在菜单中调用的应用程序，并可根据您的按键输入执行动作。示例代码为`app_menu_test.hpp`中的`inline void MENU_ExampleProcHandler1(menu_keyOp_t *const _op);`函数，对应示例菜单根目录中的`StrBufOvrd`菜单项。
+
+##### 原理
+
+为了让交互式菜单项能够连续响应用户的输入，该菜单项在执行时不应自动退出。因此，与大部分只运行一次的菜单项不同，您不应置位`menuItem_proc_runOnce`标志。交互式菜单项往往需要在屏幕上显示一些内容。因此，您应当置位`menuItem_proc_uiDisplay`标志。这将在该交互式菜单项执行时自动禁用菜单自带的提示界面，转而将屏幕显示交由您编写的的程序控制。在您的交互式菜单项退出后，菜单显示将自动恢复。
+
+显然，您的菜单项需要处理按键输入。事件变量的指针由函数参数传入，其中包含了（可能的）按键操作信息。在执行完按键响应后，您需要清除该事件（即将指针指向的变量赋值为0）。**注意：在进行按键处理时，不可以刷新屏幕！**菜单逻辑保留了“长按确定键”的操作作为菜单“退出“的出口，您不必为您的交互式菜单项添加“退出”出口。但是，如果您的交互式菜单项在退出时需要释放资源，您就需要自行编写“退出”功能。请参阅`设计文档 - 核心逻辑 - 菜单状态变量（状态机）`部分。对于交互式菜单项，除了常见的按键事件以外，还有一个“屏幕打印”事件。在该事件发生时，交互式菜单项应仅进行打印屏幕的操作。
+
+> 菜单的底层逻辑保证了在一次按键操作发生后，会立刻产生一个屏幕刷新事件。因此无需担心按键处理后屏幕刷新不及时的问题。
+
+打印屏幕的操作详见`设计文档 - 外围组件 - 屏幕输出 `。一般情况下，菜单逻辑总是先刷新字符缓存，交互式菜单也不例外。如果您的交互式菜单仅打印字符，则直接向字符缓存写入打印内容即可。但如果您的交互式菜单需要打印图形，则需要置位菜单全局标志位`menu_message_strBufOverride`（字符缓存超控标志位）。这将在**一帧**的屏幕输出中禁用字符缓存，直接输出帧缓存。**注意：本帧打印结束后该标志位会自动清除，在每次打印时均需要手动置位。**
+
+##### 例程
+
+（未完待续）
+
+
+
 
 
 ## 移植指南
 
-### 顶层移配置
+#### 顶层配置
 
 - MENU组件
 
@@ -1067,9 +1172,31 @@ by CkovMk @hitsic 2020.10.30
 
 - 调试输出
 
-  启用/禁用：由宏`HITSIC_MENU_PRINT_ENABLE`控制。
+  ```c++
+  /**
+   * @name 调试输出
+   * @ {
+   */
+  
+  /*! 核心逻辑 LOG级别定义 */
+  #define HITSIC_MENU_MAIN_LOG_LVL    (5U)
+  
+  /*! 数据存储 LOG级别定义 */
+  #define HITSIC_MENU_KVDB_LOG_LVL    (2U)
+  
+  /*! 按键处理 LOG级别定义 */
+  #define HITSIC_MENU_BUTN_LOG_LVL    (2U)
+  
+  /*! 菜单项目 LOG级别定义 */
+  #define HITSIC_MENU_ITEM_LOG_LVL    (3U)
+  
+  /*! 菜单列表 LOG级别定义 */
+  #define HITSIC_MENU_LIST_LOG_LVL    (3U)
+  
+  /* @ } */
+  ```
 
-  输出语句：由宏`HITSIC_MENU_PRINTF`配置。
+  值越小，输出内容越少。值为0时将仅输出断言（ASSERT）级别的严重错误。详见SYSLOG模组。
 
 - 根菜单最大容量
 
@@ -1089,10 +1216,31 @@ by CkovMk @hitsic 2020.10.30
   #define HITSIC_MENU_SERVICE_IRQn (Reserved85_IRQn) 				///< 要使用的中断号
   #define HITSIC_MENU_SERVICE_IRQPrio (12u) 						///< 中断优先级，需要设置一个较低的值，以免打断重要任务。
   ```
+  
+  随后在`app_menu_port.cpp`中实现此函数。只需在服务函数中清除中断标志位，并调用`void MENU_EventService(void);`即可。
+  
+  ```c++
+  void MENU_EventService(void);
+  
+  #ifdef __cplusplus
+  extern "C"
+  {
+  #endif
+  
+  void HITSIC_MENU_SERVICE_IRQHandler(void)
+  {
+      NVIC_ClearPendingIRQ(HITSIC_MENU_SERVICE_IRQn);
+      MENU_EventService();
+  }
+  
+  #ifdef __cplusplus
+  }
+  #endif
+  ```
+  
+  
 
-
-
-### 按键输入接口
+#### 按键输入接口
 
 - 启用/禁用
 
@@ -1157,13 +1305,13 @@ by CkovMk @hitsic 2020.10.30
 
 
 
-### 屏幕显示接口
+#### 屏幕显示接口
 
 - 帧缓存
 
   启用/禁用：由宏`HITSIC_MENU_USE_FRAME_BUFFER`控制。
 
-#### 帧缓存模式
+##### 帧缓存模式
 
 首先需要在这里包含所需头文件,然后将三个宏函数连接到三个函数适配器。
 
@@ -1183,7 +1331,7 @@ by CkovMk @hitsic 2020.10.30
 
 `void MENU_FrameBufferUpdate(void);`用于将缓存区上传到屏幕。
 
-#### 无缓存模式
+##### 无缓存模式
 
 只需要适配宏`HITSIC_MENU_DISPLAY_PRINT`。该接口用于将字符打印至屏幕。
 
@@ -1191,7 +1339,7 @@ by CkovMk @hitsic 2020.10.30
 
 
 
-### NVM存储接口
+#### NVM存储接口
 
 - NVM存储
 

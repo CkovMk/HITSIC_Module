@@ -7,9 +7,9 @@
  * @{
  */
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+#define SYSLOG_TAG  ("MENU.BUTN")
+#define SYSLOG_LVL  (HITSIC_MENU_BUTN_LOG_LVL)
+#include "inc_syslog.hpp"
 
 /**
  * ********** 按键操作定义 **********
@@ -80,12 +80,10 @@ void MENU_ButtonCallback(button_t *_inst) {
     }
 
     menu_statusFlag |= menu_message_buttonOp;
+
+    SYSLOG_V("Button message: %ld", menu_keyOpBuff);
     NVIC_SetPendingIRQ(HITSIC_MENU_SERVICE_IRQn);
 }
-
-#ifdef __cplusplus
-}
-#endif
 
 /* @} */
 
