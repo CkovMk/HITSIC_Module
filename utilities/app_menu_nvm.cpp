@@ -63,7 +63,7 @@ uint32_t menu_nvm_eraseCnt = 0;
 
 status_t MENU_NvmRead(uint32_t _addr, void *_buf, uint32_t _byteCnt)
 {
-    SYSLOG_V("Rx Addr = 0x%8.8x, Size = %4.4d", _addr, _byteCnt);
+    SYSLOG_D("Read addr = 0x%8.8x, Size = %4.4ld", _addr, _byteCnt);
     uint32_t result = HITSIC_MENU_NVM_AddressRead(_addr, _buf, _byteCnt);
     if (HITSIC_MENU_NVM_RETVAL_SUCCESS == result)
     {
@@ -71,7 +71,7 @@ status_t MENU_NvmRead(uint32_t _addr, void *_buf, uint32_t _byteCnt)
     }
     else
     {
-        SYSLOG_E("Read failed ! Err code: %d", result);
+        SYSLOG_E("Read failed. Addr = 0x%8.8x, size = %4.4ld, err = %ld", _addr, _byteCnt, result);
         return kStatus_Fail;
     }
 }
@@ -93,13 +93,13 @@ status_t MENU_NvmCacheSector(uint32_t _sect)
 {
     if (menu_nvm_cache != NULL)
     {
-        SYSLOG_E("Cached Sector %2.2d\n Failed ! [-Existing]", _sect);
+        SYSLOG_E("Cached failed. Sector %2.2ld [-Existing]", _sect);
         return kStatus_Fail;
     }
     menu_nvm_cache = (uint8_t *)malloc(flash_sectorSize);
     if (menu_nvm_cache == NULL)
     {
-        SYSLOG_E("Cached Sector %2.2d\n Failed ! [-MemMalloc]", _sect);
+        SYSLOG_E("Cached failed. Sector %2.2ld [-MemMalloc]", _sect);
         return kStatus_Fail;
     }
     if (HITSIC_MENU_NVM_RETVAL_SUCCESS !=
@@ -108,11 +108,11 @@ status_t MENU_NvmCacheSector(uint32_t _sect)
     {
         free(menu_nvm_cache);
         menu_nvm_cache = NULL;
-        SYSLOG_E("Cached Sector %2.2d\n Failed ! [-FlashRead]", _sect);
+        SYSLOG_E("Cached failed. Sector %2.2ld [-FlashRead]", _sect);
         return kStatus_Fail;
     }
     menu_nvm_cachedSector = _sect;
-    SYSLOG_V("Cached Sector %2.2d", menu_nvm_cachedSector);
+    SYSLOG_V("Cached sector %2.2ld", menu_nvm_cachedSector);
     return kStatus_Success;
 }
 
@@ -123,11 +123,12 @@ status_t MENU_NvmWriteCache(uint32_t _addr, void *_buf, uint32_t _byteCnt)
         if (HITSIC_MENU_NVM_RETVAL_SUCCESS !=
                 MENU_NvmCacheSector(_addr / HITSIC_MENU_NVM_SECTOR_SIZE))
         {
+            SYSLOG_E("Write failed. Addr = 0x%8.8x, size = %4.4ld", _addr, _byteCnt);
             return kStatus_Fail;
         }
     }
     memcpy(menu_nvm_cache + _addr % flash_sectorSize, _buf, _byteCnt);
-    SYSLOG_V("Tx Addr = 0x%8.8x, Size = %4.4d", _addr, _byteCnt);
+    SYSLOG_D("Write addr = 0x%8.8x, size = %4.4ld", _addr, _byteCnt);
     return kStatus_Success;
 }
 
@@ -136,7 +137,7 @@ status_t MENU_NvmUpdateCache(void)
     if (HITSIC_MENU_NVM_RETVAL_SUCCESS !=
             HITSIC_MENU_NVM_SectorWrite(menu_nvm_cachedSector, menu_nvm_cache))
     {
-        SYSLOG_E("Update cache Failed ! [-FlashWrite]");
+        SYSLOG_E("Update cache failed ! [-FlashWrite]");
         return kStatus_Fail;
     }
     // void* readBuf = malloc(flash_sectorSize);
@@ -149,7 +150,7 @@ status_t MENU_NvmUpdateCache(void)
     //		readBuf = NULL;
     free(menu_nvm_cache);
     menu_nvm_cache = NULL;
-    SYSLOG_V("Update Cached Sector %2.2d", menu_nvm_cachedSector);
+    SYSLOG_D("Update cached sector %2.2ld", menu_nvm_cachedSector);
     return kStatus_Success;
 }
 

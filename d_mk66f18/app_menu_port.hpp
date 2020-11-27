@@ -30,13 +30,13 @@
  */
 
 /*! 核心逻辑 LOG级别定义 */
-#define HITSIC_MENU_MAIN_LOG_LVL    (5U)
+#define HITSIC_MENU_MAIN_LOG_LVL    (3U)
 
 /*! 数据存储 LOG级别定义 */
-#define HITSIC_MENU_KVDB_LOG_LVL    (2U)
+#define HITSIC_MENU_KVDB_LOG_LVL    (3U)
 
 /*! 按键处理 LOG级别定义 */
-#define HITSIC_MENU_BUTN_LOG_LVL    (2U)
+#define HITSIC_MENU_BUTN_LOG_LVL    (3U)
 
 /*! 菜单项目 LOG级别定义 */
 #define HITSIC_MENU_ITEM_LOG_LVL    (3U)
@@ -193,7 +193,7 @@ void MENU_FrameBufferUpdate(void);
 /**
  * @brief : 局部存储 Region Storage
  */
-#define HITSIC_MENU_NVM_REGION_CNT (3u) 					///< 局部存储区的数量
+#define HITSIC_MENU_NVM_REGION_CNT (3) 					///< 局部存储区的数量
 #define HITSIC_MENU_NVM_REGION_SECT_SIZE  (4u)				///< 每个局部存储区占用的扇区数
 
 #define HITSIC_MENU_NVM_AddressRead(addr, buf, byteCnt)		FLASH_AddressRead(addr, buf, byteCnt)	///< 读指定地址。必须返回表示操作是否成功的值。
