@@ -19,7 +19,8 @@
  * @author  :   beforelight/肖日涛(qq:1761690868)
  * @version :   v0.1.0
  *
- * @date    :   v0.1-beta.0 2019.10.16 肖日涛
+ * @date    :   v0.1-beta.0 2020.10.30 肖日涛
+ * @date    :   v0.1.0      2020.11.04 马奇科
  *
  * @brief   :   陀螺仪驱动，适用于mpu6050,mpu9250,icm20602
  */

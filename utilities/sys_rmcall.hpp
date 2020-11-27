@@ -27,8 +27,8 @@
  *              依赖库必须先初始化。
  */
 
-#ifndef _SYS_RMCALL_HPP_
-#define _SYS_RMCALL_HPP_
+#ifndef UTILITIES_SYS_RMCALL_HPP
+#define UTILITIES_SYS_RMCALL_HPP
 #include "inc_stdlib.hpp"
 #include "hitsic_common.h"
 
@@ -150,4 +150,4 @@ private:
 
 #endif // HITSIC_USE_RMCALL
 
-#endif // ! _SYS_RMCALL_HPP_
+#endif // ! UTILITIES_SYS_RMCALL_HPP

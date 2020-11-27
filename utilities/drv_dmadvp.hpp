@@ -17,7 +17,7 @@
 /**
  * @file 	:	drv_dmadvp.hpp
  * @author  :	Chekhov Mark/马奇科(qq:905497173)
- * @version :	v0.1-beta.1
+ * @version :	v0.1.2
  *
  * @date 	:	v0.1-beta.0 2020.10.20
  * @date 	:	v0.1-beta.1 2020.10.30

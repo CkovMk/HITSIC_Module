@@ -18,7 +18,7 @@
  * @file 	:	drv_disp_ssd1306.h
  * @author  :	beforelight/肖日涛(qq:1761690868)
  * @author  :   CkovMk/马奇科(qq:905497173)
- * @version :	v0.1.1
+ * @version :	v0.2.1
  *
  * @date 	:	v0.1-beta.0 2018.08.12 CkovMk
  * @date 	:	v0.1.1		2019.09.22 beforelight
