@@ -555,7 +555,7 @@
 	void MENU_PitIsr(void* userData)
 	{
 		menu_statusFlag |= menu_message_printDisp;
-		NVIC_SetPendingIRQ(HITSIC_MENU_SERVICE_IRQn);
+		HITSIC_MENU_SERVICE_SEM_GIVE();
 	}
 
 	void MENU_EventService(void)

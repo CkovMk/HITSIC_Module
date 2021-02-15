@@ -33,7 +33,7 @@ extern "C"
 
 void HITSIC_MENU_SERVICE_IRQHandler(void)
 {
-    NVIC_ClearPendingIRQ(HITSIC_MENU_SERVICE_IRQn);
+    HITSIC_MENU_SERVICE_SEM_TAKE();
     MENU_EventService();
 }
 

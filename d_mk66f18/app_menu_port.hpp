@@ -59,7 +59,9 @@
 #define HITSIC_MENU_SERVICE_IRQHandler (Reserved85_IRQHandler)  ///< 要使用的中断服务函数
 #define HITSIC_MENU_SERVICE_IRQn (Reserved85_IRQn)              ///< 要使用的中断号
 #define HITSIC_MENU_SERVICE_IRQPrio (12u)                       ///< 中断优先级，需要设置一个较低的值，以免打断重要任务。
-//TODO: 改成RTOS式的事件接口。
+
+#define HITSIC_MENU_SERVICE_SEM_GIVE() NVIC_SetPendingIRQ(HITSIC_MENU_SERVICE_IRQn)
+#define HITSIC_MENU_SERVICE_SEM_TAKE() NVIC_ClearPendingIRQ(HITSIC_MENU_SERVICE_IRQn)
 /* @ } */
 
 /**
