@@ -1022,6 +1022,90 @@ void MENU_ListKeyOp(menu_list_t *_list, menu_keyOp_t *const _op)
 }
 
 
+/**************************************
+ ************ 菜单项迭代器 **********
+ **************************************/
+
+#undef SYSLOG_TAG
+#undef SYSLOG_LVL
+#define SYSLOG_TAG  ("MENU.ITER")
+#define SYSLOG_LVL  (HITSIC_MENU_ITER_LOG_LVL)
+#include "inc_syslog.hpp"
+
+void MENU_IteratorSetup(menu_iterator_t *_iter)
+{
+    if(_iter->listQue != nullptr)
+    {
+        free(_iter->listQue);
+        _iter->listQue = nullptr;
+    }
+    _iter->listQue = (menu_list_t**)calloc(menu_listCnt, sizeof(menu_list_t *));
+    memset(_iter->listQue, 0U, menu_listCnt * sizeof(menu_list_t *));
+    assert(_iter->listQue);
+
+    extern menu_list_t *menu_menuRoot;
+    extern menu_list_t *menu_manageList;
+
+    _iter->listQue[0] = menu_manageList;
+    _iter->listQue[1] = menu_menuRoot;
+
+    _iter->listNum = 0U;
+    _iter->itemNum = 0U;
+}
+
+menu_iterator_t* MENU_IteratorConstruct(void)
+{
+    menu_iterator_t *ret = (menu_iterator_t*)malloc(sizeof(menu_iterator_t));
+    assert(ret);
+    MENU_IteratorSetup(ret);
+    return ret;
+}
+
+void MENU_IteratorDestruct(menu_iterator_t *_iter)
+{
+    free(_iter->listQue);
+    free(_iter);
+    _iter = nullptr;
+}
+
+menu_itemIfce_t* MENU_IteratorDeref(menu_iterator_t *_iter)
+{
+    return _iter->listQue[_iter->listNum]->menu[_iter->itemNum];
+}
+
+status_t MENU_IteratorIncrease(menu_iterator_t *_iter)
+{
+    if(++_iter->itemNum == _iter->listQue[_iter->listNum]->listNum)
+    {
+        ++_iter->listNum;
+        if(_iter->listQue[_iter->listNum] == nullptr)
+        {
+            return kStatus_Fail;
+        }
+    }
+
+    menu_itemIfce_t *thisItem = MENU_IteratorDeref(_iter);
+    if (thisItem->type == menuType)
+    {
+        for (uint32_t j = 0U; j < menu_listCnt; ++j)
+        {
+            if (_iter->listQue[j] == thisItem->handle.p_menuType->data)
+            {
+                break;
+            }
+            else if (_iter->listQue[j] == NULL)
+            {
+                _iter->listQue[j] = thisItem->handle.p_menuType->data;
+                SYSLOG_D("Add list [%s].", listQue[j]->nameStr);
+                break;
+            }
+         }
+     }
+
+    return kStatus_Success;
+}
+
+
 /* @} */
 
 #endif // ! HITSIC_USE_APP_MENU
