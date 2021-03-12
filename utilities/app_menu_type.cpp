@@ -1078,6 +1078,7 @@ status_t MENU_IteratorIncrease(menu_iterator_t *_iter)
     if(++_iter->itemNum == _iter->listQue[_iter->listNum]->listNum)
     {
         ++_iter->listNum;
+        _iter->itemNum = 0U;
         if(_iter->listQue[_iter->listNum] == nullptr)
         {
             return kStatus_Fail;
