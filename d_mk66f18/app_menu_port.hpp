@@ -45,7 +45,7 @@
 #define HITSIC_MENU_LIST_LOG_LVL    (3U)
 
 /*! 菜单迭代 LOG级别定义 */
-#define HITSIC_MENU_ITER_LOG_LVL    (3U)
+#define HITSIC_MENU_ITER_LOG_LVL    (2U)
 
 /* @ } */
 

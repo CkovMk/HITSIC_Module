@@ -287,13 +287,19 @@ menu_iterator_t* MENU_IteratorConstruct(void);
  */
 void MENU_IteratorDestruct(menu_iterator_t *_iter);
 
-
 /**
- * @brief : 解引用迭代器。
+ * @brief : 解引用迭代器。获得当前所在菜单列表。
  *
  * @param  {menu_iterator_t*} _iter : 迭代器指针。
  */
-menu_itemIfce_t* MENU_IteratorDeref(menu_iterator_t *_iter);
+menu_list_t* MENU_IteratorDerefList(menu_iterator_t *_iter);
+
+/**
+ * @brief : 解引用迭代器，获得当前菜单项。
+ *
+ * @param  {menu_iterator_t*} _iter : 迭代器指针。
+ */
+menu_itemIfce_t* MENU_IteratorDerefItem(menu_iterator_t *_iter);
 
 /**
  * @brief : 迭代器递增。

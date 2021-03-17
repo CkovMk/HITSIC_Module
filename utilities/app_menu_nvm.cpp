@@ -134,20 +134,17 @@ status_t MENU_NvmWriteCache(uint32_t _addr, void *_buf, uint32_t _byteCnt)
 
 status_t MENU_NvmUpdateCache(void)
 {
+    if (menu_nvm_cache == nullptr)
+    {
+        SYSLOG_W("Update cache failed ! [-CacheEmpty]");
+        return kStatus_Fail;
+    }
     if (HITSIC_MENU_NVM_RETVAL_SUCCESS !=
             HITSIC_MENU_NVM_SectorWrite(menu_nvm_cachedSector, menu_nvm_cache))
     {
         SYSLOG_E("Update cache failed ! [-FlashWrite]");
         return kStatus_Fail;
     }
-    // void* readBuf = malloc(flash_sectorSize);
-    // FLASH_SectorRead(menu_nvm_cachedSector, readBuf);
-    //		if(memcmp(readBuf, menu_nvm_cache, flash_sectorSize) != 0)
-    //		{
-    //			HITSIC_MENU_PRINTF("Warning: MENU: Nvm Update Cache Fail.\n");
-    //		}
-    //		free(readBuf);
-    //		readBuf = NULL;
     free(menu_nvm_cache);
     menu_nvm_cache = NULL;
     SYSLOG_D("Update cached sector %2.2ld", menu_nvm_cachedSector);

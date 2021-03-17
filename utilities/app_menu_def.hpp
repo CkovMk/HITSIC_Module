@@ -290,6 +290,7 @@ typedef struct _menu_nvmData_t
 typedef struct _menu_iterator_t
 {
     menu_list_t **listQue;
+    uint32_t listQueSize;
     uint32_t listNum;
     uint32_t itemNum;
 }menu_iterator_t;
