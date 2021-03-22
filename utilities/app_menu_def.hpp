@@ -283,6 +283,18 @@ typedef struct _menu_nvmData_t
     uint32_t tail;
 } menu_nvmData_t;
 
+
+/**
+ * @brief 菜单项迭代器结构体
+ */
+typedef struct _menu_iterator_t
+{
+    menu_list_t **listQue;
+    uint32_t listQueSize;
+    uint32_t listNum;
+    uint32_t itemNum;
+}menu_iterator_t;
+
 /* @} */
 
 #endif // ! HITSIC_USE_APP_MENU

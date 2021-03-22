@@ -7,12 +7,12 @@ extern sd_card_t g_sd;
 
 inline void FATFS_BasicTest(void)
 {
-    PRINTF("\n---------- FATFS Unit Test ----------\n\n");
+    PRINTF("---------- FATFS Unit Test ----------\n");
     static FIL g_fileObject; /* File object */
     static char g_bufferWrite[] = "HITSIC FATFS\n哈工大智能车俱乐部\n";
     int32_t bytesWritten = 0;
 
-    SYSMPU_Enable(SYSMPU, false);
+    //SYSMPU_Enable(SYSMPU, false);
     status_t result = 0;
     HAL_EnterCritical();
     BOARD_SD_Config(&g_sd, NULL, BOARD_SDMMC_SD_HOST_IRQ_PRIORITY, NULL);
@@ -21,12 +21,12 @@ inline void FATFS_BasicTest(void)
     result = SD_HostInit(&g_sd);
     if (result)
     {
-        PRINTF("\r\nHost Init failed.\r\n");
+        PRINTF("Host Init failed.\n");
         break;
     }
     else
     {
-        PRINTF("Host Init Success.\r\n");
+        PRINTF("Host Init Success.\n");
     }
 //    result = SD_CardInit(&g_sd);
 //    if (result)
@@ -42,25 +42,25 @@ inline void FATFS_BasicTest(void)
     result = f_mount(&fatfs, "2:", 1);
     if (result)
     {
-        PRINTF("\r\nMount SDCard failed.\r\n");
+        PRINTF("Mount SDCard failed.\n");
         break;
     }
     else
     {
-        PRINTF("Mount SDCard Success.\r\n");
-        PRINTF("SDCard Size = %ld MB.\r\n", (g_sd.blockCount) >> 11);
+        PRINTF("Mount SDCard Success.\n");
+        PRINTF("SDCard Size = %ld MB.\n", (g_sd.blockCount) >> 11);
     }
 //    std::unique_ptr<FATFS, void(*)(FATFS)>
 //                fatfsGuard(&fatfs, [](FATFS* p){ f_mount(0, "2:", 0); });
     result = f_chdrive("2:");
     if (result)
     {
-        PRINTF("\r\nChange drive failed.\r\n");
+        PRINTF("Change drive failed.\n");
         break;
     }
     else
     {
-        PRINTF("Change drive Success.\r\n");
+        PRINTF("Change drive Success.\n");
     }
     //result = f_mkfs("2:", 0, NULL, sizeof work);
     result = f_mkdir(_T("/dir_1"));
@@ -68,17 +68,17 @@ inline void FATFS_BasicTest(void)
     {
         if (result == FR_EXIST)
         {
-            PRINTF("Directory exists.\r\n");
+            PRINTF("Directory exists.\n");
         }
         else
         {
-            PRINTF("Make directory failed.\r\n");
+            PRINTF("Make directory failed.\n");
             break;
         }
     }
     else
     {
-        PRINTF("Make directory Success.\r\n");
+        PRINTF("Make directory Success.\n");
     }
     result = f_open(&g_fileObject, "f_1.txt",
             (FA_WRITE | FA_READ | FA_CREATE_ALWAYS));
@@ -86,17 +86,17 @@ inline void FATFS_BasicTest(void)
     {
         if (result == FR_EXIST)
         {
-            PRINTF("File exists.\r\n");
+            PRINTF("File exists.\n");
         }
         else
         {
-            PRINTF("Open file failed.\r\n");
+            PRINTF("Open file failed.\n");
             break;
         }
     }
     else
     {
-        PRINTF("Open file Success.\r\n");
+        PRINTF("Open file Success.\n");
     }
     std::unique_ptr<FIL, void(*)(FIL*)>
             fileGuard(&g_fileObject, [](FIL* p){ f_close(p); });
@@ -105,36 +105,36 @@ inline void FATFS_BasicTest(void)
             (UINT*)&bytesWritten);
     if (result)
     {
-        PRINTF("\r\nWrite file failed.\r\n");
+        PRINTF("Write file failed.\n");
         break;
     }
     else
     {
-        PRINTF("Write file Success.\r\n");
+        PRINTF("Write file Success.\n");
     }
     result = f_close(&g_fileObject);
     if (result)
     {
-        PRINTF("\r\nClose file failed.\r\n");
+        PRINTF("Close file failed.\n");
         break;
     }
     else
     {
-        PRINTF("Close file Success.\r\n");
+        PRINTF("Close file Success.\n");
     }
     result = f_mount(0, "2:", 0);
     if (result)
     {
-        PRINTF("\r\nUnmount SDCard failed.\r\n");
+        PRINTF("Unmount SDCard failed.\n");
         break;
     }
     else
     {
-        PRINTF("Unmount SDCard Success.\r\n");
+        PRINTF("Unmount SDCard Success.\n");
     }
     break;
     }
-    PRINTF("\n---------- FATFS Test Done ----------\n\n");
+    PRINTF("---------- FATFS Test Done ----------\n\n");
 }
 
 #endif // ! UTILITIES_TEST_SYS_FATFS_TEST_HPP
