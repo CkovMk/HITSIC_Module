@@ -2,8 +2,8 @@
 #ifndef UTILITIES_DRV_DISP_ST7789_HPP
 #define UTILITIES_DRV_DISP_ST7789_HPP
 
+#include <sys_pitmgr.h>
 #include "hitsic_common.h"
-#include "sys_pitmgr.hpp"
 
 #if defined(HITSIC_USE_DISP_ST7789) && (HITSIC_USE_DISP_ST7789 > 0)
 

@@ -1,8 +1,8 @@
 #ifndef D_MK66F18_DRV_BUTTON_PORT_H
 #define D_MK66F18_DRV_BUTTON_PORT_H
+#include <sys_pitmgr.h>
 #include "hitsic_common.h"
-#include "sys_extint.hpp"
-#include "sys_pitmgr.hpp"
+#include "sys_extint.h"
 
 #if defined(HITSIC_USE_DRV_BUTTON) && (HITSIC_USE_DRV_BUTTON > 0)
 
@@ -20,7 +20,8 @@
 
 #define BUTTON_PITMGR_TIME_MS 10
 
-#define BUTTON_TIMER_MS     (pitMgr_t::timer_ms)
+extern pitmgr_t pitMain;
+#define BUTTON_TIMER_MS     (pitMain.tickCounter)
 
 #endif // ! HITSIC_USE_DRV_BUTTON
 

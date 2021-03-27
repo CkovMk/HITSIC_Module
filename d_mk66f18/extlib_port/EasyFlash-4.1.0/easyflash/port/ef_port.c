@@ -26,11 +26,11 @@
  * Created on: 2015-01-16
  */
 
+#include <drv_ftfx_flash.h>
 #include <easyflash.h>
 #include <stdarg.h>
 
 #include "hitsic_common.h"
-#include "drv_ftfx_flash.hpp"
 
 int status = (0x50 << 24);
 

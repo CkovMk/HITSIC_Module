@@ -34,10 +34,11 @@
 #ifndef UTILITIES_APP_MENU_HPP
 #define UTILITIES_APP_MENU_HPP
 
-#include "app_menu_button.hpp"
-#include "app_menu_def.hpp"
-#include "app_menu_nvm.hpp"
-#include "app_menu_type.hpp"
+#include <app_menu_button.h>
+#include <app_menu_def.h>
+#include <app_menu_nvm.h>
+
+#include <app_menu_type.h>
 
  /*!
   * @addtogroup menu

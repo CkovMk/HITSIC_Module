@@ -165,6 +165,15 @@ inline void IMU_UnitTest_AutoRefreshAddMenu(menu_list_t *menu)
 }
 #endif // ! HITSIC_USE_APP_MENU
 
+static pitmgr_handle_t imu_invensense_test_pitHandle =
+    {
+        .tickInterval = 5UL,
+        .tickOffset = 1UL,
+        .handler = inv::IMU_UnitTest_AutoRefreshPitTask,
+        .pptFlag = pitmgr_pptEnable,
+        .userData = NULL,
+    };
+
 inline void IMU_UnitTest_AutoRefresh(void)
 {
     uint32_t result = 0U;
@@ -186,7 +195,8 @@ inline void IMU_UnitTest_AutoRefresh(void)
         PRINTF("自检失败，IMU精度可能降低\n");
         return;
     }
-    pitMgr_t::insert(5U, 1U, inv::IMU_UnitTest_AutoRefreshPitTask, pitMgr_t::enable);
+    extern pitmgr_t pitMain;
+    PITMGR_HandleInsert(&pitMain, &imu_invensense_test_pitHandle);
 }
 
 }

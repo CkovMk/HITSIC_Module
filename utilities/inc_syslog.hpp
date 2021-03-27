@@ -14,7 +14,7 @@
 #ifndef UTILITIES_INC_SYSLOG_HPP
 #define UTILITIES_INC_SYSLOG_HPP
 
-#include "inc_syslog_port.hpp"
+#include <inc_syslog_port.h>
 //#define SYSLOG_TAG ("DUMMY")
 //#define SYSLOG_LVL (2U)
 

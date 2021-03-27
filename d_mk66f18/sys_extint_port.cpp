@@ -1,4 +1,4 @@
-#include "sys_extint.hpp"
+#include <sys_extint.h>
 
 #if defined(HITSIC_USE_EXTINT) && (HITSIC_USE_EXTINT > 0)
 
