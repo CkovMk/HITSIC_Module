@@ -26,6 +26,13 @@ DMADVP_Type __DMADVP0 =
 
     .vsncInterruptCfg = kPORT_InterruptRisingEdge,
     .pclkInterruptCfg = kPORT_DMARisingEdge,
+
+    .extintHandle =
+    {
+        .index = RTEPIN_DIGITAL_CAM_VSNC_PIN,
+        .handler = NULL,
+        .userData = NULL,
+    },
 };
 
 /* @} */

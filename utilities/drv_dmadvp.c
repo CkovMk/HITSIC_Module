@@ -47,6 +47,9 @@ status_t DMADVP_Init(DMADVP_Type *base, const dmadvp_config_t *config)
     PORT_SetPinInterruptConfig(base->vsnc_intc, base->vsnc_pin,
             kPORT_InterruptOrDMADisabled);
 
+    base->extintHandle.handler = DMADVP_VsncExtIntHandler;
+    EXTINT_HandleInsert(EXTINT_GetInst(base->vsnc_intc), &base->extintHandle);
+
     //DisableIRQ(base->dmaIrqn);
 
     DMAMUX_SetSource(DMADVP0_DMAMUX_INST, base->dmauxChannel,
@@ -81,10 +84,7 @@ void DMADVP_TransferCreateHandle(dmadvp_handle_t *handle, DMADVP_Type *base,
 
     dmadvp_handleList[instance] = handle;
 
-    handle->extIntHandle = extInt_t::insert(base->vsnc_intc, base->vsnc_pin,
-            DMADVP_VsncExtIntHandler);
-    assert(handle->extIntHandle);
-    handle->extIntHandle->setUserData((void*) handle);
+    base->extintHandle.userData = (void*) handle;
 
     handle->base = base;
     EDMA_CreateHandle(&handle->dmaHandle, DMADVP0_DMA_INST, base->dmaChannel);//句柄存有使用哪个通道的信息

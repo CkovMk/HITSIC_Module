@@ -40,43 +40,23 @@ typedef port_interrupt_t extInt_interruptMode_t;
 #define EXTINT_ClearInterruptFlags(_intc, _mask) 				PORT_ClearPinsInterruptFlags(_intc, _mask)
 
 
-
-#ifndef HITSIC_EXTMGR_INITLIZE
-#define HITSIC_EXTMGR_INITLIZE 		(1U)
-#endif // ! HITSIC_EXTMGR_INITLIZE
-
-#if defined(HITSIC_EXTMGR_INITLIZE) && (HITSIC_EXTMGR_INITLIZE > 0)
-inline void EXTINT_PlatformInit(void)
-{
-	NVIC_SetPriority(PORTA_IRQn, 2);
-	NVIC_SetPriority(PORTB_IRQn, 2);
-	NVIC_SetPriority(PORTC_IRQn, 2);
-	NVIC_SetPriority(PORTD_IRQn, 2);
-	NVIC_SetPriority(PORTE_IRQn, 2);
-	EnableIRQ(PORTA_IRQn);
-	EnableIRQ(PORTB_IRQn);
-	EnableIRQ(PORTC_IRQn);
-	EnableIRQ(PORTD_IRQn);
-	EnableIRQ(PORTE_IRQn);
-}
-#endif // ! HITSIC_EXTMGR_INITLIZE
-
-
 #define HTISIC_EXTINT_DEFAULT_IRQ 	(1U)
-
 
 #define EXTINT_INST_NUM             (5U)
 
-inline uint32_t EXTINT_GetInst(INTC_Type *base)
-{
-    return ((uint32_t)base - PORTA_BASE) / (PORTB_BASE - PORTA_BASE);
-}
+#ifdef __cplusplus
+extern "C"{
+#endif
 
 inline INTC_Type *EXTINT_GetPortInst(GPIO_Type *gpio)
 {
 	static PORT_Type *lut[] = PORT_BASE_PTRS;
 	return lut[((uint32_t)gpio - GPIOA_BASE) / (GPIOB_BASE - GPIOA_BASE)];
 }
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif // ! HITSIC_USE_EXTINT
 

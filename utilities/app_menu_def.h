@@ -12,7 +12,7 @@
 
 #include <app_menu_port.h>
 #include <drv_disp_ssd1306.h>
-#include "lib_list.h"
+//#include "lib_list.h"
 #include <sys_pitmgr.h>
 
 /**
@@ -113,9 +113,9 @@ typedef enum : uint8_t
 typedef void (*menu_itemProcHandler_t)(menu_keyOp_t *const _op);
 
 /** 菜单列表结构体 前置定义 */
-typedef struct _menu_list_t menu_list_t;
+typedef struct _menu_list menu_list_t;
 
-struct menu_itemAdapter_t;
+typedef struct _menu_itemAdapter menu_itemAdapter_t;
 
 /******************************************
  ************菜单项类型及变量声明 **********
@@ -164,7 +164,7 @@ typedef struct
 } menu_item_menuHandle_t;
 
 /** @brief : 菜单项接口结构体。 */
-typedef struct _menu_itemIfce_t
+typedef struct _menu_itemIfce
 {
     menu_itemType_t type;               ///< 此菜单项的类型。
     uint32_t pptFlag;                   ///< 此菜单项的属性标志位。
@@ -184,7 +184,7 @@ typedef struct _menu_itemIfce_t
     const menu_itemAdapter_t* adapter;  ///< 指向存放菜单项命令函数指针的结构体。参考C++虚表
 } menu_itemIfce_t;
 
-struct menu_itemAdapter_t
+struct _menu_itemAdapter
 {
     void (*ItemConstruct)(menu_itemIfce_t *_item, void *_data);
     void (*ItemGetData)(menu_itemIfce_t *_item, void *_data);
@@ -226,15 +226,13 @@ extern char menu_dispStrBuf[MENU_DISP_STRBUF_ROW][MENU_DISP_STRBUF_COL];
 /*************************************
  ************ 菜单列表结构体 **********
  *************************************/
-typedef struct _menu_list_t
+struct _menu_list
 {
     menu_itemIfce_t **menu; /// 菜单项指针的动态数组，用于存放指针。该数组内的指针析构时需要手动释放。
     uint32_t listSize, listNum; /// 当前菜单项指针列表的大小、当前列表内的菜单项数量。
     uint32_t disp_p, slct_p; /// 显示数组下标和选择数组下标。
     char nameStr[menu_nameStrSize]; /// 菜单列表名称字符串。
-                                    //_menu_list_t *prev;		    ///
-                                    //指向上级菜单的指针。根菜单中该指针指向自身。
-} menu_list_t;
+};
 
 /**
  * MENU

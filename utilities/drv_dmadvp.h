@@ -79,7 +79,6 @@ struct dmadvp_handle_t
     DMADVP_Type* base;              /*!< DMADVP虚拟设备地址 */
     edma_handle_t dmaHandle;        /*!< DMA传输句柄 */
     edma_transfer_config_t xferCfg; /*!< DMA传输配置 */
-    extInt_t* extIntHandle;         /*!< 外部中断句柄 */
     volatile bool transferStarted;  /*!< 传输中标志位，true：正在进行传输 */
     std::queue<uint8_t*> emptyBuffer, fullBuffer;
 };

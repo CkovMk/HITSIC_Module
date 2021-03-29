@@ -33,6 +33,8 @@ struct DMADVP_Type
 
     port_interrupt_t vsncInterruptCfg;  /*!< 场中断外部中断方式设置，无需配置 */
     port_interrupt_t pclkInterruptCfg;  /*!< 像素时钟DMA触发方式设置，无需配置 */
+
+    extint_handle_t extintHandle;
 };
 
 #define DMADVP_CNT (1U)

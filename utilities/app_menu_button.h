@@ -15,10 +15,17 @@
  */
 #define MENU_BUTTON_MAKE_EXT_ISR(instNum) (MENU_ButtonExtIsr##instNum)
 #define MENU_BUTTON_CALL_EXT_ISR(instNum) BUTTON_ExtIsr(&menu_button[instNum])
-#define MENU_BUTTON_DEF_EXT_ISR(instNum)                                       \
-    void MENU_BUTTON_MAKE_EXT_ISR(instNum)(void *userData) {                             \
-        MENU_BUTTON_CALL_EXT_ISR(instNum);                                     \
-    }
+#define MENU_BUTTON_DEF_EXT_ISR(instNum)                                        \
+    void MENU_BUTTON_MAKE_EXT_ISR(instNum)(void *userData)                      \
+    {                                                                           \
+        MENU_BUTTON_CALL_EXT_ISR(instNum);                                      \
+    }                                                                           \
+    extint_handle_t menu_buttonExtintHandle##instNum =                           \
+    {                                                                           \
+        .index = 0U,                                                            \
+        .handler = MENU_BUTTON_MAKE_EXT_ISR(instNum),                           \
+        .userData = NULL,                                                       \
+    };
 #define MENU_BUTTON_MAKEE_PIT_ISR(instNum) (MENU_ButtonPitIsr##instNum)
 #define MENU_BUTTON_CALL_PIT_ISR(instNum) BUTTON_PitIsr(&menu_button[instNum]);
 

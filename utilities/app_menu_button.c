@@ -45,18 +45,34 @@ void MENU_ButtonSetup(void) {
         BUTTON_InstallHandler(&menu_button[i],
                               (void (*)(void *))MENU_ButtonCallback);
     }
-    EXTINT_PortSetup(EXTINT_GetPortInst(menu_button[0].gpio), menu_button[0].pin,
-                     0, MENU_BUTTON_MAKE_EXT_ISR(0));
-    EXTINT_PortSetup(EXTINT_GetPortInst(menu_button[1].gpio), menu_button[1].pin,
-                     0, MENU_BUTTON_MAKE_EXT_ISR(1));
-    EXTINT_PortSetup(EXTINT_GetPortInst(menu_button[2].gpio), menu_button[2].pin,
-                     0, MENU_BUTTON_MAKE_EXT_ISR(2));
-    EXTINT_PortSetup(EXTINT_GetPortInst(menu_button[3].gpio), menu_button[3].pin,
-                     0, MENU_BUTTON_MAKE_EXT_ISR(3));
-    EXTINT_PortSetup(EXTINT_GetPortInst(menu_button[4].gpio), menu_button[4].pin,
-                     0, MENU_BUTTON_MAKE_EXT_ISR(4));
 
-    PITMGR_HandleInsert(&pitMain, &menu_butonPitMgrHandle);
+    menu_buttonExtintHandle0.index = menu_button[0].pin;
+    EXTINT_HandleInsert(EXTINT_GetInst(EXTINT_GetPortInst(menu_button[0].gpio)), &menu_buttonExtintHandle0);
+
+    menu_buttonExtintHandle1.index = menu_button[1].pin;
+    EXTINT_HandleInsert(EXTINT_GetInst(EXTINT_GetPortInst(menu_button[1].gpio)), &menu_buttonExtintHandle1);
+
+    menu_buttonExtintHandle2.index = menu_button[2].pin;
+    EXTINT_HandleInsert(EXTINT_GetInst(EXTINT_GetPortInst(menu_button[2].gpio)), &menu_buttonExtintHandle2);
+
+    menu_buttonExtintHandle3.index = menu_button[3].pin;
+    EXTINT_HandleInsert(EXTINT_GetInst(EXTINT_GetPortInst(menu_button[3].gpio)), &menu_buttonExtintHandle3);
+
+    menu_buttonExtintHandle4.index = menu_button[4].pin;
+    EXTINT_HandleInsert(EXTINT_GetInst(EXTINT_GetPortInst(menu_button[4].gpio)), &menu_buttonExtintHandle4);
+
+//    EXTINT_PortSetup(EXTINT_GetPortInst(menu_button[0].gpio), menu_button[0].pin,
+//                     0, MENU_BUTTON_MAKE_EXT_ISR(0));
+//    EXTINT_PortSetup(EXTINT_GetPortInst(menu_button[1].gpio), menu_button[1].pin,
+//                     0, MENU_BUTTON_MAKE_EXT_ISR(1));
+//    EXTINT_PortSetup(EXTINT_GetPortInst(menu_button[2].gpio), menu_button[2].pin,
+//                     0, MENU_BUTTON_MAKE_EXT_ISR(2));
+//    EXTINT_PortSetup(EXTINT_GetPortInst(menu_button[3].gpio), menu_button[3].pin,
+//                     0, MENU_BUTTON_MAKE_EXT_ISR(3));
+//    EXTINT_PortSetup(EXTINT_GetPortInst(menu_button[4].gpio), menu_button[4].pin,
+//                     0, MENU_BUTTON_MAKE_EXT_ISR(4));
+
+    PITMGR_HandleInsert(&pitmgr_main, &menu_butonPitMgrHandle);
 }
 
 void MENU_ButtonPitIsr(void *userData) {
@@ -88,7 +104,7 @@ void MENU_ButtonCallback(button_t *_inst) {
     menu_statusFlag |= menu_message_buttonOp;
 
     SYSLOG_V("Button message: %ld", menu_keyOpBuff);
-    NVIC_SetPendingIRQ(HITSIC_MENU_SERVICE_IRQn);
+    HITSIC_MENU_SERVICE_SEM_GIVE();
 }
 
 /* @} */

@@ -22,6 +22,8 @@
  * @date 	:	v0.2-beta.0 	2019.10.20
  * @date 	:	v0.2.1			2019.11.05
  * @date	:	v1.0-beta.0		2020.07.25
+ * @date    :   v1.0.1          2020.10.30
+ * @date    :   v2.0.0          2021.03.30
  *
  * @brief    :   外部中断管理器
  */
@@ -29,11 +31,12 @@
 #pragma once
 #ifndef UTILITIES_SYS_EXTINT_HPP
 #define UTILITIES_SYS_EXTINT_HPP
-#include "inc_stdlib.hpp"
 #include "hitsic_common.h"
 
 #if defined(HITSIC_USE_EXTINT) && (HITSIC_USE_EXTINT > 0)
-#include "sys_extint_port.hpp"
+#include <sys_extint_port.h>
+
+#include <m-list.h>
 
 /*!
  * @addtogroup extint
@@ -41,53 +44,77 @@
  */
 
 /** @brief : 软件版本 */
-#define SYS_EXTINT_VERSION (HITSIC_MAKE_VERSION(1U, 0U, 0U))
+#define SYS_EXTINT_VERSION (HITSIC_MAKE_VERSION(2U, 0U, 0U))
 
-class extInt_t
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+/**
+ * @brief : PIT管理器中断服务函数。
+ */
+typedef void (*extint_handler_t)(void *userData);
+
+typedef struct _extint_handle
 {
-public:
-	typedef void (*handler_t)(void *userData);
+    uint32_t index;
+    extint_handler_t handler;   /*< 指向中断服务函数的指针 */
+    void *userData;  /*< 用户变量 */
+}extint_handle_t;
 
-	/*TODO: make this more efficient*/
-	static std::map<INTC_Type*, std::map<uint32_t, extInt_t>> isrSet;
+LIST_DEF(extint_isrList, extint_handle_t*)
 
-	static status_t init(void);
-	static extInt_t* insert(INTC_Type* _gpio, uint32_t _pin, handler_t _handler);
-	static status_t remove(INTC_Type* _gpio, uint32_t _pin);
-	static status_t remove(extInt_t* _inst);
-	static void isr(INTC_Type* _gpio);
+typedef struct _extint
+{
 
-	INTC_Type* gpio;
-	uint32_t pin;
-	handler_t handler;
-	void* userData;
+    extint_isrList_t isrList;
+}extint_t;
 
-	void setup(INTC_Type* _gpio, uint32_t _pin, handler_t _handler);
+/**
+ * @brief : 查找EXTINT实例。
+ * 该函数在extint_port中实现。
+ *
+ * @param  {INTC_Type*} : 用于管理 外部中断的外设地址。
+ * @return {status_t} : 成功返回kStatus_Success，异常返回kStatus_Fail。
+ */
+extint_t *EXTINT_GetInst(INTC_Type *base);
 
-	void setMode(extInt_interruptMode_t _mode)
-	{
-		//mode = _mode;
-		EXTINT_SetInterruptConfig(gpio, pin, _mode);
-	}
-	void setUserData(void* _userData)
-	{
-		userData = _userData;
-	}
+/**
+ * @brief : EXTINT初始化。
+ *
+ * @return {status_t} : 成功返回kStatus_Success，异常返回kStatus_Fail。
+ */
+status_t EXTINT_Init(extint_t *_inst);
 
-	extInt_t(void){}
-private:
-	extInt_t(INTC_Type* _gpio, uint32_t _pin, handler_t _handler)
-	{
-		setup(_gpio, _pin, _handler);
-	}
-};
+void EXTINT_Deinit(extint_t *_inst);
 
+/**
+ * @brief : EXTINT中断的处理函数。被IRQHandler调用。
+ */
+void EXTINT_Isr(extint_t *_inst, uint32_t flag);
 
-#define EXTINT_Init()	extInt_t::init()
-#define EXTINT_PortSetup(_gpio, _pin, _prio, _handler)	extInt_t::insert(_gpio, _pin, _handler)
-#define EXTINT_PortRemove(_gpio, _pin) 		extInt_t::remove(_gpio, _pin)
-#define PORTX_IRQHandler(_gpio, _list)		extInt_t::isr(_gpio)
+/**
+ * @brief : 向EXTINT中断表末尾插入一个新的任务描述符。
+ *  该函数仅做数据检查并赋值。需要互斥保护。
+ *
+ * @param {extint_t*} _inst          : 要操作的EXTINT实例。
+ * @param {extint_handle_t*} _handle : 该EXTINT任务的任务描述符指针。
+ * @return {status_t}                : 成功返回kStatus_Success，异常返回kStatus_Fail。
+ */
+status_t EXTINT_HandleInsert(extint_t *_inst, extint_handle_t *_handle);
 
+/**
+ * @brief : 从EXTINT中断表中移除一个任务描述符。
+ *
+ * @param {extint_t*} _inst          : 要操作的EXTINT实例。
+ * @param {extint_handle_t*} _handle : 该EXTINT任务的任务描述符指针。
+ * @return {status_t}                : 成功返回kStatus_Success，异常返回kStatus_Fail。
+ */
+status_t EXTINT_HandleRemove(extint_t *_inst, extint_handle_t *_handle);
+
+#ifdef __cplusplus
+}
+#endif
 
 /* @} */
 
