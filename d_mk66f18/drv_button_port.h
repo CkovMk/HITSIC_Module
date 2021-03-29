@@ -20,8 +20,8 @@
 
 #define BUTTON_PITMGR_TIME_MS 10
 
-extern pitmgr_t pitMain;
-#define BUTTON_TIMER_MS     (pitMain.tickCounter)
+extern pitmgr_t pitmgr_main;
+#define BUTTON_TIMER_MS     (pitmgr_main.tickCounter)
 
 #endif // ! HITSIC_USE_DRV_BUTTON
 

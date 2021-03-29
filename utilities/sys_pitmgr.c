@@ -49,7 +49,7 @@ void PITMGR_Isr(pitmgr_t *_inst)
     for (pitmgr_isrList_it(it, _inst->isrList); !pitmgr_isrList_end_p(it); pitmgr_isrList_next(it))
     {
         pitmgr_handle_t *handle = *pitmgr_isrList_ref(it);
-        if (handle->pptFlag & pitmgr_pptEnable && _inst->tickCounter % handle->tickInterval == handle->tickOffset)
+        if (handle->pptFlag & pitmgr_pptEnable && _inst->tickCounter % (uint64_t)handle->tickInterval == (uint64_t)handle->tickOffset)
         {
             (*(handle->handler))(handle->userData);
             if (handle->pptFlag & pitmgr_pptRunOnce)

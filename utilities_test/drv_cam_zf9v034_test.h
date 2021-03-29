@@ -7,8 +7,8 @@
 #if (defined(HITSIC_USE_DMADVP) && (HITSIC_USE_DMADVP > 0))
 #include "drv_dmadvp.h"
 
-extern pitmgr_t pitMain;
-#define CAM_ZF9V034_TEST_TIMER_MS     (pitMain.tickCounter)
+extern pitmgr_t pitmgr_main;
+#define CAM_ZF9V034_TEST_TIMER_MS     (pitmgr_main.tickCounter)
 
 inline void CAM_ZF9V034_UnitTestDmaCallback(edma_handle_t *handle, void *userData, bool transferDone, uint32_t tcds)
 {

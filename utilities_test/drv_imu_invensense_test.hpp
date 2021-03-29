@@ -195,8 +195,8 @@ inline void IMU_UnitTest_AutoRefresh(void)
         PRINTF("自检失败，IMU精度可能降低\n");
         return;
     }
-    extern pitmgr_t pitMain;
-    PITMGR_HandleInsert(&pitMain, &imu_invensense_test_pitHandle);
+    extern pitmgr_t pitmgr_main;
+    PITMGR_HandleInsert(&pitmgr_main, &imu_invensense_test_pitHandle);
 }
 
 }

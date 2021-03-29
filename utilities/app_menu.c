@@ -161,8 +161,8 @@
 		NVIC_SetPriority(HITSIC_MENU_SERVICE_IRQn, HITSIC_MENU_SERVICE_IRQPrio);
 		NVIC_EnableIRQ(HITSIC_MENU_SERVICE_IRQn);
 		//menu_pitHandle = pitMgr_t::insert(250U, 7U, MENU_PitIsr, pitMgr_t::enable);
-		extern pitmgr_t pitMain;
-		bool b = PITMGR_HandleInsert(&pitMain, &menu_pitHandle);
+		extern pitmgr_t pitmgr_main;
+		bool b = PITMGR_HandleInsert(&pitmgr_main, &menu_pitHandle);
 		assert(kStatus_Success == b);
 		menu_suspendCnt = 0U;
 		SYSLOG_I("Init Complete");
