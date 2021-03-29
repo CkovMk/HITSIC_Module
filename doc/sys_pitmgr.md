@@ -9,13 +9,31 @@
 该模块的主要限制有：
 
 1. 计时精度严重依赖于定时器中断，如果定时器中断长时间得不到响应，该模块将会出错。
-2. 不能为中断优先级高于定时器中断优先级的函数提供计时和延时服务，因为定时器中断无法工作。事实上，您不应该在任何中断服务函数中使用任何阻塞式延时功能。
-3. 调度器调度的任务必须是快速任务，应在1ms内执行完毕。如果一次定时器中断内执行任务的总时长超过2ms，就有可能错过下一次定时器中断，进而引发一定的时序混乱。因此，我们引入了“错位运行”机制，尽量使任务错峰运行，这有助于缓解这一情况，但使用时仍需特别注意。目前”自动推迟“功能已在计划中，未来将作为灰度测试加入。
-4. 未对变量溢出进行处理，在PITMGR开始运行后约50天后，主计时变量会溢出。不过大部分情况下这并不构成影响。如有必要，将主计时变量设为uint64_t即可。
-
-
+3. 调度器调度的任务必须是快速任务，应在一个中断周期内执行完毕。如果一次定时器中断内执行任务的总时长超过一个终端周期，就有可能错过下一次定时器中断，进而引发一定的时序混乱。因此，我们引入了“错位运行”机制，尽量使任务错峰运行，这有助于缓解这一情况，但使用时仍需特别注意。
+4. 未对变量溢出进行处理。主计时变量为uint64_t，一般可以认为永不溢出。
 
 ## 版本说明
+
+### v2.0.0
+
+by CkovMk @hitsic 2021.03.27
+
+**改动说明**
+
+- 使用C语言重构代码，提高了兼容性。
+- 采用多实例的写法，您现在可以添加多个PITMGR实例。
+- 简化了接口。描述任务的结构体（即任务描述符）不再保存于PITMGR实例的结构体中，而是由用户创建和管理。PITMGR实例只持有指向任务描述符的指针。
+- 支持自定义PITMGR的中断周期。
+
+**开发计划**
+
+- 暂无
+
+**已知问题**
+
+- 暂无
+
+
 
 ### v1.0.1
 
@@ -78,57 +96,27 @@ by CkovMk @hitsic 2018.12.20
 
 ## API文档
 
-- **初始化函数 `static status_t pitMgr_t::init(void);`**
+- **初始化函数 `status_t PITMGR_Init(pitmgr_t *_inst, uint32_t _period_us);`**
 
-  该函数用于初始化PITMGR。调用该函数时，该函数会清空任务列表`std::list<pitMgr_t> pitMgr_t::isrSet`并复位毫秒计时器`uint32_t pitMgr_t::timer_ms`。如果使能了平台初始化功能（由宏`HITSIC_PITMGR_INITLIZE`控制），还会调用您在移植文件中定义的`void PITMGR_PlatformInit(void);`函数，用于初始化定时器硬件。通常情况下，定时器硬件可以用NXP官方配置工具自动生成初始化代码。当前版本中本函数总是返回`kStatus_Success`。
+  该函数用于初始化PITMGR。调用该函数时，该函数会清空任务列表`std::list<pitMgr_t> pitMgr_t::isrSet`并复位毫秒计时器`uint32_t pitMgr_t::timer_ms`。当前版本中本函数总是返回`kStatus_Success`。
 
-- **计时函数 `static uint32_t pitMgr_t::getTimer(void);`**
+- **解初始化函数 `void PITMGR_Deinit(pitmgr_t *_inst);`**
 
-  该函数用于读取当前系统运行的毫秒数，可用于精度不高的计时。
-
-- **阻塞延迟函数 `static void pitMgr_t::delay_ms(uint32_t _t);`**
-
-  该函数用于阻塞延迟。不能在中断服务函数中使用。
-
-- **插入任务 `static pitMgr_t* pitMgr_t::insert(uint32_t _ms, uint32_t _mso, handler_t _handler, uint32_t _ppt);`**
+- **插入任务 `status_t PITMGR_HandleInsert(pitmgr_t *_inst, pitmgr_handle_t *_handle);`**
 
   该函数用于向任务列表中插入一个任务。
 
-  参数`_ms` ：表示该任务运行的周期，单位是毫秒。
+  返回值：成功返回kStatus_Success，异常返回kStatus_Fail。
 
-  参数`_mso` ：表示该任务运行周期的偏移。例如，`_ms` = 10，`_mso` = 3时，该任务将在第3毫秒、第13毫秒、第23毫秒......运行。
+- **移除任务 `status_t PITMGR_HandleRemove(pitmgr_t *_inst, pitmgr_handle_t *_handle);`**
 
-  参数`_handler` ：任务的服务函数，在任务激活时调用。其原型为`typedef void (*handler_t)(void);`。
+  该函数用于移除任务。如果任务存在且成功移除则返回`kStatus_Success`，如果任务不存在或移除失败，则返回`kStatus_Fail`。
 
-  参数`_ppt` ：属性列表。该参数的取值范围为为枚举变量`pitMgr_t::pptFlag_t`中各枚举量的按位或。
+- **服务接口 `void PITMGR_Isr(pitmgr_t *_inst);`**
 
-  返回值：指向该任务的指针。可用于重新配置任务或删除任务。插入任务失败时会返回空指针。
-
-- **移除任务 `static status_t pitMgr_t::remove(pitMgr_t &_handle);`**
-
-  该函数用于移除任务。如果任务存在且成功移除则返回`kStatus_Success`，如果任务不存在或移除失败，则返回`kStatus_Fail`。移除任务成功后指针将变为野指针，需要用户自行置为`NULL`。
-
-- **设置任务 `void pitMgr_t::setup(uint32_t _ms, uint32_t _mso, handler_t _handler, uint32_t _ppt);`**
-
-  该函数用于重设一个已有的任务。
-
-- **设置任务 `void pitMgr_t::setEnable(bool _b);`**
-
-  该函数控制`pptFlag`中启用属性的开关。
-
-- **设置传递参数`void pitMgr_t::setUserData(void *_userData);`**
-
-  该函数用于设置任务触发时传递给服务函数的用户变量指针。对于不处理参数的服务函数，忽略即可。
-
-- **服务接口 `static void pitMgr_t::isr(void);`**
-
-  该函数无需用户调用，是由系统自动在定时器中断服务函数中调用的。
+  该函数无需用户在使用PITMGR时调用，而是由系统在定时器中断服务函数中调用的。
 
   注意：该函数仅包含PITMGR的内部逻辑，不负责具体的硬件操作。定时器中断服务函数中除调用此函数外，还应包含清除中断标志位等必需的操作。
-
-
-
-模块内还包含用于兼容早期C语言版本PITMGR模块的C风格兼容层，仅供兼容旧代码使用，一旦旧代码迁移完成将删除该兼容层，因此禁止新代码使用。
 
 
 
@@ -142,35 +130,50 @@ by CkovMk @hitsic 2018.12.20
 
 ### 初始化
 
-- 调用`static status_t pitMgr_t::init(void);`即可
+- 创建PITMGR实例：`pitmgr_t pitMain;`
+- 调用初始化函数：`PITMGR_Init(&pitMain, 1000U);`即可。
 
 
 
 ### 基础使用
 
-- 创建服务函数
 
+- 创建服务函数：
   创建一个符合`typedef void (*pitMgr_t::handler_t)(void *userData);`定义的服务函数。
+  
+- 创建服务描述符：
+  ```c
+  pitmgr_handle_t imu_invensense_test_pitHandle =
+  {
+      .tickInterval = 5UL, ///< 运行间隔
+      .tickOffset = 1UL, ///< 运行偏移
+      .handler = myHandler, ///< 服务函数指针
+      .pptFlag = pitmgr_pptEnable, ///< 属性Flag
+      .userData = NULL, ///< 用户数据，不用则留空
+  };
+  ```
+
+  
+
+  
 
 - 将服务函数注册至列表
 
-  调用`static pitMgr_t* pitMgr_t::insert(uint32_t _ms, uint32_t _mso, handler_t _handler, uint32_t _ppt);`函数，并接收返回的指针。
+  调用`status_t PITMGR_HandleInsert(pitmgr_t *_inst, pitmgr_handle_t *_handle);`函数，即可注册该服务函数。执行此函数不会修改服务描述符。
 
-  如果返回的是空指针，说明注册失败。
+  成功返回kStatus_Success，异常返回kStatus_Fail。
 
 - 从列表中删除服务函数
 
-  调用`static status_t pitMgr_t::remove(pitMgr_t &_handle);`函数，传入注册任务时保存的`pitMgr_t`对象引用，即可取消注册该服务函数。
+  调用`status_t PITMGR_HandleRemove(pitmgr_t *_inst, pitmgr_handle_t *_handle);`函数，即可取消该服务描述符。执行此函数不会修改服务描述符。
+  
+  成功返回kStatus_Success，异常返回kStatus_Fail。
 
 
 
 ### 变更属性、使用用户参数
 
-使用注册任务时保存的`pitMgr_t`对象指针：
-
-- 调用成员函数 `void pitMgr_t::setup(uint32_t _ms, uint32_t _mso, handler_t _handler, uint32_t _ppt);`重设所有属性。
-- 调用成员函数 `void pitMgr_t::setEnable(bool _b);`单独设置启用/禁用属性。
-- 调用成员函数 `void pitMgr_t::setUserData(void *_userData);`设置用户参数。
+直接修改注册任务时使用的`pitmgr_handle_t`实例。
 
 
 
@@ -189,18 +192,6 @@ by CkovMk @hitsic 2018.12.20
 - **宏：启用控制 `HITSIC_USE_PITMGR`**
 
   0：禁用PITMGR；其他：启用PITMGR。
-
-- **宏：定时器计数频率 `HITSIC_PITMGR_CNTFREQ`**
-
-  定时器计数的频率。注意：由于定时器内部分频器的存在，计数频率不一定等于定时器输入时钟的频率。
-
-- **宏：平台初始化控制 `HITSIC_PITMGR_INITLIZE`**
-
-  0：禁用平台初始化函数；其他：启用平台初始化函数。
-
-- **函数：平台初始化函数 `inline void PITMGR_PlatformInit(void);`**
-
-  平台初始化函数用于初始化定时器等PITMGR的相关硬件，如果启用平台初始化功能，该函数会在`status_t pitMgr_t::init(void);`中调用。如不适用平台初始化函数，您应在调用`status_t pitMgr_t::init(void);`前自行初始化定时器硬件。无论采用何种初始化方法，您应保证使定时器每1ms触发一次中断并调用中断服务函数，且中断优先级不能过低。推荐的中断优先级是2~4级（共16级优先级时）。
 
 - **宏：启用移植文件内的中断服务函数 `HITSIC_PITMGR_DEFAULT_IRQ`**
 
@@ -234,5 +225,5 @@ by CkovMk @hitsic 2018.12.20
 	#endif
 	```
 	
-	该中断函数应每1ms执行一次。
+	
 
