@@ -28,7 +28,7 @@
 #ifndef UTILITIES_DRV_DMADVP_HPP_
 #define UTILITIES_DRV_DMADVP_HPP_
 #include <sys_extint.h>
-#include "inc_stdlib.hpp"
+#include <inc_stdlib.h>
 #include "hitsic_common.h"
 
 #if defined(HITSIC_USE_DMADVP) && (HITSIC_USE_DMADVP > 0)

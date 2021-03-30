@@ -9,7 +9,7 @@
 
 #define SYSLOG_TAG  ("DMADVP")
 #define SYSLOG_LVL  (HITSIC_DMADVP_LOG_LVL)
-#include "inc_syslog.hpp"
+#include <inc_syslog.h>
 
 static dmadvp_handle_t *dmadvp_handleList[DMADVP_CNT];
 

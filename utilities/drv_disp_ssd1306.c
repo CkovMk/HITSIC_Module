@@ -11,7 +11,7 @@
 
 #define SYSLOG_TAG  ("DISP_1306")
 #define SYSLOG_LVL  (3U)
-#include "inc_syslog.hpp"
+#include <inc_syslog.h>
 
 //#include "drv_disp_font.cpp"
 

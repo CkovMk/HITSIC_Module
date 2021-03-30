@@ -1,6 +1,6 @@
 #ifndef UTILITIES_APP_MENU_DEF_HPP
 #define UTILITIES_APP_MENU_DEF_HPP
-#include "inc_stdlib.hpp"
+#include <inc_stdlib.h>
 #include "hitsic_common.h"
 
 #if defined(HITSIC_USE_APP_MENU) && (HITSIC_USE_APP_MENU > 0)

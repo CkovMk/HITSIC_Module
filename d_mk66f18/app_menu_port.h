@@ -19,7 +19,7 @@
 #define D_MK66F18_APP_MENU_PORT_H_
 
 #include <app_menu_def.h>
-#include "inc_stdlib.hpp"
+#include <inc_stdlib.h>
 #include "hitsic_common.h"
 
 #if defined(HITSIC_USE_APP_MENU) && (HITSIC_USE_APP_MENU > 0)

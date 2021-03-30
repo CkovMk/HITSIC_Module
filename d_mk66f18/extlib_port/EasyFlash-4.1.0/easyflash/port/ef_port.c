@@ -42,7 +42,7 @@ static const ef_env default_env_set[] = {
 
 #define SYSLOG_TAG  ("EF_Port")
 #define SYSLOG_LVL  (3U)
-#include "inc_syslog.hpp"
+#include <inc_syslog.h>
 
 /**
  * Flash port for hardware initialize.

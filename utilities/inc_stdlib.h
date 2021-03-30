@@ -1,7 +1,7 @@
 #ifndef _INC_STDLIB_H_
 #define _INC_STDLIB_H_
 
-
+#ifdef __cplusplus
 
 //std C
 #include "cassert"
@@ -23,12 +23,6 @@
 //#include "uchar.h"
 #include "cwchar"
 #include "cwctype"
-
-
-
-
-
-#ifdef __cplusplus
 
 //C++ Other
 //#include "iostream"	//too large and seems useless in mcu.
@@ -75,6 +69,30 @@
 #include "set"
 #include "stack"
 #include "utility"
+
+
+#else
+
+//std C
+#include "assert.h"
+#include "ctype.h"
+#include "errno.h"
+#include "float.h"
+#include "inttypes.h"
+#include "limits.h"
+#include "math.h"
+#include "stdarg.h"
+#include "stdbool.h"
+#include "stddef.h"
+#include "stdint.h"
+#include "stdio.h"
+#include "stdlib.h"
+#include "string.h"
+#include "tgmath.h"
+//#include "time.h"
+//#include "uchar.h"
+#include "wchar.h"
+#include "wctype.h"
 
 #endif // ! __cplusplus
 

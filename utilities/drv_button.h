@@ -27,7 +27,7 @@
 
 #ifndef UTILITIES_DRV_BUTTON_HPP
 #define UTILITIES_DRV_BUTTON_HPP
-#include "inc_stdlib.hpp"
+#include <inc_stdlib.h>
 #include "hitsic_common.h"
 
 #if defined(HITSIC_USE_DRV_BUTTON) && (HITSIC_USE_DRV_BUTTON > 0)

@@ -8,7 +8,7 @@
  */
 #define SYSLOG_TAG  ("MENU.KVDB")
 #define SYSLOG_LVL  (HITSIC_MENU_KVDB_LOG_LVL)
-#include "inc_syslog.hpp"
+#include <inc_syslog.h>
 
 /**
  * ********** NVM存储变量定义 **********

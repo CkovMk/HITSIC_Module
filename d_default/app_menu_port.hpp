@@ -18,7 +18,7 @@
 #ifndef D_DEFAULT_APP_MENU_PORT_H_
 #define D_DEFAULT_APP_MENU_PORT_H_
 
-#include "inc_stdlib.hpp"
+#include <inc_stdlib.h>
 #include "hitsic_common.h"
 
 #ifdef __cplusplus

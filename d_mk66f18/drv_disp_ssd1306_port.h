@@ -26,7 +26,7 @@
 #ifndef D_MK66F18_DRVOLED_H_
 #define D_MK66F18_DRVOLED_H_
 #include <sys_pitmgr.h>
-#include "inc_stdlib.hpp"
+#include <inc_stdlib.h>
 #include "hitsic_common.h"
 #include "pin_mux.h"
 

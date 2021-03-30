@@ -25,19 +25,19 @@
 #pragma once
 #ifndef D_DEFAULT_DRVOLED_H_
 #define D_DEFAULT_DRVOLED_H_
-#include "inc_stdlib.hpp"
+#include <inc_stdlib.h>
 #include "hitsic_common.h"
 #include "sys_pitmgr.hpp"
 #include "pin_mux.h"
 
-#define HITSIC_DISP_SSD1306_FLIP_X (0U)	///< ÆÁÄ»×óÓÒ·­×ª
-#define HITSIC_DISP_SSD1306_FLIP_Y (0U)	///< ÆÁÄ»ÉÏÏÂ·­×ª
+#define HITSIC_DISP_SSD1306_FLIP_X (0U)	///< ï¿½ï¿½Ä»ï¿½ï¿½ï¿½Ò·ï¿½×ª
+#define HITSIC_DISP_SSD1306_FLIP_Y (0U)	///< ï¿½ï¿½Ä»ï¿½ï¿½ï¿½Â·ï¿½×ª
 
 
 /**
- * @brief ÉèÖÃRST½ÅµçÆ½¡£
+ * @brief ï¿½ï¿½ï¿½ï¿½RSTï¿½Åµï¿½Æ½ï¿½ï¿½
  * 
- * @param x RST½ÅµÄµçÆ½×´Ì¬£¬ÕýÂß¼­¡£
+ * @param x RSTï¿½ÅµÄµï¿½Æ½×´Ì¬ï¿½ï¿½ï¿½ï¿½ï¿½ß¼ï¿½ï¿½ï¿½
  */
 inline void DISP_SSD1306_gpioSetRST(uint8_t x)
 {
@@ -45,9 +45,9 @@ inline void DISP_SSD1306_gpioSetRST(uint8_t x)
 }
 
 /**
- * @brief ÉèÖÃD/C½ÅµçÆ½¡£
+ * @brief ï¿½ï¿½ï¿½ï¿½D/Cï¿½Åµï¿½Æ½ï¿½ï¿½
  * 
- * @param x D/C½ÅµÄµçÆ½×´Ì¬£¬ÕýÂß¼­¡£
+ * @param x D/Cï¿½ÅµÄµï¿½Æ½×´Ì¬ï¿½ï¿½ï¿½ï¿½ï¿½ß¼ï¿½ï¿½ï¿½
  */
 inline void DISP_SSD1306_gpioSetD_C(uint8_t x)
 {
@@ -55,9 +55,9 @@ inline void DISP_SSD1306_gpioSetD_C(uint8_t x)
 }
 
 /**
- * @brief ºÁÃë¼¶×èÈûÑÓ³Ùº¯Êý¡£
+ * @brief ï¿½ï¿½ï¿½ë¼¶ï¿½ï¿½ï¿½ï¿½ï¿½Ó³Ùºï¿½ï¿½ï¿½ï¿½ï¿½
  * 
- * @param ms ÑÓ³ÙµÄºÁÃëÊý¡£
+ * @param ms ï¿½Ó³ÙµÄºï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
  */
 inline void DISP_SSD1306_delay_ms(uint32_t ms)
 {
@@ -66,9 +66,9 @@ inline void DISP_SSD1306_delay_ms(uint32_t ms)
 
 
 /**
- * @brief SPI½Ó¿Ú·¢ËÍÒ»¸ö×Ö½Ú¡£
+ * @brief SPIï¿½Ó¿Ú·ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½Ö½Ú¡ï¿½
  * 
- * @param data Òª·¢ËÍµÄÊý¾Ý
+ * @param data Òªï¿½ï¿½ï¿½Íµï¿½ï¿½ï¿½ï¿½ï¿½
  */
 inline void DISP_SSD1306_spiWrite(uint8_t data)
 {

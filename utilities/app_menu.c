@@ -38,7 +38,7 @@
 
 #define SYSLOG_TAG  ("MENU.MAIN")
 #define SYSLOG_LVL  (HITSIC_MENU_MAIN_LOG_LVL)
-#include "inc_syslog.hpp"
+#include <inc_syslog.h>
 
 	/**
 	 * 菜单定义

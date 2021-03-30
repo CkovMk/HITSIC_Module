@@ -1,7 +1,7 @@
 #ifndef UTILITIES_SYS_LTC_H
 #define UTILITIES_SYS_LTC_H
 
-#include "inc_stdlib.hpp"
+#include <inc_stdlib.h>
 #include "hitsic_common.h"
 
 #if (defined(HITSIC_USE_LTC) && (HITSIC_USE_LTC != 0U))

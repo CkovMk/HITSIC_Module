@@ -28,7 +28,7 @@
 #ifndef _UARTMGR_HPP_
 #define _UARTMGR_HPP_
 
-#include "inc_stdlib.hpp"
+#include <inc_stdlib.h>
 #include "hitsic_common.h"
 
 #if defined(HITSIC_USE_UARTMGR) && (HITSIC_USE_UARTMGR > 0)

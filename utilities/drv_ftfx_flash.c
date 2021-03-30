@@ -29,7 +29,7 @@
 
 #define SYSLOG_TAG  ("FTFX_FLASH")
 #define SYSLOG_LVL  (3U)
-#include "inc_syslog.hpp"
+#include <inc_syslog.h>
 
 #if defined(__cplusplus)
 extern "C" {

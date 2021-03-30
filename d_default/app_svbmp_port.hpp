@@ -1,7 +1,6 @@
 #ifndef D_DEFAULT_SVBMP_PORT_HPP
 #define D_DEFAULT_SVBMP_PORT_HPP
-
-#include "inc_stdlib.hpp"
+#include <inc_stdlib.h>
 #include "hitsic_common.h"
 
 #if (defined(HITSIC_USE_APP_SVBMP) && (HITSIC_USE_APP_SVBMP > 0))

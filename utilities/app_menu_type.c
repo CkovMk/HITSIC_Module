@@ -9,7 +9,7 @@
 
 #define SYSLOG_TAG  ("MENU.ITEM")
 #define SYSLOG_LVL  (HITSIC_MENU_ITEM_LOG_LVL)
-#include "inc_syslog.hpp"
+#include <inc_syslog.h>
 
 /**
  * @brief : 菜单项和菜单列表的计数器。
@@ -920,7 +920,7 @@ void MENU_ItemKeyOp(menu_itemIfce_t *_item, menu_keyOp_t *const _op)
 #undef SYSLOG_LVL
 #define SYSLOG_TAG  ("MENU.LIST")
 #define SYSLOG_LVL  (HITSIC_MENU_LIST_LOG_LVL)
-#include "inc_syslog.hpp"
+#include <inc_syslog.h>
 
 menu_list_t *MENU_ListConstruct(const char *_nameStr, uint32_t _size, menu_list_t *_prev)
 {
@@ -1030,7 +1030,7 @@ void MENU_ListKeyOp(menu_list_t *_list, menu_keyOp_t *const _op)
 #undef SYSLOG_LVL
 #define SYSLOG_TAG  ("MENU.ITER")
 #define SYSLOG_LVL  (HITSIC_MENU_ITER_LOG_LVL)
-#include "inc_syslog.hpp"
+#include <inc_syslog.h>
 
 void MENU_IteratorSetup(menu_iterator_t *_iter)
 {

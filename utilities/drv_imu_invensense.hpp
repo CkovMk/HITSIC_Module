@@ -26,7 +26,7 @@
 
 #ifndef UTILITIES_DRV_IMU_INVENSENSE_HPP
 #define UTILITIES_DRV_IMU_INVENSENSE_HPP
-#include "inc_stdlib.hpp"
+#include <inc_stdlib.h>
 #include "hitsic_common.h"
 
 #if (defined(HITSIC_USE_DRV_IMU_INV) && (HITSIC_USE_DRV_IMU_INV > 0U))

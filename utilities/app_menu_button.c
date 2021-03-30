@@ -9,7 +9,7 @@
 
 #define SYSLOG_TAG  ("MENU.BUTN")
 #define SYSLOG_LVL  (HITSIC_MENU_BUTN_LOG_LVL)
-#include "inc_syslog.hpp"
+#include <inc_syslog.h>
 
 /**
  * ********** 按键操作定义 **********

@@ -2,7 +2,7 @@
 #define UTILITIES_LIB_ADRCCTRL_H
 
 
-#include "inc_stdlib.hpp"
+#include <inc_stdlib.h>
 #include "hitsic_common.h"
 
 #ifdef __cplusplus

@@ -9,7 +9,7 @@
 
 #define SYSLOG_TAG  ("ZF9V034")
 #define SYSLOG_LVL  (HITSIC_ZF9V034_LOG_LVL)
-#include "inc_syslog.hpp"
+#include <inc_syslog.h>
 
 uint16_t camera_version;
 
