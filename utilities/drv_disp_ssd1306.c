@@ -224,7 +224,7 @@ void DISP_SSD1306_BufferUpload(uint8_t *buffer)
 {
     DISP_SSD1306_SetPos(0, 0);
     DISP_SSD1306_gpioSetD_C(1);
-    DISP_SSD1306_spiWrite(buffer, sizeof(disp_ssd1306_frameBuffer_t));
+    DISP_SSD1306_spiWrite(buffer, sizeof(disp_ssd1306_fb_t));
 }
 
 
@@ -234,7 +234,7 @@ void DISP_SSD1306_BufferUploadDMA(uint8_t *buffer)
 {
     DISP_SSD1306_SetPos(0, 0);
     DISP_SSD1306_gpioSetD_C(1);
-    DISP_SSD1306_spiDmaWrite(buffer, sizeof(disp_ssd1306_frameBuffer_t));
+    DISP_SSD1306_spiDmaWrite(buffer, sizeof(disp_ssd1306_fb_t));
 }
 
 #endif // ! HITSIC_DISP_SSD1306_DMA

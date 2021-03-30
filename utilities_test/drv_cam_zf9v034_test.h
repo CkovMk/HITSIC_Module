@@ -48,11 +48,11 @@ inline void CAM_ZF9V034_UnitTest(void)
     DMADVP_TransferCreateHandle(&dmadvpHandle, DMADVP0, CAM_ZF9V034_UnitTestDmaCallback);
 
     PRINTF("[D]DMADVP.TEST: Allocating image buffer.\n");
-    uint8_t *imageBuffer0 = new uint8_t[DMADVP0->imgSize];
-    uint8_t *imageBuffer1 = new uint8_t[DMADVP0->imgSize];
+    uint8_t *imageBuffer0 = (uint8_t*)malloc(DMADVP0->imgSize);
+    uint8_t *imageBuffer1 = (uint8_t*)malloc(DMADVP0->imgSize);
     uint8_t *fullBuffer = NULL;
     //FIXME: do cache operation HERE!
-    disp_ssd1306_frameBuffer_t* dispBuffer = new disp_ssd1306_frameBuffer_t;
+    disp_ssd1306_fb_t * testDispBuffer = (disp_ssd1306_fb_t*)malloc(sizeof(disp_ssd1306_fb_t));
 
     DMADVP_TransferSubmitEmptyBuffer(DMADVP0, &dmadvpHandle, imageBuffer0);
     DMADVP_TransferSubmitEmptyBuffer(DMADVP0, &dmadvpHandle, imageBuffer1);
@@ -63,7 +63,7 @@ inline void CAM_ZF9V034_UnitTest(void)
     while(kStatus_Success != DMADVP_TransferGetFullBuffer(DMADVP0, &dmadvpHandle, &fullBuffer));
 
     //memset((void*)dispBuffer, 0x00, 8 * 128);
-    dispBuffer->Clear();
+    DISP_SSD1306_FB_Clear(testDispBuffer);
     const uint8_t imageTH = 100;
     for(int i = 0; i < cameraCfg.imageRow; i += 2)
     {
@@ -74,22 +74,22 @@ inline void CAM_ZF9V034_UnitTest(void)
             int16_t dispCol = j >> 1;
             if(fullBuffer[i * cameraCfg.imageCol + j] > imageTH)
             {
-                dispBuffer->SetPixelColor(dispCol, imageRow, 1);
+                DISP_SSD1306_FB_SetPixelColor(testDispBuffer, dispCol, imageRow, 1);
             }
         }
     }
     DMADVP_TransferSubmitEmptyBuffer(DMADVP0, &dmadvpHandle, fullBuffer);
-    DISP_SSD1306_BufferUpload((uint8_t*)dispBuffer);
+    DISP_SSD1306_BufferUpload((uint8_t*)testDispBuffer);
     }
     DMADVP_TransferStop(DMADVP0, &dmadvpHandle);
-    PRINTF("[D]DMADVP.TEST: End time: %d ms.\n", CAM_ZF9V034_TEST_TIMER_MS);
+    PRINTF("[D]DMADVP.TEST: End time: %lld ms.\n", CAM_ZF9V034_TEST_TIMER_MS);
 
 
 
     PRINTF("[D]DMADVP.TEST: Transfer Stop. Cleaning up.\n");
-    delete[] imageBuffer0;
-    delete[] imageBuffer1;
-    delete[] dispBuffer;
+    free(imageBuffer0);
+    free(imageBuffer1);
+    free(testDispBuffer);
     PRINTF("---------- ZF9V034 Test Done ----------\n\n");
 }
 

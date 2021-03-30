@@ -2,17 +2,16 @@
 
 #if defined(HITSIC_MENU_USE_FRAME_BUFFER) && (HITSIC_MENU_USE_FRAME_BUFFER > 0)
 
-extern disp_ssd1306_frameBuffer_t dispBuffer;
-extern graphic::bufPrint0608_t<disp_ssd1306_frameBuffer_t> bufPrinter;
+extern disp_ssd1306_fb_t dispBuffer;
 
 void MENU_FrameBufferClear(void)
 {
-    dispBuffer.Clear();
+    DISP_SSD1306_FB_Clear(&dispBuffer);
 }
 
 void MENU_FrameBufferPrint(uint16_t x, uint16_t y, char *str)
 {
-    bufPrinter.Print(y << 3U, x, true, false, str);
+    DISP_SSD1306_Print0608_Print_Overlay(&dispBuffer, y << 3U, x, true, false, str);
 }
 
 void MENU_FrameBufferUpdate(void)

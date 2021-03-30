@@ -17,7 +17,7 @@ inline void MENU_SuspendAndResumeTest(void)
 
 inline void MENU_ExampleProcHandler1(menu_keyOp_t *const _op)
 {
-    extern disp_ssd1306_frameBuffer_t dispBuffer;
+    extern disp_ssd1306_fb_t dispBuffer;
 
     if(MENU_BUTTON_MAKE_OP(nl, disp) == *_op)
     {
@@ -26,7 +26,7 @@ inline void MENU_ExampleProcHandler1(menu_keyOp_t *const _op)
         {
             for(uint16_t j = 10; j < 20; ++j)
             {
-                dispBuffer.SetPixelColor(i, j, true);
+                DISP_SSD1306_FB_SetPixelColor(&dispBuffer, i, j, true);
             }
         }
         *_op = 0U;
