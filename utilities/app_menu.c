@@ -27,7 +27,7 @@
  * @note 	:	预发布版本，代码不完整，仅供学习。
  */
 
-#include "app_menu.hpp"
+#include <app_menu.h>
 
 #if defined(HITSIC_USE_APP_MENU) && (HITSIC_USE_APP_MENU > 0)
 

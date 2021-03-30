@@ -33,7 +33,7 @@
 #include "hitsic_common.h"
 
 #if defined(HITSIC_USE_RMCALL) && (HITSIC_USE_RMCALL > 0)
-#include "sys_rmcall_port.hpp"
+#include <sys_rmcall_port.h>
 
  /*!
   * @addtogroup rmcall
