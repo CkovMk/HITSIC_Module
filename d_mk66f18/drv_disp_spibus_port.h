@@ -52,7 +52,7 @@
  * 
  * @param x RST脚的电平状态，正逻辑。
  */
-inline void DISP_SSD1306_gpioSetRST(uint8_t x)
+inline void DISP_SPIBUS_gpioSetRST(uint8_t x)
 {
 	GPIO_PinWrite(RTEPIN_DIGITAL_OLED_RST_GPIO, RTEPIN_DIGITAL_OLED_RST_PIN, x);
 }
@@ -62,7 +62,7 @@ inline void DISP_SSD1306_gpioSetRST(uint8_t x)
  * 
  * @param x D/C脚的电平状态，正逻辑。
  */
-inline void DISP_SSD1306_gpioSetD_C(uint8_t x)
+inline void DISP_SPIBUS_gpioSetD_C(uint8_t x)
 {
 	GPIO_PinWrite(RTEPIN_DIGITAL_OLED_D_C_GPIO, RTEPIN_DIGITAL_OLED_D_C_PIN, x);
 }
@@ -72,7 +72,7 @@ inline void DISP_SSD1306_gpioSetD_C(uint8_t x)
  * 
  * @param ms 延迟的毫秒数。
  */
-inline void DISP_SSD1306_delay_ms(uint32_t ms)
+inline void DISP_SPIBUS_delay_ms(uint32_t ms)
 {
 	for(uint32_t i = 0; i < ms; ++i)
 	{
@@ -86,7 +86,7 @@ inline void DISP_SSD1306_delay_ms(uint32_t ms)
  * @param data 要发送的数据
  * @param size 数据大小
  */
-status_t DISP_SSD1306_spiWrite(uint8_t *data, uint32_t size);
+status_t DISP_SPIBUS_spiWrite(uint8_t *data, uint32_t size);
 
 /**
  * @name DMA传输
@@ -101,7 +101,7 @@ status_t DISP_SSD1306_spiWrite(uint8_t *data, uint32_t size);
 /**
  * @brief 初始化SPI DMA传输
  */
-status_t DISP_SSD1306_spiDmaInit(void);
+status_t DISP_SPIBUS_spiDmaInit(void);
 
 
 /**
@@ -110,7 +110,7 @@ status_t DISP_SSD1306_spiDmaInit(void);
  * @param data 要发送的数据
  * @param size 数据长度
  */
-status_t DISP_SSD1306_spiDmaWrite(uint8_t* data, uint32_t size);
+status_t DISP_SPIBUS_spiDmaWrite(uint8_t* data, uint32_t size);
 
 #endif // ! HITSIC_DISP_SSD1306_DMA
 

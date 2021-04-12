@@ -1,5 +1,7 @@
 #include <app_menu_port.h>
 
+#if defined(HITSIC_USE_APP_MENU) && (HITSIC_USE_APP_MENU > 0)
+
 #if defined(HITSIC_MENU_USE_FRAME_BUFFER) && (HITSIC_MENU_USE_FRAME_BUFFER > 0)
 
 extern disp_ssd1306_fb_t dispBuffer;
@@ -11,7 +13,7 @@ void MENU_FrameBufferClear(void)
 
 void MENU_FrameBufferPrint(uint16_t x, uint16_t y, char *str)
 {
-    DISP_SSD1306_Print0608_Print_Overlay(&dispBuffer, y << 3U, x, true, false, str);
+    DISP_SSD1306_FB_Print0608_Print_Overlay(&dispBuffer, y << 3U, x, true, false, str);
 }
 
 void MENU_FrameBufferUpdate(void)
@@ -39,5 +41,7 @@ void HITSIC_MENU_SERVICE_IRQHandler(void)
 #ifdef __cplusplus
 }
 #endif
+
+#endif // ! HITSIC_USE_APP_MENU
 
 

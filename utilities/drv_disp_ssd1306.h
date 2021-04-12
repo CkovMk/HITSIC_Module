@@ -35,7 +35,7 @@
 #include "hitsic_common.h"
 
 #if defined(HITSIC_USE_DISP_SSD1306) && (HITSIC_USE_DISP_SSD1306 > 0)
-#include <drv_disp_ssd1306_port.h>
+#include <drv_disp_spibus_port.h>
 #include <lib_graphic.h>
 
 /** @brief : 软件版本 */
@@ -149,7 +149,7 @@ void DISP_SSD1306_BufferUploadDMA(uint8_t *buffer);
 
 GRAPHIC_FB_MONO_DEF(disp_ssd1306, DISP_SSD1306, 64, 128)
 
-GRAPHIC_PRINT0608_DEF(disp_ssd1306, DISP_SSD1306)
+GRAPHIC_FB_PRINT0608_DEF(disp_ssd1306, DISP_SSD1306)
 
 #endif // ! HITSIC_USE_DISP_SSD1306
 

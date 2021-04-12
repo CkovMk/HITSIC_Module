@@ -15,7 +15,7 @@
 
 
 #define GRAPHIC_FB_MONO_DEF(var_name, fun_name, row, col)                               \
-  typedef bool var_name##_fb_pixel_t;                                                   \
+  typedef uint8_t var_name##_fb_pixel_t;                                                \
   const uint16_t var_name##_fb_row = row;                                               \
   const uint16_t var_name##_fb_col = col;                                               \
   typedef struct _##var_name##_fb                                                       \
@@ -29,16 +29,36 @@
   static inline void fun_name##_FB_SetPixelColor                                        \
     (var_name##_fb_t *inst, uint16_t x, uint16_t y, var_name##_fb_pixel_t color)        \
   {                                                                                     \
+      assert(color & 0xf7U);                                                            \
       color ? (inst->frame[y >> 3][x] |= (1U << (y & 7U)))                              \
           : (inst->frame[y >> 3][x] &= ~(1U << (y & 7U)));                              \
   }
 
+#define GRAPHIC_FB_GSCL4B_DEF(var_name, fun_name, row, col)                             \
+  typedef uint8_t var_name##_fb_pixel_t;                                                \
+  const uint16_t var_name##_fb_row = row;                                               \
+  const uint16_t var_name##_fb_col = col;                                               \
+  typedef struct _##var_name##_fb                                                       \
+  {                                                                                     \
+      uint8_t frame[row >> 1][col];                                                     \
+  } var_name##_fb_t;                                                                    \
+  static inline void fun_name##_FB_Clear(var_name##_fb_t *inst)                         \
+  {                                                                                     \
+      memset(inst, 0U, sizeof(var_name##_fb_t));                                        \
+  }                                                                                     \
+  static inline void fun_name##_FB_SetPixelColor                                        \
+    (var_name##_fb_t *inst, uint16_t x, uint16_t y, var_name##_fb_pixel_t color)        \
+  {                                                                                     \
+      assert(color & 0xf0U);                                                            \
+      uint8_t *cell = &inst->frame[y >> 1][x];                                          \
+      (y & 0x01U) ? (*cell = (*cell & 0x0fU) | (color << 4U))                           \
+          : (*cell = (*cell & 0xf0U) | (color << 0U));                                  \
+  }
 
 
 
-
-#define GRAPHIC_PRINT0608_DEF(var_name, fun_name)                                       \
-  static inline void fun_name##_Print0608_DrawChar_Overlay                              \
+#define GRAPHIC_FB_PRINT0608_DEF(var_name, fun_name)                                    \
+  static inline void fun_name##_FB_Print0608_DrawChar_Overlay                              \
     (var_name##_fb_t *inst, uint16_t r, uint16_t c, var_name##_fb_pixel_t f_color, var_name##_fb_pixel_t b_color, char ch) \
   {                                                                                     \
       if (r > var_name##_fb_row - 8) { return; }                                        \
@@ -60,7 +80,7 @@
           ++c;                                                                          \
       }                                                                                 \
   }                                                                                     \
-  static inline void fun_name##_Print0608_Print_Overlay                                 \
+  static inline void fun_name##_FB_Print0608_Print_Overlay                              \
     (var_name##_fb_t *inst, uint16_t r, uint16_t c, var_name##_fb_pixel_t f_color, var_name##_fb_pixel_t b_color, const char* str) \
   {                                                                                     \
       for (const char* p = str; (*p) != '\0'; ++p)                                      \
@@ -73,7 +93,7 @@
           }                                                                             \
           if (graphic_asciiBegin <= (*p) && (*p) < graphic_asciiEndin)                  \
           {                                                                             \
-              fun_name##_Print0608_DrawChar_Overlay(inst, r, c, f_color, b_color, *p);  \
+              fun_name##_FB_Print0608_DrawChar_Overlay(inst, r, c, f_color, b_color, *p);  \
           }                                                                             \
           c += 6;                                                                       \
           if (c > 240 - 6)                                                              \
@@ -87,14 +107,14 @@
           }                                                                             \
       }                                                                                 \
   }                                                                                     \
-  static inline void fun_name##_Print0608_RowPrint_Overlay                              \
+  static inline void fun_name##_FB_Print0608_RowPrint_Overlay                           \
     (var_name##_fb_t *inst, uint16_t r, uint16_t c, var_name##_fb_pixel_t f_color, var_name##_fb_pixel_t b_color, const char* str) \
   {                                                                                     \
       for (const char* p = str; (*p) != '\0'; ++p)                                      \
       {                                                                                 \
           if (graphic_asciiBegin <= (*p) && (*p) < graphic_asciiEndin)                  \
           {                                                                             \
-              fun_name##_Print0608_DrawChar_Overlay(inst, r, c, f_color, b_color, *p);  \
+              fun_name##_FB_Print0608_DrawChar_Overlay(inst, r, c, f_color, b_color, *p);  \
           }                                                                             \
           c += 6;                                                                       \
           if (c > 240 - 8)                                                              \
@@ -103,7 +123,7 @@
           }                                                                             \
       }                                                                                 \
   }                                                                                     \
-  static inline void fun_name##_Print0608_DrawChar_Hyaline                              \
+  static inline void fun_name##_FB_Print0608_DrawChar_Hyaline                           \
     (var_name##_fb_t *inst, uint16_t r, uint16_t c, var_name##_fb_pixel_t f_color, char ch) \
   {                                                                                     \
       if (r > var_name##_fb_row - 8) { return; }                                        \
@@ -121,7 +141,7 @@
           ++c;                                                                          \
       }                                                                                 \
   }                                                                                     \
-  static inline void fun_name##_Print0608_Print_Hyaline                                 \
+  static inline void fun_name##_FB_Print0608_Print_Hyaline                              \
     (var_name##_fb_t *inst, uint16_t r, uint16_t c, var_name##_fb_pixel_t f_color, const char* str) \
   {                                                                                     \
       for (const char* p = str; (*p) != '\0'; ++p)                                      \
@@ -134,7 +154,7 @@
           }                                                                             \
           if (graphic_asciiBegin <= (*p) && (*p) < graphic_asciiEndin)                  \
           {                                                                             \
-              fun_name##_Print0608_DrawChar_Hyaline(inst, r, c, f_color, *p);           \
+              fun_name##_FB_Print0608_DrawChar_Hyaline(inst, r, c, f_color, *p);        \
           }                                                                             \
           c += 6;                                                                       \
           if (c > 240 - 6)                                                              \
@@ -148,14 +168,14 @@
           }                                                                             \
       }                                                                                 \
   }                                                                                     \
-  static inline void fun_name##_Print0608_RowPrint_Hyaline                              \
+  static inline void fun_name##_FB_Print0608_RowPrint_Hyaline                           \
     (var_name##_fb_t *inst, uint16_t r, uint16_t c, var_name##_fb_pixel_t f_color, const char* str) \
   {                                                                                     \
       for (const char* p = str; (*p) != '\0'; ++p)                                      \
       {                                                                                 \
           if (graphic_asciiBegin <= (*p) && (*p) < graphic_asciiEndin)                  \
           {                                                                             \
-              fun_name##_Print0608_DrawChar_Hyaline(inst, r, c, f_color, *p);           \
+              fun_name##_FB_Print0608_DrawChar_Hyaline(inst, r, c, f_color, *p);        \
           }                                                                             \
           c += 6;                                                                       \
           if (c > 240 - 8)                                                              \

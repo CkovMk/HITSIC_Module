@@ -23,13 +23,13 @@
 
 void DISP_SSD1306_WriteDat(uint8_t data)
 {
-	DISP_SSD1306_gpioSetD_C(1);
-	DISP_SSD1306_spiWrite(&data, 1U);
+	DISP_SPIBUS_gpioSetD_C(1);
+	DISP_SPIBUS_spiWrite(&data, 1U);
 }
 void DISP_SSD1306_WriteCmd(uint8_t cmd)
 {
-	DISP_SSD1306_gpioSetD_C(0);
-	DISP_SSD1306_spiWrite(&cmd, 1U);
+	DISP_SPIBUS_gpioSetD_C(0);
+	DISP_SPIBUS_spiWrite(&cmd, 1U);
 }
 
 
@@ -60,11 +60,11 @@ void DISP_SSD1306_Init(void)
 {
     SYSLOG_I("Init Begin. v%d.%d.%d",HITSIC_VERSION_MAJOR(DRV_DISP_SSD1306_VERSION),
                 HITSIC_VERSION_MINOR(DRV_DISP_SSD1306_VERSION), HITSIC_VERSION_PATCH(DRV_DISP_SSD1306_VERSION));
-	DISP_SSD1306_gpioSetRST(1);
-	DISP_SSD1306_delay_ms(1);
-	DISP_SSD1306_gpioSetRST(0);
-	DISP_SSD1306_delay_ms(50);
-	DISP_SSD1306_gpioSetRST(1);
+	DISP_SPIBUS_gpioSetRST(1);
+	DISP_SPIBUS_delay_ms(1);
+	DISP_SPIBUS_gpioSetRST(0);
+	DISP_SPIBUS_delay_ms(50);
+	DISP_SPIBUS_gpioSetRST(1);
 
 	DISP_SSD1306_WriteCmd(0xae); //--turn off oled panel
 	DISP_SSD1306_WriteCmd(0x00); //---set low column address
@@ -111,7 +111,7 @@ void DISP_SSD1306_Init(void)
 	DISP_SSD1306_SetPos(0, 0);
 
 #if defined(HITSIC_DISP_SSD1306_DMA) && (HITSIC_DISP_SSD1306_DMA > 0U)
-	DISP_SSD1306_spiDmaInit();
+	DISP_SPIBUS_spiDmaInit();
 	SYSLOG_D("DMA API enabled.");
 #else
 	SYSLOG_D("DMA API disbled.");
@@ -223,8 +223,8 @@ void DISP_SSD1306_Print_F8x16(uint8_t x,uint8_t y,const char* str)
 void DISP_SSD1306_BufferUpload(uint8_t *buffer)
 {
     DISP_SSD1306_SetPos(0, 0);
-    DISP_SSD1306_gpioSetD_C(1);
-    DISP_SSD1306_spiWrite(buffer, sizeof(disp_ssd1306_fb_t));
+    DISP_SPIBUS_gpioSetD_C(1);
+    DISP_SPIBUS_spiWrite(buffer, sizeof(disp_ssd1306_fb_t));
 }
 
 

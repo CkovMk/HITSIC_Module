@@ -1,4 +1,4 @@
-#include <drv_disp_ssd1306_port.h>
+#include <drv_disp_spibus_port.h>
 
 dspi_transfer_t oled_spi_xfer =
 {
@@ -21,7 +21,7 @@ edma_handle_t disp_dspiEdmaMasterIntermediaryToTxRegHandle;
  * @param data 要发送的数据
  * @param size 数据大小
  */
-status_t DISP_SSD1306_spiWrite(uint8_t *data, uint32_t size)
+status_t DISP_SPIBUS_spiWrite(uint8_t *data, uint32_t size)
 {
 
     oled_spi_xfer.txData = data;
@@ -31,7 +31,7 @@ status_t DISP_SSD1306_spiWrite(uint8_t *data, uint32_t size)
 
 #if defined(HITSIC_DISP_SSD1306_DMA) && (HITSIC_DISP_SSD1306_DMA > 0U)
 
-void DISP_SSD1306_spiDmaWriteCallback(SPI_Type *base, dspi_master_edma_handle_t *handle, status_t status, void *userData);
+void DISP_SPIBUS_spiDmaWriteCallback(SPI_Type *base, dspi_master_edma_handle_t *handle, status_t status, void *userData);
 
 status_t DISP_SSD1306_spiDmaInit(void)
 {
@@ -60,11 +60,11 @@ status_t DISP_SSD1306_spiDmaInit(void)
     #endif
         EDMA_CreateHandle(&(disp_dspiEdmaMasterIntermediaryToTxRegHandle), DMA0, OLED_SPI_DMA_TX_Chnl);
     #if (defined(FSL_FEATURE_DSPI_HAS_GASKET) && FSL_FEATURE_DSPI_HAS_GASKET)
-        DSPI_MasterTransferCreateHandleEDMA(OLED_SPI_BASE, &oled_dspi_edma_m_handle, DISP_SSD1306_spiDmaWriteCallback,
+        DSPI_MasterTransferCreateHandleEDMA(OLED_SPI_BASE, &oled_dspi_edma_m_handle, DISP_SPIBUS_spiDmaWriteCallback,
                                             NULL, &disp_dspiEdmaMasterRxRegToRxDataHandle, NULL,
                                             &disp_dspiEdmaMasterIntermediaryToTxRegHandle);
     #else
-        DSPI_MasterTransferCreateHandleEDMA(OLED_SPI_BASE, &oled_dspi_edma_m_handle, DISP_SSD1306_spiDmaWriteCallback,
+        DSPI_MasterTransferCreateHandleEDMA(OLED_SPI_BASE, &oled_dspi_edma_m_handle, DISP_SPIBUS_spiDmaWriteCallback,
                                             NULL, &disp_dspiEdmaMasterRxRegToRxDataHandle,
                                             &disp_dspiEdmaMasterTxDataToIntermediaryHandle,
                                             &disp_dspiEdmaMasterIntermediaryToTxRegHandle);
@@ -72,14 +72,14 @@ status_t DISP_SSD1306_spiDmaInit(void)
         return kStatus_Success;
 }
 
-status_t DISP_SSD1306_spiDmaWrite(uint8_t* data, uint32_t size)
+status_t DISP_SPIBUS_spiDmaWrite(uint8_t* data, uint32_t size)
 {
     oled_spi_xfer.txData = data;
     oled_spi_xfer.dataSize = size;
     return DSPI_MasterTransferEDMA(OLED_SPI_BASE, &oled_dspi_edma_m_handle, &oled_spi_xfer);
 }
 
-void DISP_SSD1306_spiDmaWriteCallback(SPI_Type *base, dspi_master_edma_handle_t *handle, status_t status, void *userData)
+void DISP_SPIBUS_spiDmaWriteCallback(SPI_Type *base, dspi_master_edma_handle_t *handle, status_t status, void *userData)
 {
     if (status == kStatus_Success)
     {
