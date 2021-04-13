@@ -11,6 +11,26 @@
 
 ## 版本说明
 
+### v2.0.0
+
+by CkovMk @hitsic 2021.04.03
+
+**改动说明**
+
+- 使用C语言重构代码，提高了兼容性。
+- 采用多实例的写法，您现在可以根据外部中断硬件控制器的数量添加多个EXTINT实例。
+- 简化了接口。描述任务的结构体（即任务描述符）不再保存于EXTINT实例的结构体中，而是由用户创建和管理。EXTINT实例只持有指向任务描述符的指针。
+
+**开发计划**
+
+- 暂无
+
+**已知问题**
+
+- 暂无
+
+
+
 ### v1.0.1
 
 by CkovMk @hitsic 2020.10.30
@@ -70,41 +90,27 @@ by CkovMk @hitsic 2018.12.23
 
 ## API文档
 
-- **初始化 `static status_t extInt_t::init(void);`**
+- **初始化函数 `status_t EXTINT_Init(extint_t *_inst);`**
 
-  该函数用于初始化EXTINT。
+  该函数用于初始化EXTINT。调用该函数时，该函数会清空任务列表。当前版本中本函数总是返回`kStatus_Success`。
 
-- **插入任务`static extInt_t* extInt_t::insert(INTC_Type* _gpio, uint32_t _pin, handler_t _handler);`**
+- **解初始化函数 `void EXTINT_Deinit(extint_t *_inst);`**
 
-  该函数用于向任务列表插入指定GPIO引脚上的触发任务。
+- **插入任务 `status_t EXTINT_HandleInsert(extint_t *_inst, extint_handle_t *_handle);`**
 
-- **移除任务`static status_t extInt_t::remove(INTC_Type* _gpio, uint32_t _pin);`**
+  该函数用于向任务列表中插入一个任务。
 
-  该函数用于移除指定GPIO引脚上的触发任务。
+  返回值：成功返回kStatus_Success，异常返回kStatus_Fail。
 
-- **移除任务 `static status_t extInt_t::remove(extInt_t* _inst);`**
+- **移除任务 `status_t EXTINT_HandleRemove(extint_t *_inst, extint_handle_t *_handle);`**
 
-  该函数用于移除指针指向的触发任务。移除成功后返回`kStatus_Success`，且指针将变为野指针，您需要手动将其置为NULL。
+  该函数用于移除任务。如果任务存在且成功移除则返回`kStatus_Success`，如果任务不存在或移除失败，则返回`kStatus_Fail`。
 
-- **服务接口 `static void extInt_t::isr(INTC_Type* _gpio);`**
+- **服务接口 `EXTINT_Isr(extint_t *_inst, uint32_t flag)`**
 
-  该函数用于为某一个端口提供中断服务。参数类型`INTC_Type*`是指本MCU上用于管理外部中断的外设类型，应在`sys_extint_port.hpp`中定义。例如，对于K66、KV58等单片机，`#define INTC_Type PORT_Type`，而对于RT1052等单片机，`#define INTC_Type GPIO_Type`。您也可以使用`typedef`关键字。
+  该函数无需用户在使用EXTINT时调用，而是由系统在定时器中断服务函数中调用的。调用时须传入中断标志位。
 
-- **设置任务 `void extInt_t::setup(INTC_Type* _gpio, uint32_t _pin, handler_t _handler);`**
-
-  设置/重设某一引脚上的服务函数。
-
-- **设置中断方式 `void extInt_t::setMode(interrupt_mode_t _mode);`**
-
-  提供一种平台无关的设置中断方式的方法 。
-
-- **设置传递参数`void extInt_t::setUserData(void *_userData);`**
-
-  该函数用于设置任务触发时传递给服务函数的用户变量指针。对于不处理参数的服务函数，忽略即可。
-
-
-
-模块内还包含用于兼容早期C语言版本EXTINT模块的C风格兼容层，仅供兼容旧代码使用，一旦旧代码迁移完成将删除该兼容层，因此禁止新代码使用。
+  注意：该函数仅包含EXTINT的内部逻辑，不负责具体的硬件操作。定时器中断服务函数中除调用此函数外，还应包含清除中断标志位等必需的操作。
 
 
 
@@ -114,44 +120,97 @@ by CkovMk @hitsic 2018.12.23
 
 ## 应用指南
 
+### 初始化
+
+- 根据外部中断控制器的数量创建EXTINT实例：`extint_t extint_porta, extint_portb;`。
+
+  > 例如：
+  >
+  > 所有GPIO都可以产生外部中断：例如MK66等平台，外部中断控制器为PORT外设，则应按照PORT外设的数量来创建EXTINT实例。当然，如果不使用部分PORT外设的外部中断功能，也可省略这些外设所对应的EXTINT实例。
+  >
+  > 由专门的外设控制外部中断：例如STM32平台，外部中断由EXTI外设控制，则仅需创建一个EXTINT实例即可。
+  >
+  > 特别地，对于I.MX RT平台，在每个GPIO最多拥有32个引脚的情况下，其中断服务函数被进一步分为了GPIOx_0_15中断和GPIOx_16_31中断。此时，应为每个GPIO外设创建两个EXTINT实例。
+
+- 调用初始化函数：`EXTINT_Init(&extint_porta);`即可。
+
+- 注意：EXTINT仅负责中断事件的转发，不负责硬件的初始化。有关引脚路由、引脚中断方式选择、启用中断、设置中断优先级等初始化须由用户执行。
+
+
+
+### 基础使用
+
+
+- 创建服务函数：
+  创建一个符合`typedef void (*extint_handler_t)(void *userData);`定义的服务函数。
+
+- 创建服务描述符：
+
+  ```c
+  typedef struct _extint_handle
+  {
+      uint32_t index;				/*< 引脚号 */
+      extint_handler_t handler;   /*< 指向中断服务函数的指针 */
+      void *userData;  			/*< 用户变量 */
+  }extint_handle_t;
+  ```
+
+  
+
+  
+
+- 将服务函数注册至列表
+
+  调用`status_t EXTINT_HandleInsert(extint_t *_inst, extint_handle_t *_handle);`函数，即可注册该服务函数。执行此函数不会修改服务描述符。
+
+  成功返回kStatus_Success，异常返回kStatus_Fail。
+
+- 从列表中删除服务函数
+
+  调用`status_t EXTINT_HandleRemove(extint_t *_inst, extint_handle_t *_handle);`函数，即可取消该服务描述符。执行此函数不会修改服务描述符。
+
+  成功返回kStatus_Success，异常返回kStatus_Fail。
+
+
+
+### 变更属性、使用用户参数
+
+直接修改注册任务时使用的`extint_handle_t`实例。
+
+
+
+### 注意事项
+
+暂无
+
 
 
 ## 移植指南
 
-### 移植文件`sys_extint_port.hpp`
+### 移植文件`sys_extint_port.h`
 
 - **移植平台接口**
 
   ```c++
-  //HAL marco
-  #define INTC_Type 			PORT_Type
-  #define interrupt_mode_t 		port_interrupt_t
+  typedef PORT_Type INTC_Type;
+  typedef port_interrupt_t extInt_interruptMode_t;
+  
+  #define EXTINT_InterruptOrDMADisabled	kPORT_InterruptOrDMADisabled
+  #define EXTINT_DMARisingEdge 			kPORT_DMARisingEdge
+  #define EXTINT_DMAFallingEdge 			kPORT_DMAFallingEdge
+  #define EXTINT_DMAEitherEdge 			kPORT_DMAEitherEdge
+  #define EXTINT_InterruptLogicZero 		kPORT_InterruptLogicZero
+  #define EXTINT_InterruptRisingEdge 		kPORT_InterruptRisingEdge
+  #define EXTINT_InterruptFallingEdge 	kPORT_InterruptFallingEdge
+  #define EXTINT_InterruptEitherEdge 		kPORT_InterruptEitherEdge
+  #define EXTINT_InterruptLogicOne		kPORT_InterruptLogicOne
+  
   #define EXTINT_SetInterruptConfig(_intc, _pin, _cfg) 	PORT_SetPinInterruptConfig(_intc, _pin, _cfg)
   #define EXTINT_GetInterruptFlags(_intc) 				PORT_GetPinsInterruptFlags(_intc)
-  #define EXTINT_ClearInterruptFlags(_intc, _mask) 				PORT_ClearPinsInterruptFlags(_intc, _mask)
+  #define EXTINT_ClearInterruptFlags(_intc, _mask) 	    PORT_ClearPinsInterruptFlags(_intc, _mask)
   ```
 
   这里主要是移植一些平台相关的定义和函数。
-
-  
-
-- **设置功能**
-
-  ```c++
-  #define HITSIC_EXTMGR_INITLIZE 		(1U)
-  
-  #if defined(HITSIC_EXTMGR_INITLIZE) && (HITSIC_EXTMGR_INITLIZE > 0)
-  inline void EXTINT_PlatformInit(void)
-  {
-  	NVIC_SetPriority(PORTA_IRQn, 6);
-  	NVIC_SetPriority(PORTB_PORTC_PORTD_PORTE_IRQn, 6);
-  	EnableIRQ(PORTA_IRQn);
-  	EnableIRQ(PORTB_PORTC_PORTD_PORTE_IRQn);
-  }
-  #endif // ! HITSIC_EXTMGR_INITLIZE
-  
-  ```
-  `HITSIC_EXTMGR_INITLIZE`宏控制平台初始化代码。启用该宏会在EXTINT初始化代码中进行相关硬件的初始化。如果已经在配置工具中自行生成了外部中断的初始化，则不需要启用该宏。
 
   
 
@@ -161,7 +220,7 @@ by CkovMk @hitsic 2018.12.23
 
   该宏控制是否启用`sys_extint_port.hpp`中的中断服务函数。
 
-
+  
 
 - **查询函数**
 
@@ -178,33 +237,84 @@ by CkovMk @hitsic 2018.12.23
 
 
 
-### 移植文件`sys_extint_port.hpp`
+### 移植文件`sys_extint_port.c`
 
 - **中断服务函数**
 
   ```c++
+  #include <sys_extint.h>
+  
+  #if defined(HITSIC_USE_EXTINT) && (HITSIC_USE_EXTINT > 0)
+  
   #ifdef __cplusplus
   extern "C"{
   #endif
   
-  #if defined(HTISIC_EXTINT_DEFAULT_IRQ) && (HTISIC_EXTINT_DEFAULT_IRQ > 0)
-  void PORTA_IRQHandler(void){pitMgr_t::isr(PORTA);}
-  void PORTB_PORTC_PORTD_PORTE_IRQHandler(void)
+  extern extint_t extint_porta, extint_portb, extint_portc, extint_portd, extint_porte;
+  
+  extint_t *EXTINT_GetInst(INTC_Type *base)
   {
-  	pitMgr_t::isr(PORTB);
-      pitMgr_t::isr(PORTC);
-      pitMgr_t::isr(PORTD);
-      pitMgr_t::isr(PORTE);
-  	
+      switch((uint32_t)base)
+      {
+      case PORTA_BASE:
+          return &extint_porta;
+      case PORTB_BASE:
+              return &extint_portb;
+      case PORTC_BASE:
+              return &extint_portc;
+    case PORTD_BASE:
+              return &extint_portd;
+      case PORTE_BASE:
+              return &extint_porte;
+      default:
+          return NULL;
+      }
+  }
+  
+  #if defined(HTISIC_EXTINT_DEFAULT_IRQ) && (HTISIC_EXTINT_DEFAULT_IRQ > 0)
+  
+  void PORTA_IRQHandler(void)
+  {
+      uint32_t flag = PORT_GetPinsInterruptFlags(PORTA);
+      EXTINT_Isr(&extint_porta, flag);
+      PORT_ClearPinsInterruptFlags(PORTA, 0xffff);
+  }
+  
+  void PORTB_IRQHandler(void)
+  {
+      uint32_t flag = PORT_GetPinsInterruptFlags(PORTB);
+      EXTINT_Isr(&extint_portb, flag);
+      PORT_ClearPinsInterruptFlags(PORTB, 0xffff);
+  }
+  
+  void PORTC_IRQHandler(void)
+  {
+      uint32_t flag = PORT_GetPinsInterruptFlags(PORTC);
+      EXTINT_Isr(&extint_portc, flag);
+      PORT_ClearPinsInterruptFlags(PORTC, 0xffff);
+  }
+  
+  void PORTD_IRQHandler(void)
+  {
+      uint32_t flag = PORT_GetPinsInterruptFlags(PORTD);
+      EXTINT_Isr(&extint_portd, flag);
+      PORT_ClearPinsInterruptFlags(PORTD, 0xffff);
+  }
+  
+  void PORTE_IRQHandler(void)
+  {
+      uint32_t flag = PORT_GetPinsInterruptFlags(PORTE);
+      EXTINT_Isr(&extint_porte, flag);
+      PORT_ClearPinsInterruptFlags(PORTE, 0xffff);
   }
   #endif // ! HTISIC_EXTMGR_USE_IRQHANDLER
   
   #ifdef __cplusplus
   }
   #endif
+  
+  #endif // ! HITSIC_USE_EXTINT
+  
   ```
-
   
-  您需要在这里实现每个外部中断对应的中断服务函数。在这些中断服务函数中，只需调用`static void pitMgr_t::isr(INTC_Type* _gpio);`，传入当前中断的外设地址即可。如果有多个外设的中断被绑定到了同一个中断服务函数，如上例所示，则需要在该中断服务函数中调用多次`static void isr(INTC_Type* _gpio);`，依次传入所有外设地址。还有一种情况是一个外设的中断被绑定到了多个中断服务函数（例如RT052系列GPIOx 0~15号引脚和16~31号引脚各对应一个中断服务函数），则需要在所有属于该外设的中断服务函数内调用`static void isr(INTC_Type* _gpio);`，并传入对应外设地址。
   
-  如果不希望对特定外设启用EXTINT，也可以在这里略过。

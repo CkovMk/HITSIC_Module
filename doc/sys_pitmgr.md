@@ -98,7 +98,7 @@ by CkovMk @hitsic 2018.12.20
 
 - **初始化函数 `status_t PITMGR_Init(pitmgr_t *_inst, uint32_t _period_us);`**
 
-  该函数用于初始化PITMGR。调用该函数时，该函数会清空任务列表`std::list<pitMgr_t> pitMgr_t::isrSet`并复位毫秒计时器`uint32_t pitMgr_t::timer_ms`。当前版本中本函数总是返回`kStatus_Success`。
+  该函数用于初始化PITMGR。调用该函数时，该函数会清空任务列表并复位计时器。当前版本中本函数总是返回`kStatus_Success`。
 
 - **解初始化函数 `void PITMGR_Deinit(pitmgr_t *_inst);`**
 
@@ -106,7 +106,7 @@ by CkovMk @hitsic 2018.12.20
 
   该函数用于向任务列表中插入一个任务。
 
-  返回值：成功返回kStatus_Success，异常返回kStatus_Fail。
+  返回值：成功返回`kStatus_Success`，异常返回`kStatus_Fail`。
 
 - **移除任务 `status_t PITMGR_HandleRemove(pitmgr_t *_inst, pitmgr_handle_t *_handle);`**
 
@@ -185,13 +185,9 @@ by CkovMk @hitsic 2018.12.20
 
 ## 移植指南
 
-### 移植文件`sys_pitmgr_port.hpp`
+### 移植文件`sys_pitmgr_port.h`
 
 主要包含以下项目：
-
-- **宏：启用控制 `HITSIC_USE_PITMGR`**
-
-  0：禁用PITMGR；其他：启用PITMGR。
 
 - **宏：启用移植文件内的中断服务函数 `HITSIC_PITMGR_DEFAULT_IRQ`**
 
@@ -199,7 +195,7 @@ by CkovMk @hitsic 2018.12.20
   
   
 
-### 移植文件`sys_pitmgr_port.cpp`
+### 移植文件`sys_pitmgr_port.c`
 
 主要包含以下项目：
 
@@ -215,8 +211,9 @@ by CkovMk @hitsic 2018.12.20
 	#if defined(HITSIC_PITMGR_DEFAULT_IRQ) && (HITSIC_PITMGR_DEFAULT_IRQ > 0)
 	void LPTMR0_IRQHandler(void)
 	{
+	    extern pitmgr_t pitmgr_main;
 		LPTMR_ClearStatusFlags(LPTMR0, kLPTMR_TimerCompareFlag);
-		pitMgr_t::isr();
+		PITMGR_Isr(&pitmgr_main);
 	}
 	#endif // ! HTISIC_PITMGR_USE_IRQHANDLER
 	
