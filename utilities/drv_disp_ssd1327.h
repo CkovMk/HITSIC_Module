@@ -1,3 +1,27 @@
+/**
+ * Copyright 2018 - 2021 HITSIC
+ * All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+/**
+ * @file    :   drv_disp_ssd1327.h
+ * @author  :   CkovMk/马奇科(qq:905497173)
+ *
+ * @date    :   v0.1-beta.0 2021.04.13 CkovMk
+ *
+ * @brief   :   SSD1327 OLED屏幕驱动组件
+ */
 #ifndef DRV_DISP_SSD1327_H
 #define DRV_DISP_SSD1327_H
 

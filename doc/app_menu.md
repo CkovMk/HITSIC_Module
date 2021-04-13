@@ -40,6 +40,25 @@ Flash读写驱动（FTFX_FLASH），可选，用于保存和读取菜单；
 
 ## 版本说明
 
+### v1.0.0
+
+by：CkovMk @hitsic 2021.04.02
+
+**改动说明**
+
+- 适配新的帧缓存、EXTINT、PITMGR改动。
+- 新增菜单项迭代结构体和迭代器函数，并用迭代器重写自带的Flash读写函数。您可以使用菜单项迭代器快速遍历所有菜单项，方便您实现在自己的算法。
+
+**开发计划**
+
+- 暂无
+
+**已知问题**
+
+- 暂无
+
+
+
 ### v0.1.7
 
 by：CkovMk @hitsic 2020.11.22
@@ -225,7 +244,7 @@ by：CkovMk @hitsic 2019.11.02
 
 ## API文档
 
-### 顶层API（`APP_MENU`）
+### 顶层API（`MENU`）
 
 - 菜单初始化
   
@@ -466,7 +485,9 @@ by：CkovMk @hitsic 2019.11.02
 
 
 
-### 菜单项（`APP_MENU_TYPE`）
+### 菜单项（`MENU_ITEM`）
+
+菜单项是菜单管理的最小单元。
 
 - 构造菜单项
 	```c++
@@ -652,7 +673,9 @@ by：CkovMk @hitsic 2019.11.02
 
 
 
-### 菜单列表（`APP_MENU_TYPE`）
+### 菜单列表（`MENU_LIST`）
+
+菜单列表是菜单项的父级结构，同时也作为”子菜单类型“的菜单项所保存的数据存在。
 
 - 构造菜单列表
 	```c++
@@ -713,6 +736,79 @@ by：CkovMk @hitsic 2019.11.02
    */
   void MENU_ListKeyOp(menu_list_t *_list, menu_keyOp_t *const _op);
   ```
+
+
+
+### 菜单项迭代器（`MENU_ITER`）
+
+菜单项迭代器封装了对菜单数据结构的宽度优先搜索，提供了一种简单快捷的遍历菜单中所有菜单项的方式。
+
+菜单项迭代器位于`APP_MENU_TYPE`中，包含以下API：
+
+-  **初始化菜单迭代器。**
+	
+	```c++
+	/**
+	 * @brief : 初始化菜单迭代器。
+	 */
+	void MENU_IteratorSetup(menu_iterator_t *_iter);
+	```
+- **构造函数。**
+	
+	```c++
+	/**
+	 * @brief : 构造函数，为菜单项迭代器指针分配内存并初始化该菜单迭代器。
+	 *
+	 * @param  {menu_list_t*} _list : 要访问的菜单列表的指针。
+	 * @return {menu_iterator_t}    : 返回构造的迭代器指针。失败返回空指针。
+	 */
+	menu_iterator_t* MENU_IteratorConstruct(void);
+	```
+- **析构函数。**
+	
+	```c++
+	/**
+	 * @brief : 析构函数，释放菜单项迭代器的内存。
+	 *
+	 * @param  {menu_iterator_t*} _iter : 要析构的迭代器指针。
+	 */
+	void MENU_IteratorDestruct(menu_iterator_t *_iter);
+	```
+- **解引用迭代器。获得当前所在菜单列表。**
+	
+	```c++
+	/**
+	 * @brief : 解引用迭代器。获得当前所在菜单列表。
+	 *
+	 * @param  {menu_iterator_t*} _iter : 迭代器指针。
+	 */
+	menu_list_t* MENU_IteratorDerefList(menu_iterator_t *_iter);
+	```
+- **解引用迭代器，获得当前菜单项。**
+	
+	```c++
+	/**
+	 * @brief : 解引用迭代器，获得当前菜单项。
+	 *
+	 * @param  {menu_iterator_t*} _iter : 迭代器指针。
+	 */
+	menu_itemIfce_t* MENU_IteratorDerefItem(menu_iterator_t *_iter);
+	```
+- **迭代器递增。**
+	
+	```c++
+	/**
+	 * @brief : 迭代器递增。
+	 *
+	 * @param  {menu_iterator_t*} _iter : 迭代器指针。
+	 * @return {status_t}               : 成功返回kStatus_Success，如果已到达菜单结尾，则返回kStauts_Fail。
+	 */
+	status_t MENU_IteratorIncrease(menu_iterator_t *_iter);
+	```
+
+
+
+
 
 
 

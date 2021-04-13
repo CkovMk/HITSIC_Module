@@ -1,5 +1,5 @@
  /**
- * Copyright 2018 - 2020 HITSIC
+ * Copyright 2018 - 2021 HITSIC
  * All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -36,7 +36,7 @@
 #include <m-deque.h>
 
 /** @brief : 软件版本 */
-#define DRV_DMADVP_VERSION (HITSIC_MAKE_VERSION(0U, 1U, 2U))
+#define DRV_DMADVP_VERSION (HITSIC_MAKE_VERSION(0U, 2U, 0U))
 
 /*!
  * @addtogroup dmadvp
@@ -77,7 +77,7 @@ struct dmadvp_handle_t;
 typedef struct _dmadvp_buffer
 {
     uint8_t* buffer[DMADVP_DRIVER_QUEUE_SIZE + 1U];
-    int8_t bufferHead, bufferTail;
+    int16_t bufferHead, bufferTail;
 }dmadvp_bufferQue_t;
 
 

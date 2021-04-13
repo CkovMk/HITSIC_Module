@@ -13,7 +13,7 @@ void MENU_FrameBufferClear(void)
 
 void MENU_FrameBufferPrint(uint16_t x, uint16_t y, char *str)
 {
-    DISP_SSD1306_FB_Print0608_Print_Overlay(&dispBuffer, y << 3U, x, true, false, str);
+    DISP_SSD1306_FB_Print0608_Print_Overlay(&dispBuffer, y << 3U, x, 1U, 0U, str);
 }
 
 void MENU_FrameBufferUpdate(void)

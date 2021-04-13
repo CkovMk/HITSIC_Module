@@ -1,5 +1,5 @@
 /**
- * Copyright 2018 - 2020 HITSIC
+ * Copyright 2018 - 2021 HITSIC
  * All rights reserved.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,9 +17,10 @@
 /**
  * @file 	:	"drv_button.h"; "drv_button.c"
  * @author  :	CkovMk/马奇科(qq:905497173)
- * @version :	v0.1.1          2020.08.02
- * @date 	:	v0.1.0-beta.1   2019.10.28
- * @date    :   v0.1.1          2019.10.29
+ * @version :	v0.1.0          2020.02.15
+ * @date 	:	v0.2-beta.1     2020.04.20
+ * @date    :   v0.2.2          2020.10.29
+ * @date    :   v0.3.0          2021.04.02
  * 
  * @note    :   依赖库：sys_extint.h、sys_pitmgr.h
                 依赖库必须先初始化。
@@ -45,51 +46,47 @@ extern "C"{
 #endif
 
 /** @brief : 软件版本 */
-#define DRV_BUTTON_VERSION (HITSIC_MAKE_VERSION(0u, 1u, 1u))
+#define DRV_BUTTON_VERSION (HITSIC_MAKE_VERSION(0u, 3u, 0u))
 
-    typedef enum 
-    {
-        BUTTON_STAT_NONE = 0, ///< button no operation
-        BUTTON_SHRT_PRES = 1, ///< button short press
-        BUTTON_SHRT_CLER = 2, ///< service responded short press
-        BUTTON_LONG_PRES = 3, ///< button long press
-        BUTTON_LONG_CLER = 4, ///< service responded long press
-        BUTTON_LRPT_PRES = 5, ///< button long_repeat press
-        BUTTON_LRPT_CLER = 6, ///< service responded long_repeat press
-    }button_status_t;
+typedef enum 
+{
+    BUTTON_STAT_NONE = 0, ///< button no operation
+    BUTTON_SHRT_PRES = 1, ///< button short press
+    BUTTON_SHRT_CLER = 2, ///< service responded short press
+    BUTTON_LONG_PRES = 3, ///< button long press
+    BUTTON_LONG_CLER = 4, ///< service responded long press
+    BUTTON_LRPT_PRES = 5, ///< button long_repeat press
+    BUTTON_LRPT_CLER = 6, ///< service responded long_repeat press
+}button_status_t;
 
-    typedef void(*button_handler_t)(void *_inst);   // (button_t *inst)
+typedef void(*button_handler_t)(void *_inst);   // (button_t *inst)
 
-    typedef struct 
-    {
-        GPIO_Type *gpio;
-        //PORT_Type* port;
-        uint32_t pin;
-        extInt_interruptMode_t intCfg;
-        uint64_t msCnt;
-        button_status_t status;
-        button_handler_t handler;
-    }button_t;
+typedef struct 
+{
+    GPIO_Type *gpio;
+    //PORT_Type* port;
+    uint32_t pin;
+    extInt_interruptMode_t intCfg;
+    uint64_t msCnt;
+    button_status_t status;
+    button_handler_t handler;
+}button_t;
 
+void BUTTON_Setup(button_t *_inst, GPIO_Type *_gpio, uint32_t _pin);
 
-    void BUTTON_Setup(button_t *_inst, GPIO_Type *_gpio, uint32_t _pin);
+button_t *BUTTON_Construct(GPIO_Type *_gpio, uint32_t _pin);
 
-    button_t *BUTTON_Construct(GPIO_Type *_gpio, uint32_t _pin);
+void BUTTON_InstallHandler(button_t *_inst, button_handler_t _handler);
 
-    void BUTTON_InstallHandler(button_t *_inst, button_handler_t _handler);
+void BUTTON_UninstallHandler(button_t *_inst);
 
-    void BUTTON_UninstallHandler(button_t *_inst);
+void BUTTON_SetInterrupt(button_t *_inst, port_interrupt_t _int);
 
-    void BUTTON_SetInterrupt(button_t *_inst, port_interrupt_t _int);
+uint32_t BUTTON_ReadPin(button_t *_inst);
 
-    uint32_t BUTTON_ReadPin(button_t *_inst);
+void BUTTON_ExtIsr(button_t *_inst);
 
-    void BUTTON_ExtIsr(button_t *_inst);
-
-    void BUTTON_PitIsr(button_t *_inst);
-
-
-
+void BUTTON_PitIsr(button_t *_inst);
 
 #ifdef __cplusplus
 }

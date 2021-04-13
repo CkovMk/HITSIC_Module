@@ -1,5 +1,5 @@
 /**
- * Copyright 2018 - 2020 HITSIC
+ * Copyright 2018 - 2021 HITSIC
  * All rights reserved.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -27,6 +27,7 @@
  * @date    :   v0.1.5      2020.10.30
  * @date    :   v0.1.6      2020.11.09
  * @date    :   v0.1.7      2020.11.22
+ * @date    :   v1.0.0      2021.04.02
  * 
  */
 
@@ -46,7 +47,7 @@
   */
 
 /** @brief : 软件版本 */
-#define APP_MENU_VERSION (HITSIC_MAKE_VERSION(0U, 1U, 7U))
+#define APP_MENU_VERSION (HITSIC_MAKE_VERSION(1U, 0U, 0U))
 
 #if defined(HITSIC_USE_APP_MENU) && (HITSIC_USE_APP_MENU > 0)
 

@@ -10,9 +10,28 @@ OLED显示屏组件（DRV_DISP_SSD1306）是用于包含SSD1306驱动芯片的OL
 
 ## 版本说明
 
+### v1.0.0
+
+by CkovMk @hitsic 2021.04.10
+
+**改动说明**
+
+- 帧缓存和对应的打印器改为使用LIB_GRAPHIC的生成宏实现。
+- 移植接口改为所有SPI接口的屏幕共同使用的统一接口。
+
+**开发计划**
+
+- 将直接向屏幕打印的函数统一为LIB_GRAPHIC生成宏。
+
+**已知问题**
+
+- 暂无
+
+
+
 ### v0.2.1
 
-by CkovMk @hitsic 2019.09.22
+by CkovMk @hitsic 2020.11.09
 
 **改动说明**
 
@@ -33,7 +52,7 @@ by CkovMk @hitsic 2019.09.22
 
 ### v0.2.0
 
-by CkovMk @hitsic 2019.09.22
+by CkovMk @hitsic 2020.10.29
 
 **改动说明**
 

@@ -16,7 +16,7 @@
 #define kStatusGroup_DMADVP (200U)
 
 #ifndef DMADVP_DRIVER_QUEUE_SIZE
-#define DMADVP_DRIVER_QUEUE_SIZE 4U
+#define DMADVP_DRIVER_QUEUE_SIZE 4
 #endif
 
 struct DMADVP_Type

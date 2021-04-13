@@ -89,7 +89,7 @@ bool DMADVP_BufferQueEmpty(dmadvp_bufferQue_t *_buffer)
 
 bool DMADVP_BufferQueFull(dmadvp_bufferQue_t *_buffer)
 {
-    int8_t var = _buffer->bufferTail - _buffer->bufferHead;
+    int16_t var = _buffer->bufferTail - _buffer->bufferHead;
     return (DMADVP_DRIVER_QUEUE_SIZE == var || -1 ==  var);
 }
 
@@ -104,6 +104,7 @@ status_t DMADVP_BufferQuePush(dmadvp_bufferQue_t *_buffer, uint8_t *_data)
     {
         _buffer->bufferTail = 0U;
     }
+    return kStatus_Success;
 }
 
 status_t DMADVP_BufferQuePop(dmadvp_bufferQue_t *_buffer)
@@ -116,6 +117,7 @@ status_t DMADVP_BufferQuePop(dmadvp_bufferQue_t *_buffer)
     {
         _buffer->bufferHead = 0U;
     }
+    return kStatus_Success;
 }
 
 //uint8_t *DMADVP_BufferQueBack(dmadvp_buffer_t *_buffer)
@@ -162,7 +164,7 @@ status_t DMADVP_TransferSubmitEmptyBuffer(DMADVP_Type *base,
     status_t ret = DMADVP_BufferQuePush(&handle->emptyBuffer, buffer);
     if(kStatus_Success != ret)
     {
-        SYSLOG_E("BufferQue \"emptyBuffer\" is full.");
+        SYSLOG_E("BufferQue \"emptyBuffer\" is full. head = %d, tail = %d", handle->emptyBuffer.bufferHead, handle->emptyBuffer.bufferTail);
         return ret;
     }
     return kStatus_Success;
@@ -247,7 +249,7 @@ void DMADVP_EdmaCallbackService(dmadvp_handle_t *handle, bool transferDone)
     {
         if(kStatus_Success != DMADVP_BufferQuePush(&handle->fullBuffer, (uint8_t*)(handle->xferCfg.destAddr)))
         {
-            SYSLOG_E("BufferQue \"fullBuffer\" is full.");
+            SYSLOG_E("BufferQue \"fullBuffer\" is full. head = %d, tail = %d", handle->fullBuffer.bufferHead, handle->fullBuffer.bufferTail);
         }
     }
     else

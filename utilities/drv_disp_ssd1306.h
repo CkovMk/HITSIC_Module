@@ -1,5 +1,5 @@
 /**
- * Copyright 2018 - 2020 HITSIC
+ * Copyright 2018 - 2021 HITSIC
  * All rights reserved.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -24,6 +24,7 @@
  * @date 	:	v0.1.1		2019.09.22 beforelight
  * @date    :   v0.2.0      2020.10.29 CkovMk
  * @date    :   v0.2.1      2020.11.09 CkovMk
+ * @date    :   v1.0.0      2021.04.10 CkovMk
  *
  * @brief   :   SSD1306 OLED屏幕驱动组件
  */
@@ -39,30 +40,10 @@
 #include <lib_graphic.h>
 
 /** @brief : 软件版本 */
-#define DRV_DISP_SSD1306_VERSION (HITSIC_MAKE_VERSION(0U, 2U, 1U))
+#define DRV_DISP_SSD1306_VERSION (HITSIC_MAKE_VERSION(1U, 0U, 0U))
 
 extern const uint8_t DISP_font_6x8[][6];
 extern const uint8_t DISP_font_8x16[][16];
-
-//class disp_ssd1306_frameBuffer_t
-//{
-//public:
-//    typedef bool pixel_t;
-//    static const uint16_t row = 64, col = 128;
-//    uint8_t frame[8][128];
-//
-//    void Clear(void)
-//    {
-//        static_assert(sizeof(disp_ssd1306_frameBuffer_t) == 8U * 128U);
-//        memset(&frame, 0U, sizeof(disp_ssd1306_frameBuffer_t));
-//    }
-//    void SetPixelColor(uint16_t x, uint16_t y, pixel_t color)
-//    {
-//        color ? (frame[y >> 3][x] |= (1U << (y & 7U))) : (frame[y >> 3][x] &= ~(1U << (y & 7U)));
-//    }
-//};
-
-
 
 //-------------------------------------------------------------------------------------------------------------------
 //  @brief      OLED初始化函数

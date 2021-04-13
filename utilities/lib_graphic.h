@@ -1,5 +1,21 @@
-#ifndef UTILITIES_LIB_GRAPHIC_HPP
-#define UTILITIES_LIB_GRAPHIC_HPP
+/**
+ * Copyright 2018 - 2021 HITSIC
+ * All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+#ifndef UTILITIES_LIB_GRAPHIC_H
+#define UTILITIES_LIB_GRAPHIC_H
 
 #include <inc_stdlib.h>
 #include "hitsic_common.h"
@@ -29,7 +45,7 @@
   static inline void fun_name##_FB_SetPixelColor                                        \
     (var_name##_fb_t *inst, uint16_t x, uint16_t y, var_name##_fb_pixel_t color)        \
   {                                                                                     \
-      assert(color & 0xf7U);                                                            \
+      assert(0U == (color & 0xfeU));                                                    \
       color ? (inst->frame[y >> 3][x] |= (1U << (y & 7U)))                              \
           : (inst->frame[y >> 3][x] &= ~(1U << (y & 7U)));                              \
   }
@@ -49,7 +65,7 @@
   static inline void fun_name##_FB_SetPixelColor                                        \
     (var_name##_fb_t *inst, uint16_t x, uint16_t y, var_name##_fb_pixel_t color)        \
   {                                                                                     \
-      assert(color & 0xf0U);                                                            \
+      assert(0U == (color & 0xf0U));                                                    \
       uint8_t *cell = &inst->frame[y >> 1][x];                                          \
       (y & 0x01U) ? (*cell = (*cell & 0x0fU) | (color << 4U))                           \
           : (*cell = (*cell & 0xf0U) | (color << 0U));                                  \
@@ -193,4 +209,4 @@
 
 /* @} */
 
-#endif // ! UTILITIES_LIB_GRAPHIC_HPP
+#endif // ! UTILITIES_LIB_GRAPHIC_H

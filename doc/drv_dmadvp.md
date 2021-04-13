@@ -23,6 +23,26 @@
 
 ## 版本说明
 
+### v0.2.0
+
+by CkovMk @hitsic 2021.04.07
+
+**改动说明**
+
+- 为兼容新版EXTINT所做的必要修改
+- 为了兼容C语言，删掉了C++ STL的队列容器（queue），改为使用固定长度的队列。
+- 修改、新增了一些LOG输出
+
+**开发计划**
+
+- 暂无
+
+**已知问题**
+
+- 暂无
+
+
+
 ### v0.1.2
 
 by CkovMk @hitsic 2020.11.09
@@ -32,7 +52,7 @@ by CkovMk @hitsic 2020.11.09
 **改动说明**
 
 - 修改TransferStart逻辑，修复了帧率减半的Bug。
-- 完善代码内注释文档
+- 完善代码内注释文档。
 - 调整默认DMA中断优先级为8。
 
 **开发计划**
@@ -118,6 +138,8 @@ struct DMADVP_Type
 
     port_interrupt_t vsncInterruptCfg;
     port_interrupt_t pclkInterruptCfg;
+    
+    extint_handle_t extintHandle;
 };
 
 #define DMADVP_CNT (1U)
@@ -147,7 +169,6 @@ struct dmadvp_handle_t
     DMADVP_Type* base;              /*!< DMADVP虚拟设备地址 */
     edma_handle_t dmaHandle;        /*!< DMA传输句柄 */
     edma_transfer_config_t xferCfg; /*!< DMA传输配置 */
-    extInt_t* extIntHandle;         /*!< 外部中断句柄 */
     volatile bool transferStarted;  /*!< 传输中标志位，true：正在进行传输 */
     std::queue<uint8_t*> emptyBuffer, fullBuffer;
 };

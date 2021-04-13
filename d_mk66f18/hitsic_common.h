@@ -1,5 +1,5 @@
 /**
- * Copyright 2018 - 2020 HITSIC
+ * Copyright 2018 - 2021 HITSIC
  * All rights reserved.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 #ifndef D_MK66F18_HITSIC_COMMON_H
 #define D_MK66F18_HITSIC_COMMON_H
 
@@ -30,7 +29,7 @@
 #define HITSIC_VERSION_PATCH(x) (x & 0xffU)
 
 
-
+/** DRI */
 
 #ifndef HITSIC_USE_FTFX_FLASH
 #define HITSIC_USE_FTFX_FLASH (1U)
@@ -64,7 +63,11 @@
 #define HITSIC_USE_CAM_ZF9V034 (1U)
 #endif // ! HITSIC_USE_CAM_ZF9V034
 
+/** SYS */
 
+#ifndef HITSIC_USE_LTC
+#define HITSIC_USE_LTC       (0U)
+#endif // ! HITSIC_USE_LTC
 
 #ifndef HITSIC_USE_PITMGR
 #define HITSIC_USE_PITMGR 		(1U)
@@ -78,7 +81,7 @@
 #define HITSIC_USE_RMCALL 		(0U)
 #endif // ! HITSIC_USE_RMCALL
 
-
+/** APP */
 
 #ifndef HITSIC_USE_APP_MENU
 #define HITSIC_USE_APP_MENU (1U)
@@ -132,4 +135,4 @@ status_t HAL_I2C_Mem_WriteBlocking(HAL_I2C_Type *_i2c, uint8_t _addr, uint32_t _
 }
 #endif
 
-#endif // ! D_MK66F18_HITSIC_COMMON_H_
+#endif // ! D_MK66F18_HITSIC_COMMON_H
