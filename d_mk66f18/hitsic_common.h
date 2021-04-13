@@ -15,8 +15,8 @@
  * limitations under the License.
  */
 
-#ifndef D_MK66F18_HITSIC_COMMON_H_
-#define D_MK66F18_HITSIC_COMMON_H_
+#ifndef D_MK66F18_HITSIC_COMMON_H
+#define D_MK66F18_HITSIC_COMMON_H
 
 #include "inc_fsl_mk66f18.h"
 #include "stdint.h"

@@ -37,12 +37,10 @@ typedef port_interrupt_t extInt_interruptMode_t;
 
 #define EXTINT_SetInterruptConfig(_intc, _pin, _cfg) 	PORT_SetPinInterruptConfig(_intc, _pin, _cfg)
 #define EXTINT_GetInterruptFlags(_intc) 				PORT_GetPinsInterruptFlags(_intc)
-#define EXTINT_ClearInterruptFlags(_intc, _mask) 				PORT_ClearPinsInterruptFlags(_intc, _mask)
+#define EXTINT_ClearInterruptFlags(_intc, _mask) 	    PORT_ClearPinsInterruptFlags(_intc, _mask)
 
 
 #define HTISIC_EXTINT_DEFAULT_IRQ 	(1U)
-
-#define EXTINT_INST_NUM             (5U)
 
 #ifdef __cplusplus
 extern "C"{

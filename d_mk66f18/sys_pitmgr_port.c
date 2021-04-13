@@ -1,12 +1,4 @@
-/*
- * sys_pitmgr_port.cpp
- *
- *  Created on: 2019年12月5日
- *      Author: CkovMk
- */
-
 #include <sys_pitmgr.h>
-
 
 #if defined(HITSIC_USE_PITMGR) && (HITSIC_USE_PITMGR > 0)
 
@@ -26,8 +18,5 @@ void LPTMR0_IRQHandler(void)
 #ifdef __cplusplus
 }
 #endif
-
-
-
 
 #endif // ! HITSIC_USE_PITMGR
