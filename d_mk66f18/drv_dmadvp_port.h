@@ -15,6 +15,10 @@
 
 #define kStatusGroup_DMADVP (200U)
 
+#ifndef DMADVP_DRIVER_QUEUE_SIZE
+#define DMADVP_DRIVER_QUEUE_SIZE 4U
+#endif
+
 struct DMADVP_Type
 {
     INTC_Type* vsnc_intc;               /*!< 场中断中断设备地址 */

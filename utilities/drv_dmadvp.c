@@ -73,6 +73,63 @@ status_t DMADVP_Init(DMADVP_Type *base, const dmadvp_config_t *config)
 
 // void DMADVP_DisableInterrupts(DMADVP_Type *base, uint32_t mask);
 
+
+/** Private Functions Begin */
+
+void DMADVP_BufferQueInit(dmadvp_bufferQue_t *_buffer)
+{
+    _buffer->bufferHead = 0U;
+    _buffer->bufferTail = 0U;
+}
+
+bool DMADVP_BufferQueEmpty(dmadvp_bufferQue_t *_buffer)
+{
+    return _buffer->bufferHead == _buffer->bufferTail;
+}
+
+bool DMADVP_BufferQueFull(dmadvp_bufferQue_t *_buffer)
+{
+    int8_t var = _buffer->bufferTail - _buffer->bufferHead;
+    return (DMADVP_DRIVER_QUEUE_SIZE == var || -1 ==  var);
+}
+
+status_t DMADVP_BufferQuePush(dmadvp_bufferQue_t *_buffer, uint8_t *_data)
+{
+    if(DMADVP_BufferQueFull(_buffer))
+    {
+        return kStatus_Fail;
+    }
+    _buffer->buffer[_buffer->bufferTail] = _data;
+    if(++_buffer->bufferTail == DMADVP_DRIVER_QUEUE_SIZE + 1U)
+    {
+        _buffer->bufferTail = 0U;
+    }
+}
+
+status_t DMADVP_BufferQuePop(dmadvp_bufferQue_t *_buffer)
+{
+    if(DMADVP_BufferQueEmpty(_buffer))
+    {
+        return kStatus_Fail;
+    }
+    if(++_buffer->bufferHead == DMADVP_DRIVER_QUEUE_SIZE + 1U)
+    {
+        _buffer->bufferHead = 0U;
+    }
+}
+
+//uint8_t *DMADVP_BufferQueBack(dmadvp_buffer_t *_buffer)
+//{
+//    return _buffer->buffer[_buffer->bufferTail - 1];
+//}
+
+uint8_t *DMADVP_BufferQueFront(dmadvp_bufferQue_t *_buffer)
+{
+    return _buffer->buffer[_buffer->bufferHead];
+}
+
+/** Private Functions End */
+
 void DMADVP_TransferCreateHandle(dmadvp_handle_t *handle, DMADVP_Type *base,
         edma_callback callback)
 {
@@ -91,6 +148,10 @@ void DMADVP_TransferCreateHandle(dmadvp_handle_t *handle, DMADVP_Type *base,
     EDMA_SetCallback(&handle->dmaHandle, callback, (void*) handle);	//回调函数设置,userData设置为handle
 
     handle->transferStarted = false;
+
+    DMADVP_BufferQueInit(&handle->emptyBuffer);
+    DMADVP_BufferQueInit(&handle->fullBuffer);
+
     SYSLOG_I("DMADVP create handle complete.");
 }
 
@@ -98,36 +159,41 @@ status_t DMADVP_TransferSubmitEmptyBuffer(DMADVP_Type *base,
         dmadvp_handle_t *handle, uint8_t *buffer)
 {
     assert(buffer);
-    handle->emptyBuffer.push(buffer);
+    status_t ret = DMADVP_BufferQuePush(&handle->emptyBuffer, buffer);
+    if(kStatus_Success != ret)
+    {
+        SYSLOG_E("BufferQue \"emptyBuffer\" is full.");
+        return ret;
+    }
     return kStatus_Success;
 }
 
 status_t DMADVP_TransferGetFullBuffer(DMADVP_Type *base,
         dmadvp_handle_t *handle, uint8_t **buffer)
 {
-    if (handle->fullBuffer.empty())
+    if (DMADVP_BufferQueEmpty(&handle->fullBuffer))
     {
         SYSLOG_D("No full buffer to get !");
         return kStatus_DMADVP_NoFullBuffer;
     }
-    *buffer = handle->fullBuffer.front();
+    *buffer = DMADVP_BufferQueFront(&handle->fullBuffer);
     //PRINTF("get full buffer: 0x%-8.8x = 0x%-8.8x\n", buffer, handle->fullBuffer.front());
-    handle->fullBuffer.pop();
+    DMADVP_BufferQuePop(&handle->fullBuffer);
     return kStatus_Success;
 }
 
 status_t DMADVP_TransferStart(DMADVP_Type *base, dmadvp_handle_t *handle)
 {
     SYSLOG_V("Try to start transfer.");
-    if (handle->emptyBuffer.empty())
+    if (DMADVP_BufferQueEmpty(&handle->emptyBuffer))
     {
         SYSLOG_D("No empty buffer to use !");
         return kStatus_DMADVP_NoEmptyBuffer;
     }
     status_t result = 0;
     EDMA_PrepareTransfer(&handle->xferCfg, (void*) (base->dmaDataAddress), 1,
-            handle->emptyBuffer.front(), 1, 1, base->imgSize, kEDMA_PeripheralToMemory);
-    handle->emptyBuffer.pop();
+            DMADVP_BufferQueFront(&handle->emptyBuffer), 1, 1, base->imgSize, kEDMA_PeripheralToMemory);
+    DMADVP_BufferQuePop(&handle->emptyBuffer);
     result = EDMA_SubmitTransfer(&handle->dmaHandle, &handle->xferCfg);
     if(kStatus_Success != result)
     {
@@ -179,7 +245,10 @@ void DMADVP_EdmaCallbackService(dmadvp_handle_t *handle, bool transferDone)
 {
     if (transferDone)
     {
-        handle->fullBuffer.push((uint8_t*)(handle->xferCfg.destAddr)); 
+        if(kStatus_Success != DMADVP_BufferQuePush(&handle->fullBuffer, (uint8_t*)(handle->xferCfg.destAddr)))
+        {
+            SYSLOG_E("BufferQue \"fullBuffer\" is full.");
+        }
     }
     else
     {

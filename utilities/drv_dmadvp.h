@@ -22,17 +22,18 @@
  * @date 	:	v0.1-beta.0 2020.10.20
  * @date 	:	v0.1-beta.1 2020.10.30
  * @date    :   v0.1.2      2020.11.09
+ * @date    :   v0.2.0      2021.04.07
  *
  * @brief    :   数字视频接口DMA接收器
  */
 #ifndef UTILITIES_DRV_DMADVP_HPP_
 #define UTILITIES_DRV_DMADVP_HPP_
-#include <sys_extint.h>
-#include <inc_stdlib.h>
 #include "hitsic_common.h"
 
 #if defined(HITSIC_USE_DMADVP) && (HITSIC_USE_DMADVP > 0)
 #include <drv_dmadvp_port.h>
+#include <sys_extint.h>
+#include <m-deque.h>
 
 /** @brief : 软件版本 */
 #define DRV_DMADVP_VERSION (HITSIC_MAKE_VERSION(0U, 1U, 2U))
@@ -73,6 +74,13 @@ struct dmadvp_config_t
 
 struct dmadvp_handle_t;
 
+typedef struct _dmadvp_buffer
+{
+    uint8_t* buffer[DMADVP_DRIVER_QUEUE_SIZE + 1U];
+    int8_t bufferHead, bufferTail;
+}dmadvp_bufferQue_t;
+
+
 /*! @brief DMADVP句柄 */
 struct dmadvp_handle_t
 {
@@ -80,7 +88,7 @@ struct dmadvp_handle_t
     edma_handle_t dmaHandle;        /*!< DMA传输句柄 */
     edma_transfer_config_t xferCfg; /*!< DMA传输配置 */
     volatile bool transferStarted;  /*!< 传输中标志位，true：正在进行传输 */
-    std::queue<uint8_t*> emptyBuffer, fullBuffer;
+    dmadvp_bufferQue_t emptyBuffer, fullBuffer;
 };
 
 /**
