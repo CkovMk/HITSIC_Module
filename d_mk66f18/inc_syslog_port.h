@@ -1,5 +1,5 @@
-#ifndef D_MK66F18_INC_SYSLOG_PORT_HPP
-#define D_MK66F18_INC_SYSLOG_PORT_HPP
+#ifndef D_MK66F18_INC_SYSLOG_PORT_H
+#define D_MK66F18_INC_SYSLOG_PORT_H
 
 #include "hitsic_common.h"
 #include "cstdio"
@@ -12,4 +12,4 @@
 
 #define HITSIC_LOG_LINEFEED ("\r\n")
 
-#endif // ! D_MK66F18_INC_SYSLOG_PORT_HPP
+#endif // ! D_MK66F18_INC_SYSLOG_PORT_H

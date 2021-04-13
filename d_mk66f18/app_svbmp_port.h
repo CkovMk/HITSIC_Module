@@ -1,5 +1,5 @@
-#ifndef D_MK66F18_SVBMP_PORT_HPP
-#define D_MK66F18_SVBMP_PORT_HPP
+#ifndef D_MK66F18_SVBMP_PORT_H
+#define D_MK66F18_SVBMP_PORT_H
 
 #include <inc_stdlib.h>
 #include "hitsic_common.h"
@@ -30,4 +30,4 @@ inline int SVBMP_FileWrite(svbmp_file_t* fp, const void* buff, uint32_t btw)
 
 #endif // ! HITSIC_USE_APP_SVBMP
 
-#endif // ! D_MK66F18_SVBMP_PORT_HPP
+#endif // ! D_MK66F18_SVBMP_PORT_H

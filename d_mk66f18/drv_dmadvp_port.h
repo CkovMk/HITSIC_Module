@@ -1,5 +1,5 @@
-#ifndef D_MK66F18_DRV_DMADVP_PORT_HPP
-#define D_MK66F18_DRV_DMADVP_PORT_HPP
+#ifndef D_MK66F18_DRV_DMADVP_PORT_H
+#define D_MK66F18_DRV_DMADVP_PORT_H
 
 #include "hitsic_common.h"
 
@@ -76,4 +76,4 @@ inline uint32_t DMADVP_GetInstance(DMADVP_Type* base)
 
 #endif // ! HITSIC_USE_DMADVP
 
-#endif // ! D_MK66F18_DRV_DMADVP_PORT_HPP
+#endif // ! D_MK66F18_DRV_DMADVP_PORT_H

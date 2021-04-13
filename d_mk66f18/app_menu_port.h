@@ -15,8 +15,8 @@
  * limitations under the License.
  */
 
-#ifndef D_MK66F18_APP_MENU_PORT_H_
-#define D_MK66F18_APP_MENU_PORT_H_
+#ifndef D_MK66F18_APP_MENU_PORT_H
+#define D_MK66F18_APP_MENU_PORT_H
 
 #include <app_menu_def.h>
 #include <inc_stdlib.h>
@@ -213,5 +213,5 @@ void MENU_FrameBufferUpdate(void);
 #endif // ! HITSIC_USE_APP_MENU
 
 
-#endif // ! D_MK66F18_APP_MENU_PORT_H_
+#endif // ! D_MK66F18_APP_MENU_PORT_H
 

@@ -15,8 +15,8 @@
  * limitations under the License.
  */
 
-#ifndef _INC_FSL_MK66F18_H_
-#define _INC_FSL_MK66F18_H_
+#ifndef INC_FSL_MK66F18_H
+#define INC_FSL_MK66F18_H
 
 #if (!defined(CPU_MK66FX1M0VLQ18))
 #error CPU incorrect !
@@ -101,4 +101,4 @@
 
 
 
-#endif // ! _INC_FSL_MK66F18_H_
+#endif // ! INC_FSL_MK66F18_H
