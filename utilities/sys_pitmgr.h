@@ -105,7 +105,7 @@ void PITMGR_Isr(pitmgr_t *_inst);
  *  该函数仅做数据检查并赋值。需要互斥保护。
  *
  * @param {pitmgr_t*} _inst          : 要操作的PITMGR实例。
- * @param {pitmgr_handle_t*} _handle : 该PITMgr任务的任务描述符指针。
+ * @param {pitmgr_handle_t*} _handle : 该PITMGR任务的任务描述符指针。
  * @return {status_t}                : 成功返回kStatus_Success，异常返回kStatus_Fail。
  */
 status_t PITMGR_HandleInsert(pitmgr_t *_inst, pitmgr_handle_t *_handle);
