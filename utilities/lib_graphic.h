@@ -56,7 +56,7 @@
   const uint16_t var_name##_fb_col = col;                                               \
   typedef struct _##var_name##_fb                                                       \
   {                                                                                     \
-      uint8_t frame[row >> 1][col];                                                     \
+      uint8_t frame[row][col >> 1];                                                     \
   } var_name##_fb_t;                                                                    \
   static inline void fun_name##_FB_Clear(var_name##_fb_t *inst)                         \
   {                                                                                     \
@@ -66,8 +66,8 @@
     (var_name##_fb_t *inst, uint16_t x, uint16_t y, var_name##_fb_pixel_t color)        \
   {                                                                                     \
       assert(0U == (color & 0xf0U));                                                    \
-      uint8_t *cell = &inst->frame[y >> 1][x];                                          \
-      (y & 0x01U) ? (*cell = (*cell & 0x0fU) | (color << 4U))                           \
+      uint8_t *cell = &inst->frame[y][x >> 1];                                          \
+      (x & 0x01U) ? (*cell = (*cell & 0x0fU) | (color << 4U))                           \
           : (*cell = (*cell & 0xf0U) | (color << 0U));                                  \
   }
 

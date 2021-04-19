@@ -45,24 +45,24 @@ status_t DISP_SSD1327_Init(void)
 
     DISP_SSD1327_WriteCmd(0xae);//Set display off
     DISP_SSD1327_WriteCmd(0xa0);//Set re-map
-    DISP_SSD1327_WriteCmd(0x55);
+    DISP_SSD1327_WriteCmd(0x40);
     DISP_SSD1327_WriteCmd(0xa1);//Set display start line
     DISP_SSD1327_WriteCmd(0x00);
 
-#if defined(HITSIC_DISP_SSD1306_FLIP_X) && (HITSIC_DISP_SSD1306_FLIP_X > 0)
-    //DISP_SSD1327_WriteCmd(0xa0); //--Set SEG/Column Mapping     0xa0左右反置 0xa1正常
-    SYSLOG_D("X axis flipped.");
-#else // ! HITSIC_DISP_SSD1306_FLIP_X
-    //DISP_SSD1327_WriteCmd(0xa1); //--Set SEG/Column Mapping     0xa0左右反置 0xa1正常
-    SYSLOG_D("X axis normal.");
-#endif// ! HITSIC_DISP_SSD1306_FLIP_X
-#if defined(HITSIC_DISP_SSD1306_FLIP_Y) && (HITSIC_DISP_SSD1306_FLIP_Y > 0)
-    //DISP_SSD1327_WriteCmd(0xc0); //Set COM/Row Scan Direction   0xc0上下反置 0xc8正常
-    SYSLOG_D("Y axis flipped.");
-#else // ! HITSIC_DISP_SSD1306_FLIP_Y
-    //DISP_SSD1327_WriteCmd(0xc8); //Set COM/Row Scan Direction   0xc0上下反置 0xc8正常
-    SYSLOG_D("Y axis normal.");
-#endif// ! HITSIC_DISP_SSD1306_FLIP_Y
+//#if defined(HITSIC_DISP_SSD1306_FLIP_X) && (HITSIC_DISP_SSD1306_FLIP_X > 0)
+//    //DISP_SSD1327_WriteCmd(0x00); //--Set SEG/Column Mapping     0xa0左右反置 0xa1正常
+//    SYSLOG_D("X axis flipped.");
+//#else // ! HITSIC_DISP_SSD1306_FLIP_X
+//    //DISP_SSD1327_WriteCmd(0xa1); //--Set SEG/Column Mapping     0xa0左右反置 0xa1正常
+//    SYSLOG_D("X axis normal.");
+//#endif// ! HITSIC_DISP_SSD1306_FLIP_X
+//#if defined(HITSIC_DISP_SSD1306_FLIP_Y) && (HITSIC_DISP_SSD1306_FLIP_Y > 0)
+//    //DISP_SSD1327_WriteCmd(0xc0); //Set COM/Row Scan Direction   0xc0上下反置 0xc8正常
+//    SYSLOG_D("Y axis flipped.");
+//#else // ! HITSIC_DISP_SSD1306_FLIP_Y
+//    //DISP_SSD1327_WriteCmd(0xc8); //Set COM/Row Scan Direction   0xc0上下反置 0xc8正常
+//    SYSLOG_D("Y axis normal.");
+//#endif// ! HITSIC_DISP_SSD1306_FLIP_Y
 
     //TODO
 
@@ -141,7 +141,10 @@ void DISP_SSD1327_Fill(disp_ssd1327_fb_pixel_t _color)
 
 void DISP_SSD1327_SetPixel(uint8_t x, uint8_t y, disp_ssd1327_fb_pixel_t _color)
 {
-
+    //Column Address
+    //DISP_SSD1327_SetColAddress(x >> 1,x >> 1);
+    // Row Address
+    //DISP_SSD1327_SetRowAddress(y,y);
 }
 
 void DISP_SSD1327_BufferUpload(disp_ssd1327_fb_t *_fb)
