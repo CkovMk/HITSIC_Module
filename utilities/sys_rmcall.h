@@ -146,6 +146,115 @@ private:
     rmCall_target_t();
 };
 
+
+
+
+
+
+
+
+
+
+#include <m-buffer.h>
+
+/*! @brief Error codes for the RMCALL driver. */
+enum
+{
+    kStatus_RMCALL_TxBusy = MAKE_STATUS(kStatusGroup_DMADVP, 0), /*!< No empty frame buffer in queue to load to CSI. */
+    kStatus_RMCALL_TxError  = MAKE_STATUS(kStatusGroup_DMADVP, 1), /*!< No full frame buffer in queue to read out. */
+    kStatus_RMCALL_RxBusy = MAKE_STATUS(kStatusGroup_DMADVP, 2), /*!< Queue is full, no room to save new empty buffer. */
+    kStatus_RMCALL_RxError = MAKE_STATUS(kStatusGroup_DMADVP, 3), /*!< New frame received and saved to queue. */
+};
+
+typedef void (*rmcall_handler_t)(void *_recvData, void *_userData);
+
+typedef struct _rmcall_handle
+{
+    uint16_t handleId;
+    rmcall_handler_t handler;
+    void *recvData;
+    uint16_t recvDataSize, recvDataLen;
+    void *userData;
+}rmcall_handle_t;
+
+__PACKED struct _rmcall_header
+{
+    uint8_t magic;
+    uint8_t itemId;
+    uint16_t dataSize;
+};
+
+typedef _rmcall_header rmcall_header_t;
+
+enum rmcall_statusFlag_t
+{
+    rmcall_statusFlag_txHead = 1U << 0U,
+    rmcall_statusFlag_txData = 2U << 0U,
+    rmcall_statusFlag_txBusy = 3U << 0U,
+    rmcall_statusFlag_rxHead = 1U << 2U,
+    rmcall_statusFlag_rxData = 2U << 2U,
+    rmcall_statusFlag_rxBusy = 3U << 2U,
+
+    rmcall_statusFlag_rxIdMissing = 1U << 8U,
+};
+
+typedef status_t(*rmcall_transfer_t)(void *_data, uint32_t dataSize);
+
+typedef struct _rmcall
+{
+    uint32_t statusFlag;
+
+    rmcall_transfer_t xfer_tx, xfer_rx;
+
+    rmcall_header_t rxHeaderBuffer;
+
+}rmcall_t;
+
+/**
+ * @brief : RMCALL初始化。
+ *
+ * @return {status_t} : 成功返回kStatus_Success，异常返回kStatus_Fail。
+ */
+status_t RMCALL_Init();
+
+void RMCALL_DeInit(void);
+
+/**
+ * @brief : 向RMCALL中断表末尾插入一个新的任务描述符。
+ *  该函数仅做数据检查并赋值。需要互斥保护。
+ *
+ * @param {rmcall_t*} _inst          : 要操作的RMCALL实例。
+ * @param {rmcall_handle_t*} _handle : 该RMCALL任务的任务描述符指针。
+ * @return {status_t}                : 成功返回kStatus_Success，异常返回kStatus_Fail。
+ */
+status_t RMCALL_HandleInsert(rmcall_t *_inst, rmcall_handle_t *_handle);
+
+/**
+ * @brief : 从RMCALL中断表中移除一个任务描述符。
+ *
+ * @param {rmcall_t*} _inst          : 要操作的RMCALL实例。
+ * @param {rmcall_handle_t*} _handle : 该RMCALL任务的任务描述符指针。
+ * @return {status_t}                : 成功返回kStatus_Success，异常返回kStatus_Fail。
+ */
+status_t RMCALL_HandleRemove(rmcall_t *_inst, rmcall_handle_t *_handle);
+
+
+/**
+ * @brief : 向远端发送RMCALL命令。
+ *
+ * @param {rmcall_t*} _inst         : 要操作的RMCALL实例。
+ * @param {uint8_t} _handleId       : 要发送的命令ID。
+ * @param {void*} _data             : 要发送的数据，无数据填NULL。
+ * @param {uint16_t} dataSize       : 要发送的数据长度，无数据填0。
+ */
+status_t RMCALL_CommandSend(rmcall_t *_inst, uint8_t _handleId, void *_data, uint16_t dataSize);
+
+/**
+ * @brief : RMCALL中断的处理函数。被IRQHandler调用。
+ */
+void RMCALL_Isr(rmcall_t *_inst, bool _txDone, bool _rxDone, uint8_t *_rxData, uint16_t _rxDataSize);
+
+
 /* @} */
 
 #endif // HITSIC_USE_RMCALL

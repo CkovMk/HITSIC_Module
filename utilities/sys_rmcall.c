@@ -160,6 +160,73 @@ void rmCall_target_t::rmCall_uartCallBack(UART_Type* base, uart_handle_t* handle
     }
 }
 
+/** Public Functions */
+
+status_t RMCALL_Init()
+{
+
+}
+
+void RMCALL_DeInit(void)
+{
+
+}
+
+status_t RMCALL_HandleInsert(rmcall_t *_inst, rmcall_handle_t *_handle)
+{
+
+}
+
+status_t RMCALL_HandleRemove(rmcall_t *_inst, rmcall_handle_t *_handle)
+{
+
+}
+
+status_t RMCALL_CommandSend(rmcall_t *_inst, uint8_t _handleId, void *_data, uint16_t dataSize)
+{
+
+}
+
+void RMCALL_Isr(rmcall_t *_inst, bool _txDone, bool _rxDone)
+{
+    if(_txDone)
+    {
+        if(_inst->statusFlag & rmcall_statusFlag_txHead)
+        {
+            //TODO: send txData here.
+        }
+        else if(_inst->statusFlag & rmcall_statusFlag_txData)
+        {
+            //stop tx.
+            _inst->statusFlag &= (~rmcall_statusFlag_txBusy);
+        }
+        else
+        {
+            //TODO: error.
+        }
+    }
+
+    if(_rxDone)
+    {
+        if(_inst->statusFlag & rmcall_statusFlag_rxHead)
+        {
+            //TODO: process rxHead here and start rxData.
+        }
+        else if(_inst->statusFlag & rmcall_statusFlag_rxData)
+        {
+            //stop rx. rxIdle.
+            _inst->statusFlag &= (~rmcall_statusFlag_rxBusy);
+            //TODO: call rmcall_handler_t.
+
+            //TODO: restart rxHead.
+        }
+        else
+        {
+            //TODO: error.
+        }
+    }
+}
+
 
 /* @} */
 
