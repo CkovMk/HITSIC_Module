@@ -25,73 +25,56 @@
 extern "C"{
 #endif
 
-
 typedef struct
 {
-	float v1;
-	float v2;
-	float r2;
-	float h2;
-	float h;
-}adrc_tdCtrl_t;
-
-typedef struct
-{
-	float v1;
-	float v2;
-	float r0;
-	float h0;
-	float h;
+	float v1;// v的滤波结果，其对时间的二阶导数被限制在-r,r之间
+	float v2;//	v1的导数
+	float h;//采样时间or计算周期
+	float r;//参，将v1的对时间的二阶导数限制在-r,r之间
 }adrc_td_t;
 
 typedef struct
 {
-	float h;
-	float beta1;
-	float beta2;
-	float alpha;
-	float delta;
-	float u;
-	float b0;
-	/* ESO */
+	//括号内容以速度环举例
+	float h;//采样时间or计算周期（控制环周期）
+	float v;//输入的目标（设定速度）
+	float v1;
+	float v2;
+	float r;//参，将v1的二阶导数限制在-r,r之间
+	float e;
+	float e1;
+	float e2;
 	float z1;
 	float z2;
-}adrc_eso_t;
+	float z3;
+	float u0;
+	float u;//输出的控制量(pwm)
+	float u_max;//输出量限幅
+	float u_min;//输出量限幅
+	float y;//输入的测量量(编码器返回的速度)
+	float b;//参，补偿系数
+	float b01;
+	float b02;
+	float b03;
+	float w0;//参，观测器带宽
+	float kp;//参
+	float kd;//参
+}adrc_t;
 
-typedef struct
-{
-	float h;
-	float beta1;
-	float beta2;
-	float u;
-	float b0;
-	/* LESO */
-	float z1;
-	float z2;
-}adrc_leso_t;	/* Linear ESO */
+//初始化，传入参数仅进行拷贝
+void ADRCCTRL_TDInit(adrc_td_t* td_t, float h);、
 
-typedef struct
-{
-	float h;
-	float h1;
-	float r1;
-	float c;
-}adrc_nlsef_t;
-
-float ADRCCTRL_Sign(float val);
-
-void ADRCCTRL_TDInit(adrc_td_t* td_t, float h, float r0, float h0);
+//更新一次TD
 void ADRCCTRL_TD(adrc_td_t* td, float v);
-void ADRCCTRL_TdCtrlInit(adrc_tdCtrl_t* td_controller, float h, float r2, float h2);
-float ADRCCTRL_TdCtrl(adrc_tdCtrl_t* td_controller, float err);
-void ADRCCTRL_EsoInit(adrc_eso_t* eso_t, float h, float beta1, float beta2, float alpha, float delta, float b0);
-void ADRCCTRL_Eso(adrc_eso_t* eso_t, float y);
-void ADRCCTRL_LesoInit(adrc_leso_t* leso_t, float h, float w, float b0);
-void ADRCCTRL_Leso(adrc_leso_t* leso_t, float y);
-void ADRCCTRL_NlsefInit(adrc_nlsef_t* nlsef_t, float h, float r1, float h1, float c);
-float ADRCCTRL_Nlsef(adrc_nlsef_t* nlsef_t, float e1, float e2);
 
+//初始化，传入参数仅进行拷贝
+void ADRCCTRL_Init(adrc_t* p,float h);
 
+//更新一次adrc控制
+void ADRCCTRL_Update(adrc_t* p);
+
+//更新一次adrc控制，只不过是非线性d(根据误差微分大小动态调整kd,d_line是调整的分界线，具体请检查代码)
+void ADRCCTRL_UpdateFal(adrc_t* p, float d_line);
 
 
 
