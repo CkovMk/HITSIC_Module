@@ -62,7 +62,7 @@ typedef struct _extint_handle
     void *userData;  /*< 用户变量 */
 }extint_handle_t;
 
-LIST_DEF(extint_isrList, extint_handle_t*)
+LIST_DEF(extint_isrList, extint_handle_t* ,M_PTR_OPLIST)
 
 typedef struct _extint
 {

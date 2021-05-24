@@ -36,7 +36,6 @@
 
 #if defined(HITSIC_USE_PITMGR) && (HITSIC_USE_PITMGR > 0)
 #include <sys_pitmgr_port.h>
-
 #include <m-list.h>
 
 /*!
@@ -76,7 +75,7 @@ typedef struct pitmgr_handle
     void *userData;  /*< 用户变量 */
 }pitmgr_handle_t;
 
-LIST_DEF(pitmgr_isrList, pitmgr_handle_t*)
+LIST_DEF(pitmgr_isrList, pitmgr_handle_t* ,M_PTR_OPLIST)
 
 typedef struct _pitmgr
 {
