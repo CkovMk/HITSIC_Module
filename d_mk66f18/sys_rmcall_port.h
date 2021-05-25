@@ -20,7 +20,7 @@
 
 #endif // ! HITSIC_RMCALL_USE_HEARTBEAT
 
-#define HITSIC_RMCALL_HEADER_MAGIC 0x55U
+#define HITSIC_RMCALL_HEADER_MAGIC 0x554768A0U
 
 void RMCALL_Callback(LPUART_Type *base, lpuart_handle_t *handle, status_t status, void *userData)
 {
@@ -38,6 +38,9 @@ void RMCALL_Callback(LPUART_Type *base, lpuart_handle_t *handle, status_t status
         rxOnGoing     = false;
     }
 }
+
+status_t RMCALL1_Tx(void *_data, uint32_t dataSize);
+status_t RMCALL1_Rx(void *_data, uint32_t dataSize);
 
 #endif // HITSIC_USE_RMCALL
 

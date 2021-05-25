@@ -155,7 +155,7 @@ private:
 
 
 
-#include <m-buffer.h>
+#include <m-dict.h>
 
 /*! @brief Error codes for the RMCALL driver. */
 enum
@@ -179,8 +179,8 @@ typedef struct _rmcall_handle
 
 __PACKED struct _rmcall_header
 {
-    uint8_t magic;
-    uint8_t itemId;
+    uint32_t magic;
+    uint16_t handleId;
     uint16_t dataSize;
 };
 
@@ -199,14 +199,29 @@ enum rmcall_statusFlag_t
 };
 
 typedef status_t(*rmcall_transfer_t)(void *_data, uint32_t dataSize);
+typedef void(*rmcall_transferAbort_t)(void);
+
+typedef struct _rmcall_config
+{
+    rmcall_transfer_t xfer_tx, xfer_rx;
+    rmcall_transferAbort_t xferAbort_tx, xferAbort_rx;
+}rmcall_config_t;
+
+DICT_OA_DEF2(rmcall_isrDict, uint16_t, rmcall_handle_t* ,M_PTR_OPLIST)
 
 typedef struct _rmcall
 {
     uint32_t statusFlag;
 
     rmcall_transfer_t xfer_tx, xfer_rx;
+    rmcall_transferAbort_t xferAbort_tx, xferAbort_rx;
 
+    rmcall_header_t txHeaderBuffer;
+    void *txDataBuffer;
     rmcall_header_t rxHeaderBuffer;
+    void *rxDataBuffer;
+
+    rmcall_isrDict isrDict;
 
 }rmcall_t;
 
@@ -215,9 +230,9 @@ typedef struct _rmcall
  *
  * @return {status_t} : 成功返回kStatus_Success，异常返回kStatus_Fail。
  */
-status_t RMCALL_Init();
+status_t RMCALL_Init(rmcall_t *_inst);
 
-void RMCALL_DeInit(void);
+void RMCALL_DeInit(rmcall_t *_inst);
 
 /**
  * @brief : 向RMCALL中断表末尾插入一个新的任务描述符。
@@ -247,7 +262,11 @@ status_t RMCALL_HandleRemove(rmcall_t *_inst, rmcall_handle_t *_handle);
  * @param {void*} _data             : 要发送的数据，无数据填NULL。
  * @param {uint16_t} dataSize       : 要发送的数据长度，无数据填0。
  */
-status_t RMCALL_CommandSend(rmcall_t *_inst, uint8_t _handleId, void *_data, uint16_t dataSize);
+status_t RMCALL_CommandSend(rmcall_t *_inst, uint8_t _handleId, void *_data, uint16_t _dataSize);
+
+status_t RMCALL_CommandRecvEnable(rmcall_t *_inst);
+
+status_t RMCALL_CommandRecvDisable(rmcall_t *_inst);
 
 /**
  * @brief : RMCALL中断的处理函数。被IRQHandler调用。

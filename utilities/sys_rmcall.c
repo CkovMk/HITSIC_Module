@@ -160,69 +160,176 @@ void rmCall_target_t::rmCall_uartCallBack(UART_Type* base, uart_handle_t* handle
     }
 }
 
-/** Public Functions */
 
-status_t RMCALL_Init()
+
+
+
+/** Private Functions */
+
+
+
+void RMCALL_TxStatusMachine(rmcall_t *_inst)
 {
-
+    switch(_inst->statusFlag & rmcall_statusFlag_txBusy)
+    {
+    case 0: // no tx
+        break;
+    case rmcall_statusFlag_txHead:
+        // tx data here.
+        _inst->statusFlag  = (_inst->statusFlag & (~rmcall_statusFlag_txHead)) | rmcall_statusFlag_txData;
+        _inst->xfer_tx(txDataBuffer, _inst->txHeaderBuffer.dataSize);
+        break;
+    case rmcall_statusFlag_txData:
+        // tx finished. go idle.
+        _inst->statusFlag  = _inst->statusFlag & (~rmcall_statusFlag_txData);
+        break;
+    default:
+        assert(0); // should never end up here.
+        break;
+    }
 }
 
-void RMCALL_DeInit(void)
+void RMCALL_RxStatusMachine(rmcall_t *_inst)
 {
+    switch(_inst->statusFlag & rmcall_statusFlag_rxBusy)
+    {
+    case 0: // no rx
+        break;
+    case rmcall_statusFlag_rxHead:
+        // rx data here.
+        _inst->statusFlag  = (_inst->statusFlag & (~rmcall_statusFlag_rxHead)) | rmcall_statusFlag_rxData;
+        break;
+    case rmcall_statusFlag_rxData:
+        // rx finished. go idle.
+        _inst->statusFlag  = _inst->statusFlag & (~rmcall_statusFlag_rxData);
+        break;
+    default:
+        assert(0); // should never end up here.
+        break;
+    }
+}
 
+
+
+
+
+/** Public Functions */
+
+status_t RMCALL_Init(rmcall_t *_inst, rmcall_config_t *_config)
+{
+    assert(_config->xfer->tx);
+    assert(_config->xfer->rx);
+
+    _inst->xfer_tx = _config->xfer_tx;
+    _inst->xfer_rx = _config->xfer_rx;
+    _inst->xferAbort_tx = _config->xferAbort_tx;
+    _inst->xferAbort_rx = _config->xferAbort_rx;
+
+    _inst->statusFlag = 0U;
+
+    rmcall_isrDict_init(&_inst->isrDict);
+}
+
+void RMCALL_DeInit(rmcall_t *_inst)
+{
+    _inst->xfer_tx = NULL;
+    _inst->xfer_rx = NULL;
+
+    _inst->statusFlag = 0U;
+
+    rmcall_isrDict_clear(&_inst->isrDict);
 }
 
 status_t RMCALL_HandleInsert(rmcall_t *_inst, rmcall_handle_t *_handle)
 {
+    assert(_inst);
+    assert(_handle);
 
+    HAL_EnterCritical();
+    rmcall_isrDict_set_at(&_inst->isrDict, _handle->handleId, _handle);
+    HAL_ExitCritical();
+
+    return kStatus_Success;
 }
 
 status_t RMCALL_HandleRemove(rmcall_t *_inst, rmcall_handle_t *_handle)
 {
+    assert(_inst);
+    assert(_handle);
 
+    HAL_EnterCritical();
+    rmcall_isrDict_erase(&_inst->isrDict, _handle->handleId);
+    HAL_ExitCritical();
+
+    return kStatus_Success;
 }
 
-status_t RMCALL_CommandSend(rmcall_t *_inst, uint8_t _handleId, void *_data, uint16_t dataSize)
+status_t RMCALL_CommandSend(rmcall_t *_inst, uint8_t _handleId, void *_data, uint16_t _dataSize)
 {
+    assert(_inst);
 
+    status_t ret = 0U;
+
+    if(0U != _inst->statusFlag & rmcall_statusFlag_txBusy)
+    {
+        return kStatus_RMCALL_TxBusy;
+    }
+
+    _inst->txHeaderBuffer.magic = HITSIC_RMCALL_HEADER_MAGIC;
+    _inst->txHeaderBuffer.handleId = _handleId;
+    _inst->txHeaderBuffer.dataSize = _dataSize;
+    _inst->txDataBuffer = _data;
+
+    _inst->statusFlag |= rmcall_statusFlag_txHead;
+    ret = _inst->xfer_tx(&_inst->txHeaderBuffer, sizeof(rmcall_header_t));
+
+    retrun ret;
+}
+
+status_t RMCALL_CommandRecvEnable(rmcall_t *_inst)
+{
+    assert(_inst);
+
+    if(0U == _inst->statusFlag & rmcall_statusFlag_rxBusy)
+    {
+        _inst->statusFlag |= rmcall_statusFlag_rxHead;
+        return _inst->xfer_rx(&_inst->rxHeaderBuffer, sizeof(rmcall_header_t));
+    }
+
+    return kStatus_Fail;
+}
+
+status_t RMCALL_CommandRecvDisable(rmcall_t *_inst)
+{
+    assert(_inst);
+
+    if(0U != _inst->statusFlag & rmcall_statusFlag_rxBusy)
+    {
+        _inst->xferAbort_rx();
+        _inst->statusFlag &= (~rmcall_statusFlag_rxBusy);
+        return kStatus_Success;
+    }
+
+    return kStatus_Fail;
 }
 
 void RMCALL_Isr(rmcall_t *_inst, bool _txDone, bool _rxDone)
 {
     if(_txDone)
     {
-        if(_inst->statusFlag & rmcall_statusFlag_txHead)
-        {
-            //TODO: send txData here.
-        }
-        else if(_inst->statusFlag & rmcall_statusFlag_txData)
-        {
-            //stop tx.
-            _inst->statusFlag &= (~rmcall_statusFlag_txBusy);
-        }
-        else
-        {
-            //TODO: error.
-        }
+        RMCALL_TxStatusMachine(_inst);
     }
 
     if(_rxDone)
     {
-        if(_inst->statusFlag & rmcall_statusFlag_rxHead)
-        {
-            //TODO: process rxHead here and start rxData.
-        }
-        else if(_inst->statusFlag & rmcall_statusFlag_rxData)
-        {
-            //stop rx. rxIdle.
-            _inst->statusFlag &= (~rmcall_statusFlag_rxBusy);
-            //TODO: call rmcall_handler_t.
+        RMCALL_RxStatusMachine(_inst);
 
-            //TODO: restart rxHead.
-        }
-        else
+        if(0U == _inst->statusFlag & rmcall_statusFlag_rxBusy)
         {
-            //TODO: error.
+            // run command
+
+            // restart rx header
+            RMCALL_CommandRecvEnable();
         }
     }
 }
