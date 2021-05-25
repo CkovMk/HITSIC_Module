@@ -1,5 +1,5 @@
-#ifndef D_MK66F18_SYS_PITMGR_PORT_H
-#define D_MK66F18_SYS_PITMGR_PORT_H
+#ifndef D_GD32F405_SYS_PITMGR_PORT_H
+#define D_GD32F405_SYS_PITMGR_PORT_H
 
 #include "hitsic_common.h"
 
@@ -9,4 +9,4 @@
 
 #endif // ! HITSIC_USE_PITMGR
 
-#endif // ! D_MK66F18_SYS_PITMGR_PORT_H
+#endif // ! D_GD32F405_SYS_PITMGR_PORT_H

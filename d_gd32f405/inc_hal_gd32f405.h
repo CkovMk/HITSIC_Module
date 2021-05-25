@@ -15,8 +15,8 @@
  * limitations under the License.
  */
 
-#ifndef INC_FSL_MK66F18_H
-#define INC_FSL_MK66F18_H
+#ifndef INC_HAL_GD32F405_H
+#define INC_HAL_GD32F405_H
 
 //#include "arm_math.h"
 
@@ -67,4 +67,4 @@
 
 
 
-#endif // ! INC_FSL_MK66F18_H
+#endif // ! INC_HAL_GD32F405_H
