@@ -50,20 +50,20 @@
 /*! @brief Error codes for the RMCALL driver. */
 enum
 {
-    kStatus_RMCALL_TxBusy = MAKE_STATUS(kStatusGroup_DMADVP, 0), /*!< No empty frame buffer in queue to load to CSI. */
-    kStatus_RMCALL_TxError  = MAKE_STATUS(kStatusGroup_DMADVP, 1), /*!< No full frame buffer in queue to read out. */
-    kStatus_RMCALL_RxBusy = MAKE_STATUS(kStatusGroup_DMADVP, 2), /*!< Queue is full, no room to save new empty buffer. */
-    kStatus_RMCALL_RxError = MAKE_STATUS(kStatusGroup_DMADVP, 3), /*!< New frame received and saved to queue. */
+    kStatus_RMCALL_TxBusy = MAKE_STATUS(kStatusGroup_RMCALL, 0), /*!< No empty frame buffer in queue to load to CSI. */
+    kStatus_RMCALL_TxError  = MAKE_STATUS(kStatusGroup_RMCALL, 1), /*!< No full frame buffer in queue to read out. */
+    kStatus_RMCALL_RxBusy = MAKE_STATUS(kStatusGroup_RMCALL, 2), /*!< Queue is full, no room to save new empty buffer. */
+    kStatus_RMCALL_RxError = MAKE_STATUS(kStatusGroup_RMCALL, 3), /*!< New frame received and saved to queue. */
 };
 
-typedef void (*rmcall_handler_t)(void *_recvData, void *_userData);
+typedef void (*rmcall_handler_t)(void *_userData);
 
 typedef struct _rmcall_handle
 {
     uint16_t handleId;
     rmcall_handler_t handler;
     void *recvData;
-    uint16_t recvDataSize, recvDataLen;
+    uint16_t recvDataSize/* occupied data size */, recvDataLen/* allocated ram size */;
     void *userData;
 }rmcall_handle_t;
 
@@ -74,7 +74,7 @@ __PACKED struct _rmcall_header
     uint16_t dataSize;
 };
 
-typedef _rmcall_header rmcall_header_t;
+typedef struct _rmcall_header rmcall_header_t;
 
 enum rmcall_statusFlag_t
 {
@@ -97,7 +97,32 @@ typedef struct _rmcall_config
     rmcall_transferAbort_t xferAbort_tx, xferAbort_rx;
 }rmcall_config_t;
 
-DICT_OA_DEF2(rmcall_isrDict, uint16_t, rmcall_handle_t* ,M_PTR_OPLIST)
+//TODO: OOR_EQUAL & OOR_SET can be beautified.
+
+#define RMCALL_DICT_OOR_EQUAL(obj, int_value) (int_value = (obj >> 15))
+
+#define RMCALL_DICT_OOR_SET(obj, int_value) (1U == int_value ? (obj | (1U << 15)) : (obj & (~(1U << 15))))
+
+#define RMCALL_DICT_OPLIST(type, init)                                        \
+  (INIT(M_INIT_DEFAULT), INIT_SET(M_SET_DEFAULT), SET(M_SET_DEFAULT),         \
+   CLEAR(M_NOTHING_DEFAULT), EQUAL(M_EQUAL_DEFAULT), CMP(M_CMP_DEFAULT),      \
+   INIT_MOVE(M_MOVE_DEFAULT), MOVE(M_MOVE_DEFAULT) ,                          \
+   ADD(M_ADD_DEFAULT), SUB(M_SUB_DEFAULT),                                    \
+   MUL(M_MUL_DEFAULT), DIV(M_DIV_DEFAULT),                                    \
+   HASH(M_HASH_DEFAULT), SWAP(M_SWAP_DEFAULT),                                \
+   OOR_EQUAL(RMCALL_DICT_OOR_EQUAL), OOR_SET(RMCALL_DICT_OOR_SET)             \
+  )
+    
+    static inline bool oor_equal_p(uint16_t k, unsigned char n) {
+      return k == 65535 - n;//FIXME!
+    }
+    static inline void oor_set(uint16_t *k, unsigned char n) {
+      *k = 65535 - n;//FIXME!
+    }
+   
+   
+
+DICT_OA_DEF2(rmcall_isrDict, uint16_t, M_OPEXTEND(M_DEFAULT_OPLIST, OOR_EQUAL(oor_equal_p), OOR_SET(oor_set M_IPTR)) , rmcall_handle_t*, M_PTR_OPLIST)
 
 typedef struct _rmcall
 {
@@ -111,7 +136,7 @@ typedef struct _rmcall
     rmcall_header_t rxHeaderBuffer;
     void *rxDataBuffer;
 
-    rmcall_isrDict isrDict;
+    rmcall_isrDict_t isrDict;
 
 }rmcall_t;
 
@@ -120,7 +145,7 @@ typedef struct _rmcall
  *
  * @return {status_t} : 成功返回kStatus_Success，异常返回kStatus_Fail。
  */
-status_t RMCALL_Init(rmcall_t *_inst);
+status_t RMCALL_Init(rmcall_t *_inst, rmcall_config_t const * const _config);
 
 void RMCALL_DeInit(rmcall_t *_inst);
 
@@ -152,16 +177,28 @@ status_t RMCALL_HandleRemove(rmcall_t *_inst, rmcall_handle_t *_handle);
  * @param {void*} _data             : 要发送的数据，无数据填NULL。
  * @param {uint16_t} dataSize       : 要发送的数据长度，无数据填0。
  */
-status_t RMCALL_CommandSend(rmcall_t *_inst, uint8_t _handleId, void *_data, uint16_t _dataSize);
+status_t RMCALL_CommandSend(rmcall_t *_inst, uint16_t _handleId, void *_data, uint16_t _dataSize);
 
+/**
+ * @brief : RMCALL接收使能。
+ *
+ * @param {rmcall_t*} _inst         : 要操作的RMCALL实例。
+ * @return {status_t} : 成功返回kStatus_Success，异常返回kStatus_Fail。
+ */
 status_t RMCALL_CommandRecvEnable(rmcall_t *_inst);
 
+/**
+ * @brief : RMCALL接收失能。
+ *
+ * @param {rmcall_t*} _inst         : 要操作的RMCALL实例。
+ * @return {status_t} : 成功返回kStatus_Success，异常返回kStatus_Fail。
+ */
 status_t RMCALL_CommandRecvDisable(rmcall_t *_inst);
 
 /**
  * @brief : RMCALL中断的处理函数。被IRQHandler调用。
  */
-void RMCALL_Isr(rmcall_t *_inst, bool _txDone, bool _rxDone, uint8_t *_rxData, uint16_t _rxDataSize);
+void RMCALL_Isr(rmcall_t *_inst, bool _txDone, bool _rxDone);
 
 
 /* @} */

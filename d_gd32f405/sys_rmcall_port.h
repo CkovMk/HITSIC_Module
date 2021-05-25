@@ -1,25 +1,31 @@
-#ifndef D_MK66F18_SYS_RMCALL_PORT_H
-#define D_MK66F18_SYS_RMCALL_PORT_H
+#ifndef D_GD32F405_SYS_RMCALL_PORT_H
+#define D_GD32F405_SYS_RMCALL_PORT_H
 #include "hitsic_common.h"
 #include "inc_stdlib.h"
 
 #if defined(HITSIC_USE_RMCALL) && (HITSIC_USE_RMCALL > 0)
 
+#include "usart.h"
+#include "stm32f4xx_hal_uart.h"
+
+#define RMCALL_SYSLOG_LVL (5U)
+
 //#define HITSIC_RMCALL_UART LPUART2
 
-// #define HITSIC_RMCALL_USE_HEARTBEAT (1U)
-// #if defined(HITSIC_RMCALL_USE_HEARTBEAT) && (HITSIC_RMCALL_USE_HEARTBEAT > 0)
-// #define HITSIC_RMCALL_PITISR_TIMELAG 100
-// #define HITSIC_RMCALL_HEARTBEAT_TIMELAG 1000
-// #define HITSIC_RMCALL_HEARTBEAT_FAIL_TH 2000
-// #define HITSIC_RMCALL_HEARTBEAT_Callback() HardFault_IRQHandler()
-// #endif // ! HITSIC_RMCALL_USE_HEARTBEAT
+#define HITSIC_RMCALL_PUBLIC_BUF_SIZE (256U)
 
-#define HITSIC_RMCALL_HEADER_MAGIC 0x68U
-#define HITSIC_RMCALL_STATUS_MAGIC 0x86U
+#define HITSIC_RMCALL_HEADER_MAGIC 0x554768A0U
 
-#endif // ! HITSIC_RMCALL_USE_HEARTBEAT
+#define kStatusGroup_RMCALL (201U)
+
+status_t RMCALL_HOST_Tx(void *_data, uint32_t _dataSize);
+status_t RMCALL_HOST_Rx(void *_data, uint32_t _dataSize);
+void RMCALL_HOST_TxAbort(void);
+void RMCALL_HOST_RxAbort(void);
+
+void RMCALL_HOST_TxCpltCallback(UART_HandleTypeDef *huart);
+void RMCALL_HOST_RxCpltCallback(UART_HandleTypeDef *huart);
 
 #endif // HITSIC_USE_RMCALL
 
-#endif // ! D_MK66F18_SYS_RMCALL_PORT_H
+#endif // ! D_GD32F405_SYS_RMCALL_PORT_H
