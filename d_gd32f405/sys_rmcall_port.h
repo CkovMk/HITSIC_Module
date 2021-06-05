@@ -8,13 +8,13 @@
 #include "usart.h"
 #include "stm32f4xx_hal_uart.h"
 
-#define RMCALL_SYSLOG_LVL (5U)
+#define RMCALL_SYSLOG_LVL (3U)
 
 //#define HITSIC_RMCALL_UART LPUART2
 
 #define HITSIC_RMCALL_PUBLIC_BUF_SIZE (256U)
 
-#define HITSIC_RMCALL_HEADER_MAGIC 0x554768A0U
+#define HITSIC_RMCALL_HEADER_MAGIC (0x554768A0U)
 
 #define kStatusGroup_RMCALL (201U)
 

@@ -54,87 +54,87 @@ void RMCALL_RxStatusMachine(rmcall_t *_inst)
         SYSLOG_D("Rx Head Done. ID = 0x%4.4x, Size = %4.4d.", _inst->rxHeaderBuffer.handleId, _inst->rxHeaderBuffer.dataSize);
         
         rmcall_handle_t **p_handle = rmcall_isrDict_get(_inst->isrDict, _inst->rxHeaderBuffer.handleId);
+        
         if(NULL == p_handle)
         {
             SYSLOG_W("Rx HandleID 0x%4.4x Not Found.", _inst->rxHeaderBuffer.handleId);
+            _inst->rxHandle = NULL;
             //_inst->rxDataBuffer = NULL;
+
             if(0U == _inst->rxHeaderBuffer.dataSize) // No data. Start another rx head immediately.
             {
-                _inst->xfer_rx(&_inst->rxHeaderBuffer, sizeof(rmcall_header_t));
+                SYSLOG_D("No dummy data to receive. Restart rx head.");
+                if(kStatus_Success != _inst->xfer_rx(&_inst->rxHeaderBuffer, sizeof(rmcall_header_t)))
+                {
+                    SYSLOG_W("Restart rx head failed.");
+                }
             }
             // recv dummy data.
-            else if(_inst->rxHeaderBuffer.dataSize <= HITSIC_RMCALL_PUBLIC_BUF_SIZE - 2) 
-              // If the dummy data size is within the capablity of a single transfer:
-              // Allocate (dataSize + 2) byte of ram, receive (dataSize) bytes of data and discard. 
-              // The first 2 bytes is used to indicate remaining bytes to be recveved,
-              // in this case, will always be 0.
+            else 
             {
                 _inst->statusFlag  = (_inst->statusFlag & (~rmcall_statusFlag_rxHead)) | rmcall_statusFlag_rxData | rmcall_statusFlag_rxIdMissing;
-                _inst->rxDataBuffer = malloc(_inst->rxHeaderBuffer.dataSize + 2U);
-                if(NULL == _inst->rxDataBuffer)
+                
+                if(_inst->rxHeaderBuffer.dataSize <= HITSIC_RMCALL_PUBLIC_BUF_SIZE - 2) 
+                  // If the dummy data size is within the capablity of a single transfer:
+                  // Allocate (dataSize + 2) byte of ram, receive (dataSize) bytes of data and discard. 
+                  // The first 2 bytes is used to indicate remaining bytes to be recveved,
+                  // in this case, will always be 0.
                 {
-                    //memory allocation error !
+
+
+                    SYSLOG_D("Dummy data can be received with a single transfer. Start rx dummy data.");
+                    *((uint16_t*)_inst->rxDataBuffer) = 0U;
+                    _inst->xfer_rx((void*)(((uint8_t*)&_inst->rxDataBuffer) + 2U), _inst->rxHeaderBuffer.dataSize);
                 }
-                *((uint16_t*)_inst->rxDataBuffer) = 0U;
-                _inst->xfer_rx((void*)(((uint8_t*)&_inst->rxDataBuffer) + 2U), _inst->rxHeaderBuffer.dataSize);
-            }
-            else
-              // if the dummy data size exceeds the capablity of a single transfer:
-              // Allocate (HITSIC_RMCALL_PUBLIC_BUF_SIZE) byte of ram, receive (HITSIC_RMCALL_PUBLIC_BUF_SIZE - 2) bytes of data and discard,
-              // then continue this process until no data is left.
-              // The first 2 bytes is used to indicate remaining bytes to be recveved, in this case,
-              // will be set to (dataSize - (HITSIC_RMCALL_PUBLIC_BUF_SIZE - 2)) and continue decreases.
-            {
-                _inst->statusFlag  = (_inst->statusFlag & (~rmcall_statusFlag_rxHead)) | rmcall_statusFlag_rxData | rmcall_statusFlag_rxIdMissing;
-                _inst->rxDataBuffer = malloc(HITSIC_RMCALL_PUBLIC_BUF_SIZE);
-                if(NULL == _inst->rxDataBuffer)
-                {
-                    //memory allocation error !
+                else
+                  // if the dummy data size exceeds the capablity of a single transfer:
+                  // Allocate (HITSIC_RMCALL_PUBLIC_BUF_SIZE) byte of ram, receive (HITSIC_RMCALL_PUBLIC_BUF_SIZE - 2) bytes of data and discard,
+                  // then continue this process until no data is left.
+                  // The first 2 bytes is used to indicate remaining bytes to be recveved, in this case,
+                  // will be set to (dataSize - (HITSIC_RMCALL_PUBLIC_BUF_SIZE - 2)) and continue decreases.
+                {                
+
+
+                    SYSLOG_D("Dummy data can NOT be received with a single transfer. Start rx dummy data.");
+                    *((uint16_t*)_inst->rxDataBuffer) = _inst->rxHeaderBuffer.dataSize - (HITSIC_RMCALL_PUBLIC_BUF_SIZE - 2U);
+                    _inst->xfer_rx((void*)(((uint8_t*)&_inst->rxDataBuffer) + 2U), HITSIC_RMCALL_PUBLIC_BUF_SIZE - 2U);
                 }
-                *((uint16_t*)_inst->rxDataBuffer) = _inst->rxHeaderBuffer.dataSize - (HITSIC_RMCALL_PUBLIC_BUF_SIZE - 2U);
-                _inst->xfer_rx((void*)(((uint8_t*)&_inst->rxDataBuffer) + 2U), HITSIC_RMCALL_PUBLIC_BUF_SIZE - 2U);
             }
         }
-        else if(0U == _inst->rxHeaderBuffer.dataSize) // No data. go idle.
+        else 
         {
-            // rx finished. go idle.
-            _inst->statusFlag  = _inst->statusFlag & (~rmcall_statusFlag_rxBusy);
-        }
-        else //recv data.
-        {
-            _inst->statusFlag  = (_inst->statusFlag & (~rmcall_statusFlag_rxHead)) | rmcall_statusFlag_rxData;
-            
-            if(NULL != (*p_handle)->recvData && (*p_handle)->recvDataLen < _inst->rxHeaderBuffer.dataSize)
+            _inst->rxHandle = *p_handle;
+
+            if(0U == _inst->rxHeaderBuffer.dataSize) // No data. go idle. wait for handle execute.
             {
-                free((*p_handle)->recvData);
-                (*p_handle)->recvData = NULL;
-                (*p_handle)->recvDataLen = 0U;
+                // rx finished. go idle.
+                _inst->statusFlag  = _inst->statusFlag & (~rmcall_statusFlag_rxBusy);
+                SYSLOG_D("No data to receive. Run handler directly.");
             }
-            
-            if(NULL == (*p_handle)->recvData)
+            else //recv data.
             {
-                (*p_handle)->recvDataLen = _inst->rxHeaderBuffer.dataSize;
-                (*p_handle)->recvData = malloc((*p_handle)->recvDataLen);
+                _inst->statusFlag  = (_inst->statusFlag & (~rmcall_statusFlag_rxBusy)) | rmcall_statusFlag_rxData;
+                
+                if(_inst->rxHeaderBuffer.dataSize > HITSIC_RMCALL_PUBLIC_BUF_SIZE) 
+                {
+                    // Error !
+                    SYSLOG_E("Insufficent Rx handle buffer size. %4.4d byte(s) required, Got %4.4d byte(s).", _inst->rxHeaderBuffer.dataSize, HITSIC_RMCALL_PUBLIC_BUF_SIZE);
+                    assert(0);
+                }
+                
+                SYSLOG_D("Rx data Begin.");
+                _inst->xfer_rx((void*)_inst->rxDataBuffer, _inst->rxHeaderBuffer.dataSize);
             }
-            
-            _inst->rxDataBuffer = (*p_handle)->recvData;
-            _inst->xfer_rx(_inst->rxDataBuffer, _inst->rxHeaderBuffer.dataSize);
         }
         
-        
-        _inst->statusFlag  = _inst->statusFlag & (~rmcall_statusFlag_rxBusy);// for test purpose only. //FIXME
-        //TODO
-        //if(_inst->rxHeaderBuffer.handleId)
         break;
         
     case rmcall_statusFlag_rxData:
-      
         if(_inst->statusFlag & rmcall_statusFlag_rxIdMissing)
         {
             if(0U == *((uint16_t*)_inst->rxDataBuffer)) // rx dummy data finished.
             {
-                free(_inst->rxDataBuffer);
-                _inst->rxDataBuffer = NULL; 
+
                 _inst->statusFlag  = _inst->statusFlag & (~rmcall_statusFlag_rxBusy);
                 _inst->statusFlag  = _inst->statusFlag & (~rmcall_statusFlag_rxIdMissing);
                 _inst->statusFlag  = _inst->statusFlag | rmcall_statusFlag_rxHead;
@@ -150,10 +150,13 @@ void RMCALL_RxStatusMachine(rmcall_t *_inst)
                 _inst->xfer_rx((void*)(((uint8_t*)&_inst->rxDataBuffer) + 2U), HITSIC_RMCALL_PUBLIC_BUF_SIZE - 2U);
                 *((uint16_t*)_inst->rxDataBuffer) -= (HITSIC_RMCALL_PUBLIC_BUF_SIZE - 2U);
             }
-            break;
         }
-        // rx finished. go idle.
-        _inst->statusFlag  = _inst->statusFlag & (~rmcall_statusFlag_rxBusy);
+        else
+        {
+            // rx finished. go idle.
+            _inst->statusFlag  = _inst->statusFlag & (~rmcall_statusFlag_rxBusy);
+            SYSLOG_D("Rx Data Done.");
+        }
         break;
     default:
         assert(0); // should never end up here.
@@ -178,6 +181,15 @@ status_t RMCALL_Init(rmcall_t *_inst, rmcall_config_t const * const _config)
     _inst->xferAbort_rx = _config->xferAbort_rx;
 
     _inst->statusFlag = 0U;
+    
+    _inst->rxHandle = NULL;
+
+    _inst->rxDataBuffer = malloc(HITSIC_RMCALL_PUBLIC_BUF_SIZE);
+    if(NULL == _inst->rxDataBuffer)
+    {
+        //memory allocation error !
+        assert(0);
+    }
 
     rmcall_isrDict_init(_inst->isrDict);
     
@@ -190,6 +202,9 @@ void RMCALL_DeInit(rmcall_t *_inst)
     _inst->xfer_rx = NULL;
 
     _inst->statusFlag = 0U;
+    
+    free(_inst->rxDataBuffer);
+    _inst->rxDataBuffer = NULL;
 
     rmcall_isrDict_clear(_inst->isrDict);
 }
@@ -255,7 +270,7 @@ status_t RMCALL_CommandRecvEnable(rmcall_t *_inst)
     if(0U == (_inst->statusFlag & rmcall_statusFlag_rxBusy))
     {
         _inst->statusFlag |= rmcall_statusFlag_rxHead;
-        ret =  _inst->xfer_rx(&_inst->rxHeaderBuffer, sizeof(rmcall_header_t));
+        ret = _inst->xfer_rx((void*)&_inst->rxHeaderBuffer, sizeof(rmcall_header_t));
         if(kStatus_Success == ret)
         {
             SYSLOG_I("Recv Enabled.");
@@ -300,10 +315,10 @@ void RMCALL_Isr(rmcall_t *_inst, bool _txDone, bool _rxDone)
 
         if(0U == (_inst->statusFlag & rmcall_statusFlag_rxBusy))
         {
+            SYSLOG_I("Executint Handle 0x%4.4x.", _inst->rxHeaderBuffer.handleId);
             // run command
-
+            (*_inst->rxHandle->handler)(_inst->rxDataBuffer, _inst->rxHeaderBuffer.dataSize, _inst->rxHandle->userData);
             // restart rx header
-            SYSLOG_I("Handler Executed. Enable Rx Head.");
             RMCALL_CommandRecvEnable(_inst);
         }
     }

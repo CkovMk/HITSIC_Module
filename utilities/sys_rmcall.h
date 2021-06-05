@@ -56,14 +56,12 @@ enum
     kStatus_RMCALL_RxError = MAKE_STATUS(kStatusGroup_RMCALL, 3), /*!< New frame received and saved to queue. */
 };
 
-typedef void (*rmcall_handler_t)(void *_userData);
+typedef void (*rmcall_handler_t)(void *_recvData, uint16_t _recvSize, void *_userData);
 
 typedef struct _rmcall_handle
 {
     uint16_t handleId;
     rmcall_handler_t handler;
-    void *recvData;
-    uint16_t recvDataSize/* occupied data size */, recvDataLen/* allocated ram size */;
     void *userData;
 }rmcall_handle_t;
 
@@ -96,23 +94,8 @@ typedef struct _rmcall_config
     rmcall_transfer_t xfer_tx, xfer_rx;
     rmcall_transferAbort_t xferAbort_tx, xferAbort_rx;
 }rmcall_config_t;
-
-//TODO: OOR_EQUAL & OOR_SET can be beautified.
-
-#define RMCALL_DICT_OOR_EQUAL(obj, int_value) (int_value = (obj >> 15))
-
-#define RMCALL_DICT_OOR_SET(obj, int_value) (1U == int_value ? (obj | (1U << 15)) : (obj & (~(1U << 15))))
-
-#define RMCALL_DICT_OPLIST(type, init)                                        \
-  (INIT(M_INIT_DEFAULT), INIT_SET(M_SET_DEFAULT), SET(M_SET_DEFAULT),         \
-   CLEAR(M_NOTHING_DEFAULT), EQUAL(M_EQUAL_DEFAULT), CMP(M_CMP_DEFAULT),      \
-   INIT_MOVE(M_MOVE_DEFAULT), MOVE(M_MOVE_DEFAULT) ,                          \
-   ADD(M_ADD_DEFAULT), SUB(M_SUB_DEFAULT),                                    \
-   MUL(M_MUL_DEFAULT), DIV(M_DIV_DEFAULT),                                    \
-   HASH(M_HASH_DEFAULT), SWAP(M_SWAP_DEFAULT),                                \
-   OOR_EQUAL(RMCALL_DICT_OOR_EQUAL), OOR_SET(RMCALL_DICT_OOR_SET)             \
-  )
     
+
     static inline bool oor_equal_p(uint16_t k, unsigned char n) {
       return k == 65535 - n;//FIXME!
     }
@@ -135,6 +118,8 @@ typedef struct _rmcall
     void *txDataBuffer;
     rmcall_header_t rxHeaderBuffer;
     void *rxDataBuffer;
+    
+    rmcall_handle_t *rxHandle;
 
     rmcall_isrDict_t isrDict;
 
