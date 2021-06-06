@@ -22,12 +22,20 @@ void RMCALL_TxStatusMachine(rmcall_t *_inst)
     case rmcall_statusFlag_txHead:
         // tx data here.
         SYSLOG_D("Tx Head Done, Tx Data. Size = %4.4d.", _inst->txHeaderBuffer.dataSize);
-        _inst->statusFlag  = (_inst->statusFlag & (~rmcall_statusFlag_txHead)) | rmcall_statusFlag_txData;
-        _inst->xfer_tx(_inst->txDataBuffer, _inst->txHeaderBuffer.dataSize);
+        if(0U != _inst->txHeaderBuffer.dataSize)
+        {
+            _inst->statusFlag  = (_inst->statusFlag & (~rmcall_statusFlag_txHead)) | rmcall_statusFlag_txData;
+            _inst->xfer_tx(_inst->txDataBuffer, _inst->txHeaderBuffer.dataSize);
+        }
+        else
+        {
+            SYSLOG_D("No tx data. Tx Done.");
+            _inst->statusFlag  = _inst->statusFlag & (~rmcall_statusFlag_txData);
+        }
         break;
     case rmcall_statusFlag_txData:
         // tx finished. go idle.
-        SYSLOG_D("Tx Data Done.");
+        SYSLOG_D("Tx data done. Tx done.");
         _inst->statusFlag  = _inst->statusFlag & (~rmcall_statusFlag_txData);
         break;
     default:
