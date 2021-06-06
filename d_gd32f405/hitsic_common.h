@@ -234,6 +234,19 @@ enum
 /*! @brief Type used for all status and error return values. */
 typedef int32_t status_t;
 
+/*! @name Timer utilities */
+/* @{ */
+/*! Macro to convert a microsecond period to raw count value */
+#define USEC_TO_COUNT(us, clockFreqInHz) (uint64_t)(((uint64_t)(us) * (clockFreqInHz)) / 1000000U)
+/*! Macro to convert a raw count value to microsecond */
+#define COUNT_TO_USEC(count, clockFreqInHz) (uint64_t)((uint64_t)(count) * 1000000U / (clockFreqInHz))
+
+/*! Macro to convert a millisecond period to raw count value */
+#define MSEC_TO_COUNT(ms, clockFreqInHz) (uint64_t)((uint64_t)(ms) * (clockFreqInHz) / 1000U)
+/*! Macro to convert a raw count value to millisecond */
+#define COUNT_TO_MSEC(count, clockFreqInHz) (uint64_t)((uint64_t)(count) * 1000U / (clockFreqInHz))
+/* @} */
+
 
 //#define assert(test) ((test) ? (void) 0 : abort())
 
