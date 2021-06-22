@@ -14,10 +14,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef D_GDD32F405_HITSIC_COMMON_H
-#define D_GDD32F405_HITSIC_COMMON_H
+#ifndef D_STM32F4xx_HITSIC_COMMON_H
+#define D_STM32F4xx_HITSIC_COMMON_H
 
-#include "inc_hal_gd32f405.h"
+#include "inc_hal_stm32f4xx.h"
 #include "assert.h"
 #include "stdint.h"
 
@@ -280,4 +280,4 @@ static inline void HAL_ExitCritical(void)
 }
 #endif
 
-#endif // ! D_GDD32F405_HITSIC_COMMON_H
+#endif // ! D_STM32F4xx_HITSIC_COMMON_H

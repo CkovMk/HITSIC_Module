@@ -1,5 +1,5 @@
-#ifndef D_GD32F405_INC_SYSLOG_PORT_H
-#define D_GD32F405_INC_SYSLOG_PORT_H
+#ifndef D_STM32F4xx_INC_SYSLOG_PORT_H
+#define D_STM32F4xx_INC_SYSLOG_PORT_H
 
 #include "hitsic_common.h"
 #include "stdio.h"
@@ -12,4 +12,4 @@
 
 #define HITSIC_LOG_LINEFEED ("\r\n")
 
-#endif // ! D_GD32F405_INC_SYSLOG_PORT_H
+#endif // ! D_STM32F4xx_INC_SYSLOG_PORT_H

@@ -15,8 +15,8 @@
  * limitations under the License.
  */
 
-#ifndef INC_HAL_GD32F405_H
-#define INC_HAL_GD32F405_H
+#ifndef INC_HAL_STM32F4xx_H
+#define INC_HAL_STM32F4xx_H
 
 //#include "arm_math.h"
 
@@ -49,16 +49,6 @@
 
 //BSP RTE
 
-#include "main.h"
-
-#include "main.h"
-#include "adc.h"
-#include "dma.h"
-#include "i2c.h"
-#include "tim.h"
-#include "usart.h"
-#include "gpio.h"
-
 
 
 //CMB
@@ -67,4 +57,4 @@
 
 
 
-#endif // ! INC_HAL_GD32F405_H
+#endif // ! INC_HAL_STM32F4xx_H
