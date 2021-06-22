@@ -8,7 +8,7 @@
 #include "usart.h"
 #include "stm32f4xx_hal_uart.h"
 
-#define RMCALL_SYSLOG_LVL (3U)
+#define RMCALL_SYSLOG_LVL (2U)
 
 //#define HITSIC_RMCALL_UART LPUART2
 

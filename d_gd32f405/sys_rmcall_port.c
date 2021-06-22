@@ -4,7 +4,9 @@
 
 #include <sys_rmcall.h>
 
-
+#define SYSLOG_TAG "RMCALL"
+#define SYSLOG_LVL RMCALL_SYSLOG_LVL
+#include <inc_syslog.h>
 
 extern rmcall_t rmcall_host;
 

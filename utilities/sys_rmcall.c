@@ -30,13 +30,13 @@ void RMCALL_TxStatusMachine(rmcall_t *_inst)
         else
         {
             SYSLOG_D("No tx data. Tx Done.");
-            _inst->statusFlag  = _inst->statusFlag & (~rmcall_statusFlag_txData);
+            _inst->statusFlag  = _inst->statusFlag & (~rmcall_statusFlag_txBusy);
         }
         break;
     case rmcall_statusFlag_txData:
         // tx finished. go idle.
         SYSLOG_D("Tx data done. Tx done.");
-        _inst->statusFlag  = _inst->statusFlag & (~rmcall_statusFlag_txData);
+        _inst->statusFlag  = _inst->statusFlag & (~rmcall_statusFlag_txBusy);
         break;
     default:
         assert(0); // should never end up here.
@@ -266,7 +266,7 @@ status_t RMCALL_CommandSend(rmcall_t *_inst, uint16_t _handleId, void *_data, ui
     _inst->statusFlag |= rmcall_statusFlag_txHead;
     SYSLOG_I("Tx Head. ID = 0x%4.4x, Size = %4.4d.", _handleId, _dataSize);
     ret = _inst->xfer_tx(&_inst->txHeaderBuffer, sizeof(rmcall_header_t));
-    
+
     return ret;
 }
 
@@ -285,7 +285,7 @@ status_t RMCALL_CommandRecvEnable(rmcall_t *_inst)
         }
         else
         {
-            SYSLOG_I("Recv Enable Failed. Transfer Error.");
+            SYSLOG_E("Recv Enable Failed. Transfer Error.");
         }
         
     }
@@ -323,11 +323,12 @@ void RMCALL_Isr(rmcall_t *_inst, bool _txDone, bool _rxDone)
 
         if(0U == (_inst->statusFlag & rmcall_statusFlag_rxBusy))
         {
-            SYSLOG_I("Executint Handle 0x%4.4x.", _inst->rxHeaderBuffer.handleId);
+            SYSLOG_I("Execute Handle 0x%4.4x.", _inst->rxHeaderBuffer.handleId);
             // run command
             (*_inst->rxHandle->handler)(_inst->rxDataBuffer, _inst->rxHeaderBuffer.dataSize, _inst->rxHandle->userData);
             // restart rx header
-            RMCALL_CommandRecvEnable(_inst);
+            _inst->statusFlag |= rmcall_statusFlag_rxHead;
+            _inst->xfer_rx((void*)&_inst->rxHeaderBuffer, sizeof(rmcall_header_t));
         }
     }
 }
