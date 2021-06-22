@@ -29,12 +29,12 @@ void RMCALL_HOST_RxAbort(void)
 
 void RMCALL_HOST_TxCpltCallback(UART_HandleTypeDef *huart)
 {
-    RMCALL_Isr(&rmcall_host, true, false);
+    RMCALL_TxIsr(&rmcall_host);
 }
 
 void RMCALL_HOST_RxCpltCallback(UART_HandleTypeDef *huart)
 {
-    RMCALL_Isr(&rmcall_host, false, true);
+    RMCALL_RxIsr(&rmcall_host);
 }
 
 #endif // HITSIC_USE_RMCALL

@@ -183,7 +183,8 @@ status_t RMCALL_CommandRecvDisable(rmcall_t *_inst);
 /**
  * @brief : RMCALL中断的处理函数。被IRQHandler调用。
  */
-void RMCALL_Isr(rmcall_t *_inst, bool _txDone, bool _rxDone);
+void RMCALL_TxIsr(rmcall_t *_inst);
+void RMCALL_RxIsr(rmcall_t *_inst);
 
 
 /* @} */

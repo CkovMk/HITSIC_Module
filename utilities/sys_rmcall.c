@@ -309,27 +309,23 @@ status_t RMCALL_CommandRecvDisable(rmcall_t *_inst)
     return kStatus_Fail;
 }
 
-void RMCALL_Isr(rmcall_t *_inst, bool _txDone, bool _rxDone)
+void RMCALL_TxIsr(rmcall_t *_inst)
 {
-    if(_txDone)
-    {
-        RMCALL_TxStatusMachine(_inst);
-    }
+    RMCALL_TxStatusMachine(_inst);
+}
 
-    if(_rxDone)
-    {        
-        RMCALL_RxStatusMachine(_inst);
+void RMCALL_RxIsr(rmcall_t *_inst)
+{
+    RMCALL_RxStatusMachine(_inst);
         
-
-        if(0U == (_inst->statusFlag & rmcall_statusFlag_rxBusy))
-        {
-            SYSLOG_I("Execute Handle 0x%4.4x.", _inst->rxHeaderBuffer.handleId);
-            // run command
-            (*_inst->rxHandle->handler)(_inst->rxDataBuffer, _inst->rxHeaderBuffer.dataSize, _inst->rxHandle->userData);
-            // restart rx header
-            _inst->statusFlag |= rmcall_statusFlag_rxHead;
-            _inst->xfer_rx((void*)&_inst->rxHeaderBuffer, sizeof(rmcall_header_t));
-        }
+    if(0U == (_inst->statusFlag & rmcall_statusFlag_rxBusy))
+    {
+        SYSLOG_I("Execute Handle 0x%4.4x.", _inst->rxHeaderBuffer.handleId);
+        // run command
+        (*_inst->rxHandle->handler)(_inst->rxDataBuffer, _inst->rxHeaderBuffer.dataSize, _inst->rxHandle->userData);
+        // restart rx header
+        _inst->statusFlag |= rmcall_statusFlag_rxHead;
+        _inst->xfer_rx((void*)&_inst->rxHeaderBuffer, sizeof(rmcall_header_t));
     }
 }
 
