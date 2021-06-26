@@ -17,9 +17,10 @@ HITSIC_Module是哈工大智能车创新俱乐部各MCU平台共用的程序模�
 | 模块名                                  | 说明                                                      |
 | --------------------------------------- | --------------------------------------------------------- |
 | **INC / 包含**                          |                                                           |
-| HITSIC_COMMON | 设备公共包含头文件。 |
-| INC_STDLIB                              | 包含了大多数C/C++标准库、位操作宏定义，禁用了不安全函数。 |
-| [INC_SYSLOG](doc/inc_syslog.md) | 简易日志库。 |
+| HITSIC_COMMON | 设备公共包含头文件 |
+| INC_STDLIB                              | 包含了大多数C/C++标准库、位操作宏定义，禁用了不安全函数 |
+| [INC_SYSLOG](doc/inc_syslog.md) | 简易日志库 |
+| BITOP | 位操作库 |
 | **SYS / 系统**                          |                                                           |
 | LTC | 生命周期定时器 |
 | [EXTINT](doc/sys_extint.md)             | 外部中断管理器组件                                        |
@@ -36,13 +37,14 @@ HITSIC_Module是哈工大智能车创新俱乐部各MCU平台共用的程序模�
 | WIP：TFMINI                             | TFmini激光测距雷达                                        |
 | WIP：TOF_VL53L0x                        | ST VL53L0x激光测距传感器                                  |
 | WIP：TOF_VL53L1x                        | ST VL53L1x激光测距传感器                                  |
-| [DMADVP](doc/drv_dmadvp.md)    | DVP摄像头DMA接收器模组，用于Kinetis系列单片机             |
-| [CAM_ZF9V034](doc/drv_cam_zf9v034.md) | 逐飞总钻风（CMOS：MT9V034）摄像头配置模组                 |
-| WIP：NRF24L01 |  |
+| [DMADVP](doc/drv_dmadvp.md)             | DVP摄像头DMA接收器模组，用于Kinetis系列单片机             |
+| [CAM_ZF9V034](doc/drv_cam_zf9v034.md)   | 逐飞总钻风（CMOS：MT9V034）摄像头配置模组                 |
+| WIP：NRF24L01                           |                                                        |
 | **LIB / 工具**                          |                                                           |
 | LIST                                    | 轻量级链表组件                                            |
 | PIDCTRL                                 | PID控制组件                                               |
 | [ADRCCTRL](doc/lib_adrcctrl.md)         | ADRC控制组件                                              |
+| GRAPHIC                                 | 图形组件                                                |
 | **APP / 应用**                          |                                                           |
 | [MENU](doc/app_menu.md)                 | 简单调参菜单组件                                          |
 | SVBMP | 保存图像为BMP图像文件 |
