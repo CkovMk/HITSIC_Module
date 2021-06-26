@@ -1,5 +1,5 @@
-#ifndef D_STM32F4xx_SYS_PITMGR_PORT_H
-#define D_STM32F4xx_SYS_PITMGR_PORT_H
+#ifndef D_STM32F4XX_SYS_PITMGR_PORT_H
+#define D_STM32F4XX_SYS_PITMGR_PORT_H
 
 #include "hitsic_common.h"
 
@@ -9,4 +9,4 @@
 
 #endif // ! HITSIC_USE_PITMGR
 
-#endif // ! D_STM32F4xx_SYS_PITMGR_PORT_H
+#endif // ! D_STM32F4XX_SYS_PITMGR_PORT_H

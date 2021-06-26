@@ -1,5 +1,5 @@
-#ifndef D_STM32F4xx_SYS_RMCALL_PORT_H
-#define D_STM32F4xx_SYS_RMCALL_PORT_H
+#ifndef D_STM32F4XX_SYS_RMCALL_PORT_H
+#define D_STM32F4XX_SYS_RMCALL_PORT_H
 #include "hitsic_common.h"
 #include "inc_stdlib.h"
 
@@ -28,4 +28,4 @@ void RMCALL_HOST_RxCpltCallback(UART_HandleTypeDef *huart);
 
 #endif // HITSIC_USE_RMCALL
 
-#endif // ! D_STM32F4xx_SYS_RMCALL_PORT_H
+#endif // ! D_STM32F4XX_SYS_RMCALL_PORT_H
