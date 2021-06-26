@@ -32,7 +32,6 @@ HITSIC_Module是哈工大智能车创新俱乐部各MCU平台共用的程序模�
 | [DISP_SSD1306](doc/drv_disp_ssd1306.md) | OLED屏幕SSD1306驱动组件                                   |
 | BETA：DISP_SSD1327 | OLED屏幕SSD1327驱动组件 |
 | WIP：ST7789 |  |
-| [IMU_INVENSENSE](doc/drv_imu_invensense.md) | Invensense公司IMU惯导模块统一驱动组件（Deprecated）       |
 | WIP：TCS34725                           | I2C颜色传感器                                             |
 | WIP：TFMINI                             | TFmini激光测距雷达                                        |
 | WIP：TOF_VL53L0x                        | ST VL53L0x激光测距传感器                                  |
