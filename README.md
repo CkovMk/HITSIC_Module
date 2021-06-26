@@ -19,7 +19,7 @@ HITSIC_Module是哈工大智能车创新俱乐部各MCU平台共用的程序模�
 | **INC / 包含**                          |                                                           |
 | HITSIC_COMMON | 设备公共包含头文件 |
 | INC_STDLIB                              | 包含了大多数C/C++标准库、位操作宏定义，禁用了不安全函数 |
-| [INC_SYSLOG](doc/inc_syslog.md) | 简易日志库 |
+| [SYSLOG](doc/inc_syslog.md) | 简易日志库 |
 | BITOP | 位操作库 |
 | **SYS / 系统**                          |                                                           |
 | LTC | 生命周期定时器 |
@@ -29,7 +29,6 @@ HITSIC_Module是哈工大智能车创新俱乐部各MCU平台共用的程序模�
 | **DRV / 驱动**                          |                                                           |
 | [FTFX_FLASH](doc/drv_ftfx_flash.md)     | Kinetis系列单片机内部Flash驱动组件                        |
 | [BUTTON](doc/drv_button.md)             | 按钮事件识别组件                                          |
-| DISP_FONT                               | 显示字体组件                                              |
 | [DISP_SSD1306](doc/drv_disp_ssd1306.md) | OLED屏幕SSD1306驱动组件                                   |
 | BETA：DISP_SSD1327 | OLED屏幕SSD1327驱动组件 |
 | WIP：ST7789 |  |
