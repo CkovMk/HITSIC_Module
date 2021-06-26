@@ -43,7 +43,7 @@ HITSIC_Module是哈工大智能车创新俱乐部各MCU平台共用的程序模�
 | **LIB / 工具**                          |                                                           |
 | LIST                                    | 轻量级链表组件                                            |
 | PIDCTRL                                 | PID控制组件                                               |
-| ADRCCTRL                                | ADRC控制组件                                              |
+| [ADRCCTRL](doc/lib_adrcctrl.md)         | ADRC控制组件                                              |
 | **APP / 应用**                          |                                                           |
 | [MENU](doc/app_menu.md)                 | 简单调参菜单组件                                          |
 | SVBMP | 保存图像为BMP图像文件 |
