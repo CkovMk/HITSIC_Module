@@ -25,7 +25,7 @@ void RMCALL_TxStatusMachine(rmcall_t *_inst)
         if(0U != _inst->txHeaderBuffer.dataSize)
         {
             _inst->statusFlag  = (_inst->statusFlag & (~rmcall_statusFlag_txHead)) | rmcall_statusFlag_txData;
-            _inst->xfer_tx(_inst->txDataBuffer, _inst->txHeaderBuffer.dataSize);
+            _inst->teleport->xfer_tx(_inst->txDataBuffer, _inst->txHeaderBuffer.dataSize);
         }
         else
         {
@@ -55,7 +55,7 @@ void RMCALL_RxStatusMachine(rmcall_t *_inst)
         if(HITSIC_RMCALL_HEADER_MAGIC != _inst->rxHeaderBuffer.magic)
         {
             SYSLOG_W("Rx Head Magic Error. Expected 0x%8.8x, Got 0x%8.8x.", HITSIC_RMCALL_HEADER_MAGIC, _inst->rxHeaderBuffer.magic);
-            _inst->xfer_rx(&_inst->rxHeaderBuffer, sizeof(rmcall_header_t));
+            _inst->teleport->xfer_rx(&_inst->rxHeaderBuffer, sizeof(rmcall_header_t));
             break;
         }
         
@@ -72,7 +72,7 @@ void RMCALL_RxStatusMachine(rmcall_t *_inst)
             if(0U == _inst->rxHeaderBuffer.dataSize) // No data. Start another rx head immediately.
             {
                 SYSLOG_D("No dummy data to receive. Restart rx head.");
-                if(kStatus_Success != _inst->xfer_rx(&_inst->rxHeaderBuffer, sizeof(rmcall_header_t)))
+                if(kStatus_Success != _inst->teleport->xfer_rx(&_inst->rxHeaderBuffer, sizeof(rmcall_header_t)))
                 {
                     SYSLOG_W("Restart rx head failed.");
                 }
@@ -92,7 +92,7 @@ void RMCALL_RxStatusMachine(rmcall_t *_inst)
 
                     SYSLOG_D("Dummy data can be received with a single transfer. Start rx dummy data.");
                     *((uint16_t*)_inst->rxDataBuffer) = 0U;
-                    _inst->xfer_rx((void*)(((uint8_t*)&_inst->rxDataBuffer) + 2U), _inst->rxHeaderBuffer.dataSize);
+                    _inst->teleport->xfer_rx((void*)(((uint8_t*)&_inst->rxDataBuffer) + 2U), _inst->rxHeaderBuffer.dataSize);
                 }
                 else
                   // if the dummy data size exceeds the capablity of a single transfer:
@@ -105,7 +105,7 @@ void RMCALL_RxStatusMachine(rmcall_t *_inst)
 
                     SYSLOG_D("Dummy data can NOT be received with a single transfer. Start rx dummy data.");
                     *((uint16_t*)_inst->rxDataBuffer) = _inst->rxHeaderBuffer.dataSize - (HITSIC_RMCALL_PUBLIC_BUF_SIZE - 2U);
-                    _inst->xfer_rx((void*)(((uint8_t*)&_inst->rxDataBuffer) + 2U), HITSIC_RMCALL_PUBLIC_BUF_SIZE - 2U);
+                    _inst->teleport->xfer_rx((void*)(((uint8_t*)&_inst->rxDataBuffer) + 2U), HITSIC_RMCALL_PUBLIC_BUF_SIZE - 2U);
                 }
             }
         }
@@ -131,7 +131,7 @@ void RMCALL_RxStatusMachine(rmcall_t *_inst)
                 }
                 
                 SYSLOG_D("Rx data Begin.");
-                _inst->xfer_rx((void*)_inst->rxDataBuffer, _inst->rxHeaderBuffer.dataSize);
+                _inst->teleport->xfer_rx((void*)_inst->rxDataBuffer, _inst->rxHeaderBuffer.dataSize);
             }
         }
         
@@ -146,16 +146,16 @@ void RMCALL_RxStatusMachine(rmcall_t *_inst)
                 _inst->statusFlag  = _inst->statusFlag & (~rmcall_statusFlag_rxBusy);
                 _inst->statusFlag  = _inst->statusFlag & (~rmcall_statusFlag_rxIdMissing);
                 _inst->statusFlag  = _inst->statusFlag | rmcall_statusFlag_rxHead;
-                _inst->xfer_rx(&_inst->rxHeaderBuffer, sizeof(rmcall_header_t));
+                _inst->teleport->xfer_rx(&_inst->rxHeaderBuffer, sizeof(rmcall_header_t));
             }
             else if (*((uint16_t*)_inst->rxDataBuffer) <= (HITSIC_RMCALL_PUBLIC_BUF_SIZE - 2))
             {
-                _inst->xfer_rx((void*)(((uint8_t*)&_inst->rxDataBuffer) + 2U), *((uint16_t*)_inst->rxDataBuffer));
+                _inst->teleport->xfer_rx((void*)(((uint8_t*)&_inst->rxDataBuffer) + 2U), *((uint16_t*)_inst->rxDataBuffer));
                 *((uint16_t*)_inst->rxDataBuffer) = 0U;
             }
             else
             {
-                _inst->xfer_rx((void*)(((uint8_t*)&_inst->rxDataBuffer) + 2U), HITSIC_RMCALL_PUBLIC_BUF_SIZE - 2U);
+                _inst->teleport->xfer_rx((void*)(((uint8_t*)&_inst->rxDataBuffer) + 2U), HITSIC_RMCALL_PUBLIC_BUF_SIZE - 2U);
                 *((uint16_t*)_inst->rxDataBuffer) -= (HITSIC_RMCALL_PUBLIC_BUF_SIZE - 2U);
             }
         }
@@ -183,10 +183,7 @@ status_t RMCALL_Init(rmcall_t *_inst, rmcall_config_t const * const _config)
     assert(_config->xfer_tx);
     assert(_config->xfer_rx);
 
-    _inst->xfer_tx = _config->xfer_tx;
-    _inst->xfer_rx = _config->xfer_rx;
-    _inst->xferAbort_tx = _config->xferAbort_tx;
-    _inst->xferAbort_rx = _config->xferAbort_rx;
+    _inst->teleport = _config->teleport;
 
     _inst->statusFlag = 0U;
     
@@ -206,8 +203,7 @@ status_t RMCALL_Init(rmcall_t *_inst, rmcall_config_t const * const _config)
 
 void RMCALL_DeInit(rmcall_t *_inst)
 {
-    _inst->xfer_tx = NULL;
-    _inst->xfer_rx = NULL;
+    _inst->teleport = NULL;
 
     _inst->statusFlag = 0U;
     
@@ -265,7 +261,7 @@ status_t RMCALL_CommandSend(rmcall_t *_inst, uint16_t _handleId, void *_data, ui
 
     _inst->statusFlag |= rmcall_statusFlag_txHead;
     SYSLOG_I("Tx Head. ID = 0x%4.4x, Size = %4.4d.", _handleId, _dataSize);
-    ret = _inst->xfer_tx(&_inst->txHeaderBuffer, sizeof(rmcall_header_t));
+    ret = _inst->teleport->xfer_tx(&_inst->txHeaderBuffer, sizeof(rmcall_header_t));
 
     return ret;
 }
@@ -278,7 +274,7 @@ status_t RMCALL_CommandRecvEnable(rmcall_t *_inst)
     if(0U == (_inst->statusFlag & rmcall_statusFlag_rxBusy))
     {
         _inst->statusFlag |= rmcall_statusFlag_rxHead;
-        ret = _inst->xfer_rx((void*)&_inst->rxHeaderBuffer, sizeof(rmcall_header_t));
+        ret = _inst->teleport->xfer_rx((void*)&_inst->rxHeaderBuffer, sizeof(rmcall_header_t));
         if(kStatus_Success == ret)
         {
             SYSLOG_I("Recv Enabled.");
@@ -299,7 +295,7 @@ status_t RMCALL_CommandRecvDisable(rmcall_t *_inst)
     //FIXME
     if(0U != (_inst->statusFlag & rmcall_statusFlag_rxBusy))
     {
-        _inst->xferAbort_rx();
+        _inst->teleport->xferAbort_rx();
         _inst->statusFlag &= (~rmcall_statusFlag_rxBusy);
         SYSLOG_I("Recv Disabled.");
         return kStatus_Success;
@@ -325,7 +321,7 @@ void RMCALL_RxIsr(rmcall_t *_inst)
         (*_inst->rxHandle->handler)(_inst->rxDataBuffer, _inst->rxHeaderBuffer.dataSize, _inst->rxHandle->userData);
         // restart rx header
         _inst->statusFlag |= rmcall_statusFlag_rxHead;
-        _inst->xfer_rx((void*)&_inst->rxHeaderBuffer, sizeof(rmcall_header_t));
+        _inst->teleport->xfer_rx((void*)&_inst->rxHeaderBuffer, sizeof(rmcall_header_t));
     }
 }
 

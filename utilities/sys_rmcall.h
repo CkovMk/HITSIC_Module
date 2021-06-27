@@ -89,21 +89,28 @@ enum rmcall_statusFlag_t
 typedef status_t(*rmcall_transfer_t)(void *_data, uint32_t dataSize);
 typedef void(*rmcall_transferAbort_t)(void);
 
+typedef struct 
+{
+    status_t(*xfer_tx)(void *_data, uint32_t dataSize);
+    status_t(*xfer_rx)(void *_data, uint32_t dataSize);
+    void(*xferAbort_tx)(void);
+    void(*xferAbort_rx)(void);
+    //rmcall_transfer_t xfer_tx, xfer_rx;
+    //rmcall_transferAbort_t xferAbort_tx, xferAbort_rx;
+}rmcall_teleport_t;
+
 typedef struct _rmcall_config
 {
-    rmcall_transfer_t xfer_tx, xfer_rx;
-    rmcall_transferAbort_t xferAbort_tx, xferAbort_rx;
+    rmcall_teleport_t *teleport;
 }rmcall_config_t;
     
 
-    static inline bool oor_equal_p(uint16_t k, unsigned char n) {
-      return k == 65535 - n;//FIXME!
-    }
-    static inline void oor_set(uint16_t *k, unsigned char n) {
-      *k = 65535 - n;//FIXME!
-    }
-   
-   
+static inline bool oor_equal_p(uint16_t k, unsigned char n) {
+  return k == 65535 - n;//FIXME
+}
+static inline void oor_set(uint16_t *k, unsigned char n) {
+  *k = 65535 - n;//FIXME
+}
 
 DICT_OA_DEF2(rmcall_isrDict, uint16_t, M_OPEXTEND(M_DEFAULT_OPLIST, OOR_EQUAL(oor_equal_p), OOR_SET(oor_set M_IPTR)) , rmcall_handle_t*, M_PTR_OPLIST)
 
@@ -111,8 +118,9 @@ typedef struct _rmcall
 {
     uint32_t statusFlag;
 
-    rmcall_transfer_t xfer_tx, xfer_rx;
-    rmcall_transferAbort_t xferAbort_tx, xferAbort_rx;
+    //rmcall_transfer_t xfer_tx, xfer_rx;
+    //rmcall_transferAbort_t xferAbort_tx, xferAbort_rx;
+    rmcall_teleport_t *teleport;
 
     rmcall_header_t txHeaderBuffer;
     void *txDataBuffer;
