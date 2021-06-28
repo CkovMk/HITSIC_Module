@@ -20,12 +20,10 @@
  * @version :	v0.1-beta.0
  *
  * @date 	:	v0.1-beta.0 2020.08.08 马奇科
- * @date    :   v1.0-beta.0 2021.05.24 马奇科
+ * @date    :   v1.0-beta.0 2021.06.25 马奇科
  *
  * @brief   :   远程调用组件
  * 
- * @note    :   依赖库：sys_uartmgr.hpp
- *              依赖库必须先初始化。
  */
 
 #ifndef _SYS_RMCALL_HPP_

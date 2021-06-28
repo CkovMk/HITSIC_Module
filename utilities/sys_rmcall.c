@@ -186,6 +186,9 @@ status_t RMCALL_Init(rmcall_t *_inst, rmcall_config_t const * const _config)
     assert(_config->teleport->xferAbort_tx);
     assert(_config->teleport->xferAbort_rx);
 
+    SYSLOG_I("Init Begin. v%d.%d.%d",HITSIC_VERSION_MAJOR(HITSIC_MAKE_VERSION),
+                HITSIC_VERSION_MINOR(HITSIC_MAKE_VERSION), HITSIC_VERSION_PATCH(HITSIC_MAKE_VERSION));
+
     _inst->teleport = _config->teleport;
 
     _inst->statusFlag = 0U;
@@ -200,6 +203,8 @@ status_t RMCALL_Init(rmcall_t *_inst, rmcall_config_t const * const _config)
     }
 
     rmcall_isrDict_init(_inst->isrDict);
+
+    SYSLOG_I("Init Comlpete.");
     
     return kStatus_Success;
 }
