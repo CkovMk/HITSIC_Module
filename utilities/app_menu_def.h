@@ -83,7 +83,7 @@ typedef enum
 
     /** display config */
     menuItem_disp_forceSci = 1 << 8, ///< 该菜单项强制使用科学计数法，适用于variType和varfType。
-    menuItem_disp_noPreview = 1 << 10, ///< 该菜单项不会在菜单列表中显示数据。数据区将显示占位字符。注意此选项对标记为按位标志位的variType无效，因为这类菜单项从不在菜单列表显示数据。
+    menuItem_disp_noPreview = 1 << 10, ///< 该菜单项不会在菜单列表中显示数据。建议可在菜单项名称过长时使用。
 
     menuItem_proc_runOnce = 1 << 11, ///< 该菜单项只会运行一次。仅适用于procType。
     menuItem_proc_uiDisplay = 1 << 12, ///< 该菜单项会自行打印屏幕。仅适用于procType。
@@ -181,7 +181,7 @@ typedef struct _menu_itemIfce
         menu_item_procHandle_t *p_procType;
         menu_item_menuHandle_t *p_menuType;
     } handle;
-    const menu_itemAdapter_t* adapter;  ///< 指向存放菜单项命令函数指针的结构体。参考C++虚表
+    menu_itemAdapter_t const *adapter;  ///< 指向存放菜单项命令函数指针的结构体。参考C++虚表
 } menu_itemIfce_t;
 
 struct _menu_itemAdapter

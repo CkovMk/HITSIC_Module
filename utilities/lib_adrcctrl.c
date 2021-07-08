@@ -143,9 +143,6 @@ void ADRCCTRL_UpdateFal(adrc_t *p, float d_line)
 }
 
 
-
-
-
 #ifdef __cplusplus
 }
 #endif
