@@ -43,7 +43,7 @@ by CkovMk @hitsic 2021.06.25
 
 
 
-### ~~v0.1-beta.0仍未发布~~
+### v0.1-beta.0
 
 by CkovMk @hitsic 2020.10.07
 

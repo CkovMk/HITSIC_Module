@@ -18,12 +18,13 @@
 #define UTILITIES_LIB_ADRCCTRL_H
 
 
-#include <inc_stdlib.h>
+//#include <inc_stdlib.h>
 #include "hitsic_common.h"
+#include "stdio.h"
+#include "stdlib.h"
+#include "string.h"
 
-#ifdef __cplusplus
-extern "C"{
-#endif
+
 
 typedef struct
 {
@@ -61,32 +62,29 @@ typedef struct
 	float kd;//参
 }adrc_t;
 
+#ifdef __cplusplus
+extern "C"{
+#endif
+
 //初始化，传入参数仅进行拷贝
-void ADRCCTRL_TDInit(adrc_td_t* td_t, float h);、
+void ADRCCTRL_TDInit(adrc_td_t *td_t, float h);
 
 //更新一次TD
-void ADRCCTRL_TD(adrc_td_t* td, float v);
+void ADRCCTRL_TD(adrc_td_t *td, float v);
 
 //初始化，传入参数仅进行拷贝
-void ADRCCTRL_Init(adrc_t* p,float h);
+void ADRCCTRL_Init(adrc_t *p,float h);
 
 //更新一次adrc控制
-void ADRCCTRL_Update(adrc_t* p);
+void ADRCCTRL_Update(adrc_t *p);
 
 //更新一次adrc控制，只不过是非线性d(根据误差微分大小动态调整kd,d_line是调整的分界线，具体请检查代码)
-void ADRCCTRL_UpdateFal(adrc_t* p, float d_line);
-
-
-
-
-
+void ADRCCTRL_UpdateFal(adrc_t *p, float d_line);
 
 
 #ifdef __cplusplus
 }
 #endif
-
-
 
 #endif // ! UTILITIES_LIB_ADRCCTRL_H
 
