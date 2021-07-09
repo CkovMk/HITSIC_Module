@@ -19,7 +19,7 @@ inline void MENU_ExampleProcHandler1(menu_keyOp_t *const _op)
 {
     extern disp_ssd1306_fb_t dispBuffer;
 
-    if(MENU_BUTTON_MAKE_OP(nl, disp) == *_op)
+    if(NULL == _op)
     {
         menu_statusFlag |= menu_message_strBufOverride;
         for(uint16_t i = 10; i < 20; ++i)
@@ -29,7 +29,6 @@ inline void MENU_ExampleProcHandler1(menu_keyOp_t *const _op)
                 DISP_SSD1306_FB_SetPixelColor(&dispBuffer, i, j, true);
             }
         }
-        *_op = 0U;
     }
 }
 

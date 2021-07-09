@@ -311,15 +311,8 @@
 		if(_region < 0 || (uint32_t)_region >= HITSIC_MENU_NVM_REGION_CNT) { return; }
 	    ++menu_nvm_eraseCnt;
 		SYSLOG_I("Data Save Begin");
-		//menu_list_t **listQue = (menu_list_t**)calloc(menu_listCnt, sizeof(menu_list_t *));
-		//      std::unique_ptr<menu_list_t*, void(*)(menu_list_t**)>
-		//                      listQueGuard(listQue, [](menu_list_t **p){ free(p); });
 		SYSLOG_I("Global Data");
-		//SYSLOG_D("Add list [%s].", menu_manageList->nameStr);
-		//SYSLOG_D("Add list [%s].", menu_menuRoot->nameStr);
-
 		menu_iterator_t *iter = MENU_IteratorConstruct();
-
 		do{
 		    menu_nvmData_t dataBuf;
 		    menu_itemIfce_t *thisItem = MENU_IteratorDerefItem(iter);
@@ -337,53 +330,6 @@
 		    }
 		}while(kStatus_Success == MENU_IteratorIncrease(iter));
 		SYSLOG_I("Global Data End");
-
-//		for (uint32_t listNum = 0; listNum < menu_listCnt; ++listNum)
-//		{
-//		    SYSLOG_D("In List [%s]:", listQue[listNum]->nameStr);
-//            //assert(listQue[listNum]);
-//            if(nullptr == listQue[listNum])
-//            {
-//                break;
-//            }
-//			static_assert(sizeof(menu_nvmData_t) == 32, "sizeof menu_nvmData_t error !");
-//			for (uint32_t i = 0; i < listQue[listNum]->listNum; ++i)
-//			{
-//				menu_nvmData_t dataBuf;
-//				menu_itemIfce_t *thisItem = listQue[listNum]->menu[i];
-//				if (thisItem->type == menuType)
-//				{
-//					for (uint32_t j = 0; j < menu_listCnt; ++j)
-//					{
-//						if (listQue[j] == thisItem->handle.p_menuType->data)
-//						{
-//							break;
-//						}
-//						else if (listQue[j] == NULL)
-//						{
-//							listQue[j] = thisItem->handle.p_menuType->data;
-//							SYSLOG_D("Add list [%s].", listQue[j]->nameStr);
-//							break;
-//						}
-//					}
-//					continue;
-//				}
-//
-//				if (thisItem->pptFlag & menuItem_data_global && !(thisItem->pptFlag & menuItem_data_NoSave))
-//				{
-//					MENU_ItemGetData(thisItem, &dataBuf);
-//					//SYSLOG_D("Get Data.  menu: %-16.16s addr: %-4.4d data: 0x%-8.8x .", dataBuf.nameStr, thisItem->saveAddr, dataBuf.data);
-//					uint32_t realAddr = menu_nvm_glAddrOffset + thisItem->saveAddr * sizeof(menu_nvmData_t);
-//					if (!MENU_NvmCacheable(realAddr))
-//					{
-//						MENU_NvmUpdateCache();
-//						assert(MENU_NvmCacheable(realAddr));
-//					}
-//					MENU_NvmWriteCache(realAddr, (void *)&dataBuf, sizeof(menu_nvmData_t));
-//				}
-//			}
-//		}
-//		SYSLOG_I("Global Data End.");
 		if (menu_currRegionNum < 0 || menu_currRegionNum >= HITSIC_MENU_NVM_REGION_CNT)
 		{
 		    SYSLOG_W("RegionNum illegal! Aborting.");
@@ -410,28 +356,6 @@
 		        MENU_NvmWriteCache(realAddr, (void *)&dataBuf, sizeof(menu_nvmData_t));
 		    }
 		}while(kStatus_Success == MENU_IteratorIncrease(iter));
-
-//		for (uint32_t listNum = 0; listNum < menu_listCnt; ++listNum)
-//		{
-//		    SYSLOG_D("In List [%s].", listQue[listNum]->nameStr);
-//			for (uint32_t i = 0; i < listQue[listNum]->listNum; ++i)
-//			{
-//				menu_nvmData_t dataBuf;
-//				menu_itemIfce_t *thisItem = listQue[listNum]->menu[i];
-//				if (thisItem->pptFlag & menuItem_data_region && !(thisItem->pptFlag & menuItem_data_NoSave))
-//				{
-//					MENU_ItemGetData(thisItem, &dataBuf);
-//					//SYSLOG_D("Get Data.  menu: %-16.16s addr: %-4.4d data: 0x%-8.8x .", dataBuf.nameStr, thisItem->saveAddr, dataBuf.data);
-//					uint32_t realAddr = menu_nvm_rgAddrOffset[_region] + thisItem->saveAddr * sizeof(menu_nvmData_t);
-//					if (!MENU_NvmCacheable(realAddr))
-//					{
-//						MENU_NvmUpdateCache();
-//						assert(MENU_NvmCacheable(realAddr));
-//					}
-//					MENU_NvmWriteCache(realAddr, (void *)&dataBuf, sizeof(menu_nvmData_t));
-//				}
-//			}
-//		}
 		MENU_NvmUpdateCache();
 		SYSLOG_I("Region %d Data End.", menu_currRegionNum);
 		MENU_IteratorDestruct(iter);
@@ -450,17 +374,8 @@
 
 		if(_region < 0 || (uint32_t)_region >= HITSIC_MENU_NVM_REGION_CNT) { return; }
 		SYSLOG_I("Read Begin");
-//		menu_list_t **listQue = (menu_list_t**)calloc(menu_listCnt, sizeof(menu_list_t *));
-//		std::unique_ptr<menu_list_t*, void(*)(menu_list_t**)>
-//		                listQueGuard(listQue, [](menu_list_t **p){ free(p); });
-//		listQue[0] = menu_manageList;
-//		listQue[1] = menu_menuRoot;
 		SYSLOG_I("Global Data");
-//		SYSLOG_D("Add list [%s].", menu_manageList->nameStr);
-//		SYSLOG_D("Add list [%s].", menu_menuRoot->nameStr);
-
 		menu_iterator_t *iter = MENU_IteratorConstruct();
-
 		do{
 		    menu_nvmData_t dataBuf;
 		    menu_itemIfce_t *thisItem = MENU_IteratorDerefItem(iter);
@@ -473,47 +388,6 @@
 		        //SYSLOG_D("Set Data.  menu: %-16.16s addr: %-4.4d .", thisItem->nameStr, thisItem->saveAddr);
 		    }
 		}while(kStatus_Success == MENU_IteratorIncrease(iter));
-
-//		for (uint32_t listNum = 0; listNum < menu_listCnt; ++listNum)
-//		{
-//		    SYSLOG_D("In List [%s]:", listQue[listNum]->nameStr);
-//			//assert(listQue[listNum]);
-//			if(nullptr == listQue[listNum])
-//			{
-//			    break;
-//			}
-//			for (uint32_t i = 0; i < listQue[listNum]->listNum; ++i)
-//			{
-//				menu_nvmData_t dataBuf;
-//				menu_itemIfce_t *thisItem = listQue[listNum]->menu[i];
-//				if (thisItem->type == menuType)
-//				{
-//					for (uint32_t j = 0; j < menu_listCnt; ++j)
-//					{
-//						if (listQue[j] == thisItem->handle.p_menuType->data)
-//						{
-//							break;
-//						}
-//						else if (listQue[j] == NULL)
-//						{
-//							listQue[j] = thisItem->handle.p_menuType->data;
-//							SYSLOG_D("Add list [%s].", listQue[j]->nameStr);
-//							break;
-//						}
-//					}
-//					continue;
-//				}
-//
-//				if (thisItem->pptFlag & menuItem_data_global && !(thisItem->pptFlag & menuItem_data_NoLoad))
-//				{
-//					uint32_t realAddr = menu_nvm_glAddrOffset + thisItem->saveAddr * sizeof(menu_nvmData_t);
-//					MENU_NvmRead(realAddr, &dataBuf, sizeof(menu_nvmData_t));
-//					SYSLOG_D("Get Flash. menu: %-16.16s addr: %-4.4d data: 0x%-8.8x .", dataBuf.nameStr, thisItem->saveAddr, dataBuf.data);
-//					MENU_ItemSetData(thisItem, &dataBuf);
-//					//SYSLOG_D("Set Data.  menu: %-16.16s addr: %-4.4d .", thisItem->nameStr, thisItem->saveAddr);
-//				}
-//			}
-//		}
 		SYSLOG_I("Global Data End.");
 		if (menu_currRegionNum < 0 || menu_currRegionNum >= HITSIC_MENU_NVM_REGION_CNT)
 		{
