@@ -185,19 +185,19 @@ void MENU_Data_NvmCopy(int32_t _srcRegion, int32_t _dstRegion);
  */
 void MENU_Data_NvmCopy_Boxed(menu_keyOp_t *const _op);
 
-/**
- * @brief : 读取NVM状态标志。
- *
- * @return {int32_t}        : 返回读取到的状态标志。
- */
-int32_t MENU_GetNvmStatus(void);
+// /**
+//  * @brief : 读取NVM状态标志。
+//  *
+//  * @return {int32_t}        : 返回读取到的状态标志。
+//  */
+// int32_t MENU_GetNvmStatus(void);
 
-/**
- * @brief : 设置NVM状态标志。
- *
- * @param  {int32_t} _status : 要设置的状态标志。
- */
-void MENU_SetNvmStatus(int32_t _status);
+// /**
+//  * @brief : 设置NVM状态标志。
+//  *
+//  * @param  {int32_t} _status : 要设置的状态标志。
+//  */
+// void MENU_SetNvmStatus(int32_t _status);
 
 #endif // ! HITSIC_MENU_USE_NVM
 
@@ -224,7 +224,6 @@ void MENU_Suspend(void);
  *          注意：调用多次MENU_Suspend()将需要调用相同次数的MENU_Resume()才能将菜单恢复至运行状态。
  */
 void MENU_Resume(void);
-
 
 
 #endif // ! HITSIC_USE_APP_MENU

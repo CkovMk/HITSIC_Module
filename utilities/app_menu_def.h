@@ -293,6 +293,23 @@ typedef struct _menu_iterator_t
     uint32_t itemNum;
 }menu_iterator_t;
 
+
+/**
+ * @brief 设置MENU状态标志位
+ */
+static inline void MENU_StatusFlagSet(uint32_t _mask)
+{
+    menu_statusFlag |= _mask;
+}
+
+/**
+ * @brief 清除MENU状态标志位
+ */
+static inline void MENU_StatusFlagClr(uint32_t _mask)
+{
+    menu_statusFlag &= (~_mask);
+}
+
 /* @} */
 
 #endif // ! HITSIC_USE_APP_MENU

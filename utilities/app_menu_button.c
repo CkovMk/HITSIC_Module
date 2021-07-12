@@ -101,7 +101,7 @@ void MENU_ButtonCallback(button_t *_inst) {
         break;
     }
 
-    menu_statusFlag |= menu_message_buttonOp;
+    MENU_StatusFlagSet(menu_message_buttonOp);
 
     SYSLOG_V("Button message: %ld", menu_keyOpBuff);
     HITSIC_MENU_SERVICE_SEM_GIVE();
