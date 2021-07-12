@@ -851,8 +851,8 @@ menu_itemIfce_t *MENU_ItemConstruct(menu_itemType_t _type, void *_data, const ch
     item->pptFlag = _pptFlag;
     item->unique_id = menu_itemCnt++;
     item->saveAddr = _saveAddr;
-    strncpy(item->nameStr, _nameStr, menu_nameStrSize);
-    item->nameStr[menu_nameStrSize - 1] = '\0';
+    strncpy(item->nameStr, _nameStr, MENU_NAME_STR_SIZE);
+    item->nameStr[MENU_NAME_STR_SIZE - 1] = '\0';
 
     MENU_ITEM_SWITCH_CASE(MENU_ItemConstruct, item, _data);
     return item;
@@ -868,7 +868,7 @@ void MENU_itemDestruct(menu_itemIfce_t *_item)
 
 void MENU_ItemGetData(menu_itemIfce_t *_item, menu_nvmData_t *_data)
 {
-    memcpy(_data->nameStr, _item->nameStr, menu_nameStrSize);
+    memcpy(_data->nameStr, _item->nameStr, MENU_NAME_STR_SIZE);
     _data->type = _item->type;
     //MENU_ITEM_SWITCH_CASE(MENU_ItemGetData, _item, &_data->data);
     _item->adapter->ItemGetData(_item, &_data->data);
@@ -876,7 +876,7 @@ void MENU_ItemGetData(menu_itemIfce_t *_item, menu_nvmData_t *_data)
 
 void MENU_ItemSetData(menu_itemIfce_t *_item, menu_nvmData_t *_data)
 {
-    if (0 == strncmp(_data->nameStr, _item->nameStr, menu_nameStrSize) && _data->type == (uint32_t)_item->type)
+    if (0 == strncmp(_data->nameStr, _item->nameStr, MENU_NAME_STR_SIZE) && _data->type == (uint32_t)_item->type)
     {
         //MENU_ITEM_SWITCH_CASE(MENU_ItemSetData, _item, &_data->data);
         _item->adapter->ItemSetData(_item, &_data->data);
@@ -932,7 +932,7 @@ menu_list_t *MENU_ListConstruct(const char *_nameStr, uint32_t _size, menu_list_
     list->listNum = 0;
     list->menu = (menu_itemIfce_t**)calloc(_size, sizeof(menu_itemIfce_t *));
     assert(list->menu);
-    strncpy(list->nameStr, _nameStr, menu_nameStrSize);
+    strncpy(list->nameStr, _nameStr, MENU_NAME_STR_SIZE);
     MENU_ListInsert(list, MENU_ItemConstruct(menuType, (void *)_prev, "Back", 0, 0));
     list->menu[0]->handle.p_menuType->data = _prev;
     ++menu_listCnt;

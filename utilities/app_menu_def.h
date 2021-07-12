@@ -50,17 +50,17 @@ extern menu_keyOp_t menu_keyOpBuff;
 /**
  * @brief : 菜单项和菜单列表名称的最大长度为16个字符。用于定义缓存区大小。
  */
-#define menu_nameStrSize (16u) //TODO: rename this
+#define MENU_NAME_STR_SIZE (16u)
 
 /** string buffer size defnition */
 #define MENU_DISP_STRBUF_ROW (8u)
 #define MENU_DISP_STRBUF_COL (22u)
 
 /** format controll used by data print */
-#define MENU_DISP_NAME_COL (1u)
-#define MENU_DISP_NAME_LEN (12u)
-#define MENU_DISP_DATA_COL (14u)
-#define MENU_DISP_DATA_LEN (7u)
+//#define MENU_DISP_NAME_COL (1u)
+//#define MENU_DISP_NAME_LEN (12u)
+//#define MENU_DISP_DATA_COL (14u)
+//#define MENU_DISP_DATA_LEN (7u)
 // TODO: deprecate this
 
 /**
@@ -94,7 +94,7 @@ typedef enum
 /**
  * @brief : 菜单项所支持的内容类型。
  */
-typedef enum : uint8_t
+typedef enum
 {
     nullType, // null type
     variType, // watch or set integer varibles
@@ -170,7 +170,7 @@ typedef struct _menu_itemIfce
     uint32_t pptFlag;                   ///< 此菜单项的属性标志位。
     uint16_t list_id, unique_id;        ///< 此菜单项在本列表内的序号（从0开始）、全局唯一序号（从0开始）
     uint16_t saveAddr;                  ///< 此菜单在本区域内的偏移地址。从0开始，以1步进。注意，全局数据区和局部数据区的地址分开来算。
-    char nameStr[menu_nameStrSize];     ///< 此菜单项的名称字符串。最大长度为menu_nameStrSize - 1 字节。
+    char nameStr[MENU_NAME_STR_SIZE];     ///< 此菜单项的名称字符串。最大长度为MENU_NAME_STR_SIZE - 1 字节。
     union menu_itemIfce_handle_t        ///< 菜单项操作句柄的共用体。使用时根据此菜单项的类型调取对应项访问。
     {
         void *p_void;
@@ -212,10 +212,11 @@ extern uint32_t menu_listCnt;               ///< 菜单列表计数器
 extern menu_list_t *menu_currList;          ///< 状态变量：指向当前所在的菜单列表
 extern menu_itemIfce_t *menu_currItem;      ///< 状态变量：指向当前所在的菜单项，仅位于菜单项
 extern menu_list_t *menu_menuRoot;          ///< 根菜单指针。
-extern int32_t &menu_currRegionNum;         ///< 当前局部存储区号
+extern int32_t menu_currRegionNum[3];    ///< 当前局部存储区号
 extern int32_t menu_statusFlag;             ///< 状态标志位
 extern uint32_t menu_nvm_statusFlagAddr;    ///< 存储状态标志位的NVM存储地址
-extern int32_t &menu_nvmCopySrc, &menu_nvmCopyDst;
+extern int32_t menu_nvmCopySrc[3];
+extern int32_t menu_nvmCopyDst[3];
 /**
  * @ }
  */
@@ -231,23 +232,12 @@ struct _menu_list
     menu_itemIfce_t **menu; /// 菜单项指针的动态数组，用于存放指针。该数组内的指针析构时需要手动释放。
     uint32_t listSize, listNum; /// 当前菜单项指针列表的大小、当前列表内的菜单项数量。
     uint32_t disp_p, slct_p; /// 显示数组下标和选择数组下标。
-    char nameStr[menu_nameStrSize]; /// 菜单列表名称字符串。
+    char nameStr[MENU_NAME_STR_SIZE]; /// 菜单列表名称字符串。
 };
 
 /**
  * MENU
  */
-
-/**
- * @brief 菜单有效标志。
- * 菜单状态标志的最高8位用于表示菜单数据是否有效，正常值为0x55。24是需要左移的位数。
- * 如果修改菜单时改变了有效菜单项的存储地址，则应在下载程序前对flash进行擦除
- * 这样该标志会变为0xff，此时单片机复位后菜单将不再从flash读取数据，转而采用
- * 程序中初始化的数据。
- * 标志失效时，手动保存数据将会在所有存储区写入当前数据，并重设该标志。
- */
-#define menu_dataValid_flag (0x55)
-#define menu_dataValid_mask (24u)
 
 /**
  * @brief 菜单状态标志位枚举变量。
@@ -270,12 +260,15 @@ enum menu_status_t
     menu_param_Mask8l = 0x00ff, ///> 低16位中高8位掩码标志位，用于读取16位参数中的低8位。同上。
 };
 
+/**
+ * @brief 字符缓存
+ */
 extern char menu_dispStrBuf[MENU_DISP_STRBUF_ROW][MENU_DISP_STRBUF_COL];
 
 typedef struct _menu_nvmData_t
 {
     uint32_t head;
-    char nameStr[menu_nameStrSize];
+    char nameStr[MENU_NAME_STR_SIZE];
     uint32_t type;
     uint32_t data;
     uint32_t tail;

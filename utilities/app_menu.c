@@ -49,14 +49,12 @@ menu_list_t *menu_currList;
 menu_itemIfce_t *menu_currItem;
 menu_list_t *menu_menuRoot;
 menu_list_t *menu_manageList;
-int32_t menu_currRegionNumAdj[3] = { 0, 0, HITSIC_MENU_NVM_REGION_CNT - 1 };
-int32_t &menu_currRegionNum = menu_currRegionNumAdj[0];
+int32_t menu_currRegionNum[3] = { 0, 0, HITSIC_MENU_NVM_REGION_CNT - 1 };
 int32_t menu_statusFlag;
 uint32_t menu_nvm_statusFlagAddr;
 
-int32_t menu_nvmCopySrcAdj[3] = { 0, 0, HITSIC_MENU_NVM_REGION_CNT - 1 };
-int32_t menu_nvmCopyDstAdj[3] = { 0, 0, HITSIC_MENU_NVM_REGION_CNT - 1 };
-int32_t &menu_nvmCopySrc = menu_nvmCopySrcAdj[0], &menu_nvmCopyDst = menu_nvmCopyDstAdj[0];
+int32_t menu_nvmCopySrc[3] = { 0, 0, HITSIC_MENU_NVM_REGION_CNT - 1 };
+int32_t menu_nvmCopyDst[3] = { 0, 0, HITSIC_MENU_NVM_REGION_CNT - 1 };
 
 char menu_dispStrBuf[MENU_DISP_STRBUF_ROW][MENU_DISP_STRBUF_COL];
 
@@ -133,15 +131,15 @@ void MENU_Init(void)
 #if defined(HITSIC_MENU_USE_NVM) && (HITSIC_MENU_USE_NVM > 0)
 		menu_itemIfce_t *p = NULL;
 		MENU_ListInsert(menu_manageList, MENU_ItemConstruct(nullType, NULL, "SAVE", 0, 0));
-		MENU_ListInsert(menu_manageList, p = MENU_ItemConstruct(variType, &menu_currRegionNum, menu_itemNameStr_RegnSel/*"RegnSel(0-N)"*/, 0, menuItem_data_global | menuItem_data_NoSave | menuItem_data_NoLoad | menuItem_dataExt_HasMinMax));
+		MENU_ListInsert(menu_manageList, p = MENU_ItemConstruct(variType, menu_currRegionNum, menu_itemNameStr_RegnSel/*"RegnSel(0-N)"*/, 0, menuItem_data_global | menuItem_data_NoSave | menuItem_data_NoLoad | menuItem_dataExt_HasMinMax));
 		//p->nameStr[10] = '0' + HITSIC_MENU_NVM_REGION_CNT - 1;
 		MENU_ListInsert(menu_manageList, MENU_ItemConstruct(procType, (void *)MENU_Data_NvmSave_Boxed, "Save Data", 0, menuItem_proc_runOnce));
 		MENU_ListInsert(menu_manageList, MENU_ItemConstruct(procType, (void *)MENU_Data_NvmRead_Boxed, "Load Data", 0, menuItem_proc_runOnce));
 		MENU_ListInsert(menu_manageList, MENU_ItemConstruct(procType, (void *)MENU_Data_NvmSaveRegionConfig_Boxed, "RegnSave", 0, menuItem_proc_runOnce));
 		MENU_ListInsert(menu_manageList, MENU_ItemConstruct(nullType, NULL, "COPY", 0, 0));
-		MENU_ListInsert(menu_manageList, p = MENU_ItemConstruct(variType, &menu_nvmCopySrc, "CopySrc(0-N)", 0, menuItem_data_NoSave | menuItem_data_NoLoad | menuItem_dataExt_HasMinMax));
+		MENU_ListInsert(menu_manageList, p = MENU_ItemConstruct(variType, menu_nvmCopySrc, "CopySrc(0-N)", 0, menuItem_data_NoSave | menuItem_data_NoLoad | menuItem_dataExt_HasMinMax));
 		p->nameStr[10] = '0' + HITSIC_MENU_NVM_REGION_CNT - 1;
-		MENU_ListInsert(menu_manageList, p = MENU_ItemConstruct(variType, &menu_nvmCopyDst, "CopyDst(0-N)", 0, menuItem_data_NoSave | menuItem_data_NoLoad | menuItem_dataExt_HasMinMax));
+		MENU_ListInsert(menu_manageList, p = MENU_ItemConstruct(variType, menu_nvmCopyDst, "CopyDst(0-N)", 0, menuItem_data_NoSave | menuItem_data_NoLoad | menuItem_dataExt_HasMinMax));
 		p->nameStr[10] = '0' + HITSIC_MENU_NVM_REGION_CNT - 1;
 		MENU_ListInsert(menu_manageList, MENU_ItemConstruct(procType, (void *)MENU_Data_NvmCopy_Boxed, "CopyData(S>D)", 0, menuItem_proc_runOnce));
 		MENU_ListInsert(menu_manageList, MENU_ItemConstruct(nullType, NULL, "INFO", 0, 0));

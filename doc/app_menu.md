@@ -848,7 +848,7 @@ by：CkovMk @hitsic 2019.11.02
       uint32_t pptFlag; ///< 此菜单项的属性标志位。
       uint32_t list_id, unique_id; ///< 此菜单项在本列表内的序号（从0开始）、全局唯一序号（从0开始）
       uint32_t saveAddr; ///< 此菜单在本区域内的偏移地址。从0开始，以1步进。注意，全局数据区和局部数据区的地址分开来算。
-      char nameStr[menu_nameStrSize]; ///< 此菜单项的名称字符串。最大长度为menu_nameStrSize - 1 字节。
+      char nameStr[MENU_NAME_STR_SIZE]; ///< 此菜单项的名称字符串。最大长度为MENU_NAME_STR_SIZE - 1 字节。
       union menu_itemIfce_handle_t ///< 菜单项操作句柄的共用体。使用时根据此菜单项的类型调取对应项访问。
       {
           void *p_void;
@@ -923,7 +923,7 @@ by：CkovMk @hitsic 2019.11.02
       menu_itemIfce_t **menu;         /// 菜单项指针的动态数组，用于存放指针。该数组内的指针析构时需要手动释放。
       uint32_t listSize, listNum;     /// 当前菜单项指针列表的大小、当前列表内的菜单项数量。
       uint32_t disp_p, slct_p;        /// 显示数组下标和选择数组下标。
-      char nameStr[menu_nameStrSize]; /// 菜单列表名称字符串。
+      char nameStr[MENU_NAME_STR_SIZE]; /// 菜单列表名称字符串。
                                       //_menu_list_t *prev;		    /// 指向上级菜单的指针。根菜单中该指针指向自身。
   } menu_list_t;
   ```
@@ -1051,7 +1051,7 @@ char menu_dispStrBuf[MENU_DISP_STRBUF_ROW][MENU_DISP_STRBUF_COL];
     typedef struct _menu_nvmData_t
     {
         uint32_t head;
-        char nameStr[menu_nameStrSize];
+        char nameStr[MENU_NAME_STR_SIZE];
         uint32_t type;
         uint32_t data;
         uint32_t tail;
