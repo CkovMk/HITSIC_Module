@@ -29,22 +29,22 @@ inline void MENU_ExampleProcHandler1(menu_keyOp_t *const _op)
     {
         switch(*_op)
         {
-        case MENU_BUTTON_MAKE_OP(up, shrt):
+        case MENU_BUTTON_MAKE_OP(5wayStick_up, shrt):
             r = (--r) < 10 ? 10 : r;
             break;
-        case MENU_BUTTON_MAKE_OP(dn, shrt):
+        case MENU_BUTTON_MAKE_OP(5wayStick_dn, shrt):
             r = (++r) > 40 ? 40 : r;
             break;
-        case MENU_BUTTON_MAKE_OP(lf, shrt):
+        case MENU_BUTTON_MAKE_OP(5wayStick_lf, shrt):
             c = (--c) < 10 ? 10 : c;
             break;
-        case MENU_BUTTON_MAKE_OP(rt, shrt):
+        case MENU_BUTTON_MAKE_OP(5wayStick_rt, shrt):
             c = (++c) > 40 ? 40 : c;
             break;
         }
     }
 
-    MENU_StatusFlagSet(menu_message_strBufOverride);
+    //MENU_StatusFlagSet(menu_message_strBufOverride);//FIXME: deprecate this procType menuItem !
     for(uint16_t i = c; i < c + 10; ++i)
     {
         for(uint16_t j = r; j < r + 10; ++j)

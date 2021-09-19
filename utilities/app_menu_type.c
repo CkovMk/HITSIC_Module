@@ -50,8 +50,8 @@ void MENU_ItemSetData_nullType(menu_itemIfce_t *_item, void *_data)
 //used when in menuList
 void MENU_ItemPrintSlot_nullType(menu_itemIfce_t *_item, uint32_t _slotNum)
 {
-    snprintf(menu_dispStrBuf[_slotNum], MENU_DISP_STRBUF_COL, " ------------------- ");
-    menu_dispStrBuf[_slotNum][snprintf(menu_dispStrBuf[_slotNum] + 3, MENU_DISP_STRBUF_COL, "%s", _item->nameStr) + 3] = '-';
+    snprintf(menu_dispStrBuf.strbuf[_slotNum], HITSIC_MENU_DISPLAY_STRBUF_COL, " ------------------- ");
+    menu_dispStrBuf.strbuf[_slotNum][snprintf(menu_dispStrBuf.strbuf[_slotNum] + 3, HITSIC_MENU_DISPLAY_STRBUF_COL, "%s", _item->nameStr) + 3] = '-';
 }
 void MENU_ItemDirectKeyOp_nullType(menu_itemIfce_t *_item, menu_keyOp_t *const _op)
 {
@@ -155,15 +155,15 @@ void MENU_ItemPrintSlot_variType(menu_itemIfce_t *_item, uint32_t _slotNum)
     MENU_ItemGetContent_variType(&handle->v, &handle->e, *handle->data);
     if (_item->pptFlag & menuItem_disp_noPreview)
     {
-        menu_dispStrBuf[_slotNum][snprintf(menu_dispStrBuf[_slotNum], MENU_DISP_STRBUF_COL, " %-16.16s  ->", _item->nameStr)] = ' ';
+        menu_dispStrBuf.strbuf[_slotNum][snprintf(menu_dispStrBuf.strbuf[_slotNum], HITSIC_MENU_DISPLAY_STRBUF_COL, " %-16.16s  ->", _item->nameStr)] = ' ';
     }
     else if ((!(_item->pptFlag & menuItem_disp_forceSci)) && *handle->data < 1000000 && *handle->data > -1000000)
     {
-        menu_dispStrBuf[_slotNum][snprintf(menu_dispStrBuf[_slotNum], MENU_DISP_STRBUF_COL, " %-12.12s %+-7ld", _item->nameStr, *(handle->data))] = ' ';
+        menu_dispStrBuf.strbuf[_slotNum][snprintf(menu_dispStrBuf.strbuf[_slotNum], HITSIC_MENU_DISPLAY_STRBUF_COL, " %-12.12s %+-7ld", _item->nameStr, *(handle->data))] = ' ';
     }
     else
     {
-        menu_dispStrBuf[_slotNum][snprintf(menu_dispStrBuf[_slotNum], MENU_DISP_STRBUF_COL, " %-12.12s %+4.4ld%+1.1ld", _item->nameStr, handle->v, handle->e)] = ' ';
+        menu_dispStrBuf.strbuf[_slotNum][snprintf(menu_dispStrBuf.strbuf[_slotNum], HITSIC_MENU_DISPLAY_STRBUF_COL, " %-12.12s %+4.4ld%+1.1ld", _item->nameStr, handle->v, handle->e)] = ' ';
     }
 }
 void MENU_ItemDirectKeyOp_variType(menu_itemIfce_t *_item, menu_keyOp_t *const _op)
@@ -171,16 +171,16 @@ void MENU_ItemDirectKeyOp_variType(menu_itemIfce_t *_item, menu_keyOp_t *const _
     menu_item_variHandle_t *handle = _item->handle.p_variType;
     switch (*_op)
     {
-        case MENU_BUTTON_MAKE_OP(ok, shrt):
+        case MENU_BUTTON_MAKE_OP(5wayStick_ok, shrt):
         {
             MENU_ItemGetContent_variType(&handle->v, &handle->e, *handle->data);
             menu_currItem = _item;
             *_op = 0;
             break;
         }
-        case MENU_BUTTON_MAKE_OP(lf, shrt):
-        case MENU_BUTTON_MAKE_OP(lf, long):
-        case MENU_BUTTON_MAKE_OP(lf, lrpt):
+        case MENU_BUTTON_MAKE_OP(5wayStick_lf, shrt):
+        case MENU_BUTTON_MAKE_OP(5wayStick_lf, long):
+        case MENU_BUTTON_MAKE_OP(5wayStick_lf, lrpt):
         {
             if (!(_item->pptFlag & (menuItem_data_ROFlag | menuItem_disp_noPreview)))
             {
@@ -201,9 +201,9 @@ void MENU_ItemDirectKeyOp_variType(menu_itemIfce_t *_item, menu_keyOp_t *const _
             *_op = 0;
             break;
         }
-        case MENU_BUTTON_MAKE_OP(rt, shrt):
-        case MENU_BUTTON_MAKE_OP(rt, long):
-        case MENU_BUTTON_MAKE_OP(rt, lrpt):
+        case MENU_BUTTON_MAKE_OP(5wayStick_rt, shrt):
+        case MENU_BUTTON_MAKE_OP(5wayStick_rt, long):
+        case MENU_BUTTON_MAKE_OP(5wayStick_rt, lrpt):
         {
             if (!(_item->pptFlag & (menuItem_data_ROFlag | menuItem_disp_noPreview)))
             {
@@ -235,35 +235,35 @@ void MENU_ItemPrintDisp_variType(menu_itemIfce_t *_item)
     menu_item_variHandle_t *handle = _item->handle.p_variType;
     MENU_ItemSetContent_variType(&handle->bData, handle->v, handle->e);
 
-    menu_dispStrBuf[0][snprintf(menu_dispStrBuf[0], MENU_DISP_STRBUF_COL, "##%-15.15s *", _item->nameStr)] = ' ';
-    menu_dispStrBuf[2][snprintf(menu_dispStrBuf[2], MENU_DISP_STRBUF_COL, "  Cur: %+-10ld", *handle->data)] = ' ';
+    menu_dispStrBuf.strbuf[0][snprintf(menu_dispStrBuf.strbuf[0], HITSIC_MENU_DISPLAY_STRBUF_COL, "##%-15.15s *", _item->nameStr)] = ' ';
+    menu_dispStrBuf.strbuf[2][snprintf(menu_dispStrBuf.strbuf[2], HITSIC_MENU_DISPLAY_STRBUF_COL, "  Cur: %+-10ld", *handle->data)] = ' ';
 
     if (_item->pptFlag & menuItem_data_ROFlag)
     {
-        menu_dispStrBuf[7][snprintf(menu_dispStrBuf[7], MENU_DISP_STRBUF_COL, "     READ   ONLY     ")] = ' ';
+        menu_dispStrBuf.strbuf[7][snprintf(menu_dispStrBuf.strbuf[7], HITSIC_MENU_DISPLAY_STRBUF_COL, "     READ   ONLY     ")] = ' ';
     }
     else
     {
-        menu_dispStrBuf[3][snprintf(menu_dispStrBuf[3], MENU_DISP_STRBUF_COL, "  Adj: %+-10ld", handle->bData)] = ' ';
-        menu_dispStrBuf[4][snprintf(menu_dispStrBuf[4], MENU_DISP_STRBUF_COL, "  Mod: %+4.4lde%+1.1ld", handle->v, handle->e)] = ' ';
+        menu_dispStrBuf.strbuf[3][snprintf(menu_dispStrBuf.strbuf[3], HITSIC_MENU_DISPLAY_STRBUF_COL, "  Adj: %+-10ld", handle->bData)] = ' ';
+        menu_dispStrBuf.strbuf[4][snprintf(menu_dispStrBuf.strbuf[4], HITSIC_MENU_DISPLAY_STRBUF_COL, "  Mod: %+4.4lde%+1.1ld", handle->v, handle->e)] = ' ';
         int32_t pos = handle->cur < 0 ? 12 - handle->cur : 11 - handle->cur;
-        menu_dispStrBuf[5][pos] = '^';
-        menu_dispStrBuf[7][snprintf(menu_dispStrBuf[7], MENU_DISP_STRBUF_COL, "    SOK>AC LOK>WA    ")] = ' ';
+        menu_dispStrBuf.strbuf[5][pos] = '^';
+        menu_dispStrBuf.strbuf[7][snprintf(menu_dispStrBuf.strbuf[7], HITSIC_MENU_DISPLAY_STRBUF_COL, "    SOK>AC LOK>WA    ")] = ' ';
     }
     if (_item->pptFlag & menuItem_data_global)
     {
-        menu_dispStrBuf[0][19] = 'G';
-        menu_dispStrBuf[0][20] = 'L';
+        menu_dispStrBuf.strbuf[0][19] = 'G';
+        menu_dispStrBuf.strbuf[0][20] = 'L';
     }
     else if (_item->pptFlag & menuItem_data_region)
     {
-        menu_dispStrBuf[0][19] = 'R';
-        menu_dispStrBuf[0][20] = 'G';
+        menu_dispStrBuf.strbuf[0][19] = 'R';
+        menu_dispStrBuf.strbuf[0][20] = 'G';
     }
     else
     {
-        menu_dispStrBuf[0][19] = 'N';
-        menu_dispStrBuf[0][20] = 'O';
+        menu_dispStrBuf.strbuf[0][19] = 'N';
+        menu_dispStrBuf.strbuf[0][20] = 'O';
     }
 
 }
@@ -272,7 +272,7 @@ void MENU_ItemKeyOp_variType(menu_itemIfce_t *_item, menu_keyOp_t *const _op)
     menu_item_variHandle_t *handle = _item->handle.p_variType;
     switch (*_op)
     {
-        case MENU_BUTTON_MAKE_OP(ok, shrt):
+        case MENU_BUTTON_MAKE_OP(5wayStick_ok, shrt):
         if (!(_item->pptFlag & menuItem_data_ROFlag))
         {
             MENU_ItemSetContent_variType(handle->data, handle->v, handle->e);
@@ -282,35 +282,35 @@ void MENU_ItemKeyOp_variType(menu_itemIfce_t *_item, menu_keyOp_t *const _op)
                 *handle->data = (*(handle->data) < *(handle->data + 2)) ? (*handle->data) : *(handle->data + 2);
             }
         }
-        case MENU_BUTTON_MAKE_OP(ok, long):
+        case MENU_BUTTON_MAKE_OP(5wayStick_ok, long):
         menu_currItem = NULL;
         *_op = 0;
         break;
-        case MENU_BUTTON_MAKE_OP(lf, long):
+        case MENU_BUTTON_MAKE_OP(5wayStick_lf, long):
         handle->cur = 4;
         *_op = 0;
         break;
-        case MENU_BUTTON_MAKE_OP(rt, long):
+        case MENU_BUTTON_MAKE_OP(5wayStick_rt, long):
         handle->cur = -2;
         *_op = 0;
         break;
-        case MENU_BUTTON_MAKE_OP(lf, shrt):
+        case MENU_BUTTON_MAKE_OP(5wayStick_lf, shrt):
         if (handle->cur < 4)
         {
             ++handle->cur;
         }
         *_op = 0;
         break;
-        case MENU_BUTTON_MAKE_OP(rt, shrt):
+        case MENU_BUTTON_MAKE_OP(5wayStick_rt, shrt):
         if (handle->cur > -2)
         {
             --handle->cur;
         }
         *_op = 0;
         break;
-        case MENU_BUTTON_MAKE_OP(up, shrt):
-        case MENU_BUTTON_MAKE_OP(up, long):
-        case MENU_BUTTON_MAKE_OP(up, lrpt):
+        case MENU_BUTTON_MAKE_OP(5wayStick_up, shrt):
+        case MENU_BUTTON_MAKE_OP(5wayStick_up, long):
+        case MENU_BUTTON_MAKE_OP(5wayStick_up, lrpt):
         if (handle->cur == -2)
         {
             handle->e = (handle->e < 5) ? (handle->e + 1) : (5);
@@ -329,9 +329,9 @@ void MENU_ItemKeyOp_variType(menu_itemIfce_t *_item, menu_keyOp_t *const _op)
         }
         *_op = 0;
         break;
-        case MENU_BUTTON_MAKE_OP(dn, shrt):
-        case MENU_BUTTON_MAKE_OP(dn, long):
-        case MENU_BUTTON_MAKE_OP(dn, lrpt):
+        case MENU_BUTTON_MAKE_OP(5wayStick_dn, shrt):
+        case MENU_BUTTON_MAKE_OP(5wayStick_dn, long):
+        case MENU_BUTTON_MAKE_OP(5wayStick_dn, lrpt):
         if (handle->cur == -2)
         {
             handle->e = (handle->e > -5) ? (handle->e - 1) : (-5);
@@ -456,15 +456,15 @@ void MENU_ItemPrintSlot_varfType(menu_itemIfce_t *_item, uint32_t _slotNum)
     MENU_ItemGetContent_varfType(&handle->v, &handle->e, *handle->data);
     if (_item->pptFlag & menuItem_disp_noPreview)
     {
-        menu_dispStrBuf[_slotNum][snprintf(menu_dispStrBuf[_slotNum], MENU_DISP_STRBUF_COL, " %-16.16s  ->", _item->nameStr)] = ' ';
+        menu_dispStrBuf.strbuf[_slotNum][snprintf(menu_dispStrBuf.strbuf[_slotNum], HITSIC_MENU_DISPLAY_STRBUF_COL, " %-16.16s  ->", _item->nameStr)] = ' ';
     }
     else if ((!(_item->pptFlag & menuItem_disp_forceSci)) && ((*handle->data < 10000 && *handle->data > 0.001f) || (*handle->data > -10000 && *handle->data < -0.001f) || (*handle->data == 0.0f)))
     {
-        menu_dispStrBuf[_slotNum][snprintf(menu_dispStrBuf[_slotNum], MENU_DISP_STRBUF_COL, " %-12.12s %+-7f", _item->nameStr, *(handle->data))] = ' ';
+        menu_dispStrBuf.strbuf[_slotNum][snprintf(menu_dispStrBuf.strbuf[_slotNum], HITSIC_MENU_DISPLAY_STRBUF_COL, " %-12.12s %+-7f", _item->nameStr, *(handle->data))] = ' ';
     }
     else
     {
-        menu_dispStrBuf[_slotNum][snprintf(menu_dispStrBuf[_slotNum], MENU_DISP_STRBUF_COL, " %-12.12s %+4.4ld%+1.1ld", _item->nameStr, handle->v, handle->e)] = ' ';
+        menu_dispStrBuf.strbuf[_slotNum][snprintf(menu_dispStrBuf.strbuf[_slotNum], HITSIC_MENU_DISPLAY_STRBUF_COL, " %-12.12s %+4.4ld%+1.1ld", _item->nameStr, handle->v, handle->e)] = ' ';
     }
 }
 void MENU_ItemDirectKeyOp_varfType(menu_itemIfce_t *_item, menu_keyOp_t *const _op)
@@ -472,16 +472,16 @@ void MENU_ItemDirectKeyOp_varfType(menu_itemIfce_t *_item, menu_keyOp_t *const _
     menu_item_varfHandle_t *handle = _item->handle.p_varfType;
     switch (*_op)
     {
-        case MENU_BUTTON_MAKE_OP(ok, shrt):
+        case MENU_BUTTON_MAKE_OP(5wayStick_ok, shrt):
         {
             MENU_ItemGetContent_varfType(&handle->v, &handle->e, *handle->data);
             menu_currItem = _item;
             *_op = 0;
             break;
         }
-        case MENU_BUTTON_MAKE_OP(lf, shrt):
-        case MENU_BUTTON_MAKE_OP(lf, long):
-        case MENU_BUTTON_MAKE_OP(lf, lrpt):
+        case MENU_BUTTON_MAKE_OP(5wayStick_lf, shrt):
+        case MENU_BUTTON_MAKE_OP(5wayStick_lf, long):
+        case MENU_BUTTON_MAKE_OP(5wayStick_lf, lrpt):
         {
             if (!(_item->pptFlag & (menuItem_data_ROFlag | menuItem_disp_noPreview)))
             {
@@ -495,9 +495,9 @@ void MENU_ItemDirectKeyOp_varfType(menu_itemIfce_t *_item, menu_keyOp_t *const _
             *_op = 0;
             break;
         }
-        case MENU_BUTTON_MAKE_OP(rt, shrt):
-        case MENU_BUTTON_MAKE_OP(rt, long):
-        case MENU_BUTTON_MAKE_OP(rt, lrpt):
+        case MENU_BUTTON_MAKE_OP(5wayStick_rt, shrt):
+        case MENU_BUTTON_MAKE_OP(5wayStick_rt, long):
+        case MENU_BUTTON_MAKE_OP(5wayStick_rt, lrpt):
         {
             if (!(_item->pptFlag & (menuItem_data_ROFlag | menuItem_disp_noPreview)))
             {
@@ -522,35 +522,35 @@ void MENU_ItemPrintDisp_varfType(menu_itemIfce_t *_item)
     menu_item_varfHandle_t *handle = _item->handle.p_varfType;
     MENU_ItemSetContent_varfType(&handle->bData, handle->v, handle->e);
 
-    menu_dispStrBuf[0][snprintf(menu_dispStrBuf[0], MENU_DISP_STRBUF_COL, "##%-15.15s *", _item->nameStr)] = ' ';
-    menu_dispStrBuf[2][snprintf(menu_dispStrBuf[2], MENU_DISP_STRBUF_COL, "  Cur: %+-10.4f", *handle->data)] = ' ';
+    menu_dispStrBuf.strbuf[0][snprintf(menu_dispStrBuf.strbuf[0], HITSIC_MENU_DISPLAY_STRBUF_COL, "##%-15.15s *", _item->nameStr)] = ' ';
+    menu_dispStrBuf.strbuf[2][snprintf(menu_dispStrBuf.strbuf[2], HITSIC_MENU_DISPLAY_STRBUF_COL, "  Cur: %+-10.4f", *handle->data)] = ' ';
 
     if (_item->pptFlag & menuItem_data_ROFlag)
     {
-        menu_dispStrBuf[7][snprintf(menu_dispStrBuf[7], MENU_DISP_STRBUF_COL, "     READ   ONLY     ")] = ' ';
+        menu_dispStrBuf.strbuf[7][snprintf(menu_dispStrBuf.strbuf[7], HITSIC_MENU_DISPLAY_STRBUF_COL, "     READ   ONLY     ")] = ' ';
     }
     else
     {
-        menu_dispStrBuf[3][snprintf(menu_dispStrBuf[3], MENU_DISP_STRBUF_COL, "  Adj: %+-10.4f", handle->bData)] = ' ';
-        menu_dispStrBuf[4][snprintf(menu_dispStrBuf[4], MENU_DISP_STRBUF_COL, "  Mod: %+3.3lde%+1.1ld", handle->v, handle->e)] = ' ';
+        menu_dispStrBuf.strbuf[3][snprintf(menu_dispStrBuf.strbuf[3], HITSIC_MENU_DISPLAY_STRBUF_COL, "  Adj: %+-10.4f", handle->bData)] = ' ';
+        menu_dispStrBuf.strbuf[4][snprintf(menu_dispStrBuf.strbuf[4], HITSIC_MENU_DISPLAY_STRBUF_COL, "  Mod: %+3.3lde%+1.1ld", handle->v, handle->e)] = ' ';
         int32_t pos = handle->cur < 0 ? 12 - handle->cur : 11 - handle->cur;
-        menu_dispStrBuf[5][pos] = '^';
-        menu_dispStrBuf[7][snprintf(menu_dispStrBuf[7], MENU_DISP_STRBUF_COL, "    SOK>AC LOK>WA    ")] = ' ';
+        menu_dispStrBuf.strbuf[5][pos] = '^';
+        menu_dispStrBuf.strbuf[7][snprintf(menu_dispStrBuf.strbuf[7], HITSIC_MENU_DISPLAY_STRBUF_COL, "    SOK>AC LOK>WA    ")] = ' ';
     }
     if (_item->pptFlag & menuItem_data_global)
     {
-        menu_dispStrBuf[0][19] = 'G';
-        menu_dispStrBuf[0][20] = 'L';
+        menu_dispStrBuf.strbuf[0][19] = 'G';
+        menu_dispStrBuf.strbuf[0][20] = 'L';
     }
     else if (_item->pptFlag & menuItem_data_region)
     {
-        menu_dispStrBuf[0][19] = 'R';
-        menu_dispStrBuf[0][20] = 'G';
+        menu_dispStrBuf.strbuf[0][19] = 'R';
+        menu_dispStrBuf.strbuf[0][20] = 'G';
     }
     else
     {
-        menu_dispStrBuf[0][19] = 'N';
-        menu_dispStrBuf[0][20] = 'O';
+        menu_dispStrBuf.strbuf[0][19] = 'N';
+        menu_dispStrBuf.strbuf[0][20] = 'O';
     }
 }
 void MENU_ItemKeyOp_varfType(menu_itemIfce_t *_item, menu_keyOp_t *const _op)
@@ -558,7 +558,7 @@ void MENU_ItemKeyOp_varfType(menu_itemIfce_t *_item, menu_keyOp_t *const _op)
     menu_item_varfHandle_t *handle = _item->handle.p_varfType;
     switch (*_op)
     {
-        case MENU_BUTTON_MAKE_OP(ok, shrt):
+        case MENU_BUTTON_MAKE_OP(5wayStick_ok, shrt):
         if (!(_item->pptFlag & menuItem_data_ROFlag))
         {
             MENU_ItemSetContent_varfType(handle->data, handle->v, handle->e);
@@ -568,35 +568,35 @@ void MENU_ItemKeyOp_varfType(menu_itemIfce_t *_item, menu_keyOp_t *const _op)
                 *handle->data = (*(handle->data) < *(handle->data + 2)) ? (*handle->data) : *(handle->data + 2);
             }
         }
-        case MENU_BUTTON_MAKE_OP(ok, long):
+        case MENU_BUTTON_MAKE_OP(5wayStick_ok, long):
         menu_currItem = NULL;
         *_op = 0;
         break;
-        case MENU_BUTTON_MAKE_OP(lf, long):
+        case MENU_BUTTON_MAKE_OP(5wayStick_lf, long):
         handle->cur = 4;
         *_op = 0;
         break;
-        case MENU_BUTTON_MAKE_OP(rt, long):
+        case MENU_BUTTON_MAKE_OP(5wayStick_rt, long):
         handle->cur = -2;
         *_op = 0;
         break;
-        case MENU_BUTTON_MAKE_OP(lf, shrt):
+        case MENU_BUTTON_MAKE_OP(5wayStick_lf, shrt):
         if (handle->cur < 4)
         {
             ++handle->cur;
         }
         *_op = 0;
         break;
-        case MENU_BUTTON_MAKE_OP(rt, shrt):
+        case MENU_BUTTON_MAKE_OP(5wayStick_rt, shrt):
         if (handle->cur > -2)
         {
             --handle->cur;
         }
         *_op = 0;
         break;
-        case MENU_BUTTON_MAKE_OP(up, shrt):
-        case MENU_BUTTON_MAKE_OP(up, long):
-        case MENU_BUTTON_MAKE_OP(up, lrpt):
+        case MENU_BUTTON_MAKE_OP(5wayStick_up, shrt):
+        case MENU_BUTTON_MAKE_OP(5wayStick_up, long):
+        case MENU_BUTTON_MAKE_OP(5wayStick_up, lrpt):
         if (handle->cur == -2)
         {
             handle->e = (handle->e < 9) ? (handle->e + 1) : (9);
@@ -615,9 +615,9 @@ void MENU_ItemKeyOp_varfType(menu_itemIfce_t *_item, menu_keyOp_t *const _op)
         }
         *_op = 0;
         break;
-        case MENU_BUTTON_MAKE_OP(dn, shrt):
-        case MENU_BUTTON_MAKE_OP(dn, long):
-        case MENU_BUTTON_MAKE_OP(dn, lrpt):
+        case MENU_BUTTON_MAKE_OP(5wayStick_dn, shrt):
+        case MENU_BUTTON_MAKE_OP(5wayStick_dn, long):
+        case MENU_BUTTON_MAKE_OP(5wayStick_dn, lrpt):
         if (handle->cur == -2)
         {
             handle->e = (handle->e > -9) ? (handle->e - 1) : (-9);
@@ -683,7 +683,7 @@ void MENU_ItemSetData_boolType(menu_itemIfce_t *_item, void *_data)
 //used when in menuList
 void MENU_ItemPrintSlot_boolType(menu_itemIfce_t *_item, uint32_t _slotNum)
 {
-    snprintf(menu_dispStrBuf[_slotNum], MENU_DISP_STRBUF_COL, " bool Type - - - - ");
+    snprintf(menu_dispStrBuf.strbuf[_slotNum], HITSIC_MENU_DISPLAY_STRBUF_COL, " bool Type - - - - ");
 }
 void MENU_ItemDirectKeyOp_boolType(menu_itemIfce_t *_item, menu_keyOp_t *const _op)
 {
@@ -728,14 +728,14 @@ void MENU_ItemSetData_procType(menu_itemIfce_t *_item, void *_data)
 //used when in menuList
 void MENU_ItemPrintSlot_procType(menu_itemIfce_t *_item, uint32_t _slotNum)
 {
-    menu_dispStrBuf[_slotNum][snprintf(menu_dispStrBuf[_slotNum], MENU_DISP_STRBUF_COL, " :%-16.16s", _item->nameStr)] = ' ';
+    menu_dispStrBuf.strbuf[_slotNum][snprintf(menu_dispStrBuf.strbuf[_slotNum], HITSIC_MENU_DISPLAY_STRBUF_COL, " :%-16.16s", _item->nameStr)] = ' ';
 }
 void MENU_ItemDirectKeyOp_procType(menu_itemIfce_t *_item, menu_keyOp_t *const _op)
 {
     menu_item_procHandle_t *handle = _item->handle.p_procType;
     switch (*_op)
     {
-        case MENU_BUTTON_MAKE_OP(ok, shrt):
+        case MENU_BUTTON_MAKE_OP(5wayStick_ok, shrt):
         {
             menu_currItem = _item;
             *_op = 0;
@@ -752,14 +752,14 @@ void MENU_ItemPrintDisp_procType(menu_itemIfce_t *_item)
     menu_item_procHandle_t *handle = _item->handle.p_procType;
     if(_item->pptFlag & menuItem_proc_uiDisplay)
     {
-        //menu_keyOp_t op_temp = MENU_BUTTON_MAKE_OP(nl, disp);
+        //menu_keyOp_t op_temp = MENU_BUTTON_MAKE_OP(5wayStick_nl, disp);
         handle->data(NULL);
         return;
     }
     else
     {
-        menu_dispStrBuf[0][snprintf(menu_dispStrBuf[0], MENU_DISP_STRBUF_COL, "##%-15.15s *", _item->nameStr)] = ' ';
-        menu_dispStrBuf[7][snprintf(menu_dispStrBuf[7], MENU_DISP_STRBUF_COL, "    SOK>AC LOK>WA    ")] = ' ';
+        menu_dispStrBuf.strbuf[0][snprintf(menu_dispStrBuf.strbuf[0], HITSIC_MENU_DISPLAY_STRBUF_COL, "##%-15.15s *", _item->nameStr)] = ' ';
+        menu_dispStrBuf.strbuf[7][snprintf(menu_dispStrBuf.strbuf[7], HITSIC_MENU_DISPLAY_STRBUF_COL, "    SOK>AC LOK>WA    ")] = ' ';
     }
 }
 void MENU_ItemKeyOp_procType(menu_itemIfce_t *_item, menu_keyOp_t *const _op)
@@ -767,7 +767,7 @@ void MENU_ItemKeyOp_procType(menu_itemIfce_t *_item, menu_keyOp_t *const _op)
     menu_item_procHandle_t *handle = _item->handle.p_procType;
     switch (*_op)
     {
-    case MENU_BUTTON_MAKE_OP(ok, long):
+    case MENU_BUTTON_MAKE_OP(5wayStick_ok, long):
         menu_currItem = NULL;
         *_op = 0U;
         break;
@@ -811,13 +811,13 @@ void MENU_ItemSetData_menuType(menu_itemIfce_t *_item, void *_data)
 //used when in menuList
 void MENU_ItemPrintSlot_menuType(menu_itemIfce_t *_item, uint32_t _slotNum)
 {
-    menu_dispStrBuf[_slotNum][snprintf(menu_dispStrBuf[_slotNum], MENU_DISP_STRBUF_COL, " [%s]", _item->nameStr)] = ' ';
+    menu_dispStrBuf.strbuf[_slotNum][snprintf(menu_dispStrBuf.strbuf[_slotNum], HITSIC_MENU_DISPLAY_STRBUF_COL, " [%s]", _item->nameStr)] = ' ';
 }
 void MENU_ItemDirectKeyOp_menuType(menu_itemIfce_t *_item, menu_keyOp_t *const _op)
 {
     switch (*_op)
     {
-        case MENU_BUTTON_MAKE_OP(ok, shrt):
+        case MENU_BUTTON_MAKE_OP(5wayStick_ok, shrt):
         menu_currList = _item->handle.p_menuType->data;
         *_op = 0;
         break;
@@ -858,7 +858,7 @@ menu_itemIfce_t *MENU_ItemConstruct(menu_itemType_t _type, void *_data, const ch
     return item;
 }
 
-void MENU_itemDestruct(menu_itemIfce_t *_item)
+void MENU_ItemDestruct(menu_itemIfce_t *_item)
 {
     free(_item->handle.p_void);
     free(_item);
@@ -963,32 +963,32 @@ status_t MENU_ListInsert(menu_list_t *_list, menu_itemIfce_t *_item)
 
 void MENU_ListPrintDisp(menu_list_t *_list)
 {
-    memset(menu_dispStrBuf, ' ', MENU_DISP_STRBUF_ROW * MENU_DISP_STRBUF_COL);
-    menu_dispStrBuf[0][snprintf(menu_dispStrBuf[0], MENU_DISP_STRBUF_COL, "##%-13.13s*%2.2ld/%2.2ld", _list->nameStr, _list->slct_p + 1, _list->listNum)] = ' ';
-    uint32_t printCnt = _list->listNum < MENU_DISP_STRBUF_ROW - 1 ? _list->listNum : MENU_DISP_STRBUF_ROW - 1;
+    memset(menu_dispStrBuf.strbuf, ' ', HITSIC_MENU_DISPLAY_STRBUF_ROW * HITSIC_MENU_DISPLAY_STRBUF_COL);
+    menu_dispStrBuf.strbuf[0][snprintf(menu_dispStrBuf.strbuf[0], HITSIC_MENU_DISPLAY_STRBUF_COL, "##%-13.13s*%2.2ld/%2.2ld", _list->nameStr, _list->slct_p + 1, _list->listNum)] = ' ';
+    uint32_t printCnt = _list->listNum < HITSIC_MENU_DISPLAY_STRBUF_ROW - 1 ? _list->listNum : HITSIC_MENU_DISPLAY_STRBUF_ROW - 1;
     for (uint8_t i = 0; i < printCnt; ++i)
     {
         MENU_ItemPrintSlot(_list->menu[_list->disp_p + i], i + 1);
     }
-    menu_dispStrBuf[_list->slct_p - _list->disp_p + 1][0] = '>';
+    menu_dispStrBuf.strbuf[_list->slct_p - _list->disp_p + 1][0] = '>';
 }
 
 void MENU_ListKeyOp(menu_list_t *_list, menu_keyOp_t *const _op)
 {
     switch (*_op)
     {
-    case MENU_BUTTON_MAKE_OP(ok, long):
+    case MENU_BUTTON_MAKE_OP(5wayStick_ok, long):
         //return
         if (menu_currList != menu_menuRoot)
         {
             menu_currList = _list->menu[0]->handle.p_menuType->data;
         }
-    case MENU_BUTTON_MAKE_OP(ok, lrpt):
+    case MENU_BUTTON_MAKE_OP(5wayStick_ok, lrpt):
         *_op = 0;
         break;
-    case MENU_BUTTON_MAKE_OP(up, shrt):
-    case MENU_BUTTON_MAKE_OP(up, long):
-    case MENU_BUTTON_MAKE_OP(up, lrpt):
+    case MENU_BUTTON_MAKE_OP(5wayStick_up, shrt):
+    case MENU_BUTTON_MAKE_OP(5wayStick_up, long):
+    case MENU_BUTTON_MAKE_OP(5wayStick_up, lrpt):
         //menu up
         if (_list->slct_p > 0)
         {
@@ -1000,9 +1000,9 @@ void MENU_ListKeyOp(menu_list_t *_list, menu_keyOp_t *const _op)
         }
         *_op = 0;
         break;
-    case MENU_BUTTON_MAKE_OP(dn, shrt):
-    case MENU_BUTTON_MAKE_OP(dn, long):
-    case MENU_BUTTON_MAKE_OP(dn, lrpt):
+    case MENU_BUTTON_MAKE_OP(5wayStick_dn, shrt):
+    case MENU_BUTTON_MAKE_OP(5wayStick_dn, long):
+    case MENU_BUTTON_MAKE_OP(5wayStick_dn, lrpt):
         //menu dn
         if (_list->slct_p < _list->listNum - 1)
         {

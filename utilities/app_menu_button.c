@@ -75,36 +75,42 @@ void MENU_ButtonSetup(void) {
     PITMGR_HandleInsert(&pitmgr_main, &menu_butonPitMgrHandle);
 }
 
-void MENU_ButtonPitIsr(void *userData) {
-    for (int i = 0; i < MENU_BUTTON_COUNT; ++i) {
+void MENU_ButtonPitIsr(void *userData) 
+{
+    for (int i = 0; i < MENU_BUTTON_COUNT; ++i) 
+    {
         BUTTON_PitIsr(&menu_button[i]);
     }
 }
 
-void MENU_ButtonCallback(button_t *_inst) {
-    for (int i = 0; i < MENU_BUTTON_COUNT; ++i) {
-        if (_inst == &menu_button[i]) {
-            menu_keyOpBuff = i + 1;
+void MENU_KeypadSignal(menu_keyOp_t _op); // defined in menu.h / menu.c, FIXME: re-arrange this function to a proper place.
+
+void MENU_ButtonCallback(button_t *_inst) 
+{
+    menu_keyOp_t op = 0U;
+    for (int i = 0; i < MENU_BUTTON_COUNT; ++i) 
+    {
+        if (_inst == &menu_button[i]) 
+        {
+            op = i + 1;
         }
     }
-    switch (_inst->status) {
+    switch (_inst->status) 
+    {
     case BUTTON_SHRT_PRES:
-        menu_keyOpBuff |= menuOpType_shrt;
+        op |= menuOpType_shrt;
         break;
     case BUTTON_LONG_PRES:
-        menu_keyOpBuff |= menuOpType_long;
+        op |= menuOpType_long;
         break;
     case BUTTON_LRPT_PRES:
-        menu_keyOpBuff |= menuOpType_lrpt;
+        op |= menuOpType_lrpt;
         break;
     default:
         break;
     }
-
-    MENU_StatusFlagSet(menu_message_buttonOp);
-
     SYSLOG_V("Button message: %ld", menu_keyOpBuff);
-    HITSIC_MENU_SERVICE_SEM_GIVE();
+    MENU_KeypadSignal(op);
 }
 
 /* @} */

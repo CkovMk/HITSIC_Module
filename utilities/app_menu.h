@@ -34,22 +34,22 @@
 #pragma once
 #ifndef UTILITIES_APP_MENU_HPP
 #define UTILITIES_APP_MENU_HPP
-
-#include <app_menu_button.h>
-#include <app_menu_def.h>
-#include <app_menu_nvm.h>
-
-#include <app_menu_type.h>
+#include <hitsic_common.h>
 
  /*!
   * @addtogroup menu
   * @{
   */
 
+#if defined(HITSIC_USE_APP_MENU) && (HITSIC_USE_APP_MENU > 0)
+
+#include <app_menu_def.h>
+#include <app_menu_type.h>
+#include <app_menu_button.h>
+#include <app_menu_kvdb.h>
+
 /** @brief : 软件版本 */
 #define APP_MENU_VERSION (HITSIC_MAKE_VERSION(1U, 0U, 0U))
-
-#if defined(HITSIC_USE_APP_MENU) && (HITSIC_USE_APP_MENU > 0)
 
 /**************************************
  ************ 菜单顶层操作接口 **********
@@ -89,6 +89,11 @@ void MENU_PrintDisp(void);
 void MENU_KeyOp(menu_keyOp_t *const _op);
 
 /**
+ * @brief 向菜单发送按键信号
+ */
+void MENU_KeypadSignal(menu_keyOp_t _op);
+
+/**
  * @brief : 根据字符串路径查找菜单列表。
  *
  * @param str : 字符串路径，以"/"分隔。注意：路径名应与跳转类型的菜单项
@@ -118,7 +123,7 @@ void MENU_Data_NvmSave(int32_t _region);
 
 /**
  * @brief : 保存整个菜单到NVM。
- * 该函数将使用全局变量 menu_currRegionNum 中保存的局部存储区号。
+ * 该函数将使用全局变量 menu_currRegionNum[0] 中保存的局部存储区号。
  * 
  * @param {menu_keyOp_t* const} _op : 按键操作接口传入的按键操作
  */
@@ -133,7 +138,7 @@ void MENU_Data_NvmRead(int32_t _region);
 
 /**
  * @brief : 从NVM读取整个菜单。
- * 该函数将使用全局变量 menu_currRegionNum 中保存的局部存储区号。
+ * 该函数将使用全局变量 menu_currRegionNum[0] 中保存的局部存储区号。
  *
  * @param {menu_keyOp_t* const} _op : 按键操作接口传入的按键操作
  */

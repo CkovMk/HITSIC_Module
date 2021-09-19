@@ -59,6 +59,8 @@
  * 必须对应。优先级不可过高。
  * @ {
  */
+#include <MK66F18.h>
+#include "fsl_common.h"
 #define HITSIC_MENU_SERVICE_IRQHandler (Reserved85_IRQHandler)  ///< 要使用的中断服务函数
 #define HITSIC_MENU_SERVICE_IRQn (Reserved85_IRQn)              ///< 要使用的中断号
 #define HITSIC_MENU_SERVICE_IRQPrio (12u)                       ///< 中断优先级，需要设置一个较低的值，以免打断重要任务。
@@ -126,15 +128,21 @@
 
 /* @ } */
 
+
+
+/**
+ * @name 屏幕打印接口
+ * @ {
+
+/** 字符缓存大小（行、列） */
+#define HITSIC_MENU_DISPLAY_STRBUF_ROW (8u)
+#define HITSIC_MENU_DISPLAY_STRBUF_COL (22u)
+
 /**
  * @brief 启用帧缓存接口
  */
 #define HITSIC_MENU_USE_FRAME_BUFFER (1U)
 
-/**
- * @brief 屏幕打印接口
- * @ {
- */
 #if defined(HITSIC_MENU_USE_FRAME_BUFFER) && (HITSIC_MENU_USE_FRAME_BUFFER > 0)
 #include <drv_disp_ssd1306.h>
 #include <lib_graphic.h>
@@ -164,6 +172,19 @@ void MENU_FrameBufferUpdate(void);
 #define HITSIC_MENU_DISPLAY_BUFFER_UPDATE() (0)
 #endif // ! HITSIC_MENU_USE_FRAME_BUFFER
 
+/**
+ * @brief 启用色盘
+ */
+#define HITSIC_MENU_USE_PALETTE (0U)
+
+#if defined(HITSIC_MENU_USE_PALETTE) && (HITSIC_MENU_USE_PALETTE > 0)
+
+#define HITSIC_MENU_DISPLAY_PALETTE_SIZE (32U) // uint8_t, 1~255
+
+typedef menu_dispColor_t uint8_t;
+
+#endif // ! HITSIC_MENU_USE_PALETTE
+
 /* @ } */
 
 /**
@@ -176,8 +197,6 @@ void MENU_FrameBufferUpdate(void);
 
 #if defined(HITSIC_MENU_USE_NVM) && (HITSIC_MENU_USE_NVM > 0)
 
-#include <drv_ftfx_flash.h>
-
 /**
  * ********** NVM存储变量定义 **********
  */
@@ -185,21 +204,11 @@ void MENU_FrameBufferUpdate(void);
 //gl = global
 //rg = region
 //addr = address
-//sect = sector
-/**
- * @brief : 每个扇区包含的字节数
- */
-#define HITSIC_MENU_NVM_SECTOR_SIZE (flash_sectorSize)
-/**
- * @brief : 全局存储 Global Storage
- */
-#define HITSIC_MENU_NVM_GLOBAL_SECT_SIZE (2u)	///< 全局存储区占用的扇区数
-#define HITSIC_MENU_NVM_GLOBAL_SECT_OFFSET (2u) ///< 全局存储区扇区偏移
+
 /**
  * @brief : 局部存储 Region Storage
  */
 #define HITSIC_MENU_NVM_REGION_CNT (3) 					///< 局部存储区的数量
-#define HITSIC_MENU_NVM_REGION_SECT_SIZE  (4u)				///< 每个局部存储区占用的扇区数
 
 #define HITSIC_MENU_NVM_AddressRead(addr, buf, byteCnt)		FLASH_AddressRead(addr, buf, byteCnt)	///< 读指定地址。必须返回表示操作是否成功的值。
 #define HITSIC_MENU_NVM_SectorRead(sect, buf)		FLASH_SectorRead(sect, buf)						///< 读指定扇区。sect为扇区号，buf为缓存区。必须返回表示操作是否成功的值。

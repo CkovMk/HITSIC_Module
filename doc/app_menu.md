@@ -600,7 +600,7 @@ by：CkovMk @hitsic 2019.11.02
    *
    * @param  {menu_itemIfce_t*} _item : 要析构的菜单项结构体指针。析构后该指针会被自动赋值为NULL。
    */
-  void MENU_itemDestruct(menu_itemIfce_t *_item);
+  void MENU_ItemDestruct(menu_itemIfce_t *_item);
   ```
 
 - 获取菜单项内存放的数据指针
@@ -989,12 +989,12 @@ by：CkovMk @hitsic 2019.11.02
   ```c
   typedef enum _menu_keyOpCode_t
   {
-      menuOpCode_nl = 0, ///< NULL
-      menuOpCode_ok = 1,
-      menuOpCode_up,
-      menuOpCode_dn,
-      menuOpCode_lf,
-      menuOpCode_rt,
+      menuOpCode_5wayStick_nl = 0, ///< NULL
+      menuOpCode_5wayStick_ok = 1,
+      menuOpCode_5wayStick_up,
+      menuOpCode_5wayStick_dn,
+      menuOpCode_5wayStick_lf,
+      menuOpCode_5wayStick_rt,
   } menu_keyOpCode_t;
   
   typedef enum _menu_keyOpType_t
@@ -1024,7 +1024,7 @@ by：CkovMk @hitsic 2019.11.02
 ##### 字符缓存
 
 ```c++
-char menu_dispStrBuf[MENU_DISP_STRBUF_ROW][MENU_DISP_STRBUF_COL];
+char menu_dispStrBuf[HITSIC_MENU_DISPLAY_STRBUF_ROW][HITSIC_MENU_DISPLAY_STRBUF_COL];
 ```
 
 

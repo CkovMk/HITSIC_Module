@@ -1,9 +1,9 @@
 #ifndef UTILITIES_APP_MENU_BUTTON_HPP
 #define UTILITIES_APP_MENU_BUTTON_HPP
-
-#include <app_menu_def.h>
+#include <hitsic_common.h>
 
 #if defined(HITSIC_MENU_USE_BUTTON) && (HITSIC_MENU_USE_BUTTON > 0)
+#include <app_menu_def.h>
 
 /*!
  * @addtogroup menu_button
@@ -20,7 +20,7 @@
     {                                                                           \
         MENU_BUTTON_CALL_EXT_ISR(instNum);                                      \
     }                                                                           \
-    extint_handle_t menu_buttonExtintHandle##instNum =                           \
+    extint_handle_t menu_buttonExtintHandle##instNum =                          \
     {                                                                           \
         .index = 0U,                                                            \
         .handler = MENU_BUTTON_MAKE_EXT_ISR(instNum),                           \
@@ -39,10 +39,10 @@
 /**
  * @brief : 按键数量定义。
  */
-#define MENU_BUTTON_COUNT 5
+#define MENU_BUTTON_COUNT (5U)
 
 // test marco
-// MENU_BUTTON_MAKE_OP(ok,shrt)
+// MENU_BUTTON_MAKE_OP(5wayStick_ok,shrt)
 
 /***********************************
  ************ 按键操作接口 **********
