@@ -18,7 +18,6 @@
 #ifndef D_MK66F18_APP_MENU_PORT_H
 #define D_MK66F18_APP_MENU_PORT_H
 
-#include <app_menu_def.h>
 #include <inc_stdlib.h>
 #include "hitsic_common.h"
 

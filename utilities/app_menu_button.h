@@ -1,6 +1,7 @@
 #ifndef UTILITIES_APP_MENU_BUTTON_HPP
 #define UTILITIES_APP_MENU_BUTTON_HPP
 #include <hitsic_common.h>
+#include <app_menu_port.h>
 
 #if defined(HITSIC_MENU_USE_BUTTON) && (HITSIC_MENU_USE_BUTTON > 0)
 #include <app_menu_def.h>
