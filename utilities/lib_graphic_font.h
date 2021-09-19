@@ -42,9 +42,6 @@ extern const uint8_t graphic_asciiCnt;
 extern const uint8_t graphic_font0816_newSongType[][16];
 
 
-//#define GRAPHIC_GET_FONT0816(type,ch) (graphic_font0816_##type##[((uint8_t)ch) - graphic_asciiBegin])
-
-
 /** ---------- FONT0608 ---------- **/
 
 
@@ -56,7 +53,17 @@ extern const uint8_t graphic_font0816_newSongType[][16];
 extern const uint8_t graphic_font0608_defaultType[][6];
 
 
-//#define GRAPHIC_GET_FONT0608(type,ch) (graphic_font0608_##type##[((uint8_t)ch) - graphic_asciiBegin])
+/** ---------- FONT1215 ---------- **/
+
+/*
+ * this font is in Totally Hscan Mode.
+ * every two (uint8_t) represents ONE H line(MSB).
+ * Total 30 (uint8_t)s stores ALL 15 H lines.
+ */
+extern const uint8_t graphic_font1215_Consolas[][30];
+
+
+
 
 /* @} */
 

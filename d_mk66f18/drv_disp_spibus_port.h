@@ -8,6 +8,10 @@
 #define HITSIC_DISP_SSD1306_FLIP_X (0U)	///< 屏幕左右翻转
 #define HITSIC_DISP_SSD1306_FLIP_Y (0U)	///< 屏幕上下翻转
 
+#define HITSIC_DISP_USE_IPS_154 (1U)
+#define HITSIC_DISP_ST7789_VERTICAL (1U)
+#define HITSIC_DISP_ST7789_REVERSE (0U)
+
 #define OLED_SPI_BASE			SPI2
 #define OLED_SPI_CLKFREQ 		CLOCK_GetFreq(DSPI0_CLK_SRC)
 #define OLED_SPI_Pcsn		    kDSPI_Pcs0
@@ -40,6 +44,16 @@ inline void DISP_SPIBUS_gpioSetRST(uint8_t x)
 inline void DISP_SPIBUS_gpioSetD_C(uint8_t x)
 {
 	GPIO_PinWrite(RTEPIN_DIGITAL_OLED_D_C_GPIO, RTEPIN_DIGITAL_OLED_D_C_PIN, x);
+}
+
+/**
+ * @brief 设置BLK脚电平。
+ *
+ * @param x D/C脚的电平状态，正逻辑。用于控制LCD屏幕的背光。
+ */
+inline void DISP_SPIBUS_gpioSetBLK(uint8_t x)
+{//FIXME
+    //GPIO_PinWrite(RTEPIN_DIGITAL_OLED_D_C_GPIO, RTEPIN_DIGITAL_OLED_D_C_PIN, x);
 }
 
 /**

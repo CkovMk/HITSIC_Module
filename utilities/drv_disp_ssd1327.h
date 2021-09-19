@@ -25,10 +25,10 @@
 #ifndef DRV_DISP_SSD1327_H
 #define DRV_DISP_SSD1327_H
 
-#include <inc_stdlib.h>
 #include "hitsic_common.h"
 
 #if defined(HITSIC_USE_DISP_SSD1327) && (HITSIC_USE_DISP_SSD1327 > 0)
+#include <inc_stdlib.h>
 #include <drv_disp_spibus_port.h>
 #include <lib_graphic.h>
 
