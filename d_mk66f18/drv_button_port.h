@@ -13,11 +13,6 @@
 #define BUTTON_REPT_TOUT 550u   //repeat timeout
 #define BUTTON_TIME_INTV 50u
 
-#define BUTTON_PRESSDN_LOGIC 0u
-#define BUTTON_RELEASE_LOGIC 1u
-#define BUTTON_PRESSDN_EXTINT EXTINT_InterruptFallingEdge //define which edge indicates button pressed.
-#define BUTTON_RELEASE_EXTINT EXTINT_InterruptRisingEdge  //define which edge indicates button release.
-
 #define BUTTON_PITMGR_TIME_MS 10
 
 extern pitmgr_t pitmgr_main;

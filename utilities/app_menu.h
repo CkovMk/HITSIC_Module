@@ -45,7 +45,6 @@
 
 #include <app_menu_def.h>
 #include <app_menu_type.h>
-#include <app_menu_button.h>
 #include <app_menu_kvdb.h>
 
 /** @brief : 软件版本 */

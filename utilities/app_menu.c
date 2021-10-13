@@ -148,10 +148,6 @@ void MENU_Init(void)
 	}
 	MENU_DataSetUp();
 
-#if defined(HITSIC_MENU_USE_BUTTON) && (HITSIC_MENU_USE_BUTTON > 0)
-	SYSLOG_D("Using BUTTON");
-	MENU_ButtonSetup();
-#endif // ! HITSIC_MENU_USE_BUTTON
 	NVIC_SetPriority(HITSIC_MENU_SERVICE_IRQn, HITSIC_MENU_SERVICE_IRQPrio);
 	NVIC_EnableIRQ(HITSIC_MENU_SERVICE_IRQn);
 	//menu_pitHandle = pitMgr_t::insert(250U, 7U, MENU_PitIsr, pitMgr_t::enable);

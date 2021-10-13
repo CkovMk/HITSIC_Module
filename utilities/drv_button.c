@@ -28,64 +28,54 @@
 extern "C"{
 #endif
 
-void BUTTON_Setup(button_t *_inst, GPIO_Type *_gpio, uint32_t _pin)
+void BUTTON_Setup(button_t *_inst, button_config_t *_cfg)
 {
-    _inst->gpio = _gpio;
-    _inst->pin = _pin;
-    _inst->handler = NULL;
-    while (BUTTON_ReadPin(_inst) == BUTTON_PRESSDN_LOGIC)
+    _inst->config = _cfg;
+    while (_inst->config->read() != _inst->config->logic)
     {
     }
-    BUTTON_SetInterrupt(_inst, BUTTON_PRESSDN_EXTINT);
+    _inst->msCnt = 0UL;
+    _inst->status = BUTTON_STAT_NONE;
+
+    button_interrupt_t interrupt_release = (_inst->config->logic == button_logic_default) ? button_interrupt_fall : button_interrupt_rise;
+    button_interrupt_t interrupt_pressdn = (_inst->config->logic == button_logic_default) ? button_interrupt_rise : button_interrupt_fall;
+    _inst->config->setInterrupt(_inst->intCfg = interrupt_pressdn);
 }
 
-button_t *BUTTON_Construct(GPIO_Type *_gpio, uint32_t _pin)
+button_t *BUTTON_Construct(button_config_t *_cfg)
 {
     button_t *inst = (button_t*)malloc(sizeof(button_t));
     if (inst == NULL)
     {
-        return inst;
+        return NULL;
     }
-    BUTTON_Setup(inst, _gpio, _pin);
+    BUTTON_Setup(inst, _cfg);
     return inst;
 }
 
-void BUTTON_InstallHandler(button_t *_inst, button_handler_t _handler)
-{
-    _inst->handler = _handler;
-}
-
-void BUTTON_UninstallHandler(button_t *_inst)
-{
-    _inst->handler = NULL;
-}
-
-void BUTTON_SetInterrupt(button_t *_inst, port_interrupt_t _int)
+void BUTTON_Destruct(button_t *_inst)
 {
     assert(_inst);
-    _inst->intCfg = _int;
-    EXTINT_SetInterruptConfig(EXTINT_GetPortInst(_inst->gpio), _inst->pin, _inst->intCfg);
-}
-
-uint32_t BUTTON_ReadPin(button_t *_inst)
-{
-    assert(_inst);
-    return GPIO_PinRead(_inst->gpio, _inst->pin);
+    free(_inst);
+    _inst = NULL;
 }
 
 void BUTTON_ExtIsr(button_t *_inst)
 {
-    if (_inst->intCfg == BUTTON_RELEASE_EXTINT)
+    button_interrupt_t interrupt_release = (_inst->config->logic == button_logic_default) ? button_interrupt_fall : button_interrupt_rise;
+    button_interrupt_t interrupt_pressdn = (_inst->config->logic == button_logic_default) ? button_interrupt_rise : button_interrupt_fall;
+
+    if (_inst->intCfg == interrupt_release)
     { //should be a HIGH IRQ
-        BUTTON_SetInterrupt(_inst, BUTTON_PRESSDN_EXTINT);
+        _inst->config->setInterrupt(_inst->intCfg = interrupt_pressdn);
         unsigned long long t = BUTTON_TIMER_MS - _inst->msCnt;
         _inst->msCnt = BUTTON_TIMER_MS;
         if (BUTTON_TIME_SHRT <= t && t < BUTTON_SHRT_TOUT && _inst->status == BUTTON_STAT_NONE)
         { //short press
             _inst->status = BUTTON_SHRT_PRES;
-            if (_inst->handler != NULL)
+            if (_inst->config->handler != NULL)
             {
-                _inst->handler(_inst);
+                _inst->config->handler(_inst->status, _inst->config->userData);
             }
         }
         else
@@ -93,14 +83,14 @@ void BUTTON_ExtIsr(button_t *_inst)
             _inst->status = BUTTON_STAT_NONE;
         }
     }
-    else if (_inst->intCfg == BUTTON_PRESSDN_EXTINT)
+    else if (_inst->intCfg == interrupt_pressdn)
     { //should be a LOW IRQ
         uint64_t t = BUTTON_TIMER_MS - _inst->msCnt;
         if (t < BUTTON_TIME_INTV)
         {
             return;
         }
-        BUTTON_SetInterrupt(_inst, BUTTON_RELEASE_EXTINT);
+        _inst->config->setInterrupt(_inst->intCfg = interrupt_release);
         if (!((_inst->status == BUTTON_LONG_PRES || _inst->status == BUTTON_LRPT_PRES) && (t < BUTTON_TIME_INTV)))
 	    {
 		    _inst->status = BUTTON_STAT_NONE;
@@ -108,64 +98,28 @@ void BUTTON_ExtIsr(button_t *_inst)
         _inst->msCnt = BUTTON_TIMER_MS;
     }
 }
-/** This is New version, but buggy.
+
 void BUTTON_PitIsr(button_t *_inst)
 {
-    
-	uint64_t t = BUTTON_TIMER_MS - _inst->msCnt;
-	if (BUTTON_ReadPin(_inst) == BUTTON_RELEASE_LOGIC)
+    button_interrupt_t interrupt_release = (_inst->config->logic == button_logic_default) ? button_interrupt_fall : button_interrupt_rise;
+    button_interrupt_t interrupt_pressdn = (_inst->config->logic == button_logic_default) ? button_interrupt_rise : button_interrupt_fall;
+
+	if (_inst->config->read() == _inst->config->logic)
 	{
-		BUTTON_SetInterrupt(_inst, BUTTON_PRESSDN_EXTINT);
-        if ((_inst->status == BUTTON_LONG_PRES || _inst->status == BUTTON_LRPT_PRES) && (t >= BUTTON_TIME_INTV))
-	    {
-		    _inst->status = BUTTON_STAT_NONE;
-	    }
-		return;
-	}
-	if (_inst->intCfg == BUTTON_RELEASE_EXTINT)
-	{
-		if ((_inst->status == BUTTON_STAT_NONE) && BUTTON_TIME_LONG <= t && t < BUTTON_REPT_TOUT)
-		{ //long press
-			_inst->status = BUTTON_LONG_PRES;
-			_inst->msCnt = BUTTON_TIMER_MS;
-			BUTTON_SetInterrupt(_inst, BUTTON_PRESSDN_EXTINT); 
-            if (_inst->handler != NULL)
-            {
-                _inst->handler(_inst);
-            }
-		}
-        else if ((_inst->status == BUTTON_LONG_PRES || _inst->status == BUTTON_LRPT_PRES) &&t >= BUTTON_TIME_LRPT)
-		{ //lrpt press
-			_inst->status = BUTTON_LRPT_PRES;
-			_inst->msCnt = BUTTON_TIMER_MS;
-			BUTTON_SetInterrupt(_inst, BUTTON_PRESSDN_EXTINT);
-            if (_inst->handler != NULL)
-            {
-                _inst->handler(_inst);
-            }
-		}
-	}
-}
-*/
-/** This is old version. It seems buggy but works. If the new one is broken, use this instead. */
-void BUTTON_PitIsr(button_t *_inst)
-{
-	if (BUTTON_ReadPin(_inst) == BUTTON_RELEASE_LOGIC)
-	{
-		BUTTON_SetInterrupt(_inst, BUTTON_PRESSDN_EXTINT);
+		_inst->config->setInterrupt(_inst->intCfg = interrupt_pressdn);
 		return;
 	}
 	uint64_t t = BUTTON_TIMER_MS - _inst->msCnt;
-	if (_inst->intCfg == BUTTON_RELEASE_EXTINT)
+	if (_inst->intCfg == interrupt_release)
 	{
 		if (BUTTON_TIME_LONG <= t && t < BUTTON_REPT_TOUT)
 		{ //long press
 			_inst->status = BUTTON_LONG_PRES;
 			_inst->msCnt = BUTTON_TIMER_MS;
-			BUTTON_SetInterrupt(_inst, BUTTON_PRESSDN_EXTINT); 
-            if (_inst->handler != NULL)
+			_inst->config->setInterrupt(_inst->intCfg = interrupt_pressdn); 
+            if (_inst->config->handler != NULL)
             {
-                _inst->handler(_inst);
+                _inst->config->handler(_inst->status, _inst->config->userData);
             }
 		}
 	}
@@ -179,10 +133,10 @@ void BUTTON_PitIsr(button_t *_inst)
 		{ //long press
 			_inst->status = BUTTON_LRPT_PRES;
 			_inst->msCnt = BUTTON_TIMER_MS;
-			BUTTON_SetInterrupt(_inst, BUTTON_PRESSDN_EXTINT);
-            if (_inst->handler != NULL)
+			_inst->config->setInterrupt(_inst->intCfg = interrupt_pressdn);
+            if (_inst->config->handler != NULL)
             {
-                _inst->handler(_inst);
+                _inst->config->handler(_inst->status, _inst->config->userData);
             }
 		}
 	}

@@ -68,65 +68,6 @@
 #define HITSIC_MENU_SERVICE_SEM_TAKE() NVIC_ClearPendingIRQ(HITSIC_MENU_SERVICE_IRQn)
 /* @ } */
 
-/**
- * @name 按键输入接口
- * @brief : 是否使用菜单自带的按键事件管理
- * @ {
- */
-#define HITSIC_MENU_USE_BUTTON (1U)
-
-
-#if defined(HITSIC_MENU_USE_BUTTON) && (HITSIC_MENU_USE_BUTTON > 0)
-#include <drv_button.h>
-/** @brief : 菜单使用的五向按键初始化。每组数据前两个是GPIO和Pin，其余数据为0。 */
-#define HITSIC_MENU_BUTTON_5DIR_BSP_INIT  \
-    {                                     \
-        {                                 \
-            RTEPIN_DIGITAL_BUTTON_OK_GPIO, \
-            RTEPIN_DIGITAL_BUTTON_OK_PIN,   \
-            kPORT_InterruptOrDMADisabled, \
-            0,                            \
-            BUTTON_STAT_NONE,             \
-            NULL,                         \
-        },                                \
-        {                                 \
-        	RTEPIN_DIGITAL_BUTTON_UP_GPIO,  \
-			RTEPIN_DIGITAL_BUTTON_UP_PIN,   \
-            kPORT_InterruptOrDMADisabled, \
-            0,                            \
-            BUTTON_STAT_NONE,             \
-            NULL,                         \
-        },                                \
-        {                                 \
-        	RTEPIN_DIGITAL_BUTTON_DN_GPIO,  \
-			RTEPIN_DIGITAL_BUTTON_DN_PIN,   \
-            kPORT_InterruptOrDMADisabled, \
-            0,                            \
-            BUTTON_STAT_NONE,             \
-            NULL,                         \
-        },                                \
-        {                                 \
-        	RTEPIN_DIGITAL_BUTTON_LF_GPIO,  \
-			RTEPIN_DIGITAL_BUTTON_LF_PIN,   \
-            kPORT_InterruptOrDMADisabled, \
-            0,                            \
-            BUTTON_STAT_NONE,             \
-            NULL,                         \
-        },                                \
-        {                                 \
-        	RTEPIN_DIGITAL_BUTTON_RT_GPIO,  \
-			RTEPIN_DIGITAL_BUTTON_RT_PIN,   \
-            kPORT_InterruptOrDMADisabled, \
-            0,                            \
-            BUTTON_STAT_NONE,             \
-            NULL,                         \
-        },                                \
-    }
-
-#endif // ! HITSIC_MENU_USE_BUTTON
-
-/* @ } */
-
 
 
 /**

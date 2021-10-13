@@ -21,10 +21,11 @@
  * @brief : 按键操作宏定义。
  *
  */
-typedef enum _menu_keyOpCode_t
+typedef enum _menu_keyOpCode
 {
+    menuOpCode_generic_nl = 0, ///< NULL
+
     /* 五向按键，UP+DN+LF+RT+OK */
-    menuOpCode_5wayStick_nl = 0, ///< NULL
     menuOpCode_5wayStick_ok = 1,
     menuOpCode_5wayStick_up = 2,
     menuOpCode_5wayStick_dn = 3,
