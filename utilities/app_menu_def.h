@@ -260,13 +260,14 @@ typedef struct _menu_strBuf
 #if defined(HITSIC_MENU_USE_PALETTE) && (HITSIC_MENU_USE_PALETTE > 0)
     uint8_t fcolor[HITSIC_MENU_DISPLAY_STRBUF_ROW][HITSIC_MENU_DISPLAY_STRBUF_COL];
     uint8_t bcolor[HITSIC_MENU_DISPLAY_STRBUF_ROW][HITSIC_MENU_DISPLAY_STRBUF_COL];
-    menu_dispColor_t palette[HITSIC_MENU_DISPLAY_PALETTE_SIZE];
-#else
-
 #endif // ! HITSIC_MENU_USE_PALETTE
 }menu_strBuf_t;
 
 extern menu_strBuf_t menu_dispStrBuf;
+
+#if defined(HITSIC_MENU_USE_PALETTE) && (HITSIC_MENU_USE_PALETTE > 0)
+extern menu_dispColor_t palette[HITSIC_MENU_DISPLAY_PALETTE_SIZE];
+#endif // ! HITSIC_MENU_USE_PALETTE
 
 /*************************************
  ************ 菜单列表结构体 **********

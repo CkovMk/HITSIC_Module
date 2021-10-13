@@ -119,6 +119,10 @@ void MENU_FrameBufferUpdate(void);
 
 #if defined(HITSIC_MENU_USE_PALETTE) && (HITSIC_MENU_USE_PALETTE > 0)
 
+#if (!defined(HITSIC_MENU_USE_FRAME_BUFFER)) || (HITSIC_MENU_USE_FRAME_BUFFER == 0)
+#error Can NOT enable palette without frame buffer enabled !
+#endif // ! HITSIC_MENU_USE_FRAME_BUFFER
+
 #define HITSIC_MENU_DISPLAY_PALETTE_SIZE (32U) // uint8_t, 1~255
 
 typedef menu_dispColor_t uint8_t;

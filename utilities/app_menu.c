@@ -58,6 +58,10 @@ int32_t menu_nvmCopyDst[3] = { 0, 0, HITSIC_MENU_NVM_REGION_CNT - 1 };
 
 menu_strBuf_t menu_dispStrBuf;
 
+#if defined(HITSIC_MENU_USE_PALETTE) && (HITSIC_MENU_USE_PALETTE > 0)
+menu_dispColor_t palette[HITSIC_MENU_DISPLAY_PALETTE_SIZE];
+#endif // ! HITSIC_MENU_USE_PALETTE
+
 menu_keyOp_t menu_keyOpBuff;
 
 pitmgr_handle_t menu_pitHandle =
