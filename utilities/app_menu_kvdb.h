@@ -2,15 +2,76 @@
 #define UTILITIES_APP_MENU_NVM_HPP
 #include <hitsic_common.h>
 
+//PORT
+//
+// MENU_KVDB_GetSize(*key, *size)
+// MENU_KVDB_ReadValue(*key, *data)
+// MENU_KVDB_SaveValue(*key, *_data, size)
+// 
+//PORT
+
 #if defined(HITSIC_MENU_USE_NVM) && (HITSIC_MENU_USE_NVM > 0)
 #include <app_menu_def.h>
 #include <stdio.h>
 /*!
- * @addtogroup menu_nvm
+ * @addtogroup menu_kvdb
  * @{
  */
 
- #define MENU_KVDB_REGISTRY_KEY "MENU_REGISTRY"
+/**
+ * @brief 元数据键值。
+ */
+#define MENU_KVDB_METADATA_KEY "MENU_METADATA"
+
+/**
+ * @brief 元数据结构体。
+ */
+__PACKED typedef struct _menu_kvdb_metadata
+{
+    uint32_t swVersion; ///< 软件版本
+    uint16_t globalItemCnt; ///< 全局数据区数据项数量
+    uint16_t regionItemCnt; ///< 局部数据区数据项数量
+    uint8_t regionCnt; ///< 局部数据区数量
+    uint8_t dummy[3];
+}menu_kvdb_metadata_t;
+
+/**
+ * @brief 生成元数据。
+ * 
+ * @param {void *} _data : 用于保存数据的指针。不得传入空指针。
+ * @retval {status_t} : 返回状态。成功返回kStatus_Success。
+ */
+status_t MENU_KVDB_MetadataInit(menu_kvdb_metadata_t *_data);
+
+/**
+ * @brief 读取元数据
+ * 
+ * @param {void *} _data : 用于保存数据的指针。不得传入空指针。
+ * @param {uint32_t *} _size : 保存读取数据的大小（字节）。
+ * @retval {status_t} : 返回状态。成功返回kStatus_Success。
+ */
+status_t MENU_KVDB_MetadataRead(menu_kvdb_metadata_t *_data);
+
+/**
+ * @brief 保存元数据
+ * 
+ * @param {void *} _data : 想要保存的数据的指针。
+ * @param {uint32_t *} _size : 数据的大小（字节）。
+ * @retval {status_t} : 返回状态。成功返回kStatus_Success。
+ */
+status_t MENU_KVDB_MetadataSave(menu_kvdb_metadata_t *_data);
+
+
+
+/**
+ * @brief 注册表键值。
+ */
+#define MENU_KVDB_REGISTRY_KEY "MENU_REGISTRY"
+
+/**
+ * @brief 注册表项的大小。即每个菜单项对应的注册表项所占大小。
+ */
+#define MENU_KVDB_REG_SIZE (10U) // MENU + G/R + XXXX + '\0', 'R' will be replaced by Region Num when read actual data, where 'G' will stay in it's place
 
 /**
  * @brief 生成键
@@ -34,14 +95,31 @@ status_t MENU_KVDB_ResolveKey(char const * const _str, uint32_t *const _pptFlag,
 
 
 /**
- * @brief 初始化注册表。
+ * @brief 生成注册表。
  * 
+ * @param {void *} _data : 用于保存数据的指针。必须传入空指针。
+ * @param {uint32_t *} _size : 保存生成数据的大小（字节）。
+ * @retval {status_t} : 返回状态。成功返回kStatus_Success。
  */
-void MENU_KVDB_RegistryInit();
+void MENU_KVDB_RegistryInit(void *_data, uint32_t *_size);
 
-void MENU_KVDB_RegistryRead();
+/**
+ * @brief 读取注册表
+ * 
+ * @param {void *} _data : 用于保存数据的指针。必须传入空指针。
+ * @param {uint32_t *} _size : 保存读取数据的大小（字节）。
+ * @retval {status_t} : 返回状态。成功返回kStatus_Success。
+ */
+status_t MENU_KVDB_RegistryRead(void *_data, uint32_t *_size);
 
-void MENU_KVDB_RegistrySave();
+/**
+ * @brief 保存注册表
+ * 
+ * @param {void *} _data : 想要保存的数据的指针。
+ * @param {uint32_t *} _size : 数据的大小（字节）。
+ * @retval {status_t} : 返回状态。成功返回kStatus_Success。
+ */
+status_t MENU_KVDB_RegistrySave(void *_data, uint32_t _size);
 
 
 
