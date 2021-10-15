@@ -8,8 +8,7 @@ void MENU_DisplayOutput(menu_strBuf_t *_buf)
     DISP_SSD1306_FB_Clear(&dispBuffer);
 	for (uint8_t i = 0; i < HITSIC_MENU_DISPLAY_STRBUF_ROW; ++i)
 	{
-	    HITSIC_MENU_DISPLAY_PRINT(1U, i, menu_dispStrBuf.strbuf[i]);
-        DISP_SSD1306_FB_Print0608_Print_Overlay(&dispBuffer, i << 3U, 1U, 1U/*f_color*/, 0U/*b_color*/, str);
+        DISP_SSD1306_FB_Print0608_Print_Overlay(&dispBuffer, i << 3U, 1U, 1U/*f_color*/, 0U/*b_color*/, (const char*)_buf->strbuf);
 	}
 	DISP_SSD1306_BufferUpload((uint8_t*) &dispBuffer);
 }

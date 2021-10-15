@@ -22,7 +22,7 @@
 #include "hitsic_common.h"
 
 #if defined(HITSIC_USE_APP_MENU) && (HITSIC_USE_APP_MENU > 0)
-#include <app_menu_def.h>
+
 /**
  * @name 调试输出
  * @ {
@@ -88,14 +88,6 @@
 #define HITSIC_MENU_DISPLAY_STRBUF_COL (21u)
 
 /**
- * @brief 
- * 
- * @param _buf 
- */
-
-void MENU_DisplayOutput(menu_strBuf_t *_buf);
-
-/**
  * @brief 启用色盘
  */
 #define HITSIC_MENU_USE_PALETTE (0U)
@@ -117,6 +109,24 @@ typedef menu_dispColor_t uint8_t;
 #define HITSIC_MENU_DISPLAY_PAL_IDX_TITBAR_B (0U) ///< 背景色-标题
 
 #endif // ! HITSIC_MENU_USE_PALETTE
+
+typedef struct _menu_strBuf
+{
+    char strbuf[HITSIC_MENU_DISPLAY_STRBUF_ROW][HITSIC_MENU_DISPLAY_STRBUF_COL + 1]; // used by '\0'
+#if defined(HITSIC_MENU_USE_PALETTE) && (HITSIC_MENU_USE_PALETTE > 0)
+    uint8_t fcolor[HITSIC_MENU_DISPLAY_STRBUF_ROW][HITSIC_MENU_DISPLAY_STRBUF_COL];
+    uint8_t bcolor[HITSIC_MENU_DISPLAY_STRBUF_ROW][HITSIC_MENU_DISPLAY_STRBUF_COL];
+#endif // ! HITSIC_MENU_USE_PALETTE
+}menu_strBuf_t; // FIXME: move this to elsewhere...
+
+extern menu_strBuf_t menu_dispStrBuf;
+
+/**
+ * @brief
+ *
+ * @param _buf
+ */
+void MENU_DisplayOutput(menu_strBuf_t *_buf);
 
 /* @ } */
 
