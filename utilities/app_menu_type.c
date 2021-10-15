@@ -50,8 +50,8 @@ void MENU_ItemSetData_nullType(menu_itemIfce_t *_item, void *_data)
 //used when in menuList
 void MENU_ItemPrintSlot_nullType(menu_itemIfce_t *_item, uint32_t _slotNum)
 {
-    snprintf(menu_dispStrBuf.strbuf[_slotNum], HITSIC_MENU_DISPLAY_STRBUF_COL, " ------------------- ");
-    menu_dispStrBuf.strbuf[_slotNum][snprintf(menu_dispStrBuf.strbuf[_slotNum] + 3, HITSIC_MENU_DISPLAY_STRBUF_COL, "%s", _item->nameStr) + 3] = '-';
+    snprintf(menu_dispStrBuf.strbuf[_slotNum], HITSIC_MENU_DISPLAY_STRBUF_COL + 1, " ------------------- ");
+    menu_dispStrBuf.strbuf[_slotNum][snprintf(menu_dispStrBuf.strbuf[_slotNum] + 3, HITSIC_MENU_DISPLAY_STRBUF_COL - 3, "%s", _item->nameStr) + 3] = '-';
 }
 void MENU_ItemDirectKeyOp_nullType(menu_itemIfce_t *_item, menu_keyOp_t *const _op)
 {
@@ -155,15 +155,15 @@ void MENU_ItemPrintSlot_variType(menu_itemIfce_t *_item, uint32_t _slotNum)
     MENU_ItemGetContent_variType(&handle->v, &handle->e, *handle->data);
     if (_item->pptFlag & menuItem_disp_noPreview)
     {
-        menu_dispStrBuf.strbuf[_slotNum][snprintf(menu_dispStrBuf.strbuf[_slotNum], HITSIC_MENU_DISPLAY_STRBUF_COL, " %-16.16s  ->", _item->nameStr)] = ' ';
+        menu_dispStrBuf.strbuf[_slotNum][snprintf(menu_dispStrBuf.strbuf[_slotNum], HITSIC_MENU_DISPLAY_STRBUF_COL + 1, " %-16.16s  ->", _item->nameStr)] = ' ';
     }
     else if ((!(_item->pptFlag & menuItem_disp_forceSci)) && *handle->data < 1000000 && *handle->data > -1000000)
     {
-        menu_dispStrBuf.strbuf[_slotNum][snprintf(menu_dispStrBuf.strbuf[_slotNum], HITSIC_MENU_DISPLAY_STRBUF_COL, " %-12.12s %+-7ld", _item->nameStr, *(handle->data))] = ' ';
+        menu_dispStrBuf.strbuf[_slotNum][snprintf(menu_dispStrBuf.strbuf[_slotNum], HITSIC_MENU_DISPLAY_STRBUF_COL + 1, " %-12.12s %+-7ld", _item->nameStr, *(handle->data))] = ' ';
     }
     else
     {
-        menu_dispStrBuf.strbuf[_slotNum][snprintf(menu_dispStrBuf.strbuf[_slotNum], HITSIC_MENU_DISPLAY_STRBUF_COL, " %-12.12s %+4.4ld%+1.1ld", _item->nameStr, handle->v, handle->e)] = ' ';
+        menu_dispStrBuf.strbuf[_slotNum][snprintf(menu_dispStrBuf.strbuf[_slotNum], HITSIC_MENU_DISPLAY_STRBUF_COL + 1, " %-12.12s %+4.4ld%+1.1ld", _item->nameStr, handle->v, handle->e)] = ' ';
     }
 }
 void MENU_ItemDirectKeyOp_variType(menu_itemIfce_t *_item, menu_keyOp_t *const _op)
@@ -235,21 +235,7 @@ void MENU_ItemPrintDisp_variType(menu_itemIfce_t *_item)
     menu_item_variHandle_t *handle = _item->handle.p_variType;
     MENU_ItemSetContent_variType(&handle->bData, handle->v, handle->e);
 
-    menu_dispStrBuf.strbuf[0][snprintf(menu_dispStrBuf.strbuf[0], HITSIC_MENU_DISPLAY_STRBUF_COL, "##%-15.15s *", _item->nameStr)] = ' ';
-    menu_dispStrBuf.strbuf[2][snprintf(menu_dispStrBuf.strbuf[2], HITSIC_MENU_DISPLAY_STRBUF_COL, "  Cur: %+-10ld", *handle->data)] = ' ';
-
-    if (_item->pptFlag & menuItem_data_ROFlag)
-    {
-        menu_dispStrBuf.strbuf[7][snprintf(menu_dispStrBuf.strbuf[7], HITSIC_MENU_DISPLAY_STRBUF_COL, "     READ   ONLY     ")] = ' ';
-    }
-    else
-    {
-        menu_dispStrBuf.strbuf[3][snprintf(menu_dispStrBuf.strbuf[3], HITSIC_MENU_DISPLAY_STRBUF_COL, "  Adj: %+-10ld", handle->bData)] = ' ';
-        menu_dispStrBuf.strbuf[4][snprintf(menu_dispStrBuf.strbuf[4], HITSIC_MENU_DISPLAY_STRBUF_COL, "  Mod: %+4.4lde%+1.1ld", handle->v, handle->e)] = ' ';
-        int32_t pos = handle->cur < 0 ? 12 - handle->cur : 11 - handle->cur;
-        menu_dispStrBuf.strbuf[5][pos] = '^';
-        menu_dispStrBuf.strbuf[7][snprintf(menu_dispStrBuf.strbuf[7], HITSIC_MENU_DISPLAY_STRBUF_COL, "    SOK>AC LOK>WA    ")] = ' ';
-    }
+    menu_dispStrBuf.strbuf[0][snprintf(menu_dispStrBuf.strbuf[0], HITSIC_MENU_DISPLAY_STRBUF_COL + 1, "##%-15.15s *", _item->nameStr)] = ' ';
     if (_item->pptFlag & menuItem_data_global)
     {
         menu_dispStrBuf.strbuf[0][19] = 'G';
@@ -265,7 +251,31 @@ void MENU_ItemPrintDisp_variType(menu_itemIfce_t *_item)
         menu_dispStrBuf.strbuf[0][19] = 'N';
         menu_dispStrBuf.strbuf[0][20] = 'O';
     }
+#if defined(HITSIC_MENU_USE_PALETTE) && (HITSIC_MENU_USE_PALETTE > 0)
+    for(int c = 0; c < HITSIC_MENU_DISPLAY_STRBUF_COL + 1; ++c)
+    {
+        menu_dispStrBuf.f_color[0][c] = HITSIC_MENU_DISPLAY_PAL_IDX_TITBAR_F;
+	    menu_dispStrBuf.b_color[0][c] = HITSIC_MENU_DISPLAY_PAL_IDX_TITBAR_B;
+    }
+#endif // ! HITSIC_MENU_USE_PALETTE
 
+    menu_dispStrBuf.strbuf[2][snprintf(menu_dispStrBuf.strbuf[2], HITSIC_MENU_DISPLAY_STRBUF_COL + 1, "  Cur: %+-10ld", *handle->data)] = ' ';
+    if (_item->pptFlag & menuItem_data_ROFlag)
+    {
+        menu_dispStrBuf.strbuf[7][snprintf(menu_dispStrBuf.strbuf[7], HITSIC_MENU_DISPLAY_STRBUF_COL + 1, "     READ   ONLY     ")] = ' ';
+    }
+    else
+    {
+        menu_dispStrBuf.strbuf[3][snprintf(menu_dispStrBuf.strbuf[3], HITSIC_MENU_DISPLAY_STRBUF_COL + 1, "  Adj: %+-10ld", handle->bData)] = ' ';
+        menu_dispStrBuf.strbuf[4][snprintf(menu_dispStrBuf.strbuf[4], HITSIC_MENU_DISPLAY_STRBUF_COL + 1, "  Mod: %+4.4lde%+1.1ld", handle->v, handle->e)] = ' ';
+        int32_t pos = handle->cur < 0 ? 12 - handle->cur : 11 - handle->cur;
+#if defined(HITSIC_MENU_USE_PALETTE) && (HITSIC_MENU_USE_PALETTE > 0)
+        menu_dispStrBuf.f_color[4][pos] = HITSIC_MENU_DISPLAY_PAL_IDX_HLIGHT_F;
+	    menu_dispStrBuf.b_color[4][pos] = HITSIC_MENU_DISPLAY_PAL_IDX_HLIGHT_B;
+#endif // ! HITSIC_MENU_USE_PALETTE
+        menu_dispStrBuf.strbuf[5][pos] = '^';
+        menu_dispStrBuf.strbuf[7][snprintf(menu_dispStrBuf.strbuf[7], HITSIC_MENU_DISPLAY_STRBUF_COL + 1, "    SOK>AC LOK>WA    ")] = ' ';
+    }
 }
 void MENU_ItemKeyOp_variType(menu_itemIfce_t *_item, menu_keyOp_t *const _op)
 {
@@ -456,15 +466,15 @@ void MENU_ItemPrintSlot_varfType(menu_itemIfce_t *_item, uint32_t _slotNum)
     MENU_ItemGetContent_varfType(&handle->v, &handle->e, *handle->data);
     if (_item->pptFlag & menuItem_disp_noPreview)
     {
-        menu_dispStrBuf.strbuf[_slotNum][snprintf(menu_dispStrBuf.strbuf[_slotNum], HITSIC_MENU_DISPLAY_STRBUF_COL, " %-16.16s  ->", _item->nameStr)] = ' ';
+        menu_dispStrBuf.strbuf[_slotNum][snprintf(menu_dispStrBuf.strbuf[_slotNum], HITSIC_MENU_DISPLAY_STRBUF_COL + 1, " %-16.16s  ->", _item->nameStr)] = ' ';
     }
     else if ((!(_item->pptFlag & menuItem_disp_forceSci)) && ((*handle->data < 10000 && *handle->data > 0.001f) || (*handle->data > -10000 && *handle->data < -0.001f) || (*handle->data == 0.0f)))
     {
-        menu_dispStrBuf.strbuf[_slotNum][snprintf(menu_dispStrBuf.strbuf[_slotNum], HITSIC_MENU_DISPLAY_STRBUF_COL, " %-12.12s %+-7f", _item->nameStr, *(handle->data))] = ' ';
+        menu_dispStrBuf.strbuf[_slotNum][snprintf(menu_dispStrBuf.strbuf[_slotNum], HITSIC_MENU_DISPLAY_STRBUF_COL + 1, " %-12.12s %+-7f", _item->nameStr, *(handle->data))] = ' ';
     }
     else
     {
-        menu_dispStrBuf.strbuf[_slotNum][snprintf(menu_dispStrBuf.strbuf[_slotNum], HITSIC_MENU_DISPLAY_STRBUF_COL, " %-12.12s %+4.4ld%+1.1ld", _item->nameStr, handle->v, handle->e)] = ' ';
+        menu_dispStrBuf.strbuf[_slotNum][snprintf(menu_dispStrBuf.strbuf[_slotNum], HITSIC_MENU_DISPLAY_STRBUF_COL + 1, " %-12.12s %+4.4ld%+1.1ld", _item->nameStr, handle->v, handle->e)] = ' ';
     }
 }
 void MENU_ItemDirectKeyOp_varfType(menu_itemIfce_t *_item, menu_keyOp_t *const _op)
@@ -522,21 +532,7 @@ void MENU_ItemPrintDisp_varfType(menu_itemIfce_t *_item)
     menu_item_varfHandle_t *handle = _item->handle.p_varfType;
     MENU_ItemSetContent_varfType(&handle->bData, handle->v, handle->e);
 
-    menu_dispStrBuf.strbuf[0][snprintf(menu_dispStrBuf.strbuf[0], HITSIC_MENU_DISPLAY_STRBUF_COL, "##%-15.15s *", _item->nameStr)] = ' ';
-    menu_dispStrBuf.strbuf[2][snprintf(menu_dispStrBuf.strbuf[2], HITSIC_MENU_DISPLAY_STRBUF_COL, "  Cur: %+-10.4f", *handle->data)] = ' ';
-
-    if (_item->pptFlag & menuItem_data_ROFlag)
-    {
-        menu_dispStrBuf.strbuf[7][snprintf(menu_dispStrBuf.strbuf[7], HITSIC_MENU_DISPLAY_STRBUF_COL, "     READ   ONLY     ")] = ' ';
-    }
-    else
-    {
-        menu_dispStrBuf.strbuf[3][snprintf(menu_dispStrBuf.strbuf[3], HITSIC_MENU_DISPLAY_STRBUF_COL, "  Adj: %+-10.4f", handle->bData)] = ' ';
-        menu_dispStrBuf.strbuf[4][snprintf(menu_dispStrBuf.strbuf[4], HITSIC_MENU_DISPLAY_STRBUF_COL, "  Mod: %+3.3lde%+1.1ld", handle->v, handle->e)] = ' ';
-        int32_t pos = handle->cur < 0 ? 12 - handle->cur : 11 - handle->cur;
-        menu_dispStrBuf.strbuf[5][pos] = '^';
-        menu_dispStrBuf.strbuf[7][snprintf(menu_dispStrBuf.strbuf[7], HITSIC_MENU_DISPLAY_STRBUF_COL, "    SOK>AC LOK>WA    ")] = ' ';
-    }
+    menu_dispStrBuf.strbuf[0][snprintf(menu_dispStrBuf.strbuf[0], HITSIC_MENU_DISPLAY_STRBUF_COL + 1, "##%-15.15s *", _item->nameStr)] = ' ';
     if (_item->pptFlag & menuItem_data_global)
     {
         menu_dispStrBuf.strbuf[0][19] = 'G';
@@ -551,6 +547,31 @@ void MENU_ItemPrintDisp_varfType(menu_itemIfce_t *_item)
     {
         menu_dispStrBuf.strbuf[0][19] = 'N';
         menu_dispStrBuf.strbuf[0][20] = 'O';
+    }
+#if defined(HITSIC_MENU_USE_PALETTE) && (HITSIC_MENU_USE_PALETTE > 0)
+    for(int c = 0; c < HITSIC_MENU_DISPLAY_STRBUF_COL + 1; ++c)
+    {
+        menu_dispStrBuf.f_color[0][c] = HITSIC_MENU_DISPLAY_PAL_IDX_TITBAR_F;
+	    menu_dispStrBuf.b_color[0][c] = HITSIC_MENU_DISPLAY_PAL_IDX_TITBAR_B;
+    }
+#endif // ! HITSIC_MENU_USE_PALETTE
+
+    menu_dispStrBuf.strbuf[2][snprintf(menu_dispStrBuf.strbuf[2], HITSIC_MENU_DISPLAY_STRBUF_COL + 1, "  Cur: %+-10.4f", *handle->data)] = ' ';
+    if (_item->pptFlag & menuItem_data_ROFlag)
+    {
+        menu_dispStrBuf.strbuf[7][snprintf(menu_dispStrBuf.strbuf[7], HITSIC_MENU_DISPLAY_STRBUF_COL + 1, "     READ   ONLY     ")] = ' ';
+    }
+    else
+    {
+        menu_dispStrBuf.strbuf[3][snprintf(menu_dispStrBuf.strbuf[3], HITSIC_MENU_DISPLAY_STRBUF_COL + 1, "  Adj: %+-10.4f", handle->bData)] = ' ';
+        menu_dispStrBuf.strbuf[4][snprintf(menu_dispStrBuf.strbuf[4], HITSIC_MENU_DISPLAY_STRBUF_COL + 1, "  Mod: %+3.3lde%+1.1ld", handle->v, handle->e)] = ' ';
+        int32_t pos = handle->cur < 0 ? 12 - handle->cur : 11 - handle->cur;
+#if defined(HITSIC_MENU_USE_PALETTE) && (HITSIC_MENU_USE_PALETTE > 0)
+        menu_dispStrBuf.f_color[4][pos] = HITSIC_MENU_DISPLAY_PAL_IDX_HLIGHT_F;
+	    menu_dispStrBuf.b_color[4][pos] = HITSIC_MENU_DISPLAY_PAL_IDX_HLIGHT_B;
+#endif // ! HITSIC_MENU_USE_PALETTE
+        menu_dispStrBuf.strbuf[5][pos] = '^';
+        menu_dispStrBuf.strbuf[7][snprintf(menu_dispStrBuf.strbuf[7], HITSIC_MENU_DISPLAY_STRBUF_COL + 1, "    SOK>AC LOK>WA    ")] = ' ';
     }
 }
 void MENU_ItemKeyOp_varfType(menu_itemIfce_t *_item, menu_keyOp_t *const _op)
@@ -683,7 +704,7 @@ void MENU_ItemSetData_boolType(menu_itemIfce_t *_item, void *_data)
 //used when in menuList
 void MENU_ItemPrintSlot_boolType(menu_itemIfce_t *_item, uint32_t _slotNum)
 {
-    snprintf(menu_dispStrBuf.strbuf[_slotNum], HITSIC_MENU_DISPLAY_STRBUF_COL, " bool Type - - - - ");
+    snprintf(menu_dispStrBuf.strbuf[_slotNum], HITSIC_MENU_DISPLAY_STRBUF_COL + 1, " bool Type - - - - ");
 }
 void MENU_ItemDirectKeyOp_boolType(menu_itemIfce_t *_item, menu_keyOp_t *const _op)
 {
@@ -728,7 +749,7 @@ void MENU_ItemSetData_procType(menu_itemIfce_t *_item, void *_data)
 //used when in menuList
 void MENU_ItemPrintSlot_procType(menu_itemIfce_t *_item, uint32_t _slotNum)
 {
-    menu_dispStrBuf.strbuf[_slotNum][snprintf(menu_dispStrBuf.strbuf[_slotNum], HITSIC_MENU_DISPLAY_STRBUF_COL, " :%-16.16s", _item->nameStr)] = ' ';
+    menu_dispStrBuf.strbuf[_slotNum][snprintf(menu_dispStrBuf.strbuf[_slotNum], HITSIC_MENU_DISPLAY_STRBUF_COL + 1, " :%-16.16s", _item->nameStr)] = ' ';
 }
 void MENU_ItemDirectKeyOp_procType(menu_itemIfce_t *_item, menu_keyOp_t *const _op)
 {
@@ -750,7 +771,7 @@ void MENU_ItemDirectKeyOp_procType(menu_itemIfce_t *_item, menu_keyOp_t *const _
 void MENU_ItemPrintDisp_procType(menu_itemIfce_t *_item)
 {
     menu_item_procHandle_t *handle = _item->handle.p_procType;
-    if(_item->pptFlag & menuItem_proc_uiDisplay)
+    if(_item->pptFlag & menuItem_proc_uiDisplay)    //FIXME: rework this logic
     {
         //menu_keyOp_t op_temp = MENU_BUTTON_MAKE_OP(5wayStick_nl, disp);
         handle->data(NULL);
@@ -758,8 +779,15 @@ void MENU_ItemPrintDisp_procType(menu_itemIfce_t *_item)
     }
     else
     {
-        menu_dispStrBuf.strbuf[0][snprintf(menu_dispStrBuf.strbuf[0], HITSIC_MENU_DISPLAY_STRBUF_COL, "##%-15.15s *", _item->nameStr)] = ' ';
-        menu_dispStrBuf.strbuf[7][snprintf(menu_dispStrBuf.strbuf[7], HITSIC_MENU_DISPLAY_STRBUF_COL, "    SOK>AC LOK>WA    ")] = ' ';
+        menu_dispStrBuf.strbuf[0][snprintf(menu_dispStrBuf.strbuf[0], HITSIC_MENU_DISPLAY_STRBUF_COL + 1, "##%-15.15s *", _item->nameStr)] = ' ';
+#if defined(HITSIC_MENU_USE_PALETTE) && (HITSIC_MENU_USE_PALETTE > 0)
+        for(int c = 0; c < HITSIC_MENU_DISPLAY_STRBUF_COL + 1; ++c)
+        {
+            menu_dispStrBuf.f_color[0][c] = HITSIC_MENU_DISPLAY_PAL_IDX_TITBAR_F;
+	        menu_dispStrBuf.b_color[0][c] = HITSIC_MENU_DISPLAY_PAL_IDX_TITBAR_B;
+        }
+#endif // ! HITSIC_MENU_USE_PALETTE
+        menu_dispStrBuf.strbuf[7][snprintf(menu_dispStrBuf.strbuf[7], HITSIC_MENU_DISPLAY_STRBUF_COL + 1, "    SOK>AC LOK>WA    ")] = ' ';
     }
 }
 void MENU_ItemKeyOp_procType(menu_itemIfce_t *_item, menu_keyOp_t *const _op)
@@ -795,7 +823,7 @@ const menu_itemAdapter_t menu_itemAdapter_menuType =
     .ItemPrintDisp = MENU_ItemPrintDisp_menuType,
     .ItemKeyOp = MENU_ItemKeyOp_menuType,
 };
-    
+
 void MENU_ItemConstruct_menuType(menu_itemIfce_t *_item, void *_data)
 {
     _item->adapter = &menu_itemAdapter_menuType;
@@ -811,7 +839,7 @@ void MENU_ItemSetData_menuType(menu_itemIfce_t *_item, void *_data)
 //used when in menuList
 void MENU_ItemPrintSlot_menuType(menu_itemIfce_t *_item, uint32_t _slotNum)
 {
-    menu_dispStrBuf.strbuf[_slotNum][snprintf(menu_dispStrBuf.strbuf[_slotNum], HITSIC_MENU_DISPLAY_STRBUF_COL, " [%s]", _item->nameStr)] = ' ';
+    menu_dispStrBuf.strbuf[_slotNum][snprintf(menu_dispStrBuf.strbuf[_slotNum], HITSIC_MENU_DISPLAY_STRBUF_COL + 1, " [%s]", _item->nameStr)] = ' ';
 }
 void MENU_ItemDirectKeyOp_menuType(menu_itemIfce_t *_item, menu_keyOp_t *const _op)
 {
@@ -963,14 +991,29 @@ status_t MENU_ListInsert(menu_list_t *_list, menu_itemIfce_t *_item)
 
 void MENU_ListPrintDisp(menu_list_t *_list)
 {
-    memset(menu_dispStrBuf.strbuf, ' ', HITSIC_MENU_DISPLAY_STRBUF_ROW * HITSIC_MENU_DISPLAY_STRBUF_COL);
-    menu_dispStrBuf.strbuf[0][snprintf(menu_dispStrBuf.strbuf[0], HITSIC_MENU_DISPLAY_STRBUF_COL, "##%-13.13s*%2.2ld/%2.2ld", _list->nameStr, _list->slct_p + 1, _list->listNum)] = ' ';
+    menu_dispStrBuf.strbuf[0][snprintf(menu_dispStrBuf.strbuf[0], HITSIC_MENU_DISPLAY_STRBUF_COL + 1, "##%-13.13s*%2.2ld/%2.2ld", _list->nameStr, _list->slct_p + 1, _list->listNum)] = ' ';
+#if defined(HITSIC_MENU_USE_PALETTE) && (HITSIC_MENU_USE_PALETTE > 0)
+    for(int c = 0; c < HITSIC_MENU_DISPLAY_STRBUF_COL + 1; ++c)
+    {
+        menu_dispStrBuf.f_color[0][c] = HITSIC_MENU_DISPLAY_PAL_IDX_TITBAR_F;
+	    menu_dispStrBuf.b_color[0][c] = HITSIC_MENU_DISPLAY_PAL_IDX_TITBAR_B;
+    }
+#endif // ! HITSIC_MENU_USE_PALETTE
     uint32_t printCnt = _list->listNum < HITSIC_MENU_DISPLAY_STRBUF_ROW - 1 ? _list->listNum : HITSIC_MENU_DISPLAY_STRBUF_ROW - 1;
     for (uint8_t i = 0; i < printCnt; ++i)
     {
         MENU_ItemPrintSlot(_list->menu[_list->disp_p + i], i + 1);
     }
-    menu_dispStrBuf.strbuf[_list->slct_p - _list->disp_p + 1][0] = '>';
+
+    uint8_t selectRow = _list->slct_p - _list->disp_p + 1;
+    menu_dispStrBuf.strbuf[selectRow][0] = '>';
+#if defined(HITSIC_MENU_USE_PALETTE) && (HITSIC_MENU_USE_PALETTE > 0)
+    for(int c = 0; c < HITSIC_MENU_DISPLAY_STRBUF_COL + 1; ++c)
+    {
+        menu_dispStrBuf.f_color[selectRow][c] = HITSIC_MENU_DISPLAY_PAL_IDX_HLIGHT_F;
+	    menu_dispStrBuf.b_color[selectRow][c] = HITSIC_MENU_DISPLAY_PAL_IDX_HLIGHT_B;
+    }
+#endif // ! HITSIC_MENU_USE_PALETTE
 }
 
 void MENU_ListKeyOp(menu_list_t *_list, menu_keyOp_t *const _op)

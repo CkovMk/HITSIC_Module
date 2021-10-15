@@ -22,7 +22,7 @@
 #include "hitsic_common.h"
 
 #if defined(HITSIC_USE_APP_MENU) && (HITSIC_USE_APP_MENU > 0)
-
+#include <app_menu_def.h>
 /**
  * @name 调试输出
  * @ {
@@ -75,42 +75,25 @@
  * @ {
 
 /** 字符缓存大小（行、列） */
-#define HITSIC_MENU_DISPLAY_STRBUF_ROW (8u)
-#define HITSIC_MENU_DISPLAY_STRBUF_COL (22u)
 
-/**
- * @brief 启用帧缓存接口
- */
-#define HITSIC_MENU_USE_FRAME_BUFFER (1U)
-
-#if defined(HITSIC_MENU_USE_FRAME_BUFFER) && (HITSIC_MENU_USE_FRAME_BUFFER > 0)
 #include <drv_disp_ssd1306.h>
 #include <lib_graphic.h>
-#define HITSIC_MENU_DISPLAY_BUFFER_CLEAR() (MENU_FrameBufferClear())
-#define HITSIC_MENU_DISPLAY_PRINT(row, col, str) (MENU_FrameBufferPrint(row, col, str))
-#define HITSIC_MENU_DISPLAY_BUFFER_UPDATE() (MENU_FrameBufferUpdate())
 
 /**
- * @brief 清除缓存区。
+ * @brief 字符缓存大小（行、列）
+ * 
+ * 行、列均为实际能够显示的行数和列数，不需要考虑C语言的'\0'。
  */
-void MENU_FrameBufferClear(void);
+#define HITSIC_MENU_DISPLAY_STRBUF_ROW (8u)
+#define HITSIC_MENU_DISPLAY_STRBUF_COL (21u)
 
 /**
- * @brief 向缓存区打印字符串。
+ * @brief 
+ * 
+ * @param _buf 
  */
-void MENU_FrameBufferPrint(uint16_t x, uint16_t y, char *str);
 
-/**
- * @brief 将缓存区上传到屏幕。
- */
-void MENU_FrameBufferUpdate(void);
-
-
-#else // HITSIC_MENU_USE_FRAME_BUFFER
-#define HITSIC_MENU_DISPLAY_BUFFER_CLEAR() (0)
-#define HITSIC_MENU_DISPLAY_PRINT(row, col, str) (DISP_SSD1306_Print_F6x8(row, col, str))
-#define HITSIC_MENU_DISPLAY_BUFFER_UPDATE() (0)
-#endif // ! HITSIC_MENU_USE_FRAME_BUFFER
+void MENU_DisplayOutput(menu_strBuf_t *_buf);
 
 /**
  * @brief 启用色盘
@@ -119,13 +102,19 @@ void MENU_FrameBufferUpdate(void);
 
 #if defined(HITSIC_MENU_USE_PALETTE) && (HITSIC_MENU_USE_PALETTE > 0)
 
-#if (!defined(HITSIC_MENU_USE_FRAME_BUFFER)) || (HITSIC_MENU_USE_FRAME_BUFFER == 0)
-#error Can NOT enable palette without frame buffer enabled !
-#endif // ! HITSIC_MENU_USE_FRAME_BUFFER
-
-#define HITSIC_MENU_DISPLAY_PALETTE_SIZE (32U) // uint8_t, 1~255
+#define HITSIC_MENU_DISPLAY_PALETTE_SIZE (8U) // uint8_t, 1~255
 
 typedef menu_dispColor_t uint8_t;
+
+#define HITSIC_MENU_DISPLAY_PALETTE_DEF \
+    {0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}
+
+#define HITSIC_MENU_DISPLAY_PAL_IDX_NORMAL_F (1U) ///< 前景色-正常
+#define HITSIC_MENU_DISPLAY_PAL_IDX_NORMAL_B (0U) ///< 背景色-正常
+#define HITSIC_MENU_DISPLAY_PAL_IDX_HLIGHT_F (1U) ///< 前景色-高亮
+#define HITSIC_MENU_DISPLAY_PAL_IDX_HLIGHT_B (0U) ///< 背景色-高亮
+#define HITSIC_MENU_DISPLAY_PAL_IDX_TITBAR_F (1U) ///< 前景色-标题
+#define HITSIC_MENU_DISPLAY_PAL_IDX_TITBAR_B (0U) ///< 背景色-标题
 
 #endif // ! HITSIC_MENU_USE_PALETTE
 

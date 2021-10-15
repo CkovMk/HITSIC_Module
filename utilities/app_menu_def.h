@@ -256,12 +256,12 @@ extern int32_t menu_nvmCopyDst[3];
 
 typedef struct _menu_strBuf
 {
-    char strbuf[HITSIC_MENU_DISPLAY_STRBUF_ROW][HITSIC_MENU_DISPLAY_STRBUF_COL];
+    char strbuf[HITSIC_MENU_DISPLAY_STRBUF_ROW][HITSIC_MENU_DISPLAY_STRBUF_COL + 1]; // used by '\0'
 #if defined(HITSIC_MENU_USE_PALETTE) && (HITSIC_MENU_USE_PALETTE > 0)
     uint8_t fcolor[HITSIC_MENU_DISPLAY_STRBUF_ROW][HITSIC_MENU_DISPLAY_STRBUF_COL];
     uint8_t bcolor[HITSIC_MENU_DISPLAY_STRBUF_ROW][HITSIC_MENU_DISPLAY_STRBUF_COL];
 #endif // ! HITSIC_MENU_USE_PALETTE
-}menu_strBuf_t;
+};
 
 extern menu_strBuf_t menu_dispStrBuf;
 

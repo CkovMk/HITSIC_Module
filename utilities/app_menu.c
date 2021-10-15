@@ -188,8 +188,18 @@ __WEAK void MENU_DataSetUp(void)
 void MENU_PrintDisp(void)
 {
     /** 清空缓存，准备打印 */
-    HITSIC_MENU_DISPLAY_BUFFER_CLEAR();
-	memset(menu_dispStrBuf.strbuf, ' ', HITSIC_MENU_DISPLAY_STRBUF_ROW * HITSIC_MENU_DISPLAY_STRBUF_COL);
+    for(int r = 0; r < HITSIC_MENU_DISPLAY_STRBUF_ROW; ++r)
+	{
+		for(int c = 0; c < HITSIC_MENU_DISPLAY_STRBUF_COL + 1; ++c)
+		{
+			menu_dispStrBuf.strbuf[r][c] = ' ';
+#if defined(HITSIC_MENU_USE_PALETTE) && (HITSIC_MENU_USE_PALETTE > 0)
+    		menu_dispStrBuf.f_color[r][c] = HITSIC_MENU_DISPLAY_PAL_IDX_NORMAL_F;
+			menu_dispStrBuf.b_color[r][c] = HITSIC_MENU_DISPLAY_PAL_IDX_NORMAL_B;
+#endif // ! HITSIC_MENU_USE_PALETTE
+		}
+		menu_dispStrBuf.strbuf[r][HITSIC_MENU_DISPLAY_STRBUF_COL + 1] = '\0';
+	}
 	/** 根据责任链打印缓存 */
 	if (menu_currItem == NULL)
 	{
@@ -199,20 +209,15 @@ void MENU_PrintDisp(void)
 	{
 		MENU_ItemPrintDisp(menu_currItem);
 	}
-	// /** 处理字符缓存超控标志位 */
-	// if(menu_statusFlag & menu_message_strBufOverride)
-	// {
-	//     MENU_StatusFlagClr(menu_message_strBufOverride);
-	// }
-	// else
+	for (uint8_t i = 0; i < HITSIC_MENU_DISPLAY_STRBUF_ROW; ++i)
 	{
-	    for (uint8_t i = 0; i < HITSIC_MENU_DISPLAY_STRBUF_ROW; ++i)
-	    {
-	        menu_dispStrBuf.strbuf[i][HITSIC_MENU_DISPLAY_STRBUF_COL - 1] = '\0';
-	        HITSIC_MENU_DISPLAY_PRINT(1, i, menu_dispStrBuf.strbuf[i]);
-	    }
+		if('\0' != menu_dispStrBuf.strbuf[i][HITSIC_MENU_DISPLAY_STRBUF_COL])
+		{
+			SYSLOG_W("Print display: row %d overflow!", i);
+	    	menu_dispStrBuf.strbuf[i][HITSIC_MENU_DISPLAY_STRBUF_COL] = '\0';
+		}
 	}
-	HITSIC_MENU_DISPLAY_BUFFER_UPDATE();
+	MENU_DisplayOutput(&menu_dispStrBuf);
 	MENU_StatusFlagClr(menu_message_printDisp);
 }
 
@@ -231,7 +236,7 @@ void MENU_KeyOp(menu_keyOp_t *const _op)
 		SYSLOG_W("KeyOp remained unclear. OP = %d", *_op);
 	}
 	MENU_StatusFlagClr(menu_message_buttonOp);
-	MENU_StatusFlagSet(menu_message_printDisp);
+	MENU_StatusFlagSet(menu_message_printDisp); // FIXME: flag should only be set on display chang.
 }
 
 void MENU_KeypadSignal(menu_keyOp_t _op)
