@@ -254,8 +254,8 @@ void MENU_ItemPrintDisp_variType(menu_itemIfce_t *_item)
 #if defined(HITSIC_MENU_USE_PALETTE) && (HITSIC_MENU_USE_PALETTE > 0)
     for(int c = 0; c < HITSIC_MENU_DISPLAY_STRBUF_COL + 1; ++c)
     {
-        menu_dispStrBuf.f_color[0][c] = HITSIC_MENU_DISPLAY_PAL_IDX_TITBAR_F;
-	    menu_dispStrBuf.b_color[0][c] = HITSIC_MENU_DISPLAY_PAL_IDX_TITBAR_B;
+        menu_dispStrBuf.fcolor[0][c] = HITSIC_MENU_DISPLAY_PAL_IDX_TITBAR_F;
+	    menu_dispStrBuf.bcolor[0][c] = HITSIC_MENU_DISPLAY_PAL_IDX_TITBAR_B;
     }
 #endif // ! HITSIC_MENU_USE_PALETTE
 
@@ -270,8 +270,8 @@ void MENU_ItemPrintDisp_variType(menu_itemIfce_t *_item)
         menu_dispStrBuf.strbuf[4][snprintf(menu_dispStrBuf.strbuf[4], HITSIC_MENU_DISPLAY_STRBUF_COL + 1, "  Mod: %+4.4lde%+1.1ld", handle->v, handle->e)] = ' ';
         int32_t pos = handle->cur < 0 ? 12 - handle->cur : 11 - handle->cur;
 #if defined(HITSIC_MENU_USE_PALETTE) && (HITSIC_MENU_USE_PALETTE > 0)
-        menu_dispStrBuf.f_color[4][pos] = HITSIC_MENU_DISPLAY_PAL_IDX_HLIGHT_F;
-	    menu_dispStrBuf.b_color[4][pos] = HITSIC_MENU_DISPLAY_PAL_IDX_HLIGHT_B;
+        menu_dispStrBuf.fcolor[4][pos] = HITSIC_MENU_DISPLAY_PAL_IDX_HLIGHT_F;
+	    menu_dispStrBuf.bcolor[4][pos] = HITSIC_MENU_DISPLAY_PAL_IDX_HLIGHT_B;
 #endif // ! HITSIC_MENU_USE_PALETTE
         menu_dispStrBuf.strbuf[5][pos] = '^';
         menu_dispStrBuf.strbuf[7][snprintf(menu_dispStrBuf.strbuf[7], HITSIC_MENU_DISPLAY_STRBUF_COL + 1, "    SOK>AC LOK>WA    ")] = ' ';
@@ -551,8 +551,8 @@ void MENU_ItemPrintDisp_varfType(menu_itemIfce_t *_item)
 #if defined(HITSIC_MENU_USE_PALETTE) && (HITSIC_MENU_USE_PALETTE > 0)
     for(int c = 0; c < HITSIC_MENU_DISPLAY_STRBUF_COL + 1; ++c)
     {
-        menu_dispStrBuf.f_color[0][c] = HITSIC_MENU_DISPLAY_PAL_IDX_TITBAR_F;
-	    menu_dispStrBuf.b_color[0][c] = HITSIC_MENU_DISPLAY_PAL_IDX_TITBAR_B;
+        menu_dispStrBuf.fcolor[0][c] = HITSIC_MENU_DISPLAY_PAL_IDX_TITBAR_F;
+	    menu_dispStrBuf.bcolor[0][c] = HITSIC_MENU_DISPLAY_PAL_IDX_TITBAR_B;
     }
 #endif // ! HITSIC_MENU_USE_PALETTE
 
@@ -567,8 +567,8 @@ void MENU_ItemPrintDisp_varfType(menu_itemIfce_t *_item)
         menu_dispStrBuf.strbuf[4][snprintf(menu_dispStrBuf.strbuf[4], HITSIC_MENU_DISPLAY_STRBUF_COL + 1, "  Mod: %+3.3lde%+1.1ld", handle->v, handle->e)] = ' ';
         int32_t pos = handle->cur < 0 ? 12 - handle->cur : 11 - handle->cur;
 #if defined(HITSIC_MENU_USE_PALETTE) && (HITSIC_MENU_USE_PALETTE > 0)
-        menu_dispStrBuf.f_color[4][pos] = HITSIC_MENU_DISPLAY_PAL_IDX_HLIGHT_F;
-	    menu_dispStrBuf.b_color[4][pos] = HITSIC_MENU_DISPLAY_PAL_IDX_HLIGHT_B;
+        menu_dispStrBuf.fcolor[4][pos] = HITSIC_MENU_DISPLAY_PAL_IDX_HLIGHT_F;
+	    menu_dispStrBuf.bcolor[4][pos] = HITSIC_MENU_DISPLAY_PAL_IDX_HLIGHT_B;
 #endif // ! HITSIC_MENU_USE_PALETTE
         menu_dispStrBuf.strbuf[5][pos] = '^';
         menu_dispStrBuf.strbuf[7][snprintf(menu_dispStrBuf.strbuf[7], HITSIC_MENU_DISPLAY_STRBUF_COL + 1, "    SOK>AC LOK>WA    ")] = ' ';
@@ -783,8 +783,8 @@ void MENU_ItemPrintDisp_procType(menu_itemIfce_t *_item)
 #if defined(HITSIC_MENU_USE_PALETTE) && (HITSIC_MENU_USE_PALETTE > 0)
         for(int c = 0; c < HITSIC_MENU_DISPLAY_STRBUF_COL + 1; ++c)
         {
-            menu_dispStrBuf.f_color[0][c] = HITSIC_MENU_DISPLAY_PAL_IDX_TITBAR_F;
-	        menu_dispStrBuf.b_color[0][c] = HITSIC_MENU_DISPLAY_PAL_IDX_TITBAR_B;
+            menu_dispStrBuf.fcolor[0][c] = HITSIC_MENU_DISPLAY_PAL_IDX_TITBAR_F;
+	        menu_dispStrBuf.bcolor[0][c] = HITSIC_MENU_DISPLAY_PAL_IDX_TITBAR_B;
         }
 #endif // ! HITSIC_MENU_USE_PALETTE
         menu_dispStrBuf.strbuf[7][snprintf(menu_dispStrBuf.strbuf[7], HITSIC_MENU_DISPLAY_STRBUF_COL + 1, "    SOK>AC LOK>WA    ")] = ' ';
@@ -995,8 +995,8 @@ void MENU_ListPrintDisp(menu_list_t *_list)
 #if defined(HITSIC_MENU_USE_PALETTE) && (HITSIC_MENU_USE_PALETTE > 0)
     for(int c = 0; c < HITSIC_MENU_DISPLAY_STRBUF_COL + 1; ++c)
     {
-        menu_dispStrBuf.f_color[0][c] = HITSIC_MENU_DISPLAY_PAL_IDX_TITBAR_F;
-	    menu_dispStrBuf.b_color[0][c] = HITSIC_MENU_DISPLAY_PAL_IDX_TITBAR_B;
+        menu_dispStrBuf.fcolor[0][c] = HITSIC_MENU_DISPLAY_PAL_IDX_TITBAR_F;
+	    menu_dispStrBuf.bcolor[0][c] = HITSIC_MENU_DISPLAY_PAL_IDX_TITBAR_B;
     }
 #endif // ! HITSIC_MENU_USE_PALETTE
     uint32_t printCnt = _list->listNum < HITSIC_MENU_DISPLAY_STRBUF_ROW - 1 ? _list->listNum : HITSIC_MENU_DISPLAY_STRBUF_ROW - 1;
@@ -1010,8 +1010,8 @@ void MENU_ListPrintDisp(menu_list_t *_list)
 #if defined(HITSIC_MENU_USE_PALETTE) && (HITSIC_MENU_USE_PALETTE > 0)
     for(int c = 0; c < HITSIC_MENU_DISPLAY_STRBUF_COL + 1; ++c)
     {
-        menu_dispStrBuf.f_color[selectRow][c] = HITSIC_MENU_DISPLAY_PAL_IDX_HLIGHT_F;
-	    menu_dispStrBuf.b_color[selectRow][c] = HITSIC_MENU_DISPLAY_PAL_IDX_HLIGHT_B;
+        menu_dispStrBuf.fcolor[selectRow][c] = HITSIC_MENU_DISPLAY_PAL_IDX_HLIGHT_F;
+	    menu_dispStrBuf.bcolor[selectRow][c] = HITSIC_MENU_DISPLAY_PAL_IDX_HLIGHT_B;
     }
 #endif // ! HITSIC_MENU_USE_PALETTE
 }

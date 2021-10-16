@@ -96,7 +96,7 @@
 
 #define HITSIC_MENU_DISPLAY_PALETTE_SIZE (8U) // uint8_t, 1~255
 
-typedef menu_dispColor_t uint8_t;
+typedef uint8_t menu_dispColor_t;
 
 #define HITSIC_MENU_DISPLAY_PALETTE_DEF \
     {0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}

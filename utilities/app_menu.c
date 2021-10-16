@@ -194,8 +194,8 @@ void MENU_PrintDisp(void)
 		{
 			menu_dispStrBuf.strbuf[r][c] = ' ';
 #if defined(HITSIC_MENU_USE_PALETTE) && (HITSIC_MENU_USE_PALETTE > 0)
-    		menu_dispStrBuf.f_color[r][c] = HITSIC_MENU_DISPLAY_PAL_IDX_NORMAL_F;
-			menu_dispStrBuf.b_color[r][c] = HITSIC_MENU_DISPLAY_PAL_IDX_NORMAL_B;
+    		menu_dispStrBuf.fcolor[r][c] = HITSIC_MENU_DISPLAY_PAL_IDX_NORMAL_F;
+			menu_dispStrBuf.bcolor[r][c] = HITSIC_MENU_DISPLAY_PAL_IDX_NORMAL_B;
 #endif // ! HITSIC_MENU_USE_PALETTE
 		}
 		menu_dispStrBuf.strbuf[r][HITSIC_MENU_DISPLAY_STRBUF_COL + 1] = '\0';
