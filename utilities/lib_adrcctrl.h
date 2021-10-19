@@ -62,7 +62,7 @@ typedef struct
 }adrc_t;
 
 //初始化，传入参数仅进行拷贝
-void ADRCCTRL_TDInit(adrc_td_t* td_t, float h);、
+void ADRCCTRL_TDInit(adrc_td_t* td_t, float h);
 
 //更新一次TD
 void ADRCCTRL_TD(adrc_td_t* td, float v);

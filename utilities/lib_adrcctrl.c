@@ -40,7 +40,7 @@ float ADRCCTRL_Fal(float e, float alpha, float delta)
 //初始化，传入参数仅进行拷贝
 void ADRCCTRL_TDInit(adrc_td_t* td_t, float h)
 {
-	memset(td_t, 0, sizeof(adrc_td_t))
+	memset(td_t, 0, sizeof(adrc_td_t));
 	td_t->h = h;
 	td_t->r = FLT_MAX;
 }

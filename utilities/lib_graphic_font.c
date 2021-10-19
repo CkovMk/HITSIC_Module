@@ -6,10 +6,9 @@
  */
 
 // begin is the first , endin is the one after the last.
-extern const uint8_t graphic_asciiBegin = 32;
-extern const uint8_t graphic_asciiEndin = 127;
-extern const uint8_t graphic_asciiCnt = 95;
-
+#define graphic_asciiBegin  32U
+#define graphic_asciiEndin  127U
+#define graphic_asciiCnt    95U
 
 /** ---------- FONT0816 ---------- **/
 
