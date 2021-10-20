@@ -23,6 +23,8 @@
 
 #if defined(HITSIC_USE_APP_MENU) && (HITSIC_USE_APP_MENU > 0)
 
+#define kStatusGroup_MENU (205U)
+
 /**
  * @name 调试输出
  * @ {
@@ -131,14 +133,13 @@ void MENU_DisplayOutput(menu_strBuf_t *_buf);
 /* @ } */
 
 /**
- *  @name 非易失性存储
+ *  @name 键值数据库
  *  @ {
  */
-/*! @brief 是否启用非易失性存储支持。目前仅支持块级存储接口。将于未来添加文件存储接口 */
-#define HITSIC_MENU_USE_NVM (1U)
+/*! @brief 是否启用非易失性键值数据库存储支持。 */
+#define HITSIC_MENU_USE_KVDB (1U)
 
-
-#if defined(HITSIC_MENU_USE_NVM) && (HITSIC_MENU_USE_NVM > 0)
+#if defined(HITSIC_MENU_USE_KVDB) && (HITSIC_MENU_USE_KVDB > 0)
 
 /**
  * ********** NVM存储变量定义 **********
@@ -153,12 +154,20 @@ void MENU_DisplayOutput(menu_strBuf_t *_buf);
  */
 #define HITSIC_MENU_NVM_REGION_CNT (3) 					///< 局部存储区的数量
 
-#define HITSIC_MENU_NVM_AddressRead(addr, buf, byteCnt)		FLASH_AddressRead(addr, buf, byteCnt)	///< 读指定地址。必须返回表示操作是否成功的值。
-#define HITSIC_MENU_NVM_SectorRead(sect, buf)		FLASH_SectorRead(sect, buf)						///< 读指定扇区。sect为扇区号，buf为缓存区。必须返回表示操作是否成功的值。
-#define HITSIC_MENU_NVM_SectorWrite(sect, buf)		FLASH_SectorWrite(sect, buf)					///< 写指定扇区。sect为扇区号，buf为缓存区。必须返回表示操作是否成功的值。
-#define HITSIC_MENU_NVM_RETVAL_SUCCESS				kStatus_FTFx_Success							///< flash接口操作成功的返回值。如果返回值不等一此值则表示操作失败，MENU_NVM接口将向上层报告错误（kStatus_Fail）。
+/**
+ * @brief : 键值数据库接口
+ */
+#include "easyflash.h"
 
-#endif // ! HITSIC_MENU_USE_NVM
+status_t MENU_KVDB_GetSize(char const *_key, uint32_t *_size);
+
+status_t MENU_KVDB_ReadValue(char const *_key, void *_data , uint32_t _size);
+
+status_t MENU_KVDB_SaveValue(char const *_key, void const *_data, uint32_t _size);
+
+status_t MENU_KVDB_DeltValue(char const *_key);
+
+#endif // ! HITSIC_MENU_USE_KVDB
 
 /* @ } */
 

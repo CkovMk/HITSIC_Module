@@ -111,7 +111,7 @@ menu_list_t *MENU_DirGetList(const char *str);
  */
 menu_itemIfce_t *MENU_DirGetItem(const menu_list_t *dir, const char *str);
 
-#if defined(HITSIC_MENU_USE_NVM) && (HITSIC_MENU_USE_NVM > 0)
+#if defined(HITSIC_MENU_USE_KVDB) && (HITSIC_MENU_USE_KVDB > 0)
 
 /**
  * @brief : 保存整个菜单到NVM。
@@ -173,37 +173,7 @@ void MENU_Data_NvmReadRegionConfig(void);
  */
 void MENU_Data_NvmReadRegionConfig_Boxed(menu_keyOp_t *const _op);
 
-/**
- * @brief : 将一个局部存储区的数据拷贝到另一个局部存储区。
- *
- * @param  {int32_t} _srcRegion : 源存储序号。
- * @param  {int32_t} _dstRegion : 目的存储区序号。
- */
-void MENU_Data_NvmCopy(int32_t _srcRegion, int32_t _dstRegion);
-
-/**
- * @brief : 将一个局部存储区的数据拷贝到另一个局部存储区。
- * 该函数将使用全局变量 menu_nvmCopySrc 和 menu_nvmCopyDst 中存储的值。
- * 
- * @param {menu_keyOp_t* const} _op : 按键操作接口传入的按键操作
- */
-void MENU_Data_NvmCopy_Boxed(menu_keyOp_t *const _op);
-
-// /**
-//  * @brief : 读取NVM状态标志。
-//  *
-//  * @return {int32_t}        : 返回读取到的状态标志。
-//  */
-// int32_t MENU_GetNvmStatus(void);
-
-// /**
-//  * @brief : 设置NVM状态标志。
-//  *
-//  * @param  {int32_t} _status : 要设置的状态标志。
-//  */
-// void MENU_SetNvmStatus(int32_t _status);
-
-#endif // ! HITSIC_MENU_USE_NVM
+#endif // ! HITSIC_MENU_USE_KVDB
 
 /**
  * @brief : 定时中断管理器句柄。

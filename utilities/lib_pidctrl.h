@@ -40,16 +40,16 @@
 
 //#define assert(...)
 
-struct pidCtrl_t
+typedef struct _pidCtrl
 {
     float kp, ki, kd;
     float errCurr, errIntg, errDiff, errPrev;
-};
+}pidCtrl_t;
 
-struct pid2Ctrl_t
+typedef struct _pid2Ctrl
 {
     pidCtrl_t outer, inner;
-};
+}pid2Ctrl_t;
 
 /**
  * @brief 设置PID结构体参数

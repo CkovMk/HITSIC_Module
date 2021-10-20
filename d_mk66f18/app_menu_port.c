@@ -30,6 +30,60 @@ void HITSIC_MENU_SERVICE_IRQHandler(void)
 }
 #endif
 
+status_t MENU_KVDB_GetSize(char const *_key, uint32_t *_size)
+{
+    ef_get_env_blob(_key, NULL, 0, _size);
+    if(0U == *_size)
+    {
+        return kStatus_Fail;
+    }
+    else
+    {
+        return kStatus_Success;
+    }
+}
+
+status_t MENU_KVDB_ReadValue(char const *_key, void *_data , uint32_t _size)
+{
+    uint32_t dataLen = ef_get_env_blob(_key, _data, _size, NULL);
+    if(0U == dataLen)
+    {
+        return kStatus_Fail;
+    }
+    else if (dataLen > _size)
+    {
+        return kStatus_Fail;
+    }
+    else
+    {
+        return kStatus_Success;
+    }
+}
+
+status_t MENU_KVDB_SaveValue(char const *_key, void const *_data, uint32_t _size)
+{
+    if(0U != ef_set_env_blob(_key, _data, _size))
+    {
+        return kStatus_Fail;
+    }
+    else
+    {
+        return kStatus_Success;
+    }
+}
+
+status_t MENU_KVDB_DeltValue(char const *_key)
+{
+    if(0U !=  ef_del_env(_key))
+    {
+        return kStatus_Fail;
+    }
+    else
+    {
+        return kStatus_Success;
+    }
+}
+
 #endif // ! HITSIC_USE_APP_MENU
 
 

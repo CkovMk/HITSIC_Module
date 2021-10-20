@@ -13,6 +13,14 @@
 #include <app_menu_port.h>
 #include <sys_pitmgr.h>
 
+/*! @brief Error codes for MENU. */
+enum
+{
+    kStatus_MENU_KVDB_KeyAbsence = MAKE_STATUS(kStatusGroup_MENU, 10), /*!< Key provided is absent in KVDB. */
+    kStatus_MENU_KVDB_ReadError  = MAKE_STATUS(kStatusGroup_MENU, 11), /*!< Value read from KVDB error. */
+    kStatus_MENU_KVDB_SaveError  = MAKE_STATUS(kStatusGroup_MENU, 12), /*!< Value save to KVDB error. */
+};
+
 /**
  * BUTTON
  */
@@ -246,8 +254,6 @@ extern menu_list_t *menu_menuRoot;          ///< 根菜单指针。
 extern int32_t menu_currRegionNum[3];    ///< 当前局部存储区号
 extern int32_t menu_statusFlag;             ///< 状态标志位
 extern uint32_t menu_nvm_statusFlagAddr;    ///< 存储状态标志位的NVM存储地址
-extern int32_t menu_nvmCopySrc[3];
-extern int32_t menu_nvmCopyDst[3];
 /**
  * @ }
  */

@@ -1,6 +1,6 @@
 #include <app_menu_kvdb.h>
 
-#if defined(HITSIC_MENU_USE_NVM) && (HITSIC_MENU_USE_NVM > 0)
+#if defined(HITSIC_MENU_USE_KVDB) && (HITSIC_MENU_USE_KVDB > 0)
 
 /*!
  * @addtogroup menu_kvdb
@@ -60,7 +60,7 @@ status_t MENU_KVDB_MetadataRead(menu_kvdb_metadata_t *_data)
     if(kStatus_Success != MENU_KVDB_GetSize(MENU_KVDB_METADATA_KEY, _size) || (0U == *_size))
     {
         SYSLOG_I("Metadata read failed! Metadata not found.");
-        return kStatus_Fail;
+        return kStatus_MENU_KVDB_KeyAbsence;
     }
     else if(sizeof(menu_kvdb_metadata_t) != size)
     {
@@ -70,7 +70,7 @@ status_t MENU_KVDB_MetadataRead(menu_kvdb_metadata_t *_data)
     if(kStatus_Success != MENU_KVDB_ReadValue(MENU_KVDB_METADATA_KEY, _data))
     {
         SYSLOG_W("Metadata read failed! Read value failed.");
-        return kStatus_Fail;
+        return kStatus_MENU_KVDB_ReadError;
     }
 
     SYSLOG_I("Metadata read success.");
@@ -83,7 +83,7 @@ status_t MENU_KVDB_MetadataSave(menu_kvdb_metadata_t *_data)
     if(kStauts_Success != (MENU_KVDB_METADATA_KEY, _data, sizeof(menu_kvdb_metadata_t)))
     {
         SYSLOG_W("Metadata save failed! Save value failed.")
-        return kStatus_Fail;
+        return kStatus_MENU_KVDB_SaveError;
     }
     else
     {
@@ -94,7 +94,7 @@ status_t MENU_KVDB_MetadataSave(menu_kvdb_metadata_t *_data)
 
 status_t  MENU_KVDB_GenerateKey(menu_itemIfce_t const *const _item, char *const _str, uint32_t _size)
 {//FIXME: functional but not optimal.
-    if(_size < 10U)
+    if(_size < MENU_KVDB_REG_SIZE)
     {
         SYSLOG_W("Key generation failed! - no enough space.");
         return kStatus_Fail; 
@@ -200,7 +200,7 @@ status_t MENU_KVDB_RegistryRead(void *_data, uint32_t *_size)
     if(kStatus_Success != MENU_KVDB_GetSize(MENU_KVDB_REGISTRY_KEY, _size) || (0U == *_size))
     {
         SYSLOG_I("Registry read failed! Registry not found.");
-        return kStatus_Fail;
+        return kStatus_MENU_KVDB_KeyAbsence;
     }
 
     _data = malloc(*_size);
@@ -214,7 +214,7 @@ status_t MENU_KVDB_RegistryRead(void *_data, uint32_t *_size)
     {
         free(data);
         SYSLOG_W("Registry read failed! Read value failed.");
-        return kStatus_Fail;
+        return kStatus_MENU_KVDB_ReadError;
     }
 
     SYSLOG_I("Registry read success. %6.6d byte(s) received.", *_size);
@@ -227,7 +227,7 @@ status_t MENU_KVDB_RegistrySave(void *_data, uint32_t _size)
     if(kStauts_Success != MENU_KVDB_SaveValue(MENU_KVDB_REGISTRY_KEY, _data, uint32_t _size))
     {
         SYSLOG_W("Registry save failed! Save value failed.")
-        return kStatus_Fail;
+        return kStatus_MENU_KVDB_SaveError;
     }
     else
     {
@@ -236,11 +236,6 @@ status_t MENU_KVDB_RegistrySave(void *_data, uint32_t _size)
     }
 }
 
-status_t MENU_KVDB_Init(void)
-{
-
-}
-
 /* @} */
 
-#endif // ! HITSIC_MENU_USE_NVM
+#endif // ! HITSIC_MENU_USE_KVDB
