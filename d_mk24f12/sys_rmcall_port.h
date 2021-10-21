@@ -1,11 +1,3 @@
-/*
- * @Author: your name
- * @Date: 2021-10-19 22:33:24
- * @LastEditTime: 2021-10-19 23:28:01
- * @LastEditors: your name
- * @Description: In User Settings Edit
- * @FilePath: \ECG_MK24F12\HITSIC_Module\d_mk24f12\sys_rmcall_port.h
- */
 #ifndef D_MK24F12_SYS_RMCALL_PORT_H
 #define D_MK24F12_SYS_RMCALL_PORT_H
 #include "hitsic_common.h"
@@ -13,42 +5,28 @@
 
 #if defined(HITSIC_USE_RMCALL) && (HITSIC_USE_RMCALL > 0)
 
-//#define HITSIC_RMCALL_UART LPUART2
+extern uart_handle_t UART1_BLE_handle;
+extern uart_transfer_t UART1_BLE_rxTransfer;
+extern uart_transfer_t UART1_BLE_txTransfer;
 
-#define HITSIC_RMCALL_USE_HEARTBEAT (1U)
-
-#if defined(HITSIC_RMCALL_USE_HEARTBEAT) && (HITSIC_RMCALL_USE_HEARTBEAT > 0)
-// #define HITSIC_RMCALL_PITISR_TIMELAG 100
-// #define HITSIC_RMCALL_HEARTBEAT_TIMELAG 1000
-// #define HITSIC_RMCALL_HEARTBEAT_FAIL_TH 2000
-// #define HITSIC_RMCALL_HEARTBEAT_Callback() HardFault_IRQHandler()
-// #endif // ! HITSIC_RMCALL_USE_HEARTBEAT
-
-
-
-#endif // ! HITSIC_RMCALL_USE_HEARTBEAT
+#define HITSIC_RMCALL_UART UART1
+#define HITSIC_RMCALL_CLKSRC   UART1_CLK_SRC
+#define HITSIC_RMCALL_UART_CLK_FREQ CLOCK_GetFreq(UART1_CLK_SRC)
 
 #define HITSIC_RMCALL_HEADER_MAGIC 0x554768A0U
+#define RMCALL_SYSLOG_LVL (2U)
+#define HITSIC_RMCALL_PUBLIC_BUF_SIZE (256U)
+#define kStatusGroup_RMCALL (201U)
 
-void RMCALL_Callback(LPUART_Type *base, lpuart_handle_t *handle, status_t status, void *userData)
-{
-    userData = userData;
 
-    if (kStatus_LPUART_TxIdle == status)
-    {
-        txBufferFull = false;
-        txOnGoing    = false;
-    }
+status_t RMCALL_HOST_Tx(void *_data, uint32_t _dataSize);
+status_t RMCALL_HOST_Rx(void *_data, uint32_t _dataSize);
+void RMCALL_HOST_TxAbort(void);
+void RMCALL_HOST_RxAbort(void);
 
-    if (kStatus_LPUART_RxIdle == status)
-    {
-        rxBufferEmpty = false;
-        rxOnGoing     = false;
-    }
-}
+void RMCALL_HOST_CpltCallback(UART_Type *base, uart_handle_t *handle, status_t status, void *userData);
 
-status_t RMCALL1_Tx(void *_data, uint32_t dataSize);
-status_t RMCALL1_Rx(void *_data, uint32_t dataSize);
+void RMCALL_PORT_Init(void);
 
 #endif // HITSIC_USE_RMCALL
 
