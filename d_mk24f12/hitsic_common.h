@@ -79,7 +79,7 @@
 #endif // ! HITSIC_USE_EXTINT
 
 #ifndef HITSIC_USE_RMCALL
-#define HITSIC_USE_RMCALL 		(0U)
+#define HITSIC_USE_RMCALL 		(1U)
 #endif // ! HITSIC_USE_RMCALL
 
 /** APP */
