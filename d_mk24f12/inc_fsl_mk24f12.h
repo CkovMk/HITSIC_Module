@@ -29,7 +29,7 @@
 #include "fsl_adc16.h"
 #include "fsl_clock.h"
 #include "fsl_cmp.h"
-#include "fsl_cmp.h"
+#include "fsl_cmt.h"
 #include "fsl_common.h"
 #include "fsl_crc.h"
 #include "fsl_dac.h"

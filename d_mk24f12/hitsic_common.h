@@ -71,11 +71,11 @@
 #endif // ! HITSIC_USE_LTC
 
 #ifndef HITSIC_USE_PITMGR
-#define HITSIC_USE_PITMGR 		(0U)
+#define HITSIC_USE_PITMGR 		(1U)
 #endif // ! HITSIC_USE_PITMGR
 
 #ifndef HITSIC_USE_EXTINT
-#define HITSIC_USE_EXTINT 		(0U)
+#define HITSIC_USE_EXTINT 		(1U)
 #endif // ! HITSIC_USE_EXTINT
 
 #ifndef HITSIC_USE_RMCALL
