@@ -38,7 +38,7 @@ float ADRCCTRL_Fal(float e, float alpha, float delta)
 }
 
 //初始化，传入参数仅进行拷贝
-void ADRCCTRL_TDInit(adrc_td_t* td_t, float h)
+void ADRCCTRL_TDInit(adrc_td_t *td_t, float h)
 {
 	memset(td_t, 0, sizeof(adrc_td_t));
 	td_t->h = h;
@@ -46,7 +46,7 @@ void ADRCCTRL_TDInit(adrc_td_t* td_t, float h)
 }
 
 //更新一次TD
-void ADRCCTRL_TD(adrc_td_t* td, float v)
+void ADRCCTRL_TD(adrc_td_t *td, float v)
 {
 	float fv = ADRCCTRL_Fhan(td->v1 - v, td->v2, td->r, td->h);
 	
@@ -55,7 +55,7 @@ void ADRCCTRL_TD(adrc_td_t* td, float v)
 }
 
 //初始化，传入参数仅进行拷贝
-void ADRCCTRL_Init(adrc_t* p,float h)
+void ADRCCTRL_Init(adrc_t *p,float h)
 {
 	memset(p, 0, sizeof(adrc_t));
 	p->h = h;
@@ -71,7 +71,7 @@ void ADRCCTRL_Init(adrc_t* p,float h)
 
 
 //更新一次adrc控制
-void ADRCCTRL_Update(adrc_t* p)
+void ADRCCTRL_Update(adrc_t *p)
 {
 	//先计算td
 	float fh = ADRCCTRL_Fhan(p->v1 - p->v, p->v2, p->r, p->h);
@@ -107,7 +107,7 @@ void ADRCCTRL_Update(adrc_t* p)
 }
 
 //更新一次adrc控制，只不过是非线性d
-void ADRCCTRL_UpdateFal(adrc_t* p, float d_line)
+void ADRCCTRL_UpdateFal(adrc_t *p, float d_line)
 {
 	//先计算td
 	p->v1 += p->h * p->v2;
@@ -141,9 +141,6 @@ void ADRCCTRL_UpdateFal(adrc_t* p, float d_line)
 		p->u = p->u_min;
 	}
 }
-
-
-
 
 
 #ifdef __cplusplus

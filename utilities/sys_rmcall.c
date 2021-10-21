@@ -1,15 +1,15 @@
 #include <sys_rmcall.h>
 
-#define SYSLOG_TAG "RMCALL"
-#define SYSLOG_LVL RMCALL_SYSLOG_LVL
-#include <inc_syslog.h>
-
 /*!
  * @addtogroup rmcall
  * @{
  */
 
 #if defined(HITSIC_USE_RMCALL) && (HITSIC_USE_RMCALL > 0)
+
+#define SYSLOG_TAG "RMCALL"
+#define SYSLOG_LVL RMCALL_SYSLOG_LVL
+#include <inc_syslog.h>
 
 /** Private Functions */
 

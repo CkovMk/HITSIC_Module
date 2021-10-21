@@ -752,8 +752,8 @@ void MENU_ItemPrintDisp_procType(menu_itemIfce_t *_item)
     menu_item_procHandle_t *handle = _item->handle.p_procType;
     if(_item->pptFlag & menuItem_proc_uiDisplay)
     {
-        menu_keyOp_t op_temp = MENU_BUTTON_MAKE_OP(nl, disp);
-        handle->data(&op_temp);
+        //menu_keyOp_t op_temp = MENU_BUTTON_MAKE_OP(nl, disp);
+        handle->data(NULL);
         return;
     }
     else

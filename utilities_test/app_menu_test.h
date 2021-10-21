@@ -19,17 +19,38 @@ inline void MENU_ExampleProcHandler1(menu_keyOp_t *const _op)
 {
     extern disp_ssd1306_fb_t dispBuffer;
 
-    if(MENU_BUTTON_MAKE_OP(nl, disp) == *_op)
+    static uint16_t r = 10, c = 10;
+
+    if(NULL == _op)
     {
-        menu_statusFlag |= menu_message_strBufOverride;
-        for(uint16_t i = 10; i < 20; ++i)
+
+    }
+    else
+    {
+        switch(*_op)
         {
-            for(uint16_t j = 10; j < 20; ++j)
-            {
-                DISP_SSD1306_FB_SetPixelColor(&dispBuffer, i, j, true);
-            }
+        case MENU_BUTTON_MAKE_OP(up, shrt):
+            r = (--r) < 10 ? 10 : r;
+            break;
+        case MENU_BUTTON_MAKE_OP(dn, shrt):
+            r = (++r) > 40 ? 40 : r;
+            break;
+        case MENU_BUTTON_MAKE_OP(lf, shrt):
+            c = (--c) < 10 ? 10 : c;
+            break;
+        case MENU_BUTTON_MAKE_OP(rt, shrt):
+            c = (++c) > 40 ? 40 : c;
+            break;
         }
-        *_op = 0U;
+    }
+
+    MENU_StatusFlagSet(menu_message_strBufOverride);
+    for(uint16_t i = c; i < c + 10; ++i)
+    {
+        for(uint16_t j = r; j < r + 10; ++j)
+        {
+            DISP_SSD1306_FB_SetPixelColor(&dispBuffer, i, j, true);
+        }
     }
 }
 

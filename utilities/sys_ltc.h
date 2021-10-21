@@ -22,6 +22,9 @@
 #include <sys_ltc_port.h>
 
 
+/** @brief : 软件版本 */
+#define SYS_LTC_VERSION (HITSIC_MAKE_VERSION(1U, 0U, 0U))
+
 uint64_t LTC_GetTime(void);
 
 /**
