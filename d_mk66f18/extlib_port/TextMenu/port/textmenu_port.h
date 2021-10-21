@@ -19,9 +19,7 @@
 #define D_MK66F18_APP_MENU_PORT_H
 
 #include <inc_stdlib.h>
-#include "hitsic_common.h"
-
-#if defined(HITSIC_USE_APP_MENU) && (HITSIC_USE_APP_MENU > 0)
+//#include "hitsic_common.h"
 
 #define kStatusGroup_MENU (205U)
 
@@ -29,6 +27,10 @@
  * @name 调试输出
  * @ {
  */
+
+#define TEXTMENU_USE_SYSLOG (1U)
+
+#if defined(TEXTMENU_USE_SYSLOG) && (TEXTMENU_USE_SYSLOG > 0)
 
 /*! 核心逻辑 LOG级别定义 */
 #define TEXTMENU_MAIN_LOG_LVL    (3U)
@@ -47,6 +49,12 @@
 
 /*! 菜单迭代 LOG级别定义 */
 #define TEXTMENU_ITER_LOG_LVL    (2U)
+
+#else
+
+#error Log output without SYSLOG is not supported yet!
+ // TODO
+#endif // ! TEXTMENU_USE_SYSLOG
 
 /* @ } */
 
@@ -122,14 +130,6 @@ typedef uint8_t menu_dispColor_t;
 #if defined(TEXTMENU_USE_KVDB) && (TEXTMENU_USE_KVDB > 0)
 
 /**
- * ********** NVM存储变量定义 **********
- */
-
-//gl = global
-//rg = region
-//addr = address
-
-/**
  * @brief : 局部存储 Region Storage
  */
 #define TEXTMENU_NVM_REGION_CNT (3) 					///< 局部存储区的数量
@@ -137,8 +137,6 @@ typedef uint8_t menu_dispColor_t;
 #endif // ! TEXTMENU_USE_KVDB
 
 /* @ } */
-
-#endif // ! HITSIC_USE_APP_MENU
 
 
 #endif // ! D_MK66F18_APP_MENU_PORT_H
