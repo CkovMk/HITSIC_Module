@@ -55,9 +55,9 @@ status_t RMCALL_HOST_Rx(void *_data, uint32_t _dataSize)
     if (!rxOnGoing)
     {
         rxOnGoing = true;
-        UART_TransferReceiveNonBlocking(HITSIC_RMCALL_UART, &UART1_BLE_handle, &UART1_BLE_rxTransfer, _dataSize);
-        memcpy(_data,UART1_BLE_rxTransfer.data,_dataSize);
-        //or _data = (uint8_t*)UART1_BLE_rxTransfer.data;
+		UART1_BLE_rxTransfer.data     = (uint8_t *)_data;
+		UART1_BLE_rxTransfer.dataSize = _dataSize;
+        return UART_TransferReceiveNonBlocking(HITSIC_RMCALL_UART, &UART1_BLE_handle, &UART1_BLE_rxTransfer, _dataSize);
     }
 }
 void RMCALL_HOST_TxAbort(void)
