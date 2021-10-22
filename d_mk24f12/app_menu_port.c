@@ -4,21 +4,21 @@
 
 #if defined(HITSIC_MENU_USE_FRAME_BUFFER) && (HITSIC_MENU_USE_FRAME_BUFFER > 0)
 
-extern disp_ssd1306_fb_t dispBuffer;
+extern disp_ssd1327_fb_t dispBuffer;
 
 void MENU_FrameBufferClear(void)
 {
-    DISP_SSD1306_FB_Clear(&dispBuffer);
+    DISP_SSD1327_FB_Clear(&dispBuffer);
 }
 
 void MENU_FrameBufferPrint(uint16_t x, uint16_t y, char *str)
 {
-    DISP_SSD1306_FB_Print0608_Print_Overlay(&dispBuffer, y << 3U, x, 1U, 0U, str);
+    DISP_SSD1327_FB_Print0608_Print_Overlay(&dispBuffer, y << 3U, x, 0x0f, 0U, str);
 }
 
 void MENU_FrameBufferUpdate(void)
 {
-    DISP_SSD1306_BufferUpload((uint8_t*) &dispBuffer);
+    DISP_SSD1327_BufferUpload(&dispBuffer);
 }
 
 #else // HITSIC_MENU_USE_FRAME_BUFFER

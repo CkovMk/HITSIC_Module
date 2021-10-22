@@ -39,7 +39,7 @@ GRAPHIC_FB_GSCL4B_DEF(disp_ssd1327, DISP_SSD1327, 128, 128)
 
 GRAPHIC_FB_PRINT0608_DEF(disp_ssd1327, DISP_SSD1327)
 
-status_t DISP_SSD1327_Init(void);
+void DISP_SSD1327_Init(void);
 
 void DPSI_SSD1327_DispEnable(bool _state);
 

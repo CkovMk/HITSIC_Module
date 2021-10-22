@@ -81,40 +81,40 @@
 #define HITSIC_MENU_BUTTON_5DIR_BSP_INIT  \
     {                                     \
         {                                 \
-            RTEPIN_DIGITAL_BUTTON_OK_GPIO, \
-            RTEPIN_DIGITAL_BUTTON_OK_PIN,   \
+            RTEPIN_COMMUNICATION_KEY_BTOK_GPIO, \
+            RTEPIN_COMMUNICATION_KEY_BTOK_PIN,   \
             kPORT_InterruptOrDMADisabled, \
             0,                            \
             BUTTON_STAT_NONE,             \
             NULL,                         \
         },                                \
         {                                 \
-        	RTEPIN_DIGITAL_BUTTON_UP_GPIO,  \
-			RTEPIN_DIGITAL_BUTTON_UP_PIN,   \
+        	RTEPIN_COMMUNICATION_KEY_BTUP_GPIO,  \
+			RTEPIN_COMMUNICATION_KEY_BTUP_PIN,   \
             kPORT_InterruptOrDMADisabled, \
             0,                            \
             BUTTON_STAT_NONE,             \
             NULL,                         \
         },                                \
         {                                 \
-        	RTEPIN_DIGITAL_BUTTON_DN_GPIO,  \
-			RTEPIN_DIGITAL_BUTTON_DN_PIN,   \
+        	RTEPIN_COMMUNICATION_KEY_BTDN_GPIO,  \
+			RTEPIN_COMMUNICATION_KEY_BTDN_PIN,   \
             kPORT_InterruptOrDMADisabled, \
             0,                            \
             BUTTON_STAT_NONE,             \
             NULL,                         \
         },                                \
         {                                 \
-        	RTEPIN_DIGITAL_BUTTON_LF_GPIO,  \
-			RTEPIN_DIGITAL_BUTTON_LF_PIN,   \
+        	RTEPIN_COMMUNICATION_KEY_BTLF_GPIO,  \
+			RTEPIN_COMMUNICATION_KEY_BTLF_PIN,   \
             kPORT_InterruptOrDMADisabled, \
             0,                            \
             BUTTON_STAT_NONE,             \
             NULL,                         \
         },                                \
         {                                 \
-        	RTEPIN_DIGITAL_BUTTON_RT_GPIO,  \
-			RTEPIN_DIGITAL_BUTTON_RT_PIN,   \
+        	RTEPIN_COMMUNICATION_KEY_BTRT_GPIO,  \
+			RTEPIN_COMMUNICATION_KEY_BTRT_PIN,   \
             kPORT_InterruptOrDMADisabled, \
             0,                            \
             BUTTON_STAT_NONE,             \
@@ -136,7 +136,7 @@
  * @ {
  */
 #if defined(HITSIC_MENU_USE_FRAME_BUFFER) && (HITSIC_MENU_USE_FRAME_BUFFER > 0)
-#include <drv_disp_ssd1306.h>
+#include <drv_disp_ssd1327.h>
 #include <lib_graphic.h>
 #define HITSIC_MENU_DISPLAY_BUFFER_CLEAR() (MENU_FrameBufferClear())
 #define HITSIC_MENU_DISPLAY_PRINT(row, col, str) (MENU_FrameBufferPrint(row, col, str))
@@ -160,7 +160,7 @@ void MENU_FrameBufferUpdate(void);
 
 #else // HITSIC_MENU_USE_FRAME_BUFFER
 #define HITSIC_MENU_DISPLAY_BUFFER_CLEAR() (0)
-#define HITSIC_MENU_DISPLAY_PRINT(row, col, str) (DISP_SSD1306_Print_F6x8(row, col, str))
+#define HITSIC_MENU_DISPLAY_PRINT(row, col, str) (DISP_SSD1327_Print_F6x8(row, col, str))
 #define HITSIC_MENU_DISPLAY_BUFFER_UPDATE() (0)
 #endif // ! HITSIC_MENU_USE_FRAME_BUFFER
 
@@ -171,7 +171,7 @@ void MENU_FrameBufferUpdate(void);
  *  @ {
  */
 /*! @brief 是否启用非易失性存储支持。目前仅支持块级存储接口。将于未来添加文件存储接口 */
-#define HITSIC_MENU_USE_NVM (1U)
+#define HITSIC_MENU_USE_NVM (0U)
 
 
 #if defined(HITSIC_MENU_USE_NVM) && (HITSIC_MENU_USE_NVM > 0)

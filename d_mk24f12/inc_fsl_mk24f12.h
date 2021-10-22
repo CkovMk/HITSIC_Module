@@ -20,9 +20,7 @@
 
 #include "MK24F12.h"
 
-
 #include "arm_math.h"
-
 
 //NXP fsl Library
 

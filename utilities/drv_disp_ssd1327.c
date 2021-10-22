@@ -33,7 +33,7 @@ void DISP_SSD1327_SetRowAddress(uint8_t Addr1, uint8_t Addr2)
 }
 
 
-status_t DISP_SSD1327_Init(void)
+void DISP_SSD1327_Init(void)
 {
     SYSLOG_I("Init Begin. v%d.%d.%d",HITSIC_VERSION_MAJOR(DRV_DISP_SSD1327_VERSION),
                 HITSIC_VERSION_MINOR(DRV_DISP_SSD1327_VERSION), HITSIC_VERSION_PATCH(DRV_DISP_SSD1327_VERSION));
@@ -45,27 +45,15 @@ status_t DISP_SSD1327_Init(void)
 
     DISP_SSD1327_WriteCmd(0xae);//Set display off
     DISP_SSD1327_WriteCmd(0xa0);//Set re-map
-    DISP_SSD1327_WriteCmd(0x40);
+
+#if defined(HITSIC_DISP_SSD1327_REVERSE) && (HITSIC_DISP_SSD1327_REVERSE > 0)
+    DISP_SSD1306_WriteCmd(0x40); //0x66旋转180度 0x55正常
+#else // ! HITSIC_DISP_SSD1327_REVERSE
+    DISP_SSD1306_WriteCmd(0x53); //0x66旋转180度 0x55正常
+#endif// ! HITSIC_DISP_SSD1327_REVERSE
+
     DISP_SSD1327_WriteCmd(0xa1);//Set display start line
     DISP_SSD1327_WriteCmd(0x00);
-
-//#if defined(HITSIC_DISP_SSD1306_FLIP_X) && (HITSIC_DISP_SSD1306_FLIP_X > 0)
-//    //DISP_SSD1327_WriteCmd(0x00); //--Set SEG/Column Mapping     0xa0左右反置 0xa1正常
-//    SYSLOG_D("X axis flipped.");
-//#else // ! HITSIC_DISP_SSD1306_FLIP_X
-//    //DISP_SSD1327_WriteCmd(0xa1); //--Set SEG/Column Mapping     0xa0左右反置 0xa1正常
-//    SYSLOG_D("X axis normal.");
-//#endif// ! HITSIC_DISP_SSD1306_FLIP_X
-//#if defined(HITSIC_DISP_SSD1306_FLIP_Y) && (HITSIC_DISP_SSD1306_FLIP_Y > 0)
-//    //DISP_SSD1327_WriteCmd(0xc0); //Set COM/Row Scan Direction   0xc0上下反置 0xc8正常
-//    SYSLOG_D("Y axis flipped.");
-//#else // ! HITSIC_DISP_SSD1306_FLIP_Y
-//    //DISP_SSD1327_WriteCmd(0xc8); //Set COM/Row Scan Direction   0xc0上下反置 0xc8正常
-//    SYSLOG_D("Y axis normal.");
-//#endif// ! HITSIC_DISP_SSD1306_FLIP_Y
-
-    //TODO
-
     DISP_SSD1327_WriteCmd(0xa2);//Set display offset
     DISP_SSD1327_WriteCmd(0x00);
     DISP_SSD1327_WriteCmd(0xa4);//Normal Display
@@ -110,6 +98,7 @@ void DPSI_SSD1327_DispEnable(bool _state)
         DISP_SSD1327_WriteCmd(0xAF);//OLED开户推出休眠模?
         DISP_SSD1327_WriteCmd(0xb5);//通过设置SSD1327 GPIO来控制升压电路的使能管脚
         DISP_SSD1327_WriteCmd(0x03);//0X03 GPIO输出为高电平，打开使能
+        DISP_SSD1327_Fill(0);
     }
     else
     {
@@ -132,7 +121,8 @@ void DISP_SSD1327_Fill(disp_ssd1327_fb_pixel_t _color)
     for (j=0;j<128;j++)        /* 64 row */
     {
         for (i=0;i<64;i++)    /* 64*2=128 column  a nibble of command is a dot*/
-        {//delay_ms(1);
+        {
+            DISP_SPIBUS_delay_us(1);
             DISP_SSD1327_WriteDat(data);
         }
     }

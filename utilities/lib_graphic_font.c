@@ -1,14 +1,10 @@
 #include "hitsic_common.h"
+#include "lib_graphic_font.h"
 
 /*!
  * @addtogroup graphic_font
  * @{
  */
-
-// begin is the first , endin is the one after the last.
-#define graphic_asciiBegin  32U
-#define graphic_asciiEndin  127U
-#define graphic_asciiCnt    95U
 
 /** ---------- FONT0816 ---------- **/
 

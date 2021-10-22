@@ -8,10 +8,12 @@
 #define HITSIC_DISP_SSD1306_FLIP_X (0U)	///< 屏幕左右翻转
 #define HITSIC_DISP_SSD1306_FLIP_Y (0U)	///< 屏幕上下翻转
 
-#define OLED_SPI_BASE			SPI2
-#define OLED_SPI_CLKFREQ 		CLOCK_GetFreq(DSPI0_CLK_SRC)
-#define OLED_SPI_Pcsn		    kDSPI_Pcs0
-#define OLED_SPI_MasterPcsn		kDSPI_MasterPcs0
+#define HITSIC_DISP_SSD1327_REVERSE 	(0U) 	///< 屏幕旋转180度
+
+#define OLED_SPI_BASE			DISP_SPI_PERIPHERAL
+#define OLED_SPI_CLKFREQ 		DISP_SPI_CLK_FREQ
+#define OLED_SPI_Pcsn		    kDSPI_Pcs1
+#define OLED_SPI_MasterPcsn		kDSPI_MasterPcs1
 #define OLED_SPI_Ctarn			kDSPI_Ctar0
 #define OLED_SPI_MasterCtarn	kDSPI_MasterCtar0
 
@@ -29,7 +31,7 @@
  */
 inline void DISP_SPIBUS_gpioSetRST(uint8_t x)
 {
-//	GPIO_PinWrite(RTEPIN_DIGITAL_OLED_RST_GPIO, RTEPIN_DIGITAL_OLED_RST_PIN, x);
+	GPIO_PinWrite(RTEPIN_COMMUNICATION_DISP_RST_GPIO, RTEPIN_COMMUNICATION_DISP_RST_PIN, x);
 }
 
 /**
@@ -39,7 +41,7 @@ inline void DISP_SPIBUS_gpioSetRST(uint8_t x)
  */
 inline void DISP_SPIBUS_gpioSetD_C(uint8_t x)
 {
-//	GPIO_PinWrite(RTEPIN_DIGITAL_OLED_D_C_GPIO, RTEPIN_DIGITAL_OLED_D_C_PIN, x);
+	GPIO_PinWrite(RTEPIN_COMMUNICATION_DISP_DC_GPIO, RTEPIN_COMMUNICATION_DISP_DC_PIN, x);
 }
 
 /**

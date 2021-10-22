@@ -34,6 +34,10 @@
  /** @brief : 软件版本 */
 #define LIB_GRAPHIC_FONT_VERSION (HITSIC_MAKE_VERSION(0U, 1U, 0U))
 
+// begin is the first , endin is the one after the last.
+#define graphic_asciiBegin  32U
+#define graphic_asciiEndin  127U
+#define graphic_asciiCnt    95U
 
 
 /** ---------- FONT0816 ---------- **/
