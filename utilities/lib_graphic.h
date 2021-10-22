@@ -93,7 +93,7 @@
   }
 
 #define GRAPHIC_FB_PRINT0608_DEF(var_name, fun_name)                                    \
-  static inline void fun_name##_FB_Print0608_DrawChar_Overlay                              \
+  static inline void fun_name##_FB_Print0608_DrawChar_Overlay                           \
     (var_name##_fb_t *inst, uint16_t r, uint16_t c, var_name##_fb_pixel_t f_color, var_name##_fb_pixel_t b_color, char ch) \
   {                                                                                     \
       if (r > var_name##_fb_row - 8) { return; }                                        \

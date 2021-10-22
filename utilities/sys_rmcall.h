@@ -99,7 +99,7 @@ typedef struct
 
 typedef struct _rmcall_config
 {
-    rmcall_teleport_t *teleport;
+    rmcall_teleport_t *teleport;//TODO: const
 }rmcall_config_t;
     
 
@@ -118,7 +118,7 @@ typedef struct _rmcall
 
     //rmcall_transfer_t xfer_tx, xfer_rx;
     //rmcall_transferAbort_t xferAbort_tx, xferAbort_rx;
-    rmcall_teleport_t *teleport;
+    rmcall_teleport_t *teleport; //TODO: const
 
     rmcall_header_t txHeaderBuffer;
     void *txDataBuffer;

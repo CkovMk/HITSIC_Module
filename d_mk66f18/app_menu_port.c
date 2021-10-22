@@ -2,28 +2,16 @@
 
 #if defined(HITSIC_USE_APP_MENU) && (HITSIC_USE_APP_MENU > 0)
 
-#if defined(HITSIC_MENU_USE_FRAME_BUFFER) && (HITSIC_MENU_USE_FRAME_BUFFER > 0)
-
 extern disp_ssd1306_fb_t dispBuffer;
-
-void MENU_FrameBufferClear(void)
+void MENU_DisplayOutput(menu_strBuf_t *_buf)
 {
     DISP_SSD1306_FB_Clear(&dispBuffer);
+	for (uint8_t i = 0; i < HITSIC_MENU_DISPLAY_STRBUF_ROW; ++i)
+	{
+        DISP_SSD1306_FB_Print0608_Print_Overlay(&dispBuffer, i << 3U, 1U, 1U/*f_color*/, 0U/*b_color*/, (const char*)_buf->strbuf);
+	}
+	DISP_SSD1306_BufferUpload((uint8_t*) &dispBuffer);
 }
-
-void MENU_FrameBufferPrint(uint16_t x, uint16_t y, char *str)
-{
-    DISP_SSD1306_FB_Print0608_Print_Overlay(&dispBuffer, y << 3U, x, 1U, 0U, str);
-}
-
-void MENU_FrameBufferUpdate(void)
-{
-    DISP_SSD1306_BufferUpload((uint8_t*) &dispBuffer);
-}
-
-#else // HITSIC_MENU_USE_FRAME_BUFFER
-// nothing here.
-#endif // ! HITSIC_MENU_USE_FRAME_BUFFER
 
 void MENU_EventService(void);
 
@@ -41,6 +29,60 @@ void HITSIC_MENU_SERVICE_IRQHandler(void)
 #ifdef __cplusplus
 }
 #endif
+
+status_t MENU_KVDB_GetSize(char const *_key, uint32_t *_size)
+{
+    ef_get_env_blob(_key, NULL, 0, _size);
+    if(0U == *_size)
+    {
+        return kStatus_Fail;
+    }
+    else
+    {
+        return kStatus_Success;
+    }
+}
+
+status_t MENU_KVDB_ReadValue(char const *_key, void *_data , uint32_t _size)
+{
+    uint32_t dataLen = ef_get_env_blob(_key, _data, _size, NULL);
+    if(0U == dataLen)
+    {
+        return kStatus_Fail;
+    }
+    else if (dataLen > _size)
+    {
+        return kStatus_Fail;
+    }
+    else
+    {
+        return kStatus_Success;
+    }
+}
+
+status_t MENU_KVDB_SaveValue(char const *_key, void const *_data, uint32_t _size)
+{
+    if(0U != ef_set_env_blob(_key, _data, _size))
+    {
+        return kStatus_Fail;
+    }
+    else
+    {
+        return kStatus_Success;
+    }
+}
+
+status_t MENU_KVDB_DeltValue(char const *_key)
+{
+    if(0U !=  ef_del_env(_key))
+    {
+        return kStatus_Fail;
+    }
+    else
+    {
+        return kStatus_Success;
+    }
+}
 
 #endif // ! HITSIC_USE_APP_MENU
 

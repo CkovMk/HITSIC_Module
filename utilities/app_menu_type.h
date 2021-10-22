@@ -1,10 +1,11 @@
 #ifndef UTILITIES_APP_MENU_TYPE_HPP
 #define UTILITIES_APP_MENU_TYPE_HPP
-
-#include <app_menu_button.h>
-#include <app_menu_def.h>
+#include <hitsic_common.h>
 
 #if defined(HITSIC_USE_APP_MENU) && (HITSIC_USE_APP_MENU > 0)
+
+#include <app_menu_def.h>
+//#include <app_menu_button.h>
 
 /*!
  * @addtogroup menu_type
@@ -160,7 +161,7 @@ menu_itemIfce_t* MENU_ItemConstruct(menu_itemType_t _type, void *_data,
  *
  * @param  {menu_itemIfce_t*} _item : 要析构的菜单项结构体指针。析构后该指针会被自动赋值为NULL。
  */
-void MENU_itemDestruct(menu_itemIfce_t *_item);
+void MENU_ItemDestruct(menu_itemIfce_t *_item);
 
 /**
  * @brief : 获取菜单项内存放的数据指针。

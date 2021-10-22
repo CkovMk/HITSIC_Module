@@ -1,10 +1,19 @@
-#include "hitsic_common.h"
 #include "lib_graphic_font.h"
 
 /*!
  * @addtogroup graphic_font
  * @{
  */
+#if 0
+// begin is the first , endin is the one after the last.
+const uint8_t graphic_asciiBegin = 32;
+const uint8_t graphic_asciiEndin = 127;
+const uint8_t graphic_asciiCnt = 95;
+
+#else // __cplusplus
+
+#endif // ! __cplusplus
+
 
 /** ---------- FONT0816 ---------- **/
 
@@ -14,7 +23,7 @@
  * Total 16 (uint8_t)s stores ALL 16 H lines.
  */
 
-extern const uint8_t graphic_font0816_newSongType[graphic_asciiCnt][16] =
+const uint8_t graphic_font0816_newSongType[graphic_asciiCnt][16] =
 {
 {0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00},/*" ",0*/
 {0x00,0x00,0x00,0x08,0x08,0x08,0x08,0x08,0x08,0x08,0x00,0x00,0x08,0x08,0x00,0x00},/*"!",1*/
@@ -121,7 +130,7 @@ extern const uint8_t graphic_font0816_newSongType[graphic_asciiCnt][16] =
  * each (uint8_t) represents ONE V line.
  * Total 6 (uint8_t)s stores ALL 6 V lines.
  */
-extern const uint8_t graphic_font0608_defaultType[graphic_asciiCnt][6] =
+const uint8_t graphic_font0608_defaultType[graphic_asciiCnt][6] =
 {
 	{0x00, 0x00, 0x00, 0x00, 0x00, 0x00}, // sp
 	{0x00, 0x00, 0x00, 0x2f, 0x00, 0x00}, // !

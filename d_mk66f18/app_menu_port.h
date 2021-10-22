@@ -18,11 +18,12 @@
 #ifndef D_MK66F18_APP_MENU_PORT_H
 #define D_MK66F18_APP_MENU_PORT_H
 
-#include <app_menu_def.h>
 #include <inc_stdlib.h>
 #include "hitsic_common.h"
 
 #if defined(HITSIC_USE_APP_MENU) && (HITSIC_USE_APP_MENU > 0)
+
+#define kStatusGroup_MENU (205U)
 
 /**
  * @name 调试输出
@@ -59,6 +60,8 @@
  * 必须对应。优先级不可过高。
  * @ {
  */
+#include <MK66F18.h>
+#include "fsl_common.h"
 #define HITSIC_MENU_SERVICE_IRQHandler (Reserved85_IRQHandler)  ///< 要使用的中断服务函数
 #define HITSIC_MENU_SERVICE_IRQn (Reserved85_IRQn)              ///< 要使用的中断号
 #define HITSIC_MENU_SERVICE_IRQPrio (12u)                       ///< 中断优先级，需要设置一个较低的值，以免打断重要任务。
@@ -67,116 +70,76 @@
 #define HITSIC_MENU_SERVICE_SEM_TAKE() NVIC_ClearPendingIRQ(HITSIC_MENU_SERVICE_IRQn)
 /* @ } */
 
+
+
 /**
- * @name 按键输入接口
- * @brief : 是否使用菜单自带的按键事件管理
+ * @name 屏幕打印接口
  * @ {
- */
-#define HITSIC_MENU_USE_BUTTON (1U)
 
+/** 字符缓存大小（行、列） */
 
-#if defined(HITSIC_MENU_USE_BUTTON) && (HITSIC_MENU_USE_BUTTON > 0)
-#include <drv_button.h>
-/** @brief : 菜单使用的五向按键初始化。每组数据前两个是GPIO和Pin，其余数据为0。 */
-#define HITSIC_MENU_BUTTON_5DIR_BSP_INIT  \
-    {                                     \
-        {                                 \
-            RTEPIN_DIGITAL_BUTTON_OK_GPIO, \
-            RTEPIN_DIGITAL_BUTTON_OK_PIN,   \
-            kPORT_InterruptOrDMADisabled, \
-            0,                            \
-            BUTTON_STAT_NONE,             \
-            NULL,                         \
-        },                                \
-        {                                 \
-        	RTEPIN_DIGITAL_BUTTON_UP_GPIO,  \
-			RTEPIN_DIGITAL_BUTTON_UP_PIN,   \
-            kPORT_InterruptOrDMADisabled, \
-            0,                            \
-            BUTTON_STAT_NONE,             \
-            NULL,                         \
-        },                                \
-        {                                 \
-        	RTEPIN_DIGITAL_BUTTON_DN_GPIO,  \
-			RTEPIN_DIGITAL_BUTTON_DN_PIN,   \
-            kPORT_InterruptOrDMADisabled, \
-            0,                            \
-            BUTTON_STAT_NONE,             \
-            NULL,                         \
-        },                                \
-        {                                 \
-        	RTEPIN_DIGITAL_BUTTON_LF_GPIO,  \
-			RTEPIN_DIGITAL_BUTTON_LF_PIN,   \
-            kPORT_InterruptOrDMADisabled, \
-            0,                            \
-            BUTTON_STAT_NONE,             \
-            NULL,                         \
-        },                                \
-        {                                 \
-        	RTEPIN_DIGITAL_BUTTON_RT_GPIO,  \
-			RTEPIN_DIGITAL_BUTTON_RT_PIN,   \
-            kPORT_InterruptOrDMADisabled, \
-            0,                            \
-            BUTTON_STAT_NONE,             \
-            NULL,                         \
-        },                                \
-    }
-
-#endif // ! HITSIC_MENU_USE_BUTTON
-
-/* @ } */
-
-/**
- * @brief 启用帧缓存接口
- */
-#define HITSIC_MENU_USE_FRAME_BUFFER (1U)
-
-/**
- * @brief 屏幕打印接口
- * @ {
- */
-#if defined(HITSIC_MENU_USE_FRAME_BUFFER) && (HITSIC_MENU_USE_FRAME_BUFFER > 0)
 #include <drv_disp_ssd1306.h>
 #include <lib_graphic.h>
-#define HITSIC_MENU_DISPLAY_BUFFER_CLEAR() (MENU_FrameBufferClear())
-#define HITSIC_MENU_DISPLAY_PRINT(row, col, str) (MENU_FrameBufferPrint(row, col, str))
-#define HITSIC_MENU_DISPLAY_BUFFER_UPDATE() (MENU_FrameBufferUpdate())
 
 /**
- * @brief 清除缓存区。
+ * @brief 字符缓存大小（行、列）
+ * 
+ * 行、列均为实际能够显示的行数和列数，不需要考虑C语言的'\0'。
  */
-void MENU_FrameBufferClear(void);
+#define HITSIC_MENU_DISPLAY_STRBUF_ROW (8u)
+#define HITSIC_MENU_DISPLAY_STRBUF_COL (21u)
 
 /**
- * @brief 向缓存区打印字符串。
+ * @brief 启用色盘
  */
-void MENU_FrameBufferPrint(uint16_t x, uint16_t y, char *str);
+#define HITSIC_MENU_USE_PALETTE (0U)
+
+#if defined(HITSIC_MENU_USE_PALETTE) && (HITSIC_MENU_USE_PALETTE > 0)
+
+#define HITSIC_MENU_DISPLAY_PALETTE_SIZE (8U) // uint8_t, 1~255
+
+typedef uint8_t menu_dispColor_t;
+
+#define HITSIC_MENU_DISPLAY_PALETTE_DEF \
+    {0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}
+
+#define HITSIC_MENU_DISPLAY_PAL_IDX_NORMAL_F (1U) ///< 前景色-正常
+#define HITSIC_MENU_DISPLAY_PAL_IDX_NORMAL_B (0U) ///< 背景色-正常
+#define HITSIC_MENU_DISPLAY_PAL_IDX_HLIGHT_F (1U) ///< 前景色-高亮
+#define HITSIC_MENU_DISPLAY_PAL_IDX_HLIGHT_B (0U) ///< 背景色-高亮
+#define HITSIC_MENU_DISPLAY_PAL_IDX_TITBAR_F (1U) ///< 前景色-标题
+#define HITSIC_MENU_DISPLAY_PAL_IDX_TITBAR_B (0U) ///< 背景色-标题
+
+#endif // ! HITSIC_MENU_USE_PALETTE
+
+typedef struct _menu_strBuf
+{
+    char strbuf[HITSIC_MENU_DISPLAY_STRBUF_ROW][HITSIC_MENU_DISPLAY_STRBUF_COL + 1]; // used by '\0'
+#if defined(HITSIC_MENU_USE_PALETTE) && (HITSIC_MENU_USE_PALETTE > 0)
+    uint8_t fcolor[HITSIC_MENU_DISPLAY_STRBUF_ROW][HITSIC_MENU_DISPLAY_STRBUF_COL];
+    uint8_t bcolor[HITSIC_MENU_DISPLAY_STRBUF_ROW][HITSIC_MENU_DISPLAY_STRBUF_COL];
+#endif // ! HITSIC_MENU_USE_PALETTE
+}menu_strBuf_t; // FIXME: move this to elsewhere...
+
+extern menu_strBuf_t menu_dispStrBuf;
 
 /**
- * @brief 将缓存区上传到屏幕。
+ * @brief
+ *
+ * @param _buf
  */
-void MENU_FrameBufferUpdate(void);
-
-
-#else // HITSIC_MENU_USE_FRAME_BUFFER
-#define HITSIC_MENU_DISPLAY_BUFFER_CLEAR() (0)
-#define HITSIC_MENU_DISPLAY_PRINT(row, col, str) (DISP_SSD1306_Print_F6x8(row, col, str))
-#define HITSIC_MENU_DISPLAY_BUFFER_UPDATE() (0)
-#endif // ! HITSIC_MENU_USE_FRAME_BUFFER
+void MENU_DisplayOutput(menu_strBuf_t *_buf);
 
 /* @ } */
 
 /**
- *  @name 非易失性存储
+ *  @name 键值数据库
  *  @ {
  */
-/*! @brief 是否启用非易失性存储支持。目前仅支持块级存储接口。将于未来添加文件存储接口 */
-#define HITSIC_MENU_USE_NVM (1U)
+/*! @brief 是否启用非易失性键值数据库存储支持。 */
+#define HITSIC_MENU_USE_KVDB (1U)
 
-
-#if defined(HITSIC_MENU_USE_NVM) && (HITSIC_MENU_USE_NVM > 0)
-
-#include <drv_ftfx_flash.h>
+#if defined(HITSIC_MENU_USE_KVDB) && (HITSIC_MENU_USE_KVDB > 0)
 
 /**
  * ********** NVM存储变量定义 **********
@@ -185,28 +148,26 @@ void MENU_FrameBufferUpdate(void);
 //gl = global
 //rg = region
 //addr = address
-//sect = sector
-/**
- * @brief : 每个扇区包含的字节数
- */
-#define HITSIC_MENU_NVM_SECTOR_SIZE (flash_sectorSize)
-/**
- * @brief : 全局存储 Global Storage
- */
-#define HITSIC_MENU_NVM_GLOBAL_SECT_SIZE (2u)	///< 全局存储区占用的扇区数
-#define HITSIC_MENU_NVM_GLOBAL_SECT_OFFSET (2u) ///< 全局存储区扇区偏移
+
 /**
  * @brief : 局部存储 Region Storage
  */
 #define HITSIC_MENU_NVM_REGION_CNT (3) 					///< 局部存储区的数量
-#define HITSIC_MENU_NVM_REGION_SECT_SIZE  (4u)				///< 每个局部存储区占用的扇区数
 
-#define HITSIC_MENU_NVM_AddressRead(addr, buf, byteCnt)		FLASH_AddressRead(addr, buf, byteCnt)	///< 读指定地址。必须返回表示操作是否成功的值。
-#define HITSIC_MENU_NVM_SectorRead(sect, buf)		FLASH_SectorRead(sect, buf)						///< 读指定扇区。sect为扇区号，buf为缓存区。必须返回表示操作是否成功的值。
-#define HITSIC_MENU_NVM_SectorWrite(sect, buf)		FLASH_SectorWrite(sect, buf)					///< 写指定扇区。sect为扇区号，buf为缓存区。必须返回表示操作是否成功的值。
-#define HITSIC_MENU_NVM_RETVAL_SUCCESS				kStatus_FTFx_Success							///< flash接口操作成功的返回值。如果返回值不等一此值则表示操作失败，MENU_NVM接口将向上层报告错误（kStatus_Fail）。
+/**
+ * @brief : 键值数据库接口
+ */
+#include "easyflash.h"
 
-#endif // ! HITSIC_MENU_USE_NVM
+status_t MENU_KVDB_GetSize(char const *_key, uint32_t *_size);
+
+status_t MENU_KVDB_ReadValue(char const *_key, void *_data , uint32_t _size);
+
+status_t MENU_KVDB_SaveValue(char const *_key, void const *_data, uint32_t _size);
+
+status_t MENU_KVDB_DeltValue(char const *_key);
+
+#endif // ! HITSIC_MENU_USE_KVDB
 
 /* @ } */
 

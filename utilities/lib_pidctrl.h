@@ -40,13 +40,13 @@
 
 //#define assert(...)
 
-typedef struct
+typedef struct _pidCtrl
 {
     float kp, ki, kd;
     float errCurr, errIntg, errDiff, errPrev;
 }pidCtrl_t;
 
-typedef struct
+typedef struct _pid2Ctrl
 {
     pidCtrl_t outer, inner;
 }pid2Ctrl_t;

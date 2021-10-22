@@ -34,22 +34,21 @@
 #pragma once
 #ifndef UTILITIES_APP_MENU_HPP
 #define UTILITIES_APP_MENU_HPP
-
-#include <app_menu_button.h>
-#include <app_menu_def.h>
-#include <app_menu_nvm.h>
-
-#include <app_menu_type.h>
+#include <hitsic_common.h>
 
  /*!
   * @addtogroup menu
   * @{
   */
 
+#if defined(HITSIC_USE_APP_MENU) && (HITSIC_USE_APP_MENU > 0)
+
+#include <app_menu_def.h>
+#include <app_menu_type.h>
+#include <app_menu_kvdb.h>
+
 /** @brief : 软件版本 */
 #define APP_MENU_VERSION (HITSIC_MAKE_VERSION(1U, 0U, 0U))
-
-#if defined(HITSIC_USE_APP_MENU) && (HITSIC_USE_APP_MENU > 0)
 
 /**************************************
  ************ 菜单顶层操作接口 **********
@@ -89,6 +88,11 @@ void MENU_PrintDisp(void);
 void MENU_KeyOp(menu_keyOp_t *const _op);
 
 /**
+ * @brief 向菜单发送按键信号
+ */
+void MENU_KeypadSignal(menu_keyOp_t _op);
+
+/**
  * @brief : 根据字符串路径查找菜单列表。
  *
  * @param str : 字符串路径，以"/"分隔。注意：路径名应与跳转类型的菜单项
@@ -107,7 +111,7 @@ menu_list_t *MENU_DirGetList(const char *str);
  */
 menu_itemIfce_t *MENU_DirGetItem(const menu_list_t *dir, const char *str);
 
-#if defined(HITSIC_MENU_USE_NVM) && (HITSIC_MENU_USE_NVM > 0)
+#if defined(HITSIC_MENU_USE_KVDB) && (HITSIC_MENU_USE_KVDB > 0)
 
 /**
  * @brief : 保存整个菜单到NVM。
@@ -118,7 +122,7 @@ void MENU_Data_NvmSave(int32_t _region);
 
 /**
  * @brief : 保存整个菜单到NVM。
- * 该函数将使用全局变量 menu_currRegionNum 中保存的局部存储区号。
+ * 该函数将使用全局变量 menu_currRegionNum[0] 中保存的局部存储区号。
  * 
  * @param {menu_keyOp_t* const} _op : 按键操作接口传入的按键操作
  */
@@ -133,7 +137,7 @@ void MENU_Data_NvmRead(int32_t _region);
 
 /**
  * @brief : 从NVM读取整个菜单。
- * 该函数将使用全局变量 menu_currRegionNum 中保存的局部存储区号。
+ * 该函数将使用全局变量 menu_currRegionNum[0] 中保存的局部存储区号。
  *
  * @param {menu_keyOp_t* const} _op : 按键操作接口传入的按键操作
  */
@@ -169,37 +173,7 @@ void MENU_Data_NvmReadRegionConfig(void);
  */
 void MENU_Data_NvmReadRegionConfig_Boxed(menu_keyOp_t *const _op);
 
-/**
- * @brief : 将一个局部存储区的数据拷贝到另一个局部存储区。
- *
- * @param  {int32_t} _srcRegion : 源存储序号。
- * @param  {int32_t} _dstRegion : 目的存储区序号。
- */
-void MENU_Data_NvmCopy(int32_t _srcRegion, int32_t _dstRegion);
-
-/**
- * @brief : 将一个局部存储区的数据拷贝到另一个局部存储区。
- * 该函数将使用全局变量 menu_nvmCopySrc 和 menu_nvmCopyDst 中存储的值。
- * 
- * @param {menu_keyOp_t* const} _op : 按键操作接口传入的按键操作
- */
-void MENU_Data_NvmCopy_Boxed(menu_keyOp_t *const _op);
-
-// /**
-//  * @brief : 读取NVM状态标志。
-//  *
-//  * @return {int32_t}        : 返回读取到的状态标志。
-//  */
-// int32_t MENU_GetNvmStatus(void);
-
-// /**
-//  * @brief : 设置NVM状态标志。
-//  *
-//  * @param  {int32_t} _status : 要设置的状态标志。
-//  */
-// void MENU_SetNvmStatus(int32_t _status);
-
-#endif // ! HITSIC_MENU_USE_NVM
+#endif // ! HITSIC_MENU_USE_KVDB
 
 /**
  * @brief : 定时中断管理器句柄。

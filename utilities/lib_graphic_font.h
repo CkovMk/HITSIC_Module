@@ -1,11 +1,3 @@
-/*
- * @Author: your name
- * @Date: 2021-10-19 21:34:34
- * @LastEditTime: 2021-10-21 12:39:01
- * @LastEditors: your name
- * @Description: In User Settings Edit
- * @FilePath: \ECG_MK24F12\HITSIC_Module\utilities\lib_graphic_font.h
- */
 /**
  * Copyright 2018 - 2021 HITSIC
  * All rights reserved.
@@ -34,10 +26,17 @@
  /** @brief : 软件版本 */
 #define LIB_GRAPHIC_FONT_VERSION (HITSIC_MAKE_VERSION(0U, 1U, 0U))
 
+#if 0
+// begin is the first , endin is the one after the last.
+extern const uint8_t graphic_asciiBegin;
+extern const uint8_t graphic_asciiEndin;
+extern const uint8_t graphic_asciiCnt;
+#else // __cplusplus
 // begin is the first , endin is the one after the last.
 #define graphic_asciiBegin  32U
 #define graphic_asciiEndin  127U
 #define graphic_asciiCnt    95U
+#endif // ! __cplusplus
 
 
 /** ---------- FONT0816 ---------- **/

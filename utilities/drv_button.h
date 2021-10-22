@@ -52,37 +52,48 @@ typedef enum
 {
     BUTTON_STAT_NONE = 0, ///< button no operation
     BUTTON_SHRT_PRES = 1, ///< button short press
-    BUTTON_SHRT_CLER = 2, ///< service responded short press
+    //BUTTON_SHRT_CLER = 2, ///< service responded short press
     BUTTON_LONG_PRES = 3, ///< button long press
-    BUTTON_LONG_CLER = 4, ///< service responded long press
+    //BUTTON_LONG_CLER = 4, ///< service responded long press
     BUTTON_LRPT_PRES = 5, ///< button long_repeat press
-    BUTTON_LRPT_CLER = 6, ///< service responded long_repeat press
+    //BUTTON_LRPT_CLER = 6, ///< service responded long_repeat press
 }button_status_t;
 
-typedef void(*button_handler_t)(void *_inst);   // (button_t *inst)
+typedef void(*button_handler_t)(button_status_t _status, void *_userData);   // (button_t *inst)
+
+typedef enum
+{
+    button_logic_default = 0, //button pressdn = 1, aka release_logic
+    button_logic_reverse = 1, //button pressdn = 0, aka release_logic
+}button_logic_t;
+
+typedef enum
+{
+    button_interrupt_none,
+    button_interrupt_rise,
+    button_interrupt_fall,
+}button_interrupt_t;
+
+typedef struct
+{
+    uint32_t (*read)(void);
+    void (*setInterrupt)(button_interrupt_t _int);
+    button_logic_t logic;
+    button_handler_t handler;
+    void *userData;
+}button_config_t;
 
 typedef struct 
 {
-    GPIO_Type *gpio;
-    //PORT_Type* port;
-    uint32_t pin;
-    extInt_interruptMode_t intCfg;
+    button_config_t *config; // TODO: const
+    button_interrupt_t intCfg;
     uint64_t msCnt;
     button_status_t status;
-    button_handler_t handler;
 }button_t;
 
-void BUTTON_Setup(button_t *_inst, GPIO_Type *_gpio, uint32_t _pin);
+void BUTTON_Setup(button_t *_inst, button_config_t *_cfg);
 
-button_t *BUTTON_Construct(GPIO_Type *_gpio, uint32_t _pin);
-
-void BUTTON_InstallHandler(button_t *_inst, button_handler_t _handler);
-
-void BUTTON_UninstallHandler(button_t *_inst);
-
-void BUTTON_SetInterrupt(button_t *_inst, port_interrupt_t _int);
-
-uint32_t BUTTON_ReadPin(button_t *_inst);
+button_t *BUTTON_Construct(button_config_t *_cfg);
 
 void BUTTON_ExtIsr(button_t *_inst);
 
