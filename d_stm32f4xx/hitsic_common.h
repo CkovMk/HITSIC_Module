@@ -36,10 +36,6 @@
 // #define HITSIC_USE_FTFX_FLASH (0U)
 // #endif // ! HITSIC_USE_FTFX_FLASH
 
-// #ifndef HITSIC_USE_DRV_IMU_INV
-// #define HITSIC_USE_DRV_IMU_INV (0U)
-// #endif // ! HITSIC_USE_DRV_IMU_INV
-
 // #ifndef HITSIC_USE_DISP_SSD1306
 // #define HITSIC_USE_DISP_SSD1306 (0U)
 // #endif // ! HITSIC_USE_DISP_SSD1306
