@@ -6,7 +6,7 @@
 extern "C"{
 #endif
 
-extint_t extint_porta, extint_portb, extint_portc, extint_portd, extint_porte;
+extern extint_t extint_porta, extint_portb, extint_portc, extint_portd, extint_porte;
 
 extint_t *EXTINT_GetInst(INTC_Type *base)
 {
