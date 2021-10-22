@@ -54,9 +54,6 @@
 
 
 
-#ifndef HITSIC_USE_APP_MENU
-#define HITSIC_USE_APP_MENU (1U)
-#endif // ! HITSIC_USE_APP_MENU
 
 
 
