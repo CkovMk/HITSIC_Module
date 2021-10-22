@@ -5,13 +5,14 @@
 
 #if defined(HITSIC_USE_RMCALL) && (HITSIC_USE_RMCALL > 0)
 
-extern uart_handle_t UART1_BLE_handle;
-extern uart_transfer_t UART1_BLE_rxTransfer;
-extern uart_transfer_t UART1_BLE_txTransfer;
 
 #define HITSIC_RMCALL_UART UART1
 #define HITSIC_RMCALL_CLKSRC   UART1_CLK_SRC
 #define HITSIC_RMCALL_UART_CLK_FREQ CLOCK_GetFreq(UART1_CLK_SRC)
+
+extern uart_handle_t UART_BLE_handle;
+extern uart_transfer_t UART_BLE_rxTransfer;
+extern uart_transfer_t UART_BLE_txTransfer;
 
 #define HITSIC_RMCALL_HEADER_MAGIC 0x554768A0U
 #define RMCALL_SYSLOG_LVL (2U)
