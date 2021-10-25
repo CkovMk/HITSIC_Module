@@ -15,11 +15,10 @@
  * limitations under the License.
  */
 
-#ifndef D_MK66F18_APP_MENU_PORT_H
-#define D_MK66F18_APP_MENU_PORT_H
+#ifndef D_MK66F18_TEXTMENU_PORT_H
+#define D_MK66F18_TEXTMENU_PORT_H
 
 #include <inc_stdlib.h>
-//#include "hitsic_common.h"
 
 #define kStatusGroup_MENU (205U)
 
@@ -63,9 +62,10 @@
 
 /**
  * @name 事件任务接口
- * @brief : 菜单消息调用所使用的中断信息。
- * 可以使用任何当前工程中未使用的中断。注意中断号和中断服务函数
- * 必须对应。优先级不可过高。
+ * @brief : 菜单消息调用事件处理线程。
+ *
+ * 对于裸机，可以使用一个空闲的中断向量来模拟线程，但需要注意优先级不可过高。
+ * 对于RTOS，可以直接使用一个线程。
  * @ {
  */
 #include <MK66F18.h>
@@ -139,5 +139,5 @@ typedef uint8_t menu_dispColor_t;
 /* @ } */
 
 
-#endif // ! D_MK66F18_APP_MENU_PORT_H
+#endif // ! D_MK66F18_TEXTMENU_PORT_H
 
