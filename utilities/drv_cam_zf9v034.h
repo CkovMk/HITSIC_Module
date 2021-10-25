@@ -64,7 +64,7 @@ enum class cam_zf9v034_cmd_t : uint16_t
 
 /** @brief : 摄像头命令传输结构体 */
 __PACKED
-struct cam_zf9v034_configPacket_t
+struct _cam_zf9v034_configPacket
 {
     uint16_t autoExpSetCmd, autoExpSet;                 ///> 自动曝光设置      范围1-63 0为关闭 如果自动曝光开启  EXP_TIME命令设置的数据将会变为最大曝光时间，也就是自动曝光时间的上限
                                                         ///> 一般情况是不需要开启这个功能，因为比赛场地光线一般都比较均匀，如果遇到光线非常不均匀的情况可以尝试设置该值，增加图像稳定性
@@ -77,6 +77,8 @@ struct cam_zf9v034_configPacket_t
     uint16_t imageGainCmd, imageGain;                   ///> 图像增益          范围16-64     增益可以在曝光时间固定的情况下改变图像亮暗程度
     uint16_t initCmd, dummyData0;                       ///> 摄像头开始初始化
 };
+
+typedef struct _cam_zf9v034_configPacket cam_zf9v034_configPacket_t;
 
 /**
  * @brief 获取摄像头的默认配置。
