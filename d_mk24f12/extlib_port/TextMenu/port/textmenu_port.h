@@ -68,10 +68,10 @@
  * 对于RTOS，可以直接使用一个线程。
  * @ {
  */
-#include <MK66F18.h>
+#include <MK24F12.h>
 #include "fsl_common.h"
-#define TEXTMENU_SERVICE_IRQHandler (Reserved85_IRQHandler)  ///< 要使用的中断服务函数
-#define TEXTMENU_SERVICE_IRQn (Reserved85_IRQn)              ///< 要使用的中断号
+#define TEXTMENU_SERVICE_IRQHandler (Reserved71_IRQHandler)  ///< 要使用的中断服务函数
+#define TEXTMENU_SERVICE_IRQn (Reserved71_IRQn)              ///< 要使用的中断号
 #define TEXTMENU_SERVICE_IRQPrio (12u)                       ///< 中断优先级，需要设置一个较低的值，以免打断重要任务。
 
 #define TEXTMENU_SERVICE_SEM_GIVE() NVIC_SetPendingIRQ(TEXTMENU_SERVICE_IRQn)

@@ -63,7 +63,7 @@ void MENU_PORT_LowLevelSuspend(void)
  * @name 屏幕打印接口
  * @ {
  */
-#include <drv_disp_ssd1306.h>
+#include <drv_disp_ssd1327.h>
 #include <lib_graphic.h>
 
 #include "textmenu_strbuf.h"
@@ -77,13 +77,13 @@ void MENU_PORT_LowLevelSuspend(void)
  */
 void MENU_PORT_DisplayOutput(menu_strBuf_t *_buf)
 {
-    extern disp_ssd1306_fb_t dispBuffer;
-    DISP_SSD1306_FB_Clear(&dispBuffer);
+    extern disp_ssd1327_fb_t dispBuffer;
+    DISP_SSD1327_FB_Clear(&dispBuffer);
     for (uint8_t i = 0; i < TEXTMENU_DISPLAY_STRBUF_ROW; ++i)
     {
-        DISP_SSD1306_FB_Print0608_Print_Overlay(&dispBuffer, i << 3U, 1U, 1U/*f_color*/, 0U/*b_color*/, (const char*)_buf->strbuf[i]);
+        DISP_SSD1327_FB_Print0608_Print_Overlay(&dispBuffer, i << 3U, 1U, 0x0fU/*f_color*/, 0x00U/*b_color*/, (const char*)_buf->strbuf[i]);
     }
-    DISP_SSD1306_BufferUpload((uint8_t*) &dispBuffer);
+    DISP_SSD1327_BufferUpload((uint8_t*) &dispBuffer);
 }
 
 /* @ } */
