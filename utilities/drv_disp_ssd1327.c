@@ -47,9 +47,9 @@ void DISP_SSD1327_Init(void)
     DISP_SSD1327_WriteCmd(0xa0);//Set re-map
 
 #if defined(HITSIC_DISP_SSD1327_REVERSE) && (HITSIC_DISP_SSD1327_REVERSE > 0)
-    DISP_SSD1306_WriteCmd(0x40); //0x66旋转180度 0x55正常
+    DISP_SSD1327_WriteCmd(0x40); //0x66旋转180度 0x55正常
 #else // ! HITSIC_DISP_SSD1327_REVERSE
-    DISP_SSD1306_WriteCmd(0x53); //0x66旋转180度 0x55正常
+    DISP_SSD1327_WriteCmd(0x53); //0x66旋转180度 0x55正常
 #endif// ! HITSIC_DISP_SSD1327_REVERSE
 
     DISP_SSD1327_WriteCmd(0xa1);//Set display start line
