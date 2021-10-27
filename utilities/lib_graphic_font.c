@@ -4,15 +4,15 @@
  * @addtogroup graphic_font
  * @{
  */
-#if 0
+#if 0 // FIXME
 // begin is the first , endin is the one after the last.
 const uint8_t graphic_asciiBegin = 32;
 const uint8_t graphic_asciiEndin = 127;
 const uint8_t graphic_asciiCnt = 95;
 
-#else // __cplusplus
+#else
 
-#endif // ! __cplusplus
+#endif
 
 
 /** ---------- FONT0816 ---------- **/

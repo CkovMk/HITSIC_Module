@@ -1,3 +1,6 @@
 [submodule "utilities/extlib/drv_invimu"]
 	path = utilities/extlib/drv_invimu
 	url = https://github.com/beforelight/c_inv_imu.git
+[submodule "utilities/extlib/TextMenu"]
+	path = utilities/extlib/TextMenu
+	url = git@github.com:CkovMk/TextMenu.git
