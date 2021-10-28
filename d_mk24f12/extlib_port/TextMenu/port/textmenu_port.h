@@ -101,13 +101,6 @@
 
 #if defined(TEXTMENU_USE_PALETTE) && (TEXTMENU_USE_PALETTE > 0)
 
-#define TEXTMENU_DISPLAY_PALETTE_SIZE (8U) // uint8_t, 1~255
-
-typedef uint8_t menu_dispColor_t;
-
-#define TEXTMENU_DISPLAY_PALETTE_DEF \
-    {0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}
-
 #define TEXTMENU_DISPLAY_PAL_IDX_NORMAL_F (1U) ///< 前景色-正常
 #define TEXTMENU_DISPLAY_PAL_IDX_NORMAL_B (0U) ///< 背景色-正常
 #define TEXTMENU_DISPLAY_PAL_IDX_HLIGHT_F (1U) ///< 前景色-高亮
