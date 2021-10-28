@@ -91,7 +91,7 @@
  * 
  * 行、列均为实际能够显示的行数和列数，不需要考虑C语言的'\0'。
  */
-#define TEXTMENU_DISPLAY_STRBUF_ROW (8u)
+#define TEXTMENU_DISPLAY_STRBUF_ROW (16u)
 #define TEXTMENU_DISPLAY_STRBUF_COL (21u)
 
 /**
@@ -127,14 +127,14 @@ typedef uint8_t menu_dispColor_t;
 /*! @brief 是否启用非易失性键值数据库存储支持。 */
 #define TEXTMENU_USE_KVDB (0U)
 
-#if defined(TEXTMENU_USE_KVDB) && (TEXTMENU_USE_KVDB > 0)
+// #if defined(TEXTMENU_USE_KVDB) && (TEXTMENU_USE_KVDB > 0)
 
 /**
  * @brief : 局部存储 Region Storage
  */
 #define TEXTMENU_NVM_REGION_CNT (3) 					///< 局部存储区的数量
 
-#endif // ! TEXTMENU_USE_KVDB
+// #endif // ! TEXTMENU_USE_KVDB
 
 /* @ } */
 
