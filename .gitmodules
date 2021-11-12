@@ -4,3 +4,6 @@
 [submodule "utilities/extlib/TextMenu"]
 	path = utilities/extlib/TextMenu
 	url = https://github.com/CkovMk/TextMenu.git
+[submodule "utilities/extlib/mlib"]
+	path = utilities/extlib/mlib
+	url = git@github.com:P-p-H-d/mlib.git

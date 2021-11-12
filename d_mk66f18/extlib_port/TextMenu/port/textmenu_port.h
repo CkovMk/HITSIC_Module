@@ -125,7 +125,7 @@ typedef uint8_t menu_dispColor_t;
  *  @ {
  */
 /*! @brief 是否启用非易失性键值数据库存储支持。 */
-#define TEXTMENU_USE_KVDB (1U)
+#define TEXTMENU_USE_KVDB (0U)
 
 #if defined(TEXTMENU_USE_KVDB) && (TEXTMENU_USE_KVDB > 0)
 
