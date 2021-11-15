@@ -186,7 +186,7 @@ status_t RMCALL_Init(rmcall_t *_inst, rmcall_config_t const * const _config)
     assert(_config->teleport->xferAbort_tx);
     assert(_config->teleport->xferAbort_rx);
 
-    //SYSLOG_I("Init Begin. v%d.%d.%d",HITSIC_VERSION_MAJOR(HITSIC_MAKE_VERSION(5,3,1)),HITSIC_VERSION_MINOR(HITSIC_MAKE_VERSION(5,3,1)), HITSIC_VERSION_PATCH(HITSIC_MAKE_VERSION(5,3,1)));
+    SYSLOG_I("Init Begin. v%d.%d.%d",HITSIC_VERSION_MAJOR(SYS_RMCALL_VERSION),HITSIC_VERSION_MINOR(SYS_RMCALL_VERSION), HITSIC_VERSION_PATCH(SYS_RMCALL_VERSION));
 
     _inst->teleport = _config->teleport;
 
