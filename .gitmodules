@@ -3,4 +3,7 @@
 	url = https://github.com/beforelight/c_inv_imu.git
 [submodule "utilities/extlib/TextMenu"]
 	path = utilities/extlib/TextMenu
-	url = git@github.com:CkovMk/TextMenu.git
+	url = https://github.com/CkovMk/TextMenu.git
+[submodule "utilities/extlib/mlib"]
+	path = utilities/extlib/mlib
+	url = git@github.com:P-p-H-d/mlib.git
