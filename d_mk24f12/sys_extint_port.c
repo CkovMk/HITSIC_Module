@@ -2,10 +2,6 @@
 
 #if defined(HITSIC_USE_EXTINT) && (HITSIC_USE_EXTINT > 0)
 
-#ifdef __cplusplus
-extern "C"{
-#endif
-
 extern extint_t extint_porta, extint_portb, extint_portc, extint_portd, extint_porte;
 
 extint_t *EXTINT_GetInst(INTC_Type *base)
@@ -64,9 +60,5 @@ void PORTE_IRQHandler(void)
     PORT_ClearPinsInterruptFlags(PORTE, 0xffff);
 }
 #endif // ! HTISIC_EXTMGR_USE_IRQHANDLER
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif // ! HITSIC_USE_EXTINT

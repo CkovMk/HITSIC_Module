@@ -58,6 +58,19 @@ inline void DISP_SPIBUS_delay_ms(uint32_t ms)
 }
 
 /**
+ * @brief 微秒级阻塞延迟函数。
+ *
+ * @param ms 延迟的微秒数。
+ */
+inline void DISP_SPIBUS_delay_us(uint32_t us)
+{
+	for(uint32_t i = 0; i < us; ++i)
+	{
+        SDK_DelayAtLeastUs(1, CLOCK_GetFreq(kCLOCK_CoreSysClk));
+	}
+}
+
+/**
  * @brief SPI接口发送多个字节。
  * 
  * @param data 要发送的数据
