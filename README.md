@@ -47,7 +47,6 @@ HITSIC_Module是哈工大智能车创新俱乐部各MCU平台共用的程序模�
 | [ADRCCTRL](doc/lib_adrcctrl.md)         | ADRC控制组件                                              |
 | GRAPHIC                                 | 图形组件                                                |
 | **APP / 应用**                          |                                                           |
-| [MENU](doc/app_menu.md)                 | 简单调参菜单组件                                          |
 | SVBMP | 保存图像为BMP图像文件 |
 
 
@@ -60,6 +59,7 @@ HITSIC_Module是哈工大智能车创新俱乐部各MCU平台共用的程序模�
 | [EasyFlash](https://github.com/armink/EasyFlash)       | 开源的轻量级嵌入式Flash存储器库                              |
 | [m*lib](https://github.com/P-p-H-d/mlib)               | C语言STL容器库                                               |
 | [drv_invimu](https://github.com/beforelight/c_inv_imu) | 社团学长维护的Invensense公司IMU统一驱动库                    |
+| [TextMenu](https://github.com/CkovMk/TextMenu)         | 社团学长维护的字符菜单库                                     |
 
 
 
